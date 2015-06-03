@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html>
+    <body>
+        <h1>Title</h1>
+        <h2>Subtitle</h2>
+        Some text
+        <a href="https://kwarc.info/">link</a>
+        and a bit more text.
+    </body>
+</html>

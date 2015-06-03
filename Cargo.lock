@@ -1,0 +1,21 @@
+[root]
+name = "llamapun"
+version = "0.0.1"
+dependencies = [
+ "libc 0.1.8 (registry+https://github.com/rust-lang/crates.io-index)",
+ "rustlibxml 0.0.1 (git+https://github.com/jfschaefer/rust-libxml.git)",
+]
+
+[[package]]
+name = "libc"
+version = "0.1.8"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+
+[[package]]
+name = "rustlibxml"
+version = "0.0.1"
+source = "git+https://github.com/jfschaefer/rust-libxml.git#069f3bd6dd40b238bff160bb51ce0dbd10529fcf"
+dependencies = [
+ "libc 0.1.8 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+

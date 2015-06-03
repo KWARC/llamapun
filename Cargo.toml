@@ -1,0 +1,13 @@
+[package]
+name = "llamapun"
+version = "0.0.1"
+authors = ["Jan Frederik Schaefer <j.schaefer@jacobs-university.de>"]
+
+[lib]
+name = "llamapun"
+
+[dependencies.rustlibxml]
+git = "https://github.com/jfschaefer/rust-libxml.git"
+
+[dependencies]
+libc = "~0.1"

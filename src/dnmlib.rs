@@ -4,7 +4,6 @@
 
 use rustlibxml::tree::*;
 use std::collections::HashMap;
-use libc;
 
 /// Specifies how to deal with a certain tag
 pub enum SpecialTagsOption {
@@ -39,7 +38,7 @@ impl Default for DNMParameters {
 }
 
 /// The `DNM` is essentially a wrapper around the plain text representation
-/// of the document, which facilitates the mapping of plaintext pieces to the DOM.
+/// of the document, which facilitates mapping plaintext pieces to the DOM.
 /// This breaks, if the DOM is changed after the DNM generation!
 pub struct DNM {
     /// The plaintext
@@ -48,10 +47,10 @@ pub struct DNM {
     pub parameters : DNMParameters,
     /// The root node of the underlying xml tree
     pub root_node : XmlNodeRef,
-    /// Maps nodes to offsets
-    pub node_map : HashMap<*mut libc::c_void, (usize, usize)>,
+    /// Maps nodes to plaintext offsets
+    pub node_map : HashMap<XmlNodeRef, (usize, usize)>,
+    //pub node_map : HashMap<libc::c_void, (usize, usize)>,
 }
-
 
 /// Some temporary data for the parser
 struct TmpParseData {
@@ -61,6 +60,8 @@ struct TmpParseData {
 
 fn recursive_dnm_generation(dnm: &mut DNM, root: XmlNodeRef,
                             tmp: &mut TmpParseData) {
+    let offset_start = dnm.plaintext.len();
+
     if root.is_text_node() {
         if dnm.parameters.normalize_white_spaces {
             for c in root.get_content().chars() {
@@ -77,6 +78,7 @@ fn recursive_dnm_generation(dnm: &mut DNM, root: XmlNodeRef,
         } else {
             dnm.plaintext.push_str(&root.get_content());
         }
+        dnm.node_map.insert(root, (offset_start, dnm.plaintext.len()));
         return;
     }
     let name : String = root.get_name();
@@ -100,10 +102,14 @@ fn recursive_dnm_generation(dnm: &mut DNM, root: XmlNodeRef,
                     //tokens are considered non-whitespace
                     tmp.had_whitespace = false;
                 }
+                dnm.node_map.insert(root,
+                                    (offset_start, dnm.plaintext.len()));
                 return;
             }
             Some(&SpecialTagsOption::Skip) => {
-                return ;
+                dnm.node_map.insert(root,
+                                    (offset_start, dnm.plaintext.len()));
+                return;
             }
             None => {
 
@@ -121,6 +127,16 @@ fn recursive_dnm_generation(dnm: &mut DNM, root: XmlNodeRef,
             None => break,
         }
     }
+    dnm.node_map.insert(root, (offset_start, dnm.plaintext.len()));
+}
+
+/// Very often we'll talk about substrings of the plaintext - words, sentences,
+/// etc. A `DNMRange` stores start and end point of such a substring and has
+/// a reference to the `DNM`.
+pub struct DNMRange <'a> {
+    start : usize,
+    end : usize,
+    dnm : &'a DNM,
 }
 
 impl DNM {
@@ -140,6 +156,16 @@ impl DNM {
         recursive_dnm_generation(&mut dnm, root, &mut tmp);
 
         dnm
+    }
+
+    /// Get the plaintext range of a node
+    pub fn get_range_of_node (self : &DNM, node: XmlNodeRef)
+                                    -> Result<DNMRange, ()> {
+        match self.node_map.get(&node) {
+            Some(&(start, end)) => Ok(DNMRange
+                                     {start:start, end:end, dnm: self}),
+            None => Err(()),
+        }
     }
 }
 

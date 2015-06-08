@@ -14,7 +14,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 [[package]]
 name = "rustlibxml"
 version = "0.0.1"
-source = "git+https://github.com/jfschaefer/rust-libxml.git#069f3bd6dd40b238bff160bb51ce0dbd10529fcf"
+source = "git+https://github.com/jfschaefer/rust-libxml.git#50ed4a88da42c587c97d9e8a245070444abb23c3"
 dependencies = [
  "libc 0.1.8 (registry+https://github.com/rust-lang/crates.io-index)",
 ]

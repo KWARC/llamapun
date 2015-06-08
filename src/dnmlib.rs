@@ -139,6 +139,14 @@ pub struct DNMRange <'a> {
     dnm : &'a DNM,
 }
 
+impl <'a> DNMRange <'a> {
+    /// Get the plaintext substring corresponding to the range
+    pub fn get_plaintext(&self) -> String {
+        self.dnm.plaintext.slice_chars(self.start, self.end).to_owned()
+    }
+}
+
+
 impl DNM {
     /// Creates a `DNM` for `root`
     pub fn create_dnm(root: XmlNodeRef, parameters: DNMParameters) -> DNM {

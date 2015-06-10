@@ -2,8 +2,13 @@
 //! (Document Object Model) representation and the plain text representation,
 //! which is needed for most NLP tools.
 
+extern crate libc;
+
 use rustlibxml::tree::*;
 use std::collections::HashMap;
+use std::mem;
+
+
 
 /// Specifies how to deal with a certain tag
 pub enum SpecialTagsOption {
@@ -37,6 +42,11 @@ impl Default for DNMParameters {
     }
 }
 
+/// For some reason `libc::c_void` isn't hashable and cannot be made hashable
+fn node_to_hashable(node : &XmlNodeRef) -> usize {
+    unsafe { mem::transmute::<*mut libc::c_void, usize>(node.node_ptr) }
+}
+
 /// The `DNM` is essentially a wrapper around the plain text representation
 /// of the document, which facilitates mapping plaintext pieces to the DOM.
 /// This breaks, if the DOM is changed after the DNM generation!
@@ -48,8 +58,9 @@ pub struct DNM {
     /// The root node of the underlying xml tree
     pub root_node : XmlNodeRef,
     /// Maps nodes to plaintext offsets
-    pub node_map : HashMap<XmlNodeRef, (usize, usize)>,
+    //pub node_map : HashMap<XmlNodeRef, (usize, usize)>,
     //pub node_map : HashMap<libc::c_void, (usize, usize)>,
+    pub node_map : HashMap<usize, (usize, usize)>,
 }
 
 /// Some temporary data for the parser
@@ -58,7 +69,7 @@ struct TmpParseData {
     had_whitespace : bool,
 }
 
-fn recursive_dnm_generation(dnm: &mut DNM, root: XmlNodeRef,
+fn recursive_dnm_generation(dnm: &mut DNM, root: &XmlNodeRef,
                             tmp: &mut TmpParseData) {
     let offset_start = dnm.plaintext.len();
 
@@ -78,7 +89,7 @@ fn recursive_dnm_generation(dnm: &mut DNM, root: XmlNodeRef,
         } else {
             dnm.plaintext.push_str(&root.get_content());
         }
-        dnm.node_map.insert(root, (offset_start, dnm.plaintext.len()));
+        dnm.node_map.insert(node_to_hashable(root), (offset_start, dnm.plaintext.len()));
         return;
     }
     let name : String = root.get_name();
@@ -102,12 +113,12 @@ fn recursive_dnm_generation(dnm: &mut DNM, root: XmlNodeRef,
                     //tokens are considered non-whitespace
                     tmp.had_whitespace = false;
                 }
-                dnm.node_map.insert(root,
+                dnm.node_map.insert(node_to_hashable(root),
                                     (offset_start, dnm.plaintext.len()));
                 return;
             }
             Some(&SpecialTagsOption::Skip) => {
-                dnm.node_map.insert(root,
+                dnm.node_map.insert(node_to_hashable(root),
                                     (offset_start, dnm.plaintext.len()));
                 return;
             }
@@ -121,13 +132,13 @@ fn recursive_dnm_generation(dnm: &mut DNM, root: XmlNodeRef,
     loop {
         match child_option {
             Some(child) => {
-                recursive_dnm_generation(dnm, child, tmp);
+                recursive_dnm_generation(dnm, &child, tmp);
                 child_option = child.get_next_sibling();
             }
             None => break,
         }
     }
-    dnm.node_map.insert(root, (offset_start, dnm.plaintext.len()));
+    dnm.node_map.insert(node_to_hashable(root), (offset_start, dnm.plaintext.len()));
 }
 
 /// Very often we'll talk about substrings of the plaintext - words, sentences,
@@ -149,11 +160,12 @@ impl <'a> DNMRange <'a> {
 
 impl DNM {
     /// Creates a `DNM` for `root`
-    pub fn create_dnm(root: XmlNodeRef, parameters: DNMParameters) -> DNM {
+    pub fn create_dnm(root: &XmlNodeRef, parameters: DNMParameters) -> DNM {
         let mut dnm = DNM {
             plaintext : String::new(),
             parameters : parameters,
-            root_node : root,
+            root_node : XmlNodeRef {node_ptr : root.node_ptr,
+                                    node_is_inserted : true},
             node_map : HashMap::new(),
         };
 
@@ -161,15 +173,15 @@ impl DNM {
             had_whitespace : true,  //no need for leading whitespaces
         };
 
-        recursive_dnm_generation(&mut dnm, root, &mut tmp);
+        recursive_dnm_generation(&mut dnm, &root, &mut tmp);
 
         dnm
     }
 
     /// Get the plaintext range of a node
-    pub fn get_range_of_node (self : &DNM, node: XmlNodeRef)
+    pub fn get_range_of_node (self : &DNM, node: &XmlNodeRef)
                                     -> Result<DNMRange, ()> {
-        match self.node_map.get(&node) {
+        match self.node_map.get(&node_to_hashable(&node)) {
             Some(&(start, end)) => Ok(DNMRange
                                      {start:start, end:end, dnm: self}),
             None => Err(()),

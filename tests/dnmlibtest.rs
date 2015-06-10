@@ -18,7 +18,7 @@ fn test_plaintext_simple() {
     options.insert("h2".to_string(), SpecialTagsOption::Skip);
     options.insert("a".to_string(),
                    SpecialTagsOption::Normalize("[link]".to_string()));
-    let dnm = DNM::create_dnm(doc.get_root_element().unwrap(),
+    let dnm = DNM::create_dnm(&doc.get_root_element().unwrap(),
                               DNMParameters {
                                   special_tags_options : options,
                                   ..Default::default()
@@ -40,7 +40,7 @@ fn test_xml_node_to_plaintext() {
     options.insert("h2".to_string(), SpecialTagsOption::Skip);
     options.insert("a".to_string(),
                    SpecialTagsOption::Normalize("[link]".to_string()));
-    let dnm = DNM::create_dnm(doc.get_root_element().unwrap(),
+    let dnm = DNM::create_dnm(&doc.get_root_element().unwrap(),
                               DNMParameters {
                                   special_tags_options : options,
                                   ..Default::default()
@@ -64,7 +64,7 @@ fn test_xml_node_to_plaintext() {
         }
     }
     //Node content should have been processed
-    assert_eq!(dnm.get_range_of_node(node).unwrap().get_plaintext(), "Title");
+    assert_eq!(dnm.get_range_of_node(&node).unwrap().get_plaintext(), "Title");
     while node.get_name() != "h2" {
         match node.get_next_sibling() {
             Some(n) => node = n,
@@ -72,7 +72,7 @@ fn test_xml_node_to_plaintext() {
         }
     }
     //node was skipped in dnm generation
-    assert_eq!(dnm.get_range_of_node(node).unwrap().get_plaintext(), "");
+    assert_eq!(dnm.get_range_of_node(&node).unwrap().get_plaintext(), "");
     while node.get_name() != "a" {
         match node.get_next_sibling() {
             Some(n) => node = n,
@@ -80,5 +80,5 @@ fn test_xml_node_to_plaintext() {
         }
     }
     //node content should have been replaced by "[link]"
-    assert_eq!(dnm.get_range_of_node(node).unwrap().get_plaintext().trim(), "[link]");
+    assert_eq!(dnm.get_range_of_node(&node).unwrap().get_plaintext().trim(), "[link]");
 }

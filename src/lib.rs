@@ -7,3 +7,4 @@ extern crate rustlibxml;
 extern crate libc;
 
 pub mod dnmlib;
+pub mod stopwords;

@@ -12,3 +12,4 @@ git = "https://github.com/jfschaefer/rust-libxml.git"
 
 [dependencies]
 libc = "~0.1"
+regex = "0.1.8"

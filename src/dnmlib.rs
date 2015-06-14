@@ -145,9 +145,9 @@ fn recursive_dnm_generation(dnm: &mut DNM, root: &XmlNodeRef,
 /// etc. A `DNMRange` stores start and end point of such a substring and has
 /// a reference to the `DNM`.
 pub struct DNMRange <'a> {
-    start : usize,
-    end : usize,
-    dnm : &'a DNM,
+    pub start : usize,
+    pub end : usize,
+    pub dnm : &'a DNM,
 }
 
 impl <'a> DNMRange <'a> {

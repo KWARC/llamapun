@@ -5,6 +5,8 @@
 #![feature(collections)]
 extern crate rustlibxml;
 extern crate libc;
+extern crate regex;
 
 pub mod dnmlib;
 pub mod stopwords;
+pub mod tokenizer;

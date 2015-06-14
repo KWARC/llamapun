@@ -2,8 +2,10 @@
 
 extern crate llamapun;
 extern crate rustlibxml;
+extern crate libc;
 
 use llamapun::dnmlib::*;
+// use libc::{c_void, c_int};
 use rustlibxml::tree::XmlDoc;
 use std::collections::HashMap;
 

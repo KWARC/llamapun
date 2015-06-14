@@ -156,6 +156,11 @@ impl <'a> DNMRange <'a> {
         self.dnm.plaintext.slice_chars(self.start, self.end).to_owned()
     }
 }
+impl <'a> Clone for DNMRange <'a> {
+    fn clone(&self) -> DNMRange <'a> {
+        DNMRange {start : self.start, end: self.end, dnm: self.dnm}
+    }
+}
 
 
 impl DNM {

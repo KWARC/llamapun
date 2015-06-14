@@ -26,7 +26,9 @@ fn test_sentence_tokenization_simple() {
     parameters : DNMParameters::default(),
     root_node : XmlNodeRef {node_ptr : fake_ptr, node_is_inserted : true},
     node_map : HashMap::new()};
-  let ranges : Vec<DNMRange> = tokenize_sentences(&simple_dnm).unwrap();
+
+  let simple_tokenizer = Tokenizer::default();
+  let ranges : Vec<DNMRange> = simple_tokenizer.sentences(&simple_dnm).unwrap();
   // Debug:
   // for r in ranges.iter() {
   //   println!("Sentence: \n{}\n",r.get_plaintext().trim());

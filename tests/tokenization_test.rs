@@ -16,7 +16,7 @@ fn test_sentence_tokenization_simple() {
   let simple_text = "This note was written to clarify for myself and my colleagues certain properties \
    of Bernstein approximations that are useful in investigating copulas. We derive some of the basic properties \
    of the Bernstein approximation for functions of n variables and then show that the Bernstein approximation of \
-   a copula is again a copula. Unorthodox beginnings of sentences can also occur. Deciphering is difficult, isn't it? \
+   a copula is again a copula. Unorthodox beginnings of sentences can also occur. Deciphering Eqn. 1 is sometimes. difficult Prof. Automation, isn't it? \
    Our most significant result is a stochastic interpretation of the Bernstein \
    approximation of a copula. This interpretation was communicated to us by J. H. B. Kemperman in [2] for \
    2-copulas and we are not aware of its publication elsewhere.".to_string();
@@ -29,7 +29,7 @@ fn test_sentence_tokenization_simple() {
 
   let simple_tokenizer = Tokenizer::default();
   let ranges : Vec<DNMRange> = simple_tokenizer.sentences(&simple_dnm).unwrap();
-  // Debug:
+  // // Debug:
   // for r in ranges.iter() {
   //   println!("Sentence: \n{}\n",r.get_plaintext().trim());
   // }

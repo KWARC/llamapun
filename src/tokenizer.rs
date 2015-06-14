@@ -4,7 +4,7 @@ use std::collections::vec_deque::*;
 use std::collections::HashSet;
 use regex::Regex;
 
-/// Paremeters for the DNM generation
+// Only initialize auxiliary resources once and keep them in a Tokenizer struct
 pub struct Tokenizer <'a> {
  pub stopwords : HashSet<&'a str>,
  pub abbreviations : Regex,
@@ -36,7 +36,6 @@ impl <'a> Tokenizer <'a> {
           
           // Get next non-space character
           while (text_iterator.peek() != None) && text_iterator.peek().unwrap().is_whitespace() {
-            // Add code here
             text_iterator.next();
             end+=1;
           }
@@ -50,7 +49,7 @@ impl <'a> Tokenizer <'a> {
               next_word.push(text_iterator.next().unwrap());
               next_word_length+=1;
             }
-            // There must be a cleaner way of doing this...
+            // There must be a cleaner way of doing this recast into &str
             let next_word_string : String = next_word.into_iter().collect();
             let lower_word_string : String = next_word_string.to_lowercase();
             let lower_word_str : &str = &lower_word_string;

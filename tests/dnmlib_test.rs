@@ -22,7 +22,7 @@ fn test_plaintext_simple() {
                    SpecialTagsOption::Normalize("[link]".to_string()));
     let dnm = DNM::create_dnm(&doc.get_root_element().unwrap(),
                               DNMParameters {
-                                  special_tags_options : options,
+                                  special_tag_name_options : options,
                                   ..Default::default()
                               });
     assert_eq!(dnm.plaintext.trim(),
@@ -44,7 +44,7 @@ fn test_xml_node_to_plaintext() {
                    SpecialTagsOption::Normalize("[link]".to_string()));
     let dnm = DNM::create_dnm(&doc.get_root_element().unwrap(),
                               DNMParameters {
-                                  special_tags_options : options,
+                                  special_tag_name_options : options,
                                   ..Default::default()
                               });
     let mut node = doc.get_root_element().unwrap();
@@ -83,4 +83,21 @@ fn test_xml_node_to_plaintext() {
     }
     //node content should have been replaced by "[link]"
     assert_eq!(dnm.get_range_of_node(&node).unwrap().get_plaintext().trim(), "[link]");
+}
+
+
+
+#[test]
+/// Test that the normalization according to class attributes works
+fn test_plaintext_normalized_class_names() {
+    let doc = XmlDoc::parse_file("tests/resources/file02.xml").unwrap();
+    let mut options : HashMap<String, SpecialTagsOption> = HashMap::new();
+    options.insert("normalized".to_string(),
+                   SpecialTagsOption::Normalize("[NORMALIZED]".to_string()));
+    let dnm = DNM::create_dnm(&doc.get_root_element().unwrap(),
+                              DNMParameters {
+                                  special_tag_class_options : options,
+                                  ..Default::default()
+                              });
+    assert_eq!(dnm.plaintext.trim(), "[NORMALIZED] Else");
 }

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html>
+    <body>
+        <p class="normalized">Something</p>
+        <p class="kept">Else</p>
+    </body>
+</html>

@@ -24,7 +24,11 @@ pub enum SpecialTagsOption {
 /// Paremeters for the DNM generation
 pub struct DNMParameters {
     /// How to deal with special tags (e.g. `<math>` tags)
-    pub special_tags_options: HashMap<String, SpecialTagsOption>,
+    pub special_tag_name_options: HashMap<String, SpecialTagsOption>,
+    /// How to deal with tags with special class names (e.g. ltx_note_mark)
+    /// *Remark*: If both a tag name and a tag class match, the tag name rule
+    /// will be applied.
+    pub special_tag_class_options: HashMap<String, SpecialTagsOption>,
     /// merge sequences of whitespaces into a single ' '.
     /// *Doesn't affect tokens*
     pub normalize_white_spaces: bool,
@@ -33,9 +37,11 @@ pub struct DNMParameters {
 }
 
 impl Default for DNMParameters {
+    /// Don't do anything fancy and specific by default
     fn default() -> DNMParameters {
         DNMParameters {
-            special_tags_options : HashMap::new(),
+            special_tag_name_options : HashMap::new(),
+            special_tag_class_options : HashMap::new(),
             normalize_white_spaces: true,
             wrap_tokens: true,
         }
@@ -92,38 +98,44 @@ fn recursive_dnm_generation(dnm: &mut DNM, root: &XmlNodeRef,
         dnm.node_map.insert(node_to_hashable(root), (offset_start, dnm.plaintext.len()));
         return;
     }
-    let name : String = root.get_name();
     {
-        let rule = dnm.parameters.special_tags_options.get(&name);
-        match rule {
-            Some(&SpecialTagsOption::Enter) => {
-
-            }
-            Some(&SpecialTagsOption::Normalize(ref token)) => {
-                if dnm.parameters.wrap_tokens {
-                    if !tmp.had_whitespace ||
-                       !dnm.parameters.normalize_white_spaces {
-                        dnm.plaintext.push(' ');
-                    }
-                    dnm.plaintext.push_str(&token);
-                    dnm.plaintext.push(' ');
-                    tmp.had_whitespace = true;
-                } else {
-                    dnm.plaintext.push_str(&token);
-                    //tokens are considered non-whitespace
-                    tmp.had_whitespace = false;
+        let name : String = root.get_name();
+        let mut rules = Vec::new();
+        rules.push(dnm.parameters.special_tag_name_options.get(&name));
+        for classname in root.get_class_names() {
+            rules.push(dnm.parameters.special_tag_class_options.get(&classname));
+        }
+        for rule in rules {
+            match rule {
+                Some(&SpecialTagsOption::Enter) => {
+                    break;
                 }
-                dnm.node_map.insert(node_to_hashable(root),
-                                    (offset_start, dnm.plaintext.len()));
-                return;
-            }
-            Some(&SpecialTagsOption::Skip) => {
-                dnm.node_map.insert(node_to_hashable(root),
-                                    (offset_start, dnm.plaintext.len()));
-                return;
-            }
-            None => {
-
+                Some(&SpecialTagsOption::Normalize(ref token)) => {
+                    if dnm.parameters.wrap_tokens {
+                        if !tmp.had_whitespace ||
+                           !dnm.parameters.normalize_white_spaces {
+                            dnm.plaintext.push(' ');
+                        }
+                        dnm.plaintext.push_str(&token);
+                        dnm.plaintext.push(' ');
+                        tmp.had_whitespace = true;
+                    } else {
+                        dnm.plaintext.push_str(&token);
+                        //tokens are considered non-whitespace
+                        tmp.had_whitespace = false;
+                    }
+                    dnm.node_map.insert(node_to_hashable(root),
+                                        (offset_start, dnm.plaintext.len()));
+                    return;
+                }
+                Some(&SpecialTagsOption::Skip) => {
+                    dnm.node_map.insert(node_to_hashable(root),
+                                        (offset_start, dnm.plaintext.len()));
+                    return;
+                }
+                None => {
+                    continue;
+                }
             }
         }
     }

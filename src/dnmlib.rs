@@ -48,6 +48,31 @@ impl Default for DNMParameters {
     }
 }
 
+impl DNMParameters {
+    /// Normalize in a reasonable way for our math documents
+    pub fn our_reasonable_math_normalization() -> DNMParameters {
+        let mut name_options = HashMap::new();
+        name_options.insert("math".to_string(), SpecialTagsOption::Normalize("MathFormula".to_string()));
+        name_options.insert("cite".to_string(), SpecialTagsOption::Normalize("CiteExpression".to_string()));
+        name_options.insert("table".to_string(), SpecialTagsOption::Skip);
+        name_options.insert("head".to_string(), SpecialTagsOption::Skip);
+        let mut class_options = HashMap::new();
+        class_options.insert("ltx_equation".to_string(), SpecialTagsOption::Normalize("MathFormula".to_string()));
+        class_options.insert("ltx_equationgroup".to_string(), SpecialTagsOption::Normalize("MathFormula".to_string()));
+        class_options.insert("ltx_note_mark".to_string(), SpecialTagsOption::Skip);
+        class_options.insert("ltx_note_outer".to_string(), SpecialTagsOption::Skip);
+        class_options.insert("ltx_bibliography".to_string(), SpecialTagsOption::Skip);
+
+        DNMParameters {
+            special_tag_name_options : name_options,
+            special_tag_class_options : class_options,
+            normalize_white_spaces : true,
+            wrap_tokens : true,
+            ..Default::default()
+        }
+    }
+}
+
 /// For some reason `libc::c_void` isn't hashable and cannot be made hashable
 fn node_to_hashable(node : &XmlNodeRef) -> usize {
     unsafe { mem::transmute::<*mut libc::c_void, usize>(node.node_ptr) }
@@ -68,6 +93,7 @@ pub struct DNM {
     //pub node_map : HashMap<libc::c_void, (usize, usize)>,
     pub node_map : HashMap<usize, (usize, usize)>,
 }
+
 
 /// Some temporary data for the parser
 struct TmpParseData {

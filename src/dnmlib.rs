@@ -42,7 +42,7 @@ impl Default for DNMParameters {
         DNMParameters {
             special_tag_name_options : HashMap::new(),
             special_tag_class_options : HashMap::new(),
-            normalize_white_spaces: false,
+            normalize_white_spaces: true,
             wrap_tokens: false,
         }
     }

@@ -58,6 +58,7 @@ fn test_sentence_tokenization_arxmliv_xhtml() {
   let doc = XmlDoc::parse_file("tests/resources/1311.0066.xhtml").unwrap();
   let dnm = DNM::create_dnm(&doc.get_root_element().unwrap(),
                           DNMParameters {
+                              normalize_white_spaces : true,
                               ..Default::default()
                           });
   assert_eq!(dnm.plaintext.len(), 69980);
@@ -66,9 +67,9 @@ fn test_sentence_tokenization_arxmliv_xhtml() {
   let ranges : Vec<DNMRange> = tokenizer.sentences(&dnm).unwrap();
   assert!(ranges.len() > 10);
   
-  // for range in ranges.iter() {
-  //   println!("\nS: {}",range.get_plaintext());
-  // }
+   // for range in ranges.iter() {
+   //   println!("\nS: \"{}\"",range.get_plaintext_truncated());
+   // }
 
 }
 
@@ -79,6 +80,7 @@ fn test_sentence_tokenization_arxmliv_html() {
   let doc = XmlDoc::parse_html_file("tests/resources/0903.1000.html").unwrap();
   let dnm = DNM::create_dnm(&doc.get_root_element().unwrap(),
                         DNMParameters {
+                            normalize_white_spaces : true,
                             ..Default::default()
                         });
   assert_eq!(dnm.plaintext.len(), 44331);

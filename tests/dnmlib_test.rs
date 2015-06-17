@@ -23,6 +23,7 @@ fn test_plaintext_simple() {
     let dnm = DNM::create_dnm(&doc.get_root_element().unwrap(),
                               DNMParameters {
                                   special_tag_name_options : options,
+                                  normalize_white_spaces : true,
                                   ..Default::default()
                               });
     assert_eq!(dnm.plaintext.trim(),
@@ -97,7 +98,19 @@ fn test_plaintext_normalized_class_names() {
     let dnm = DNM::create_dnm(&doc.get_root_element().unwrap(),
                               DNMParameters {
                                   special_tag_class_options : options,
+                                  normalize_white_spaces : true,
                                   ..Default::default()
                               });
     assert_eq!(dnm.plaintext.trim(), "[NORMALIZED] Else");
 }
+
+/*
+    #[test]
+    /// Test the default math normalization on some real math document
+    fn test_default_math_normalization() {
+        let doc = XmlDoc::parse_file("tests/resources/1311.0066.xhtml").unwrap();
+        let dnm = DNM::create_dnm(&doc.get_root_element().unwrap(),
+                                  DNMParameters::llamapun_normalization());
+        assert_eq!(dnm.plaintext, "abc");
+    }
+*/

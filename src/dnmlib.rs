@@ -42,15 +42,15 @@ impl Default for DNMParameters {
         DNMParameters {
             special_tag_name_options : HashMap::new(),
             special_tag_class_options : HashMap::new(),
-            normalize_white_spaces: true,
-            wrap_tokens: true,
+            normalize_white_spaces: false,
+            wrap_tokens: false,
         }
     }
 }
 
 impl DNMParameters {
     /// Normalize in a reasonable way for our math documents
-    pub fn our_reasonable_math_normalization() -> DNMParameters {
+    pub fn llamapun_normalization() -> DNMParameters {
         let mut name_options = HashMap::new();
         name_options.insert("math".to_string(), SpecialTagsOption::Normalize("MathFormula".to_string()));
         name_options.insert("cite".to_string(), SpecialTagsOption::Normalize("CiteExpression".to_string()));
@@ -67,7 +67,7 @@ impl DNMParameters {
             special_tag_name_options : name_options,
             special_tag_class_options : class_options,
             normalize_white_spaces : true,
-            wrap_tokens : true,
+            wrap_tokens : false,
             ..Default::default()
         }
     }
@@ -193,6 +193,11 @@ impl <'a> DNMRange <'a> {
     pub fn get_plaintext(&self) -> String {
         self.dnm.plaintext.slice_chars(self.start, self.end).to_owned()
     }
+    /// Get the plaintext without trailing white spaces
+    pub fn get_plaintext_truncated(&self) -> String {
+        self.dnm.plaintext.slice_chars(self.start, self.end).trim_right().to_owned()
+    }
+        
 }
 impl <'a> Clone for DNMRange <'a> {
     fn clone(&self) -> DNMRange <'a> {

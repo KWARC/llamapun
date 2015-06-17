@@ -102,6 +102,10 @@ impl <'a> Tokenizer <'a> {
           sentences.push(DNMRange {start: start, end: end, dnm: dnm});
           start = end;
         },
+        // TODO: 
+        // Some('\u{2022}') => { // bullet point for itemize
+        // Some('\u{220e}') => { // QED symbol 
+        // Some('\n') => { // newline
         Some(x) => {
           // Increment the left window
           left_window.push_back(x);

@@ -55,10 +55,27 @@ fn test_sentence_tokenization_simple() {
 /// Test sentence tokenization of an arXMLiv XHTML document
 fn test_sentence_tokenization_arxmliv_xhtml() {
 
-  // Hardocde the DNM plaintext expected, as well as the respective sentences:
   let expected = load_expected_xhtml();
-
   let doc = XmlDoc::parse_file("tests/resources/1311.0066.xhtml").unwrap();
+
+  test_each_paragraph(&doc,expected);
+}
+
+
+#[test]
+/// Test sentence tokenization of an arXMLiv HTML document
+fn test_sentence_tokenization_arxmliv_html() {
+
+  let expected = load_expected_html();
+  let doc = XmlDoc::parse_html_file("tests/resources/0903.1000.html").unwrap();
+
+  test_each_paragraph(&doc,expected);
+}
+
+/* ======================== */
+/*    Auxiliary functions:  */
+/* ======================== */
+fn test_each_paragraph<'a>(doc: &'a XmlDoc, expected: Vec<Vec<&'a str>>) {
   // We will tokenize each logical paragraph, which are the textual logical units in an article
   let xpath_context = XmlXPathContext::new(&doc).unwrap();
   let para_xpath_result = xpath_context.evaluate("//*[contains(@class,'ltx_para')]").unwrap();
@@ -76,26 +93,7 @@ fn test_sentence_tokenization_arxmliv_xhtml() {
     let ranges : Vec<DNMRange> = tokenizer.sentences(&dnm).unwrap();
     assert!(ranges.len() > 0);
   }
-  // for range in ranges.iter() {
-  //   println!("\nS: {}",range.get_plaintext());
-  // }
-
 }
-
-
-#[test]
-/// Test sentence tokenization of an arXMLiv HTML document
-fn test_sentence_tokenization_arxmliv_html() {
-  let doc = XmlDoc::parse_html_file("tests/resources/0903.1000.html").unwrap();
-  let mut dnm_options : HashMap<String, SpecialTagsOption> = HashMap::new();
-  dnm_options.insert("math".to_string(), SpecialTagsOption::Normalize("MathFormula".to_string()));
-
-  let dnm = DNM::create_dnm(&doc.get_root_element().unwrap(),
-    DNMParameters {special_tag_name_options : dnm_options, ..Default::default() });
-  assert_eq!(dnm.plaintext.len(), 13284);
-
-}
-
 
 fn load_expected_xhtml<'a>() -> Vec<Vec<&'a str>> {
   let expected_xhtml = vec![
@@ -252,7 +250,7 @@ fn load_expected_xhtml<'a>() -> Vec<Vec<&'a str>> {
     vec!["These are the objects with minimal possible support (empty or a point)."],
     vec!["Now, we recall Balmer\u{2019}s K-theoretic Chow group of tensor triangulated categories. We begin with the definition of dimension function."],
     vec!["A dimension function on the space MathFormula is a map dim: MathFormula satisfying the following two conditions: \u{2022} MathFormula implies MathFormula . \u{2022} MathFormula and MathFormula imply MathFormula .",
-         "A dimension function on the space MathFormula is a map dim: MathFormula satisfying the following two conditions: ",
+         "A dimension function on the space MathFormula is a map dim: MathFormula satisfying the following two conditions:",
          "\u{2022} MathFormula implies MathFormula .",
          "\u{2022} MathFormula and MathFormula imply MathFormula ."],
     vec!["MathFormula implies MathFormula ."],
@@ -740,4 +738,174 @@ fn load_expected_xhtml<'a>() -> Vec<Vec<&'a str>> {
          "Note that we don\u{2019}t need to assume the characteristic of ground field MathFormula is 0, but need to ignore torsion. \u{220e}"]
   ];
   return expected_xhtml;
+}
+
+fn load_expected_html<'a>() -> Vec<Vec<&'a str>> {
+  let expected_html = vec![
+    vec!["Bernstein approximations of 2-copulas were introduced and studied in [3] and [4]. We assume the reader is familiar with copulas; see, for example, [7] or [6].",
+         "Bernstein approximations of 2-copulas were introduced and studied in [3] and [4].",
+         "We assume the reader is familiar with copulas; see, for example, [7] or [6]."],
+    vec!["This note was written to clarify for myself and my colleagues certain properties of Bernstein approximations that are useful in investigating copulas. We derive some of the basic properties of the Bernstein approximation for functions of MathFormula variables and then show that the Bernstein approximation of a copula is again a copula. Our most significant result is a stochastic interpretation of the Bernstein approximation of a copula. This interpretation was communicated to us by J. H. B. Kemperman in [2] for 2-copulas and we are not aware of its publication elsewhere.",
+         "This note was written to clarify for myself and my colleagues certain properties of Bernstein approximations that are useful in investigating copulas.",
+         "We derive some of the basic properties of the Bernstein approximation for functions of MathFormula variables and then show that the Bernstein approximation of a copula is again a copula.",
+         "Our most significant result is a stochastic interpretation of the Bernstein approximation of a copula.",
+         "This interpretation was communicated to us by J. H. B. Kemperman in [2] for 2-copulas and we are not aware of its publication elsewhere."],
+    vec!["The encouragement and contributions of our colleagues P. Mikusi\u{144}ski and X. Li to this note were crucial."],
+    vec!["It is our convention that MathFormula ."],
+    vec!["The MathFormula -th degree Bernstein polynomial MathFormula is given by MathFormula MathFormula . We extend this to MathFormula by taking MathFormula to be a multi-index, MathFormula , where each MathFormula and setting MathFormula where MathFormula .",
+         "The MathFormula -th degree Bernstein polynomial MathFormula is given by MathFormula MathFormula .",
+         "We extend this to MathFormula by taking MathFormula to be a multi-index, MathFormula , where each MathFormula and setting MathFormula where MathFormula ."],
+    vec!["Notice that MathFormula is a partition of unity over MathFormula ."],
+    vec!["Here is the intuition behind the Bernstein polynomial: Consider the act of tossing a coin MathFormula times with probability of heads on each toss being MathFormula . This scenario can be represented by a random vector MathFormula with the property that if MathFormula , then MathFormula . We then introduce the random variable MathFormula defined by MathFormula in other words, the number of heads that were tossed. This is familiarly described as a binomially distributed random variable with parameters MathFormula and MathFormula . It is easily shown that MathFormula Notice that MathFormula",
+         "Here is the intuition behind the Bernstein polynomial:",
+         "Consider the act of tossing a coin MathFormula times with probability of heads on each toss being MathFormula .",
+         "This scenario can be represented by a random vector MathFormula with the property that if MathFormula , then MathFormula .",
+         "We then introduce the random variable MathFormula defined by MathFormula in other words, the number of heads that were tossed.",
+         "This is familiarly described as a binomially distributed random variable with parameters MathFormula and MathFormula .",
+         "It is easily shown that MathFormula",
+         "Notice that MathFormula"],
+    vec!["If MathFormula , we define the Bernstein approximation to MathFormula to be MathFormula where MathFormula ranges over all multi-indices MathFormula such that each MathFormula , and by MathFormula we mean the vector MathFormula ."],
+    vec!["It can be shown by induction that MathFormula where MathFormula is Lebesgue measure on MathFormula ."],
+    vec!["If MathFormula is continuous, then MathFormula uniformly on MathFormula as MathFormula ."],
+    vec!["Choose MathFormula . Since MathFormula is uniformly continuous on MathFormula , there exists MathFormula with the property that if MathFormula , MathFormula , and MathFormula for all MathFormula , then MathFormula . In what follows, it is convenient to define MathFormula by MathFormula .",
+         "Choose MathFormula .",
+         "Since MathFormula is uniformly continuous on MathFormula , there exists MathFormula with the property that if MathFormula , MathFormula , and MathFormula for all MathFormula , then MathFormula .",
+         "In what follows, it is convenient to define MathFormula by MathFormula ."],
+    vec!["Set MathFormula . We suppose that MathFormula is so large that MathFormula ; we shall show that this makes MathFormula \u{2018}\u{2018}small.\u{2019}\u{2019} Choose MathFormula . Then MathFormula where MathFormula , a multi-index. We see that MathFormula by uniform continuity of MathFormula . To find a bound for the other term, we first introduce independent, binomially distributed random variables MathFormula with parameters MathFormula and MathFormula . By Tchebycheff\u{2019}s inequality, for each MathFormula we have MathFormula Let MathFormula . Then MathFormula We see that MathFormula MathFormula Thus MathFormula , and we are done. \u{220e}",
+         "Set MathFormula .",
+         "We suppose that MathFormula is so large that MathFormula ; we shall show that this makes MathFormula \u{2018}\u{2018}small.\u{2019}\u{2019}",
+         "Choose MathFormula .",
+         "Then MathFormula where MathFormula , a multi-index.",
+         "We see that MathFormula by uniform continuity of MathFormula .",
+         "To find a bound for the other term, we first introduce independent, binomially distributed random variables MathFormula with parameters MathFormula and MathFormula .",
+         "By Tchebycheff\u{2019}s inequality, for each MathFormula we have MathFormula",
+         "Let MathFormula .",
+         "Then MathFormula",
+         "We see that MathFormula MathFormula",
+         "Thus MathFormula , and we are done. \u{220e}"],
+    vec!["If MathFormula , set (1) MathFormula where MathFormula and MathFormula and the symbolism MathFormula is interpreted to mean MathFormula . We want to compute partial derivatives of MathFormula . In particular we want compute the mixed partial MathFormula which we denote MathFormula . In the case where MathFormula is a cumulative probability distribution function, MathFormula is the associated probability density.",
+         "If MathFormula , set (1) MathFormula where MathFormula and MathFormula and the symbolism MathFormula is interpreted to mean MathFormula .",
+         "We want to compute partial derivatives of MathFormula .",
+         "In particular we want compute the mixed partial MathFormula which we denote MathFormula .",
+         "In the case where MathFormula is a cumulative probability distribution function, MathFormula is the associated probability density."],
+    vec!["It is convenient at this point to introduce another notation. Let MathFormula where MathFormula . Suppose MathFormula such that MathFormula . We then define a function MathFormula by MathFormula . That is, MathFormula is the variation of MathFormula starting at MathFormula in the direction MathFormula . Next, let MathFormula be the standard orthonormal basis for MathFormula , that is, MathFormula , MathFormula , etc. For MathFormula and MathFormula , where MathFormula , we define MathFormula We can think of MathFormula as the variation of MathFormula over the MathFormula -dimensional square MathFormula .",
+         "It is convenient at this point to introduce another notation.",
+         "Let MathFormula where MathFormula .",
+         "Suppose MathFormula such that MathFormula .",
+         "We then define a function MathFormula by MathFormula .",
+         "That is, MathFormula is the variation of MathFormula starting at MathFormula in the direction MathFormula .",
+         "Next, let MathFormula be the standard orthonormal basis for MathFormula , that is, MathFormula , MathFormula , etc.",
+         "For MathFormula and MathFormula , where MathFormula , we define MathFormula",
+         "We can think of MathFormula as the variation of MathFormula over the MathFormula -dimensional square MathFormula ."],
+    vec!["Returning to the problem of derivatives, one calculates MathFormula If we set MathFormula , then we may reduce this to (2) MathFormula If one then considers the case where MathFormula so that MathFormula where MathFormula is now an integer, then one easily calculates (3) MathFormula We then pass to the general MathFormula -dimensional case where MathFormula has the form given in (1) and by repeatedly invoking the 1-dimensional case and Equation (3), we obtain MathFormula where MathFormula and MathFormula .",
+         "Returning to the problem of derivatives, one calculates MathFormula",
+         "If we set MathFormula , then we may reduce this to (2) MathFormula",
+         "If one then considers the case where MathFormula so that MathFormula where MathFormula is now an integer, then one easily calculates (3) MathFormula",
+         "We then pass to the general MathFormula -dimensional case where MathFormula has the form given in (1) and by repeatedly invoking the 1-dimensional case and Equation (3), we obtain MathFormula where MathFormula and MathFormula ."],
+    vec!["It is well-known that the Bernstein approximation of a copula is again a copula (see, for example, [3] and [4]), but this is also an immediate consequence of this last formula:"],
+    vec!["The Bernstein approximation of an MathFormula -copula is again an MathFormula -copula."],
+    vec!["Let MathFormula where MathFormula is an MathFormula -copula. The boundary conditions for a copula are easily checked. The only questionable condition is whether or not MathFormula is MathFormula -increasing. But this follows from the fact that the terms of MathFormula are nonnegative. \u{220e}",
+         "Let MathFormula where MathFormula is an MathFormula -copula.",
+         "The boundary conditions for a copula are easily checked.",
+         "The only questionable condition is whether or not MathFormula is MathFormula -increasing.",
+         "But this follows from the fact that the terms of MathFormula are nonnegative. \u{220e}"],
+    vec!["In what follows, we assume that MathFormula , MathFormula , and MathFormula ."],
+    vec!["The following is straightforward to establish by induction over MathFormula :"],
+    vec!["MathFormula"],
+    vec!["MathFormula"],
+    vec!["We assume that MathFormula is a binomially distributed random variable with parameters MathFormula and MathFormula and make use of Proposition 1: MathFormula MathFormula \u{220e}"],
+    vec!["MathFormula where MathFormula , the greatest integer less than or equal to MathFormula ."],
+    vec!["Let us assume MathFormula is irrational, MathFormula . There is a unique nonnegative integer, namely MathFormula , such that MathFormula We then perform a calculation in which we invoke Proposition 1: MathFormula MathFormula MathFormula We then obtain the proof for general MathFormula by invoking continuity. \u{220e}",
+         "Let us assume MathFormula is irrational, MathFormula .",
+         "There is a unique nonnegative integer, namely MathFormula , such that MathFormula",
+         "We then perform a calculation in which we invoke Proposition 1: MathFormula MathFormula MathFormula",
+         "We then obtain the proof for general MathFormula by invoking continuity. \u{220e}"],
+    vec!["A proof of the following has been shown to us informally by our colleague Xin Li, but it can also be found on p. 15 of [5]."],
+    vec!["MathFormula"],
+    vec!["For every MathFormula and MathFormula , MathFormula"],
+    vec!["From [1, p. 304], we find that for each MathFormula and MathFormula , there exists MathFormula such that MathFormula for MathFormula and MathFormula . \u{220e}"],
+    vec!["Suppose that MathFormula is a bounded function. Then for all MathFormula at which MathFormula is differentiable and for MathFormula , we have MathFormula",
+         "Suppose that MathFormula is a bounded function.",
+         "Then for all MathFormula at which MathFormula is differentiable and for MathFormula , we have MathFormula"],
+    vec!["Let us set MathFormula where MathFormula , each MathFormula , and MathFormula We prove the proposition for the case MathFormula .",
+         "Let us set MathFormula where MathFormula , each MathFormula , and MathFormula",
+         "We prove the proposition for the case MathFormula ."],
+    vec!["First, we have (4) MathFormula Second, by the differentiability of MathFormula at MathFormula , we have (5) MathFormula where MathFormula and MathFormula as MathFormula in MathFormula . Next, making use of (5), it can be shown there is a constant MathFormula , dependent on MathFormula and MathFormula but independent of MathFormula , such that MathFormula . This can be done by considering the case where MathFormula is \u{2018}\u{2018}close\u{2019}\u{2019} to 0 and the case where MathFormula is some fixed distance from 0.",
+         "First, we have (4) MathFormula",
+         "Second, by the differentiability of MathFormula at MathFormula , we have (5) MathFormula where MathFormula and MathFormula as MathFormula in MathFormula .",
+         "Next, making use of (5), it can be shown there is a constant MathFormula , dependent on MathFormula and MathFormula but independent of MathFormula , such that MathFormula .",
+         "This can be done by considering the case where MathFormula is \u{2018}\u{2018}close\u{2019}\u{2019} to 0 and the case where MathFormula is some fixed distance from 0."],
+    vec!["Next, substituting from (5) into (4), we see that MathFormula becomes MathFormula MathFormula MathFormula Now MathFormula . Thus MathFormula and for every MathFormula we have MathFormula MathFormula On the other hand, it is easily seen that MathFormula MathFormula MathFormula and we know that MathFormula for MathFormula , therefore MathFormula MathFormula Thus we can write MathFormula where MathFormula",
+         "Next, substituting from (5) into (4), we see that MathFormula becomes MathFormula MathFormula MathFormula",
+         "Now MathFormula .",
+         "Thus MathFormula and for every MathFormula we have MathFormula MathFormula",
+         "On the other hand, it is easily seen that MathFormula MathFormula MathFormula and we know that MathFormula for MathFormula , therefore MathFormula MathFormula",
+         "Thus we can write MathFormula where MathFormula"],
+    vec!["Our task now reduces to showing MathFormula . Choose MathFormula . There exists MathFormula such that if MathFormula , then MathFormula . Let us set MathFormula and then break MathFormula into two pieces, MathFormula , where MathFormula",
+         "Our task now reduces to showing MathFormula .",
+         "Choose MathFormula .",
+         "There exists MathFormula such that if MathFormula , then MathFormula .",
+         "Let us set MathFormula and then break MathFormula into two pieces, MathFormula , where MathFormula"],
+    vec!["We first consider MathFormula . By Proposition 1, MathFormula Then MathFormula MathFormula MathFormula Now MathFormula is the variance of a binomially distributed random variable, so MathFormula On the other hand, for MathFormula , we have by Proposition 4, MathFormula It follows that MathFormula",
+         "We first consider MathFormula .",
+         "By Proposition 1, MathFormula",
+         "Then MathFormula MathFormula MathFormula",
+         "Now MathFormula is the variance of a binomially distributed random variable, so MathFormula",
+         "On the other hand, for MathFormula , we have by Proposition 4, MathFormula",
+         "It follows that MathFormula"],
+    vec!["Now we turn to MathFormula . We know the following: (1) MathFormula . (2) MathFormula . (3) MathFormula . Using these facts plus Proposition 5, we obtain MathFormula MathFormula MathFormula",
+         "Now we turn to MathFormula .",
+         "We know the following:",
+         "(1) MathFormula .",
+         "(2) MathFormula .",
+         "(3) MathFormula .",
+         "Using these facts plus Proposition 5, we obtain MathFormula MathFormula MathFormula"],
+    vec!["MathFormula ."],
+    vec!["MathFormula ."],
+    vec!["MathFormula ."],
+    vec!["We therefore conclude that MathFormula as MathFormula . \u{220e}"],
+    vec!["It is our goal here to construct random variables such that the Bernstein approximation is the cumulative distribution function of these new random variables. This probabilistic interpretation was brought to our attention by J. H. B. Kemperman in [2].",
+         "It is our goal here to construct random variables such that the Bernstein approximation is the cumulative distribution function of these new random variables.",
+         "This probabilistic interpretation was brought to our attention by J. H. B. Kemperman in [2]."],
+    vec!["Let MathFormula be an MathFormula -copula. Suppose it is the cumulative distribution function of the ordered MathFormula -tuple of random variables MathFormula where each MathFormula is uniformly distributed over MathFormula . Let MathFormula be a \u{2018}\u{2018}large\u{2019}\u{2019} natural number and MathFormula be the MathFormula Bernstein approximation of MathFormula ; that is MathFormula where MathFormula .",
+         "Let MathFormula be an MathFormula -copula.",
+         "Suppose it is the cumulative distribution function of the ordered MathFormula -tuple of random variables MathFormula where each MathFormula is uniformly distributed over MathFormula .",
+         "Let MathFormula be a \u{2018}\u{2018}large\u{2019}\u{2019} natural number and MathFormula be the MathFormula Bernstein approximation of MathFormula ; that is MathFormula where MathFormula ."],
+    vec!["Next, for MathFormula and MathFormula , we let MathFormula be independent random variables that are uniformly distributed over MathFormula and have the property that MathFormula and MathFormula are independent for all MathFormula . If it is helpful, we may regard these random variables as being defined over the space MathFormula and having probability measure MathFormula where MathFormula has the form MathFormula and where it is understood that MathFormula is the probability measure induced on MathFormula by MathFormula and MathFormula is Lebesgue measure on MathFormula .",
+         "Next, for MathFormula and MathFormula , we let MathFormula be independent random variables that are uniformly distributed over MathFormula and have the property that MathFormula and MathFormula are independent for all MathFormula .",
+         "If it is helpful, we may regard these random variables as being defined over the space MathFormula and having probability measure MathFormula where MathFormula has the form MathFormula and where it is understood that MathFormula is the probability measure induced on MathFormula by MathFormula and MathFormula is Lebesgue measure on MathFormula ."],
+    vec!["Now for each MathFormula , let MathFormula be the order statistics for MathFormula . That is, whenever MathFormula then MathFormula .",
+         "Now for each MathFormula , let MathFormula be the order statistics for MathFormula .",
+         "That is, whenever MathFormula then MathFormula ."],
+    vec!["It may be helpful to notice that by the independence and uniform distribution of our original random variables, for all MathFormula and all MathFormula we have MathFormula MathFormula MathFormula"],
+    vec!["Next, if MathFormula is the multi-index MathFormula where MathFormula , then we define MathFormula This is a slight abuse of notation since MathFormula \u{2018}\u{2018}lives\u{2019}\u{2019} in MathFormula rather than MathFormula , however the reader should easily make whatever mental adjustments are necessary in the arguments that follow. We then take MathFormula to be the characteristic function of MathFormula with the understanding that the domain of MathFormula is MathFormula .",
+         "Next, if MathFormula is the multi-index MathFormula where MathFormula , then we define MathFormula",
+         "This is a slight abuse of notation since MathFormula \u{2018}\u{2018}lives\u{2019}\u{2019} in MathFormula rather than MathFormula , however the reader should easily make whatever mental adjustments are necessary in the arguments that follow.",
+         "We then take MathFormula to be the characteristic function of MathFormula with the understanding that the domain of MathFormula is MathFormula ."],
+    vec!["Finally we define MathFormula where MathFormula and MathFormula . We then have the following:",
+         "Finally we define MathFormula where MathFormula and MathFormula .",
+         "We then have the following:"],
+    vec!["MathFormula where MathFormula ."],
+    vec!["For MathFormula and MathFormula , we form a random variable MathFormula by setting MathFormula We see that the following are true: (1) MathFormula takes values in MathFormula . (2) MathFormula and MathFormula are independent for MathFormula . (3) MathFormula . We also see that (6) MathFormula From (6) we can easily deduce (7) MathFormula for MathFormula and MathFormula .",
+         "For MathFormula and MathFormula , we form a random variable MathFormula by setting MathFormula",
+         "We see that the following are true:",
+         "(1) MathFormula takes values in MathFormula .",
+         "(2) MathFormula and MathFormula are independent for MathFormula .",
+         "(3) MathFormula .",
+         "We also see that (6) MathFormula",
+         "From (6) we can easily deduce (7) MathFormula for MathFormula and MathFormula ."],
+    vec!["MathFormula takes values in MathFormula ."],
+    vec!["MathFormula and MathFormula are independent for MathFormula ."],
+    vec!["MathFormula ."],
+    vec!["We now consider the Bernstein approximation to MathFormula . Let MathFormula . Then MathFormula MathFormula MathFormula MathFormula MathFormula Since MathFormula we have MathFormula MathFormula MathFormula MathFormula MathFormula MathFormula MathFormula MathFormula MathFormula MathFormula MathFormula where the last step follows from (7).",
+         "We now consider the Bernstein approximation to MathFormula .",
+         "Let MathFormula .",
+         "Then MathFormula MathFormula MathFormula MathFormula MathFormula",
+         "Since MathFormula we have MathFormula MathFormula MathFormula MathFormula MathFormula MathFormula MathFormula MathFormula MathFormula MathFormula MathFormula where the last step follows from (7)."],
+    vec!["We now consider the cumulative distribution function of MathFormula . MathFormula MathFormula MathFormula MathFormula MathFormula by the definition of MathFormula and the independence of the random variables. We see from this that MathFormula",
+         "We now consider the cumulative distribution function of MathFormula .",
+         "MathFormula MathFormula MathFormula MathFormula MathFormula by the definition of MathFormula and the independence of the random variables.",
+         "We see from this that MathFormula"],
+  ];
+  return expected_html;
 }

@@ -8,7 +8,7 @@ extern crate unidecode;
 use rustlibxml::tree::*;
 use std::collections::HashMap;
 use std::mem;
-use unidecode::*;//unidecode;
+use unidecode::unidecode;
 
 
 
@@ -18,6 +18,9 @@ pub enum SpecialTagsOption {
     Enter,
     /// Normalize tag, replacing it by some token
     Normalize(String),
+    /// Normalize tag, obtain replacement string by function call
+    //FunctionNormalize(|&XmlNodeRef| -> String),
+    FunctionNormalize(fn(&XmlNodeRef) -> String),
     /// Skip tag
     Skip,
 }
@@ -171,6 +174,27 @@ fn recursive_dnm_generation(dnm: &mut DNM, root: &XmlNodeRef,
                     } else {
                         dnm.plaintext.push_str(&token);
                         //tokens are considered non-whitespace
+                        tmp.had_whitespace = false;
+                    }
+                    dnm.node_map.insert(node_to_hashable(root),
+                                        (offset_start,
+                        if dnm.parameters.move_whitespaces_between_nodes && dnm.plaintext.len() > offset_start && tmp.had_whitespace {
+                            dnm.plaintext.len() - 1    //don't trailing white space into node
+                        } else { dnm.plaintext.len() }));
+                    return;
+                }
+                Some(&SpecialTagsOption::FunctionNormalize(f)) => {
+                    if dnm.parameters.wrap_tokens {
+                        if !tmp.had_whitespace ||
+                           !dnm.parameters.normalize_white_spaces {
+                            dnm.plaintext.push(' ');
+                        }
+                        dnm.plaintext.push_str(&f(&root));
+                        dnm.plaintext.push(' ');
+                        tmp.had_whitespace = true;
+                    } else {
+                        dnm.plaintext.push_str(&f(&root));
+                        //Return value of f is not considered a white space
                         tmp.had_whitespace = false;
                     }
                     dnm.node_map.insert(node_to_hashable(root),

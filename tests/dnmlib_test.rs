@@ -1,5 +1,6 @@
 //! Tests for the DNM library
 
+#![feature(slice_chars)]
 extern crate llamapun;
 extern crate rustlibxml;
 extern crate libc;

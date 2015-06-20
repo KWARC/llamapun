@@ -216,11 +216,13 @@ pub struct DNMRange <'a> {
 impl <'a> DNMRange <'a> {
     /// Get the plaintext substring corresponding to the range
     pub fn get_plaintext(&self) -> String {
-        self.dnm.plaintext.slice_chars(self.start, self.end).to_owned()
+        //self.dnm.plaintext.slice_chars(self.start, self.end).to_owned()
+        (&self.dnm.plaintext)[self.start..self.end].to_owned()
     }
     /// Get the plaintext without trailing white spaces
     pub fn get_plaintext_truncated(&self) -> String {
-        self.dnm.plaintext.slice_chars(self.start, self.end).trim_right().to_owned()
+        //self.dnm.plaintext.slice_chars(self.start, self.end).trim_right().to_owned()
+        (&self.dnm.plaintext)[self.start..self.end].trim_right().to_owned()
     }
         
 }

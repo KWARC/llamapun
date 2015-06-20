@@ -128,7 +128,7 @@ fn test_move_whitespaces_between_nodes() {
     let context = XmlXPathContext::new(&doc).unwrap();
     let result = context.evaluate("/html/body/h2").unwrap();
     assert_eq!(result.get_number_of_nodes(), 1);
-    let mut node = &result.get_nodes_as_vec()[0];
+    let node = &result.get_nodes_as_vec()[0];
     if let Some(node) = node.get_next_sibling() {
         let range = dnm.get_range_of_node(&node).unwrap();
         assert_eq!(range.get_plaintext(), "Some text");

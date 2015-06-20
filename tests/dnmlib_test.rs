@@ -7,6 +7,7 @@ extern crate libc;
 use llamapun::dnmlib::*;
 // use libc::{c_void, c_int};
 use rustlibxml::tree::XmlDoc;
+use rustlibxml::xpath::{XmlXPathContext};
 use std::collections::HashMap;
 
 
@@ -114,3 +115,24 @@ fn test_plaintext_normalized_class_names() {
         assert_eq!(dnm.plaintext, "abc");
     }
 */
+
+#[test]
+/// test if parameter option `move_whitespaces_between_nodes` works
+fn test_move_whitespaces_between_nodes() {
+    let doc = XmlDoc::parse_file("tests/resources/file01.xml").unwrap();
+    let dnm = DNM::create_dnm(&doc.get_root_element().unwrap(),
+                              DNMParameters {
+                                  move_whitespaces_between_nodes: true,
+                                  normalize_white_spaces: true,
+                                  ..Default::default() });
+    let context = XmlXPathContext::new(&doc).unwrap();
+    let result = context.evaluate("/html/body/h2").unwrap();
+    assert_eq!(result.get_number_of_nodes(), 1);
+    let mut node = &result.get_nodes_as_vec()[0];
+    if let Some(node) = node.get_next_sibling() {
+        let range = dnm.get_range_of_node(&node).unwrap();
+        assert_eq!(range.get_plaintext(), "Some text");
+    } else {
+        assert!(false);   // node should have had a sibling
+    }
+}

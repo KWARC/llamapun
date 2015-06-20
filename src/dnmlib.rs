@@ -34,6 +34,9 @@ pub struct DNMParameters {
     pub normalize_white_spaces: bool,
     /// put spaces before and after tokens
     pub wrap_tokens: bool,
+    /// if there is a trailing white space in a tag, don't make it part
+    /// of that tag. Requires `normalize_white_spaces` to be set.
+    pub move_whitespaces_between_nodes: bool,
 }
 
 impl Default for DNMParameters {
@@ -44,6 +47,7 @@ impl Default for DNMParameters {
             special_tag_class_options : HashMap::new(),
             normalize_white_spaces: true,
             wrap_tokens: false,
+            move_whitespaces_between_nodes: false,
         }
     }
 }
@@ -68,6 +72,7 @@ impl DNMParameters {
             special_tag_class_options : class_options,
             normalize_white_spaces : true,
             wrap_tokens : false,
+            move_whitespaces_between_nodes: true,
             ..Default::default()
         }
     }
@@ -103,7 +108,8 @@ struct TmpParseData {
 
 fn recursive_dnm_generation(dnm: &mut DNM, root: &XmlNodeRef,
                             tmp: &mut TmpParseData) {
-    let offset_start = dnm.plaintext.len();
+    let mut offset_start = dnm.plaintext.len();
+    let mut still_in_leading_whitespaces = true;
 
     if root.is_text_node() {
         if dnm.parameters.normalize_white_spaces {
@@ -112,16 +118,25 @@ fn recursive_dnm_generation(dnm: &mut DNM, root: &XmlNodeRef,
                     if tmp.had_whitespace { continue; }
                     dnm.plaintext.push(' ');
                     tmp.had_whitespace = true;
+                    if dnm.parameters.move_whitespaces_between_nodes {
+                        if still_in_leading_whitespaces {
+                            offset_start += 1;
+                        }
+                    }
                 }
                 else {
                     dnm.plaintext.push(c);
                     tmp.had_whitespace = false;
+                    still_in_leading_whitespaces = false;
                 }
             }
         } else {
             dnm.plaintext.push_str(&root.get_content());
         }
-        dnm.node_map.insert(node_to_hashable(root), (offset_start, dnm.plaintext.len()));
+        dnm.node_map.insert(node_to_hashable(root), (offset_start,
+            if dnm.parameters.move_whitespaces_between_nodes && dnm.plaintext.len() > offset_start && tmp.had_whitespace {
+                dnm.plaintext.len() - 1    //don't trailing white space into node
+            } else { dnm.plaintext.len() }));
         return;
     }
     {
@@ -151,12 +166,18 @@ fn recursive_dnm_generation(dnm: &mut DNM, root: &XmlNodeRef,
                         tmp.had_whitespace = false;
                     }
                     dnm.node_map.insert(node_to_hashable(root),
-                                        (offset_start, dnm.plaintext.len()));
+                                        (offset_start,
+                        if dnm.parameters.move_whitespaces_between_nodes && dnm.plaintext.len() > offset_start && tmp.had_whitespace {
+                            dnm.plaintext.len() - 1    //don't trailing white space into node
+                        } else { dnm.plaintext.len() }));
                     return;
                 }
                 Some(&SpecialTagsOption::Skip) => {
                     dnm.node_map.insert(node_to_hashable(root),
-                                        (offset_start, dnm.plaintext.len()));
+                                                (offset_start,
+                        if dnm.parameters.move_whitespaces_between_nodes && dnm.plaintext.len() > offset_start && tmp.had_whitespace {
+                            dnm.plaintext.len() - 1    //don't trailing white space into node
+                        } else { dnm.plaintext.len() }));
                     return;
                 }
                 None => {
@@ -176,7 +197,11 @@ fn recursive_dnm_generation(dnm: &mut DNM, root: &XmlNodeRef,
             None => break,
         }
     }
-    dnm.node_map.insert(node_to_hashable(root), (offset_start, dnm.plaintext.len()));
+
+    dnm.node_map.insert(node_to_hashable(root), (offset_start, 
+        if dnm.parameters.move_whitespaces_between_nodes && dnm.plaintext.len() > offset_start && tmp.had_whitespace {
+            dnm.plaintext.len() - 1    //don't trailing white space into node
+        } else { dnm.plaintext.len()}));
 }
 
 /// Very often we'll talk about substrings of the plaintext - words, sentences,

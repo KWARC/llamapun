@@ -1,6 +1,5 @@
 //! Tests for the DNM library
 
-#![feature(slice_chars)]
 extern crate llamapun;
 extern crate rustlibxml;
 extern crate libc;
@@ -136,4 +135,18 @@ fn test_move_whitespaces_between_nodes() {
     } else {
         assert!(false);   // node should have had a sibling
     }
+}
+
+
+#[test]
+/// test unicode normalization
+fn test_unicode_normalization() {
+    let doc = XmlDoc::parse_file("tests/resources/file03.xml").unwrap();
+    let dnm = DNM::create_dnm(&doc.get_root_element().unwrap(),
+                              DNMParameters {
+                                  normalize_unicode: true,
+                                  ..Default::default() });
+    let node = doc.get_root_element().unwrap();
+    let dnmrange = dnm.get_range_of_node(&node).unwrap();
+    assert_eq!(dnmrange.get_plaintext().trim(), "At houEUR...");
 }

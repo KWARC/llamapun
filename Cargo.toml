@@ -9,6 +9,8 @@ crate-type = ["rlib", "dylib", "staticlib"]
 
 [dependencies.rustlibxml]
 git = "https://github.com/jfschaefer/rust-libxml.git"
+[dependencies.unidecode]
+git = "https://github.com/chowdhurya/rust-unidecode.git"
 
 [dependencies]
 libc = "~0.1"

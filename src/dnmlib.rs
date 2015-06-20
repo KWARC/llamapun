@@ -3,10 +3,12 @@
 //! which is needed for most NLP tools.
 
 extern crate libc;
+extern crate unidecode;
 
 use rustlibxml::tree::*;
 use std::collections::HashMap;
 use std::mem;
+use unidecode::*;//unidecode;
 
 
 
@@ -37,6 +39,8 @@ pub struct DNMParameters {
     /// if there is a trailing white space in a tag, don't make it part
     /// of that tag. Requires `normalize_white_spaces` to be set.
     pub move_whitespaces_between_nodes: bool,
+    /// Replace unicode characters by the ascii code representation
+    pub normalize_unicode: bool,
 }
 
 impl Default for DNMParameters {
@@ -48,6 +52,7 @@ impl Default for DNMParameters {
             normalize_white_spaces: true,
             wrap_tokens: false,
             move_whitespaces_between_nodes: false,
+            normalize_unicode: false,
         }
     }
 }
@@ -73,6 +78,7 @@ impl DNMParameters {
             normalize_white_spaces : true,
             wrap_tokens : false,
             move_whitespaces_between_nodes: true,
+            normalize_unicode: true,
             ..Default::default()
         }
     }
@@ -113,7 +119,9 @@ fn recursive_dnm_generation(dnm: &mut DNM, root: &XmlNodeRef,
 
     if root.is_text_node() {
         if dnm.parameters.normalize_white_spaces {
-            for c in root.get_content().chars() {
+            let content = if dnm.parameters.normalize_unicode {
+                unidecode(&root.get_content()) } else { root.get_content() };
+            for c in content.chars() {
                 if c.is_whitespace() {
                     if tmp.had_whitespace { continue; }
                     dnm.plaintext.push(' ');

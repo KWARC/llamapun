@@ -2,6 +2,7 @@ use dnmlib::*;
 use stopwords;
 use std::collections::vec_deque::*;
 use std::collections::HashSet;
+use std::cmp;
 use regex::Regex;
 
 // Only initialize auxiliary resources once and keep them in a Tokenizer struct
@@ -116,6 +117,7 @@ impl <'a> Tokenizer <'a> {
         None => { break; }
       }
     }
+    end = cmp::min(end, text.len());
     sentences.push(DNMRange{start: start, end: end, dnm: dnm}.trim());
     return Ok(sentences);
   }

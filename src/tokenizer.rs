@@ -30,15 +30,21 @@ impl <'a> Tokenizer <'a> {
 
     loop {
       let c = text_iterator.next();
-      end += 1;
+      // Length increase:
+      match c {
+        Some(x) => {
+          end += x.len_utf8(); }
+        None => {}
+      }
+      
       match c {
         Some('.') => {
           // Baseline condition - only split when we have a following uppercase letter
           
           // Get next non-space character
           while (text_iterator.peek() != None) && text_iterator.peek().unwrap().is_whitespace() {
-            text_iterator.next();
-            end+=1;
+            let space_char = text_iterator.next().unwrap();
+            end+= space_char.len_utf8();
           }
           if text_iterator.peek() == None {break;}
           // Uppercase next?
@@ -47,8 +53,9 @@ impl <'a> Tokenizer <'a> {
             let mut next_word_length = 1;
             let mut next_word : Vec<char> = vec![text_iterator.next().unwrap()];
             while (text_iterator.peek() != None) && text_iterator.peek().unwrap().is_alphabetic() && (next_word_length<20) {
-              next_word.push(text_iterator.next().unwrap());
-              next_word_length+=1;
+              let word_char = text_iterator.next().unwrap();
+              next_word.push(word_char);
+              next_word_length += word_char.len_utf8();
             }
             // There must be a cleaner way of doing this recast into &str
             let next_word_string : String = next_word.into_iter().collect();

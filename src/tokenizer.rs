@@ -2,6 +2,7 @@ use dnmlib::*;
 use stopwords;
 use std::collections::vec_deque::*;
 use std::collections::HashSet;
+use std::cmp;
 use regex::Regex;
 
 // Only initialize auxiliary resources once and keep them in a Tokenizer struct
@@ -58,7 +59,7 @@ impl <'a> Tokenizer <'a> {
               // Reset the left window        
               left_window = VecDeque::with_capacity(9);
               // New sentence
-              sentences.push(DNMRange {start: start, end: end, dnm: dnm});
+              sentences.push(DNMRange{start: start, end: end, dnm: dnm}.trim());
               start = end;
               end+=next_word_length;
             } else { // Regular word case.
@@ -80,7 +81,7 @@ impl <'a> Tokenizer <'a> {
                 // Reset the left window        
                 left_window = VecDeque::with_capacity(9);
                 // New sentence
-                sentences.push(DNMRange {start: start, end: end, dnm: dnm});
+                sentences.push(DNMRange{start: start, end: end, dnm: dnm}.trim());
                 start = end;
               }
               // We consumed the next word, so make sure we reflect that in either case:
@@ -92,14 +93,14 @@ impl <'a> Tokenizer <'a> {
           // Reset the left window
           left_window = VecDeque::with_capacity(9);
           // New sentence
-          sentences.push(DNMRange {start: start, end: end, dnm: dnm});
+          sentences.push(DNMRange{start: start, end: end, dnm: dnm}.trim());
           start = end;
         },
         Some('!') => {
           // Reset the left window
           left_window = VecDeque::with_capacity(9);
           // New sentence
-          sentences.push(DNMRange {start: start, end: end, dnm: dnm});
+          sentences.push(DNMRange{start: start, end: end, dnm: dnm}.trim());
           start = end;
         },
         // TODO: 
@@ -116,7 +117,8 @@ impl <'a> Tokenizer <'a> {
         None => { break; }
       }
     }
-    sentences.push(DNMRange {start: start, end: end, dnm: dnm});
+    end = cmp::min(end, text.len());
+    sentences.push(DNMRange{start: start, end: end, dnm: dnm}.trim());
     return Ok(sentences);
   }
 }

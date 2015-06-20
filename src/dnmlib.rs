@@ -232,8 +232,26 @@ impl <'a> DNMRange <'a> {
         //self.dnm.plaintext.slice_chars(self.start, self.end).trim_right().to_owned()
         (&self.dnm.plaintext)[self.start..self.end].trim_right().to_owned()
     }
-        
+
+    pub fn trim(&self) -> DNMRange <'a> {
+      let mut trimmed_start = self.start;
+      let mut trimmed_end = self.end;
+      let range_text = self.get_plaintext();
+
+      for c in range_text.chars() {
+        if c.is_whitespace() {
+          trimmed_start += 1; }
+        else {
+          break; }}
+      for c in range_text.chars().rev() {
+        if c.is_whitespace() {
+          trimmed_end -= 1; }
+        else {
+          break; }}
+      DNMRange {start : trimmed_start, end: trimmed_end, dnm: self.dnm}
+    }
 }
+
 impl <'a> Clone for DNMRange <'a> {
     fn clone(&self) -> DNMRange <'a> {
         DNMRange {start : self.start, end: self.end, dnm: self.dnm}

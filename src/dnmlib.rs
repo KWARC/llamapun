@@ -121,10 +121,11 @@ fn recursive_dnm_generation(dnm: &mut DNM, root: &XmlNodeRef,
     let mut still_in_leading_whitespaces = true;
 
     if root.is_text_node() {
+        let content = if dnm.parameters.normalize_unicode {
+            unidecode(&root.get_content()) } else { root.get_content() };
+
         if dnm.parameters.normalize_white_spaces {
-            let content = if dnm.parameters.normalize_unicode {
-                unidecode(&root.get_content()) } else { root.get_content() };
-            for c in content.chars() {
+            for c in content.to_string().chars() {
                 if c.is_whitespace() {
                     if tmp.had_whitespace { continue; }
                     dnm.plaintext.push(' ');
@@ -142,7 +143,7 @@ fn recursive_dnm_generation(dnm: &mut DNM, root: &XmlNodeRef,
                 }
             }
         } else {
-            dnm.plaintext.push_str(&root.get_content());
+            dnm.plaintext.push_str(&content);
         }
         dnm.node_map.insert(node_to_hashable(root), (offset_start,
             if dnm.parameters.move_whitespaces_between_nodes && dnm.plaintext.len() > offset_start && tmp.had_whitespace {

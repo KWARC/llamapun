@@ -96,13 +96,18 @@ fn test_each_paragraph<'a>(doc: &'a XmlDoc, expected: Vec<Vec<&'a str>>) {
 
     let paragraph_expected = expected_iter.next().unwrap();
     assert_eq!(dnm.plaintext.trim(), paragraph_expected[0]);
+    // println!("{:?}", dnm.plaintext.trim());
     let tokenizer = Tokenizer::default();
     let ranges : Vec<DNMRange> = tokenizer.sentences(&dnm).unwrap();
-    assert!(ranges.len() > 0);
-    let mut expected_index = if paragraph_expected.len() == 1 {0} else {1};
+
+    let mut paragraph_expected_iter = paragraph_expected.iter();
+    if paragraph_expected.len() > 1 { paragraph_expected_iter.next(); }
     for range in ranges {
-      // assert_eq!(range.get_plaintext(), paragraph_expected[expected_index]);
-      expected_index += 1;
+      let expected_para_text = match paragraph_expected_iter.next() {
+        None => "".to_string(),
+        Some(x) => x.to_string()
+      };
+      assert_eq!(range.get_plaintext(), expected_para_text);
     }
   }
 }
@@ -124,7 +129,7 @@ fn load_expected_xhtml<'a>() -> Vec<Vec<&'a str>> {
          "The answer is \"No\" for the calssical Chow groups, since the classical Chow groups can\'t detect nilpotent.",
          "To be precise, we have\n\n\n\n\n\nMathFormula"],
     vec!["On the other hand, we know that\n\n\n\n\nMathFormula\n\n\nIn fact,\n\n\n\n\nMathFormula\n\n\nhere MathFormula is the absolute differentials.",
-         "On the other hand, we know that\n\n\n\n\nMathFormula\n\n\n",
+         "On the other hand, we know that\n\n\n\n\nMathFormula",
          "In fact,\n\n\n\n\nMathFormula\n\n\nhere MathFormula is the absolute differentials."],
     vec!["This inspires us to propose a new definition of Chow group capturing the nilpotent which is useful for studying deformation problems. Our starting point is to look at the derived category MathFormula obtained from the abelian category of perfect complexes of MathFormula-modules. It is obvious that the derived category MathFormula is different from MathFormula.",
          "This inspires us to propose a new definition of Chow group capturing the nilpotent which is useful for studying deformation problems.",
@@ -161,18 +166,23 @@ fn load_expected_xhtml<'a>() -> Vec<Vec<&'a str>> {
          "This is also guided by Quillen\'s proof of Bloch\'s formula [24]."],
     vec!["Our main results are as follows.\n\n* \n\nDefinitions. We propose definitions of K-theoretic Chow groups of derived categories of noetherian schemes, see definition 3.6. And we also define Milnor K-theoretic Chow groups of derived categories of regular schemes and thickenings, see definition 4.4 and 4.30. Milnor Chow groups of 0-cycles are discussed in appendix.\n\n* \n\nFunctoriality. Flat pull-back and proper push-forward are discussed in section 3.3.\n\n* \n\nAgreement. We show that our (Milnor)Chow groups of derived categories agree with the classical one for regular schemes, see theorem 3.8, theorem 4.31 and theorem 5.2.\n\n* \n\nBloch\'s formula. We show our (Milnor)Chow groups of derived categories satisfy Bloch\'s formula for regular schemes and their thickenings, see theorem 4.25 and theorem 4.32. This provides a positive answer to the above question by Green-Griffiths.\n\n* \n\nWe define tangent spaces to our Chow groups as usually, while the classical Chow groups can\'t do. We also identify tangent spaces to our Chow groups with cohomology groups of absolute differentials. See definition 4.26, theorem 4.27, definition 4.33 and theorem 4.34.",
          "Our main results are as follows.",
-         "* \n\nDefinitions.",
+         "*",
+         "Definitions.",
          "We propose definitions of K-theoretic Chow groups of derived categories of noetherian schemes, see definition 3.6.",
          "And we also define Milnor K-theoretic Chow groups of derived categories of regular schemes and thickenings, see definition 4.4 and 4.30.",
          "Milnor Chow groups of 0-cycles are discussed in appendix.",
-         "* \n\nFunctoriality.",
+         "*",
+         "Functoriality.",
          "Flat pull-back and proper push-forward are discussed in section 3.3.",
-         "* \n\nAgreement.",
+         "*",
+         "Agreement.",
          "We show that our (Milnor)Chow groups of derived categories agree with the classical one for regular schemes, see theorem 3.8, theorem 4.31 and theorem 5.2.",
-         "* \n\nBloch\'s formula.",
+         "*",
+         "Bloch\'s formula.",
          "We show our (Milnor)Chow groups of derived categories satisfy Bloch\'s formula for regular schemes and their thickenings, see theorem 4.25 and theorem 4.32.",
          "This provides a positive answer to the above question by Green-Griffiths.",
-         "* \n\nWe define tangent spaces to our Chow groups as usually, while the classical Chow groups can\'t do.",
+         "*",
+         "We define tangent spaces to our Chow groups as usually, while the classical Chow groups can\'t do.",
          "We also identify tangent spaces to our Chow groups with cohomology groups of absolute differentials.",
          "See definition 4.26, theorem 4.27, definition 4.33 and theorem 4.34."],
     vec!["Definitions. We propose definitions of K-theoretic Chow groups of derived categories of noetherian schemes, see definition 3.6. And we also define Milnor K-theoretic Chow groups of derived categories of regular schemes and thickenings, see definition 4.4 and 4.30. Milnor Chow groups of 0-cycles are discussed in appendix.",
@@ -204,13 +214,12 @@ fn load_expected_xhtml<'a>() -> Vec<Vec<&'a str>> {
          "The idea of using derived category to define algebraic cycles was also suggested by Thomason [30].",
          "To honor Thomason whose higher K-theory of derived categories of schemes has been widely accepted, we cite his idea here:",
          "\" I seek to define a good intersection ring of\n\"algebraic cycles\" on schemes X where the classical construction of the Chow\nring fails, for example on singular algebraic varieties or on regular schemes flat\nand of finite type over Z.",
-         "Inspired by the superiority of Cartier divisors over\nWeil divisors and by recent progress in local intersection theory, I believe the good notion of \"algebraic n-cycle\" is that of those perfect complexes in some triangulated subcategory MathFormula which remains to be defined.\""],
+         "Inspired by the superiority of Cartier divisors over\nWeil divisors and by recent progress in local intersection theory, I believe the good notion of \"algebraic n-cycle\" is that of those perfect complexes in some triangulated subcategory MathFormula which remains to be defined."],
     vec!["We shall not discuss intersection theory in this paper. For a good survey of Chow groups and intersection theory, we refer to Gillet [13].",
          "We shall not discuss intersection theory in this paper.",
          "For a good survey of Chow groups and intersection theory, we refer to Gillet [13]."],
     vec!["Acknowledgements\nI sincerely thank professor P.Balmer for precious discussion and correspondence. His work on Chow groups of tensor triangulated categories [5] and previous work on tensor triangulated geometry [1,2,3,4] make our paper become possible. I also sincerely thank professor M.Schlichting for teaching me K-theory and for inviting me to visit Warwick Mathematics Institute where some work have been done. Thanks Warwick Mathematics Institute for its hospitality. Thanks professor B.Totaro, professor C.Pedrini and S.Klein for helpful comments.",
-         "Acknowledgements\n",
-         "I sincerely thank professor P.Balmer for precious discussion and correspondence.",
+         "Acknowledgements\nI sincerely thank professor P.Balmer for precious discussion and correspondence.",
          "His work on Chow groups of tensor triangulated categories [5] and previous work on tensor triangulated geometry [1,2,3,4] make our paper become possible.",
          "I also sincerely thank professor M.Schlichting for teaching me K-theory and for inviting me to visit Warwick Mathematics Institute where some work have been done.",
          "Thanks Warwick Mathematics Institute for its hospitality.",
@@ -359,9 +368,7 @@ fn load_expected_xhtml<'a>() -> Vec<Vec<&'a str>> {
          "Let MathFormula and MathFormula be noetherian schemes with an ample family of line bundles(([SGA 6] II 2.2.3, or [31] 2.1.1]) and MathFormula a flat morphism.",
          "For a noetherian scheme with an ample family of line bundles MathFormula(MathFormula), MathFormula is equivalent to the derived category obtained from strict perfect complexes of MathFormula-modules(see [31, lemma 3.8]).",
          "We use the later in the following and also assume MathFormula equipped with the dimension\nfunction MathFormula."],
-    vec!["([SGA 6] 1.2, [31] 2.5.1])\nLet MathFormula be a map of schemes, MathFormula sends (strict)perfect complexes\nto (strict)perfect complexes\n\n\n\n\nMathFormula",
-         "([SGA 6] 1.2, [31] 2.5.1])",
-         "Let MathFormula be a map of schemes, MathFormula sends (strict)perfect complexes\nto (strict)perfect complexes\n\n\n\n\nMathFormula"],
+    vec!["([SGA 6] 1.2, [31] 2.5.1])\nLet MathFormula be a map of schemes, MathFormula sends (strict)perfect complexes\nto (strict)perfect complexes\n\n\n\n\nMathFormula"],
     vec!["For MathFormula a\nstrict perfect complex on MathFormula, MathFormula is clearly a strict perfect complex on\nMathFormula. This complex represents MathFormula as the vector bundles MathFormula are flat over\nMathFormula and hence deployed for MathFormula.\n[?]",
          "For MathFormula a\nstrict perfect complex on MathFormula, MathFormula is clearly a strict perfect complex on\nMathFormula.",
          "This complex represents MathFormula as the vector bundles MathFormula are flat over\nMathFormula and hence deployed for MathFormula.\n[?]"],
@@ -487,7 +494,8 @@ fn load_expected_xhtml<'a>() -> Vec<Vec<&'a str>> {
     vec!["From now on, MathFormula is a regular Noetherian domain and commutative MathFormula-algebra, and MathFormula is the dual number. We consider MathFormula as a graded MathFormula-algebra.\nThe following SBI sequence is obtained from the corresponding eigen-piece of the relative Hochschild complex:\n\n\n\n\nMathFormula\n\n\nAccording to Geller-Weibel [16], the above S map is MathFormula on MathFormula. This enable us to break the SBI sequence up into\nshort exact sequence:\n\n\n\n\nMathFormula",
          "From now on, MathFormula is a regular Noetherian domain and commutative MathFormula-algebra, and MathFormula is the dual number.",
          "We consider MathFormula as a graded MathFormula-algebra.",
-         "The following SBI sequence is obtained from the corresponding eigen-piece of the relative Hochschild complex:\n\n\n\n\nMathFormula\n\n\nAccording to Geller-Weibel [16], the above S map is MathFormula on MathFormula.",
+         "The following SBI sequence is obtained from the corresponding eigen-piece of the relative Hochschild complex:\n\n\n\n\nMathFormula",
+         "According to Geller-Weibel [16], the above S map is MathFormula on MathFormula.",
          "This enable us to break the SBI sequence up into\nshort exact sequence:\n\n\n\n\nMathFormula"],
     vec!["In the following, we will use this short exact sequence to compute MathFormula."],
     vec!["(4.1)\n\nMathFormula"],
@@ -523,9 +531,7 @@ fn load_expected_xhtml<'a>() -> Vec<Vec<&'a str>> {
     vec!["(4.4)\n\nMathFormula"],
     vec!["MathFormula\n\n\nthe last term is MathFormula or MathFormula, depending on MathFormula odd or even."],
     vec!["We can also generalize the above results to the sheaf level."],
-    vec!["Let MathFormula be a regular scheme over a field MathFormula, MathFormula. we have the following",
-         "Let MathFormula be a regular scheme over a field MathFormula, MathFormula.",
-         "we have the following"],
+    vec!["Let MathFormula be a regular scheme over a field MathFormula, MathFormula. we have the following"],
     vec!["(4.5)\n\nMathFormula"],
     vec!["It follows that\n\n\n\n\nMathFormula\n\n\nthe last term is MathFormula or MathFormula, depending on MathFormula odd or even."],
     vec!["In this subsection, we will show Goodwillie and Cathelineau type results for non-connective K-groups.\nWe begin with recalling Adams\' operations on K-groups.",
@@ -660,8 +666,7 @@ fn load_expected_xhtml<'a>() -> Vec<Vec<&'a str>> {
          "In particular, for MathFormula,\n\n\n\n\nMathFormula"],
     vec!["The definition of MathFormula says that it equal to the MathFormula-th cohomology of the Gersten complex MathFormula\n\n\n\n\nMathFormula\n\n\nIt follows because of the fact that the sheafification of MathFormula is a flasque resolution.\n[?]",
          "The definition of MathFormula says that it equal to the MathFormula-th cohomology of the Gersten complex MathFormula\n\n\n\n\nMathFormula",
-         "It follows because of the fact that the sheafification of MathFormula is a flasque resolution.",
-         "[?]"],
+         "It follows because of the fact that the sheafification of MathFormula is a flasque resolution.\n[?]"],
     vec!["Now, we consider the K-theoretic Chow group as a functor on MathFormula and define the tangent space to it as usually."],
     vec!["The tangent space to MathFormula, denoted by MathFormula, is defined as\n\n\n\n\nMathFormula"],
     vec!["We can identify this tangent space with cohomology group of absolute differentials."],
@@ -683,9 +688,7 @@ fn load_expected_xhtml<'a>() -> Vec<Vec<&'a str>> {
          "It\'s obvious that the left column of the above diagram is a complex and also a flasque resolution.",
          "Using corollary 4.19, the middle column is the direct sum of the left and right one.",
          "So the middle column of the above diagram also is a flasque resolution.\n[?]"],
-    vec!["In particular, we are interested in the \"Milnor K-theory\". letting MathFormula, one have the following theorem.",
-         "In particular, we are interested in the \"Milnor K-theory\".",
-         "letting MathFormula, one have the following theorem."],
+    vec!["In particular, we are interested in the \"Milnor K-theory\". letting MathFormula, one have the following theorem."],
     vec!["There exists the following splitting commutative diagram\n\n\n\n\nMathFormula"],
     vec!["The middle and right columns are complexes, so the definition 4.4 applies."],
     vec!["The Milnor K-theoretic q-cycles and rational equivalence of MathFormula are defined to be\n\n\n\n\nMathFormula\n\n\n\n\n\n\nMathFormula"],
@@ -869,7 +872,8 @@ fn load_expected_html<'a>() -> Vec<Vec<&'a str>> {
          "It follows that\n\n\n\n\n\nMathFormula"],
     vec!["Now we turn to MathFormula. We know the following:\n\n\n(1) \n\nMathFormula.\n\n\n\n(2) \n\nMathFormula.\n\n\n\n(3) \n\nMathFormula.\n\n\n\nUsing these facts plus Proposition 5, we obtain\n\n\n\n\nMathFormula\n\n\n\n\nMathFormula\n\n\n\n\nMathFormula",
          "Now we turn to MathFormula.",
-         "We know the following:\n\n\n(1) \n\nMathFormula.",
+         "We know the following:",
+         "(1) \n\nMathFormula.",
          "(2) \n\nMathFormula.",
          "(3) \n\nMathFormula.",
          "Using these facts plus Proposition 5, we obtain\n\n\n\n\nMathFormula\n\n\n\n\nMathFormula\n\n\n\n\nMathFormula"],

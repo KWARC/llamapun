@@ -2,6 +2,7 @@
 name = "llamapun"
 version = "0.0.1"
 dependencies = [
+ "gnuplot 0.0.17 (git+https://github.com/SiegeLord/RustGnuplot.git)",
  "libc 0.1.8 (registry+https://github.com/rust-lang/crates.io-index)",
  "regex 0.1.38 (registry+https://github.com/rust-lang/crates.io-index)",
  "rustlibxml 0.0.1 (git+https://github.com/jfschaefer/rust-libxml.git)",
@@ -20,6 +21,11 @@ dependencies = [
 name = "debug-builders"
 version = "0.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
+
+[[package]]
+name = "gnuplot"
+version = "0.0.17"
+source = "git+https://github.com/SiegeLord/RustGnuplot.git#b5e87d7c09065cc44a7b0c1f93886455dd63f880"
 
 [[package]]
 name = "libc"

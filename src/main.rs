@@ -1,13 +1,14 @@
 extern crate llamapun;
 extern crate rustlibxml;
 extern crate libc;
+extern crate gnuplot;
 
-use libc::c_void;
 use llamapun::dnmlib::*;
 use llamapun::tokenizer::*;
 use rustlibxml::tree::*;
 use rustlibxml::xpath::*;
 use std::collections::HashMap;
+use gnuplot::*;
 
 fn main() {
 
@@ -64,16 +65,51 @@ fn main() {
   for (word, index) in dictionary.iter() {
     sorted_dictionary.push((word,index));
   }
-  sorted_dictionary.sort_by(|a, b| a.1.cmp(b.1));
+  
 
   let mut sorted_frequencies = Vec::new();
   for (word, index) in frequencies.iter() {
     sorted_frequencies.push((word,index));
   }
+
+  // Unsorted gnuplot of frequencies:
+  let dict_indices = sorted_dictionary.clone().into_iter().map(|entry| entry.1);
+  let freq_values = sorted_frequencies.clone().into_iter().map(|entry| entry.1);
+  let mut fg = Figure::new();
+  fg.axes2d()
+  .points(dict_indices, freq_values, &[PointSymbol('D'), Color("#ffaa77"), PointSize(1.5)])
+  .set_x_label("Words, in order of appearance", &[Rotate(45.0)])
+  .set_y_label("Frequency counts", &[Rotate(90.0)])
+  .set_title("Example Word Frequencies", &[]);
+
+  fg.set_terminal("pngcairo", "word_frequnecies_inorder.png");
+  fg.show();
+  
+  // Sorted gnuplot of frequencies:
+  // Perform sort
+  sorted_dictionary.sort_by(|a, b| a.1.cmp(b.1));
   sorted_frequencies.sort_by(|a, b| a.1.cmp(b.1));
+  let sorted_dict_indices = sorted_dictionary.clone().into_iter().map(|entry| entry.1);
+  let sorted_freq_values = sorted_frequencies.clone().into_iter().map(|entry| entry.1);
 
+  fg = Figure::new();
+  fg.axes2d()
+  .points(sorted_dict_indices, sorted_freq_values, &[PointSymbol('D'), Color("#ffaa77"), PointSize(1.5)])
+  .set_x_label("Words, in order of appearance", &[Rotate(45.0)])
+  .set_y_label("Frequency counts", &[Rotate(90.0)])
+  .set_title("Example Word Frequencies", &[]);
+
+  fg.set_terminal("pngcairo", "word_frequnecies_sorted.png");
+  fg.show();
+
+  // Print out data:
   println!("Dictionary: \n{:?}\n\n", sorted_dictionary);
-
   println!("Frequencies: \n{:?}\n\n", sorted_frequencies);
+
+  
+
+
+
+
 }
 

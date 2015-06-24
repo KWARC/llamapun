@@ -7,6 +7,7 @@ extern crate rustlibxml;
 extern crate libc;
 extern crate regex;
 extern crate unidecode;
+extern crate gnuplot;
 
 pub mod dnmlib;
 pub mod stopwords;

@@ -95,7 +95,7 @@ fn main() {
   fg = Figure::new();
   fg.axes2d()
   .points(sorted_dict_indices, sorted_freq_values, &[PointSymbol('D'), Color("#ffaa77"), PointSize(1.5)])
-  .set_x_label("Words, in order of appearance", &[Rotate(45.0)])
+  .set_x_label("Words, in ascending frequency", &[Rotate(45.0)])
   .set_y_label("Frequency counts", &[Rotate(90.0)])
   .set_title("Example Word Frequencies", &[]);
 

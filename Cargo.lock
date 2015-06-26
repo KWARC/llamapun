@@ -6,6 +6,7 @@ dependencies = [
  "libc 0.1.8 (registry+https://github.com/rust-lang/crates.io-index)",
  "regex 0.1.38 (registry+https://github.com/rust-lang/crates.io-index)",
  "rustlibxml 0.0.1 (git+https://github.com/jfschaefer/rust-libxml.git)",
+ "rustmorpha 0.1.0 (git+https://github.com/jfschaefer/rust-morpha.git)",
  "unidecode 0.1.9 (git+https://github.com/chowdhurya/rust-unidecode.git)",
 ]
 
@@ -99,6 +100,14 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 name = "rustlibxml"
 version = "0.0.1"
 source = "git+https://github.com/jfschaefer/rust-libxml.git#2ccba58f6bb4b4a33dab3fab11ff2146b2a1869f"
+dependencies = [
+ "libc 0.1.8 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
+name = "rustmorpha"
+version = "0.1.0"
+source = "git+https://github.com/jfschaefer/rust-morpha.git#a51533ce1bb987bac28257098246aefe84a24059"
 dependencies = [
  "libc 0.1.8 (registry+https://github.com/rust-lang/crates.io-index)",
 ]

@@ -11,6 +11,8 @@ crate-type = ["rlib", "dylib", "staticlib"]
 git = "https://github.com/jfschaefer/rust-libxml.git"
 [dependencies.unidecode]
 git = "https://github.com/chowdhurya/rust-unidecode.git"
+[dependencies.rustmorpha]
+git = "https://github.com/jfschaefer/rust-morpha.git"
 
 [dependencies.gnuplot]
 git = "https://github.com/SiegeLord/RustGnuplot.git"

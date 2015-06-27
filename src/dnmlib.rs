@@ -61,6 +61,8 @@ pub struct DNMParameters {
     /// Apply the morpha stemmer to the text nodes
     /// as often as it changes something
     pub stem_words_full: bool,
+    /// Move to lowercase (remark: The stemmer does automatically)
+    pub convert_to_lowercase: bool,
 }
 
 impl Default for DNMParameters {
@@ -74,7 +76,8 @@ impl Default for DNMParameters {
             move_whitespaces_between_nodes: false,
             normalize_unicode: false,
             stem_words_once: false,
-            stem_words_full: false
+            stem_words_full: false,
+            convert_to_lowercase: false
         }
     }
 }
@@ -149,6 +152,10 @@ fn recursive_dnm_generation(dnm: &mut DNM, root: &XmlNodeRef,
         }
         if dnm.parameters.stem_words_full {
             content = rustmorpha::full_stem(&content);
+        }
+
+        if dnm.parameters.convert_to_lowercase {
+            content = content.to_lowercase();
         }
 
         //if the option is set, reduce sequences of white spaces to single spaces
@@ -329,6 +336,16 @@ and stem_words_full are both set");
         println_stderr!("llamapun::dnmlib: Parameter option\
 move_whitespaces_between_nodes only works in combination with normalize_white_spaces\n\
 Consider using DNMRange::trim instead");
+    }
+    if !parameters.normalize_white_spaces && parameters.move_whitespaces_between_nodes {
+        println_stderr!("llamapun::dnmlib: Parameter option\
+move_whitespaces_between_nodes only works in combination with normalize_white_spaces\n\
+Consider using DNMRange::trim instead");
+    }
+    if (parameters.stem_words_once || parameters.stem_words_full)
+        && parameters.convert_to_lowercase {
+        println_stderr!("llamapun::dnmlib: Parameter option convert_to_lowercase\
+is redundant, because stemming converts to lowercase already");
     }
 }
 

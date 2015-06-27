@@ -92,6 +92,7 @@ fn test_each_paragraph<'a>(doc: &'a XmlDoc, expected: Vec<Vec<&'a str>>) {
                      special_tag_class_options : HashMap::new(),
                      move_whitespaces_between_nodes: false,
                      normalize_unicode: true,  
+                     ..Default::default()
                     });
 
     let paragraph_expected = expected_iter.next().unwrap();

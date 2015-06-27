@@ -3,6 +3,7 @@
 extern crate llamapun;
 extern crate rustlibxml;
 extern crate libc;
+extern crate rustmorpha;
 
 use llamapun::dnmlib::*;
 // use libc::{c_void, c_int};
@@ -149,4 +150,19 @@ fn test_unicode_normalization() {
     let node = doc.get_root_element().unwrap();
     let dnmrange = dnm.get_range_of_node(&node).unwrap();
     assert_eq!(dnmrange.get_plaintext().trim(), "At houEUR...");
+}
+
+#[test]
+/// test morpha stemming
+fn test_morpha_stemming() {
+    let doc = XmlDoc::parse_file("tests/resources/file04.xml").unwrap();
+    let dnm = DNM::create_dnm(&doc.get_root_element().unwrap(),
+                              DNMParameters {
+                                  stem_words_once: true,
+                                  ..Default::default() });
+    let node = doc.get_root_element().unwrap();
+    let dnmrange = dnm.get_range_of_node(&node).unwrap().trim();
+
+    assert_eq!(dnmrange.get_plaintext().trim(), "here be one sentence with multiple word.");
+    rustmorpha::close();
 }

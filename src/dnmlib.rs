@@ -4,12 +4,24 @@
 
 extern crate libc;
 extern crate unidecode;
+extern crate rustmorpha;
 
 use rustlibxml::tree::*;
 use std::collections::HashMap;
 use std::mem;
 use unidecode::unidecode;
+use std::io::Write;
 
+/// Print error message to stderr
+/// from http://stackoverflow.com/questions/27588416/how-to-send-output-to-stderr
+macro_rules! println_stderr(
+    ($($arg:tt)*) => (
+        match writeln!(&mut ::std::io::stderr(), $($arg)* ) {
+            Ok(_) => {},
+            Err(x) => panic!("Unable to write to stderr: {}", x),
+        }
+    )
+);
 
 
 /// Specifies how to deal with a certain tag
@@ -44,6 +56,11 @@ pub struct DNMParameters {
     pub move_whitespaces_between_nodes: bool,
     /// Replace unicode characters by the ascii code representation
     pub normalize_unicode: bool,
+    /// Apply the morpha stemmer once to the text nodes
+    pub stem_words_once: bool,
+    /// Apply the morpha stemmer to the text nodes
+    /// as often as it changes something
+    pub stem_words_full: bool,
 }
 
 impl Default for DNMParameters {
@@ -56,6 +73,8 @@ impl Default for DNMParameters {
             wrap_tokens: false,
             move_whitespaces_between_nodes: false,
             normalize_unicode: false,
+            stem_words_once: false,
+            stem_words_full: false
         }
     }
 }
@@ -115,15 +134,24 @@ struct TmpParseData {
     had_whitespace : bool,
 }
 
+/// The heart of the dnm generation...
 fn recursive_dnm_generation(dnm: &mut DNM, root: &XmlNodeRef,
                             tmp: &mut TmpParseData) {
     let mut offset_start = dnm.plaintext.len();
     let mut still_in_leading_whitespaces = true;
 
-    if root.is_text_node() {
-        let content = if dnm.parameters.normalize_unicode {
+    if root.is_text_node() {  //CASE: WE HAVE A TEXT NODE
+        //possibly normalize unicode
+        let mut content = if dnm.parameters.normalize_unicode {
             unidecode(&root.get_content()) } else { root.get_content() };
+        if dnm.parameters.stem_words_once {
+            content = rustmorpha::stem(&content);
+        }
+        if dnm.parameters.stem_words_full {
+            content = rustmorpha::full_stem(&content);
+        }
 
+        //if the option is set, reduce sequences of white spaces to single spaces
         if dnm.parameters.normalize_white_spaces {
             for c in content.to_string().chars() {
                 if c.is_whitespace() {
@@ -147,79 +175,84 @@ fn recursive_dnm_generation(dnm: &mut DNM, root: &XmlNodeRef,
         }
         dnm.node_map.insert(node_to_hashable(root), (offset_start,
             if dnm.parameters.move_whitespaces_between_nodes && dnm.plaintext.len() > offset_start && tmp.had_whitespace {
-                dnm.plaintext.len() - 1    //don't trailing white space into node
+                dnm.plaintext.len() - 1  //don't put trailing white space into node
             } else { dnm.plaintext.len() }));
         return;
+
     }
-    {
-        let name : String = root.get_name();
-        let mut rules = Vec::new();
-        rules.push(dnm.parameters.special_tag_name_options.get(&name));
-        for classname in root.get_class_names() {
-            rules.push(dnm.parameters.special_tag_class_options.get(&classname));
-        }
-        for rule in rules {
-            match rule {
-                Some(&SpecialTagsOption::Enter) => {
-                    break;
-                }
-                Some(&SpecialTagsOption::Normalize(ref token)) => {
-                    if dnm.parameters.wrap_tokens {
-                        if !tmp.had_whitespace ||
-                           !dnm.parameters.normalize_white_spaces {
-                            dnm.plaintext.push(' ');
-                        }
-                        dnm.plaintext.push_str(&token);
+
+    //CASE: WE DON'T HAVE A TEXT NODE
+    {   //need nested scope because of borrowing issues
+    let name : String = root.get_name();
+    let mut rules = Vec::new();
+    rules.push(dnm.parameters.special_tag_name_options.get(&name));
+    for classname in root.get_class_names() {
+        rules.push(dnm.parameters.special_tag_class_options.get(&classname));
+    }
+    for rule in rules {  //iterate over applying rules
+        match rule {
+            Some(&SpecialTagsOption::Enter) => {
+                break;
+            }
+            Some(&SpecialTagsOption::Normalize(ref token)) => {
+                if dnm.parameters.wrap_tokens {
+                    if !tmp.had_whitespace ||
+                       !dnm.parameters.normalize_white_spaces {
                         dnm.plaintext.push(' ');
-                        tmp.had_whitespace = true;
-                    } else {
-                        dnm.plaintext.push_str(&token);
-                        //tokens are considered non-whitespace
-                        tmp.had_whitespace = false;
                     }
-                    dnm.node_map.insert(node_to_hashable(root),
-                                        (offset_start,
-                        if dnm.parameters.move_whitespaces_between_nodes && dnm.plaintext.len() > offset_start && tmp.had_whitespace {
-                            dnm.plaintext.len() - 1    //don't trailing white space into node
-                        } else { dnm.plaintext.len() }));
-                    return;
+                    dnm.plaintext.push_str(&token);
+                    dnm.plaintext.push(' ');
+                    tmp.had_whitespace = true;
+                } else {
+                    dnm.plaintext.push_str(&token);
+                    //tokens are considered non-whitespace
+                    tmp.had_whitespace = false;
                 }
-                Some(&SpecialTagsOption::FunctionNormalize(f)) => {
-                    if dnm.parameters.wrap_tokens {
-                        if !tmp.had_whitespace ||
-                           !dnm.parameters.normalize_white_spaces {
-                            dnm.plaintext.push(' ');
-                        }
-                        dnm.plaintext.push_str(&f(&root));
+                dnm.node_map.insert(node_to_hashable(root),
+                                    (offset_start,
+                    if dnm.parameters.move_whitespaces_between_nodes && dnm.plaintext.len() > offset_start && tmp.had_whitespace {
+                        dnm.plaintext.len() - 1    //don't put trailing white space into node
+                    } else { dnm.plaintext.len() }));
+                return;
+            }
+            Some(&SpecialTagsOption::FunctionNormalize(f)) => {
+                if dnm.parameters.wrap_tokens {
+                    if !tmp.had_whitespace ||
+                       !dnm.parameters.normalize_white_spaces {
                         dnm.plaintext.push(' ');
-                        tmp.had_whitespace = true;
-                    } else {
-                        dnm.plaintext.push_str(&f(&root));
-                        //Return value of f is not considered a white space
-                        tmp.had_whitespace = false;
                     }
-                    dnm.node_map.insert(node_to_hashable(root),
-                                        (offset_start,
-                        if dnm.parameters.move_whitespaces_between_nodes && dnm.plaintext.len() > offset_start && tmp.had_whitespace {
-                            dnm.plaintext.len() - 1    //don't trailing white space into node
-                        } else { dnm.plaintext.len() }));
-                    return;
+                    dnm.plaintext.push_str(&f(&root));
+                    dnm.plaintext.push(' ');
+                    tmp.had_whitespace = true;
+                } else {
+                    dnm.plaintext.push_str(&f(&root));
+                    //Return value of f is not considered a white space
+                    tmp.had_whitespace = false;
                 }
-                Some(&SpecialTagsOption::Skip) => {
-                    dnm.node_map.insert(node_to_hashable(root),
-                                                (offset_start,
-                        if dnm.parameters.move_whitespaces_between_nodes && dnm.plaintext.len() > offset_start && tmp.had_whitespace {
-                            dnm.plaintext.len() - 1    //don't trailing white space into node
-                        } else { dnm.plaintext.len() }));
-                    return;
-                }
-                None => {
-                    continue;
-                }
+                dnm.node_map.insert(node_to_hashable(root),
+                                    (offset_start,
+                    if dnm.parameters.move_whitespaces_between_nodes && dnm.plaintext.len() > offset_start && tmp.had_whitespace {
+                        dnm.plaintext.len() - 1    //don't put trailing white space into node
+                    } else { dnm.plaintext.len() }));
+                return;
+            }
+            Some(&SpecialTagsOption::Skip) => {
+                dnm.node_map.insert(node_to_hashable(root),
+                                            (offset_start,
+                    if dnm.parameters.move_whitespaces_between_nodes && dnm.plaintext.len() > offset_start && tmp.had_whitespace {
+                        dnm.plaintext.len() - 1    //don't put trailing white space into node
+                    } else { dnm.plaintext.len() }));
+                return;
+            }
+            None => {
+                continue;
             }
         }
     }
+    } //needed nested scope because of borrowing issues
 
+
+    // Recurse into children
     let mut child_option = root.get_first_child();
     loop {
         match child_option {
@@ -233,9 +266,11 @@ fn recursive_dnm_generation(dnm: &mut DNM, root: &XmlNodeRef,
 
     dnm.node_map.insert(node_to_hashable(root), (offset_start, 
         if dnm.parameters.move_whitespaces_between_nodes && dnm.plaintext.len() > offset_start && tmp.had_whitespace {
-            dnm.plaintext.len() - 1    //don't trailing white space into node
+            dnm.plaintext.len() - 1    //don't put trailing white space into node
         } else { dnm.plaintext.len()}));
 }
+
+
 
 /// Very often we'll talk about substrings of the plaintext - words, sentences,
 /// etc. A `DNMRange` stores start and end point of such a substring and has
@@ -283,10 +318,25 @@ impl <'a> Clone for DNMRange <'a> {
     }
 }
 
+/// Prints warnings, if the parameter settings don't make sense.
+/// Doesn't check for every possible stupidity
+fn check_dnm_parameters(parameters: &DNMParameters) {
+    if parameters.stem_words_once && parameters.stem_words_full {
+        println_stderr!("llamapun::dnmlib: Parameter options stem_words_once\
+and stem_words_full are both set");
+    }
+    if !parameters.normalize_white_spaces && parameters.move_whitespaces_between_nodes {
+        println_stderr!("llamapun::dnmlib: Parameter option\
+move_whitespaces_between_nodes only works in combination with normalize_white_spaces\n\
+Consider using DNMRange::trim instead");
+    }
+}
+
 
 impl DNM {
     /// Creates a `DNM` for `root`
     pub fn create_dnm(root: &XmlNodeRef, parameters: DNMParameters) -> DNM {
+        check_dnm_parameters(&parameters);
         let mut dnm = DNM {
             plaintext : String::new(),
             parameters : parameters,

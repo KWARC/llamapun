@@ -5,6 +5,7 @@ use std::collections::HashSet;
 use std::cmp;
 use regex::Regex;
 
+
 // Only initialize auxiliary resources once and keep them in a Tokenizer struct
 pub struct Tokenizer <'a> {
  pub stopwords : HashSet<&'a str>,

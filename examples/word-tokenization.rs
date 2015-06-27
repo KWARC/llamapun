@@ -1,7 +1,9 @@
+#![feature(collections)]
 extern crate llamapun;
 extern crate rustlibxml;
 extern crate libc;
 extern crate gnuplot;
+
 
 use llamapun::dnmlib::*;
 use llamapun::tokenizer::*;
@@ -33,6 +35,7 @@ fn main() {
                      special_tag_class_options : HashMap::new(),
                      move_whitespaces_between_nodes: false,
                      normalize_unicode: true,  
+                     ..Default::default()
                     });
 
     let tokenizer = Tokenizer::default();

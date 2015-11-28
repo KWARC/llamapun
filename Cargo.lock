@@ -4,7 +4,7 @@ version = "0.0.1"
 dependencies = [
  "gnuplot 0.0.17 (git+https://github.com/SiegeLord/RustGnuplot.git)",
  "libc 0.1.8 (registry+https://github.com/rust-lang/crates.io-index)",
- "libxml 0.0.1 (git+https://github.com/dginev/rust-libxml.git)",
+ "libxml 0.0.2 (git+https://github.com/dginev/rust-libxml.git)",
  "regex 0.1.38 (registry+https://github.com/rust-lang/crates.io-index)",
  "rustmorpha 0.1.0 (git+https://github.com/jfschaefer/rust-morpha.git)",
  "unidecode 0.1.9 (git+https://github.com/chowdhurya/rust-unidecode.git)",
@@ -35,8 +35,8 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
 name = "libxml"
-version = "0.0.1"
-source = "git+https://github.com/dginev/rust-libxml.git#e08229808f77e9097d081a2f762699f7374ed3e2"
+version = "0.0.2"
+source = "git+https://github.com/dginev/rust-libxml.git#1984c0b7e9ed6ac51b7ec5a5bfcecbd2116f9a12"
 dependencies = [
  "libc 0.1.8 (registry+https://github.com/rust-lang/crates.io-index)",
 ]

@@ -3,15 +3,13 @@
 //! The original library can be found at https://github.com/KWARC/LLaMaPUn
 
 #![feature(slice_patterns)]
-#![feature(collections)]
-
-extern crate rustlibxml;
+extern crate libxml;
 extern crate libc;
 extern crate regex;
 extern crate unidecode;
 extern crate gnuplot;
 extern crate rustmorpha;
 
-pub mod dnmlib;
+pub mod dnm;
 pub mod stopwords;
 pub mod tokenizer;

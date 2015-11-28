@@ -1,4 +1,4 @@
-//! The `dnmlib` can be used for easier switching between the DOM
+//! The `dnm` can be used for easier switching between the DOM
 //! (Document Object Model) representation and the plain text representation,
 //! which is needed for most NLP tools.
 
@@ -6,7 +6,7 @@ extern crate libc;
 extern crate unidecode;
 extern crate rustmorpha;
 
-use rustlibxml::tree::*;
+use libxml::tree::*;
 use std::collections::HashMap;
 use std::mem;
 use unidecode::unidecode;
@@ -31,8 +31,8 @@ pub enum SpecialTagsOption {
     /// Normalize tag, replacing it by some token
     Normalize(String),
     /// Normalize tag, obtain replacement string by function call
-    //FunctionNormalize(|&XmlNodeRef| -> String),
-    FunctionNormalize(fn(&XmlNodeRef) -> String),
+    //FunctionNormalize(|&Node| -> String),
+    FunctionNormalize(fn(&Node) -> String),
     /// Skip tag
     Skip,
 }
@@ -110,7 +110,7 @@ impl DNMParameters {
 }
 
 /// For some reason `libc::c_void` isn't hashable and cannot be made hashable
-fn node_to_hashable(node : &XmlNodeRef) -> usize {
+fn node_to_hashable(node : &Node) -> usize {
     unsafe { mem::transmute::<*mut libc::c_void, usize>(node.node_ptr) }
 }
 
@@ -123,9 +123,9 @@ pub struct DNM {
     /// The options for generation
     pub parameters : DNMParameters,
     /// The root node of the underlying xml tree
-    pub root_node : XmlNodeRef,
+    pub root_node : Node,
     /// Maps nodes to plaintext offsets
-    //pub node_map : HashMap<XmlNodeRef, (usize, usize)>,
+    //pub node_map : HashMap<Node, (usize, usize)>,
     //pub node_map : HashMap<libc::c_void, (usize, usize)>,
     pub node_map : HashMap<usize, (usize, usize)>,
 }
@@ -138,7 +138,7 @@ struct TmpParseData {
 }
 
 /// The heart of the dnm generation...
-fn recursive_dnm_generation(dnm: &mut DNM, root: &XmlNodeRef,
+fn recursive_dnm_generation(dnm: &mut DNM, root: &Node,
                             tmp: &mut TmpParseData) {
     let mut offset_start = dnm.plaintext.len();
     let mut still_in_leading_whitespaces = true;
@@ -329,22 +329,22 @@ impl <'a> Clone for DNMRange <'a> {
 /// Doesn't check for every possible stupidity
 fn check_dnm_parameters(parameters: &DNMParameters) {
     if parameters.stem_words_once && parameters.stem_words_full {
-        println_stderr!("llamapun::dnmlib: Parameter options stem_words_once\
+        println_stderr!("llamapun::dnm: Parameter options stem_words_once\
 and stem_words_full are both set");
     }
     if !parameters.normalize_white_spaces && parameters.move_whitespaces_between_nodes {
-        println_stderr!("llamapun::dnmlib: Parameter option\
+        println_stderr!("llamapun::dnm: Parameter option\
 move_whitespaces_between_nodes only works in combination with normalize_white_spaces\n\
 Consider using DNMRange::trim instead");
     }
     if !parameters.normalize_white_spaces && parameters.move_whitespaces_between_nodes {
-        println_stderr!("llamapun::dnmlib: Parameter option\
+        println_stderr!("llamapun::dnm: Parameter option\
 move_whitespaces_between_nodes only works in combination with normalize_white_spaces\n\
 Consider using DNMRange::trim instead");
     }
     if (parameters.stem_words_once || parameters.stem_words_full)
         && parameters.convert_to_lowercase {
-        println_stderr!("llamapun::dnmlib: Parameter option convert_to_lowercase\
+        println_stderr!("llamapun::dnm: Parameter option convert_to_lowercase\
 is redundant, because stemming converts to lowercase already");
     }
 }
@@ -352,13 +352,12 @@ is redundant, because stemming converts to lowercase already");
 
 impl DNM {
     /// Creates a `DNM` for `root`
-    pub fn create_dnm(root: &XmlNodeRef, parameters: DNMParameters) -> DNM {
+    pub fn create_dnm(root: &Node, parameters: DNMParameters) -> DNM {
         check_dnm_parameters(&parameters);
         let mut dnm = DNM {
             plaintext : String::new(),
             parameters : parameters,
-            root_node : XmlNodeRef {node_ptr : root.node_ptr,
-                                    node_is_inserted : true},
+            root_node : Node {node_ptr : root.node_ptr},
             node_map : HashMap::new(),
         };
 
@@ -372,7 +371,7 @@ impl DNM {
     }
 
     /// Get the plaintext range of a node
-    pub fn get_range_of_node (self : &DNM, node: &XmlNodeRef)
+    pub fn get_range_of_node (self : &DNM, node: &Node)
                                     -> Result<DNMRange, ()> {
         match self.node_map.get(&node_to_hashable(&node)) {
             Some(&(start, end)) => Ok(DNMRange

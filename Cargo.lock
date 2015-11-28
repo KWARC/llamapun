@@ -4,8 +4,8 @@ version = "0.0.1"
 dependencies = [
  "gnuplot 0.0.17 (git+https://github.com/SiegeLord/RustGnuplot.git)",
  "libc 0.1.8 (registry+https://github.com/rust-lang/crates.io-index)",
+ "libxml 0.0.1 (git+https://github.com/dginev/rust-libxml.git)",
  "regex 0.1.38 (registry+https://github.com/rust-lang/crates.io-index)",
- "rustlibxml 0.0.1 (git+https://github.com/jfschaefer/rust-libxml.git)",
  "rustmorpha 0.1.0 (git+https://github.com/jfschaefer/rust-morpha.git)",
  "unidecode 0.1.9 (git+https://github.com/chowdhurya/rust-unidecode.git)",
 ]
@@ -32,6 +32,14 @@ source = "git+https://github.com/SiegeLord/RustGnuplot.git#b5e87d7c09065cc44a7b0
 name = "libc"
 version = "0.1.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
+
+[[package]]
+name = "libxml"
+version = "0.0.1"
+source = "git+https://github.com/dginev/rust-libxml.git#e08229808f77e9097d081a2f762699f7374ed3e2"
+dependencies = [
+ "libc 0.1.8 (registry+https://github.com/rust-lang/crates.io-index)",
+]
 
 [[package]]
 name = "memchr"
@@ -95,14 +103,6 @@ dependencies = [
 name = "regex-syntax"
 version = "0.1.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-
-[[package]]
-name = "rustlibxml"
-version = "0.0.1"
-source = "git+https://github.com/jfschaefer/rust-libxml.git#2ccba58f6bb4b4a33dab3fab11ff2146b2a1869f"
-dependencies = [
- "libc 0.1.8 (registry+https://github.com/rust-lang/crates.io-index)",
-]
 
 [[package]]
 name = "rustmorpha"

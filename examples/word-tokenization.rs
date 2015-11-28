@@ -1,27 +1,26 @@
-#![feature(collections)]
 extern crate llamapun;
-extern crate rustlibxml;
+extern crate libxml;
 extern crate libc;
 extern crate gnuplot;
 
 
-use llamapun::dnmlib::*;
+use llamapun::dnm::*;
 use llamapun::tokenizer::*;
-use rustlibxml::tree::*;
-use rustlibxml::xpath::*;
+use libxml::xpath::*;
+use libxml::parser::Parser;
 use std::collections::HashMap;
 use gnuplot::*;
 
 fn main() {
-
-  let doc = XmlDoc::parse_html_file("tests/resources/0903.1000.html").unwrap();
+  let parser = Parser::default_html();
+  let doc = parser.parse_file("tests/resources/0903.1000.html").unwrap();
   let mut dictionary: HashMap<String, i64> = HashMap::new();
   let mut word_frequencies: HashMap<String, i64> = HashMap::new();
   let mut frequencies: HashMap<i64, i64> = HashMap::new();
   let mut word_index = 0;
 
   // We will tokenize each logical paragraph, which are the textual logical units in an article
-  let xpath_context = XmlXPathContext::new(&doc).unwrap();
+  let xpath_context = Context::new(&doc).unwrap();
   let para_xpath_result = xpath_context.evaluate("//*[contains(@class,'ltx_para')]").unwrap();
 
   for para in para_xpath_result.get_nodes_as_vec().iter() {

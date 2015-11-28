@@ -1,4 +1,4 @@
-use dnmlib::*;
+use dnm::*;
 use stopwords;
 use std::collections::vec_deque::*;
 use std::collections::HashSet;

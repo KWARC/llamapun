@@ -20,11 +20,11 @@ fn test_sentence_tokenization_simple() {
    Our most significant result is a stochastic interpretation of the Bernstein \
    approximation of a copula. This interpretation was communicated to us by J. H. B. Kemperman in [2] for \
    2-copulas and we are not aware of its publication elsewhere.".to_string();
-  let fake_ptr = 0 as *mut libc::c_void;
+  let fake_node = Node {node_ptr : 0 as *mut libc::c_void};
   let simple_dnm = DNM {
     plaintext : simple_text,
     parameters : DNMParameters::default(),
-    root_node : Node {node_ptr : fake_ptr},
+    root_node : &fake_node,
     node_map : HashMap::new()};
 
   let simple_tokenizer = Tokenizer::default();

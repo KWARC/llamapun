@@ -1,10 +1,9 @@
 language: rust
 rust: nightly
 sudo: false
-# addons:
-#   apt:
-#     packages:
-
+addons:
+  apt:
+    packages: libxml2-dev
 
 before_script:
 # load travis-cargo

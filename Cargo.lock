@@ -36,7 +36,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 [[package]]
 name = "libxml"
 version = "0.0.2"
-source = "git+https://github.com/dginev/rust-libxml.git#1984c0b7e9ed6ac51b7ec5a5bfcecbd2116f9a12"
+source = "git+https://github.com/dginev/rust-libxml.git#c8ca06928c7b73322d4831ad57fda3a5a2c8a48d"
 dependencies = [
  "libc 0.1.8 (registry+https://github.com/rust-lang/crates.io-index)",
 ]

@@ -7,9 +7,6 @@ sudo: false
 
 
 before_script:
-  - psql -c 'create database cortex_tester;' -U postgres
-  - psql -c "create user cortex_tester with password 'cortex_tester';" -U postgres
-  - psql -c 'GRANT ALL PRIVILEGES ON DATABASE cortex_tester TO cortex_tester;' -U postgres
 # load travis-cargo
   - |
       pip install 'travis-cargo<0.2' --user &&
@@ -17,7 +14,7 @@ before_script:
 script:
   - travis-cargo build
   - travis-cargo test
-  - travis-cargo bench
+  # - travis-cargo bench
   # - travis-cargo doc
 after_success:
   - travis-cargo coveralls --no-sudo

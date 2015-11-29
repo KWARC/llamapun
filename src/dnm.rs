@@ -87,12 +87,12 @@ impl DNMParameters {
   pub fn llamapun_normalization() -> DNMParameters {
     let mut name_options = HashMap::new();
     name_options.insert("math".to_string(), SpecialTagsOption::Normalize("MathFormula".to_string()));
-    name_options.insert("cite".to_string(), SpecialTagsOption::Normalize("CiteExpression".to_string()));
+    name_options.insert("cite".to_string(), SpecialTagsOption::Normalize("CitationElement".to_string()));
     name_options.insert("table".to_string(), SpecialTagsOption::Skip);
     name_options.insert("head".to_string(), SpecialTagsOption::Skip);
     let mut class_options = HashMap::new();
-    class_options.insert("ltx_equation".to_string(), SpecialTagsOption::Normalize("MathFormula".to_string()));
-    class_options.insert("ltx_equationgroup".to_string(), SpecialTagsOption::Normalize("MathFormula".to_string()));
+    class_options.insert("ltx_equation".to_string(), SpecialTagsOption::Normalize("\nMathFormula\n".to_string()));
+    class_options.insert("ltx_equationgroup".to_string(), SpecialTagsOption::Normalize("\nMathFormula\n".to_string()));
     class_options.insert("ltx_note_mark".to_string(), SpecialTagsOption::Skip);
     class_options.insert("ltx_note_outer".to_string(), SpecialTagsOption::Skip);
     class_options.insert("ltx_bibliography".to_string(), SpecialTagsOption::Skip);
@@ -100,9 +100,9 @@ impl DNMParameters {
     DNMParameters {
       special_tag_name_options : name_options,
       special_tag_class_options : class_options,
-      normalize_white_spaces : true,
+      normalize_white_spaces : false, // Keeping it raw for tokenization best results, newlines are meaningful
       wrap_tokens : false,
-      move_whitespaces_between_nodes: true,
+      move_whitespaces_between_nodes: false, // Keeping it raw for tokenization best results
       normalize_unicode: true,
       ..Default::default()
     }
@@ -291,14 +291,15 @@ impl<'dnm> DNM<'dnm> {
   fn intermediate_node_create(&mut self, node : &Node, runtime : &mut RuntimeParseData) {
     let offset_start = self.plaintext.len();
     let name : String = node.get_name();
-    
     { // Start scope of self.parameters borrow, to allow mutable self borrow for recurse_node_create
     let mut rules = Vec::new();
-    rules.push(self.parameters.special_tag_name_options.get(&name));
-    
+    // First class rules, as more specific
     for classname in node.get_class_names() {
-      rules.push(self.parameters.special_tag_class_options.get(&classname));
+      let class_rule = self.parameters.special_tag_class_options.get(&classname);
+      rules.push(class_rule);
     }
+    // Then element rules as more general
+    rules.push(self.parameters.special_tag_name_options.get(&name));
 
     for rule in rules {  //iterate over applying rules
       match rule {

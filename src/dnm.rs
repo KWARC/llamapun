@@ -137,148 +137,6 @@ struct TmpParseData {
   had_whitespace : bool,
 }
 
-/// The heart of the dnm generation...
-fn recursive_dnm_generation(dnm: &mut DNM, root: &Node,
-                            tmp: &mut TmpParseData) {
-  let mut offset_start = dnm.plaintext.len();
-  let mut still_in_leading_whitespaces = true;
-
-  if root.is_text_node() {  //CASE: WE HAVE A TEXT NODE
-      //possibly normalize unicode
-      let mut content = if dnm.parameters.normalize_unicode {
-          unidecode(&root.get_content()) } else { root.get_content() };
-      if dnm.parameters.stem_words_once {
-          content = rustmorpha::stem(&content);
-      }
-      if dnm.parameters.stem_words_full {
-          content = rustmorpha::full_stem(&content);
-      }
-
-      if dnm.parameters.convert_to_lowercase {
-          content = content.to_lowercase();
-      }
-
-      //if the option is set, reduce sequences of white spaces to single spaces
-      if dnm.parameters.normalize_white_spaces {
-          for c in content.to_string().chars() {
-              if c.is_whitespace() {
-                  if tmp.had_whitespace { continue; }
-                  dnm.plaintext.push(' ');
-                  tmp.had_whitespace = true;
-                  if dnm.parameters.move_whitespaces_between_nodes {
-                      if still_in_leading_whitespaces {
-                          offset_start += 1;
-                      }
-                  }
-              }
-              else {
-                  dnm.plaintext.push(c);
-                  tmp.had_whitespace = false;
-                  still_in_leading_whitespaces = false;
-              }
-          }
-      } else {
-          dnm.plaintext.push_str(&content);
-      }
-      dnm.node_map.insert(node_to_hashable(root), (offset_start,
-          if dnm.parameters.move_whitespaces_between_nodes && dnm.plaintext.len() > offset_start && tmp.had_whitespace {
-              dnm.plaintext.len() - 1  //don't put trailing white space into node
-          } else { dnm.plaintext.len() }));
-      return;
-
-  }
-
-  //CASE: WE DON'T HAVE A TEXT NODE
-  {   //need nested scope because of borrowing issues
-  let name : String = root.get_name();
-  let mut rules = Vec::new();
-  rules.push(dnm.parameters.special_tag_name_options.get(&name));
-  for classname in root.get_class_names() {
-      rules.push(dnm.parameters.special_tag_class_options.get(&classname));
-  }
-  for rule in rules {  //iterate over applying rules
-      match rule {
-          Some(&SpecialTagsOption::Enter) => {
-              break;
-          }
-          Some(&SpecialTagsOption::Normalize(ref token)) => {
-              if dnm.parameters.wrap_tokens {
-                  if !tmp.had_whitespace ||
-                     !dnm.parameters.normalize_white_spaces {
-                      dnm.plaintext.push(' ');
-                  }
-                  dnm.plaintext.push_str(&token);
-                  dnm.plaintext.push(' ');
-                  tmp.had_whitespace = true;
-              } else {
-                  dnm.plaintext.push_str(&token);
-                  //tokens are considered non-whitespace
-                  tmp.had_whitespace = false;
-              }
-              dnm.node_map.insert(node_to_hashable(root),
-                                  (offset_start,
-                  if dnm.parameters.move_whitespaces_between_nodes && dnm.plaintext.len() > offset_start && tmp.had_whitespace {
-                      dnm.plaintext.len() - 1    //don't put trailing white space into node
-                  } else { dnm.plaintext.len() }));
-              return;
-          }
-          Some(&SpecialTagsOption::FunctionNormalize(f)) => {
-              if dnm.parameters.wrap_tokens {
-                  if !tmp.had_whitespace ||
-                     !dnm.parameters.normalize_white_spaces {
-                      dnm.plaintext.push(' ');
-                  }
-                  dnm.plaintext.push_str(&f(&root));
-                  dnm.plaintext.push(' ');
-                  tmp.had_whitespace = true;
-              } else {
-                  dnm.plaintext.push_str(&f(&root));
-                  //Return value of f is not considered a white space
-                  tmp.had_whitespace = false;
-              }
-              dnm.node_map.insert(node_to_hashable(root),
-                                  (offset_start,
-                  if dnm.parameters.move_whitespaces_between_nodes && dnm.plaintext.len() > offset_start && tmp.had_whitespace {
-                      dnm.plaintext.len() - 1    //don't put trailing white space into node
-                  } else { dnm.plaintext.len() }));
-              return;
-          }
-          Some(&SpecialTagsOption::Skip) => {
-              dnm.node_map.insert(node_to_hashable(root),
-                                          (offset_start,
-                  if dnm.parameters.move_whitespaces_between_nodes && dnm.plaintext.len() > offset_start && tmp.had_whitespace {
-                      dnm.plaintext.len() - 1    //don't put trailing white space into node
-                  } else { dnm.plaintext.len() }));
-              return;
-          }
-          None => {
-              continue;
-          }
-      }
-  }
-  } //needed nested scope because of borrowing issues
-
-
-  // Recurse into children
-  let mut child_option = root.get_first_child();
-  loop {
-      match child_option {
-          Some(child) => {
-              recursive_dnm_generation(dnm, &child, tmp);
-              child_option = child.get_next_sibling();
-          }
-          None => break,
-      }
-  }
-
-  dnm.node_map.insert(node_to_hashable(root), (offset_start, 
-    if dnm.parameters.move_whitespaces_between_nodes && dnm.plaintext.len() > offset_start && tmp.had_whitespace {
-        dnm.plaintext.len() - 1    //don't put trailing white space into node
-    } else { dnm.plaintext.len()}));
-}
-
-
-
 /// Very often we'll talk about substrings of the plaintext - words, sentences,
 /// etc. A `DNMRange` stores start and end point of such a substring and has
 /// a reference to the `DNM`.
@@ -365,7 +223,7 @@ impl<'dnm> DNM<'dnm> {
       had_whitespace : true,  //no need for leading whitespaces
     };
 
-    recursive_dnm_generation(&mut dnm, &root, &mut tmp);
+    dnm.recursive_dnm_generation(&root, &mut tmp);
 
     return dnm
   }
@@ -377,5 +235,139 @@ impl<'dnm> DNM<'dnm> {
       None => Err(()),
     }
   }
+
+  /// The heart of the dnm generation...
+  fn recursive_dnm_generation(&mut self, root: &Node, tmp: &mut TmpParseData) {
+    let mut offset_start = self.plaintext.len();
+    let mut still_in_leading_whitespaces = true;
+
+    if root.is_text_node() {  //CASE: WE HAVE A TEXT NODE
+        //possibly normalize unicode
+        let mut content = if self.parameters.normalize_unicode {
+            unidecode(&root.get_content()) } else { root.get_content() };
+        if self.parameters.stem_words_once {
+            content = rustmorpha::stem(&content);
+        }
+        if self.parameters.stem_words_full {
+            content = rustmorpha::full_stem(&content);
+        }
+
+        if self.parameters.convert_to_lowercase {
+            content = content.to_lowercase();
+        }
+
+        //if the option is set, reduce sequences of white spaces to single spaces
+        if self.parameters.normalize_white_spaces {
+            for c in content.to_string().chars() {
+                if c.is_whitespace() {
+                    if tmp.had_whitespace { continue; }
+                    self.plaintext.push(' ');
+                    tmp.had_whitespace = true;
+                    if self.parameters.move_whitespaces_between_nodes {
+                        if still_in_leading_whitespaces {
+                            offset_start += 1;
+                        }
+                    }
+                }
+                else {
+                    self.plaintext.push(c);
+                    tmp.had_whitespace = false;
+                    still_in_leading_whitespaces = false;
+                }
+            }
+        } else {
+            self.plaintext.push_str(&content);
+        }
+        self.node_map.insert(node_to_hashable(root), (offset_start,
+            if self.parameters.move_whitespaces_between_nodes && self.plaintext.len() > offset_start && tmp.had_whitespace {
+                self.plaintext.len() - 1  //don't put trailing white space into node
+            } else { self.plaintext.len() }));
+        return;
+
+    }
+
+    //CASE: WE DON'T HAVE A TEXT NODE
+    {   //need nested scope because of borrowing issues
+    let name : String = root.get_name();
+    let mut rules = Vec::new();
+    rules.push(self.parameters.special_tag_name_options.get(&name));
+    for classname in root.get_class_names() {
+      rules.push(self.parameters.special_tag_class_options.get(&classname));
+    }
+    for rule in rules {  //iterate over applying rules
+      match rule {
+        Some(&SpecialTagsOption::Enter) => break,
+        Some(&SpecialTagsOption::Normalize(ref token)) => {
+          if self.parameters.wrap_tokens {
+            if !tmp.had_whitespace || !self.parameters.normalize_white_spaces {
+              self.plaintext.push(' ');
+            }
+            self.plaintext.push_str(&token);
+            self.plaintext.push(' ');
+            tmp.had_whitespace = true;
+          } else {
+            self.plaintext.push_str(&token);
+            //tokens are considered non-whitespace
+            tmp.had_whitespace = false;
+          }
+          self.node_map.insert(node_to_hashable(root),
+            (offset_start,
+              if self.parameters.move_whitespaces_between_nodes && (self.plaintext.len() > offset_start) && tmp.had_whitespace {
+                  self.plaintext.len() - 1    //don't put trailing white space into node
+              } else { self.plaintext.len() }));
+          return;
+        },
+        Some(&SpecialTagsOption::FunctionNormalize(f)) => {
+          if self.parameters.wrap_tokens {
+            if !tmp.had_whitespace ||
+               !self.parameters.normalize_white_spaces {
+                self.plaintext.push(' ');
+            }
+            self.plaintext.push_str(&f(&root));
+            self.plaintext.push(' ');
+            tmp.had_whitespace = true;
+          } else {
+            self.plaintext.push_str(&f(&root));
+            //Return value of f is not considered a white space
+            tmp.had_whitespace = false;
+          }
+          self.node_map.insert(node_to_hashable(root),
+            (offset_start,
+              if self.parameters.move_whitespaces_between_nodes && self.plaintext.len() > offset_start && tmp.had_whitespace {
+                self.plaintext.len() - 1    //don't put trailing white space into node
+              } else { self.plaintext.len() }));
+          return;
+        },
+        Some(&SpecialTagsOption::Skip) => {
+          self.node_map.insert(node_to_hashable(root),
+            (offset_start,
+              if self.parameters.move_whitespaces_between_nodes && self.plaintext.len() > offset_start && tmp.had_whitespace {
+                self.plaintext.len() - 1    //don't put trailing white space into node
+              } else { self.plaintext.len() }));
+          return;
+        },
+        None => continue
+      }
+    }
+    } //needed nested scope because of borrowing issues
+
+    // Recurse into children
+    let mut child_option = root.get_first_child();
+    loop {
+      match child_option {
+        Some(child) => {
+          self.recursive_dnm_generation(&child, tmp);
+          child_option = child.get_next_sibling();
+        },
+        None => break
+      }
+    }
+
+    self.node_map.insert(node_to_hashable(root), (offset_start, 
+      if self.parameters.move_whitespaces_between_nodes && self.plaintext.len() > offset_start && tmp.had_whitespace {
+        self.plaintext.len() - 1    //don't put trailing white space into node
+      } else { self.plaintext.len()}));
+  }
+  
 }
 

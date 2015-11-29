@@ -80,7 +80,7 @@ fn main() {
   let mut fg = Figure::new();
   fg.axes2d()
   .points(freq_keys, log_freq_values, &[PointSymbol('O'), Color("#ffaa77"), PointSize(1.2)])
-  .set_x_label("Words, in order of appearance", &[Rotate(45.0)])
+  .set_x_label("Word index, in order of document occurrence", &[Rotate(45.0)])
   .set_y_label("Frequency counts (log2)", &[Rotate(90.0)])
   .set_title(&("Word Frequencies (arXiv ".to_string()+arxivid+")"), &[]);
 

@@ -20,3 +20,4 @@ git = "https://github.com/SiegeLord/RustGnuplot.git"
 [dependencies]
 libc = "~0.1"
 regex = "0.1.8"
+time = "*"

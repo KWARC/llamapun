@@ -27,6 +27,8 @@ fn main() {
   // We will tokenize each logical paragraph, which are the textual logical units in an article
   let xpath_context = Context::new(&doc).unwrap();
   let para_xpath_result = xpath_context.evaluate("//*[contains(@class,'ltx_para')]").unwrap();
+  let mut total_words = 0;
+  let mut total_sentences = 0;
 
   for para in para_xpath_result.get_nodes_as_vec().iter() {
     let dnm = DNM::new(&para, DNMParameters::llamapun_normalization());
@@ -35,11 +37,13 @@ fn main() {
     let ranges : Vec<DNMRange> = tokenizer.sentences(&dnm).unwrap();
 
     for range in ranges {
+      total_sentences += 1;
       let sentence = range.get_plaintext();
       for w in sentence.split(|c: char| !c.is_alphabetic()) {
         if w.len() == 0 {
           continue;
         }
+        total_words += 1;
         let word = w.to_string().to_lowercase();
         let dictionary_index : &i64 = 
           match dictionary.contains_key(&word) {
@@ -117,6 +121,10 @@ fn main() {
 
   println!("--- Frequencies: \n{:?}\n\n", sorted_word_frequencies);
   println!("--- Frequency distribution: \n{:?}\n\n", value_sorted_frequencies);
+  println!("--- Sentences total: {:?}",total_sentences);
+  println!("--- Words total: {:?}",total_words);
+  println!("--- Words distinct: {:?}",word_index);
+  println!("");
   let end_reports = PreciseTime::now();
   println!("--- Benchmark report:");
   println!("    LibXML parse took {:?}ms",start_example.to(end_parse).num_milliseconds());

@@ -347,9 +347,9 @@ impl<'dnm> DNM<'dnm> {
         Some(&SpecialTagsOption::Skip) => {
           self.node_map.insert(node_to_hashable(node),
             (offset_start,
-              if self.parameters.move_whitespaces_between_nodes && self.plaintext.len() > offset_start && runtime.had_whitespace {
-                self.plaintext.len() - 1    //don't put trailing white space into node
-              } else { self.plaintext.len() }));
+            if self.parameters.move_whitespaces_between_nodes && self.plaintext.len() > offset_start && runtime.had_whitespace {
+              self.plaintext.len() - 1    //don't put trailing white space into node
+            } else { self.plaintext.len() }));
           return;
         },
         None => continue

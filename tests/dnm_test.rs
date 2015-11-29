@@ -148,10 +148,9 @@ fn test_unicode_normalization() {
   let parser = Parser::default();
   let doc = parser.parse_file("tests/resources/file03.xml").unwrap();
   let root = doc.get_root_element().unwrap();
-  let dnm = DNM::new(&root,
-                            DNMParameters {
-                                normalize_unicode: true,
-                                ..Default::default() });
+  let dnm = DNM::new(&root, DNMParameters {
+    normalize_unicode: true,
+    ..DNMParameters::default() });
   let node = doc.get_root_element().unwrap();
   let dnmrange = dnm.get_range_of_node(&node).unwrap();
   assert_eq!(dnmrange.get_plaintext().trim(), "At houEUR...");

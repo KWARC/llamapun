@@ -88,7 +88,7 @@ fn test_each_paragraph<'a>(doc: &'a Document, expected: Vec<Vec<&'a str>>) {
     let mut dnm_options : HashMap<String, SpecialTagsOption> = HashMap::new();
     dnm_options.insert("math".to_string(), SpecialTagsOption::Normalize("MathFormula".to_string()));
 
-    let dnm = DNM::create_dnm(&para,
+    let dnm = DNM::new(&para,
       DNMParameters {special_tag_name_options : dnm_options,
                      wrap_tokens : false,
                      normalize_white_spaces : false,

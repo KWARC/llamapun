@@ -6,11 +6,11 @@ extern crate libc;
 extern crate unidecode;
 extern crate rustmorpha;
 
-use libxml::tree::*;
 use std::collections::HashMap;
 use std::mem;
-use unidecode::unidecode;
 use std::io::Write;
+use unidecode::unidecode;
+use libxml::tree::*;
 
 /// Print error message to stderr
 /// from http://stackoverflow.com/questions/27588416/how-to-send-output-to-stderr
@@ -107,6 +107,30 @@ impl DNMParameters {
       ..Default::default()
     }
   }
+
+  /// Prints warnings, if the parameter settings don't make sense.
+  /// Doesn't check for every possible stupidity
+  fn check(&self) {
+    if self.stem_words_once && self.stem_words_full {
+      println_stderr!("llamapun::dnm: Parameter options stem_words_once\
+  and stem_words_full are both set");
+    }
+    if !self.normalize_white_spaces && self.move_whitespaces_between_nodes {
+      println_stderr!("llamapun::dnm: Parameter option\
+  move_whitespaces_between_nodes only works in combination with normalize_white_spaces\n\
+  Consider using DNMRange::trim instead");
+    }
+    if !self.normalize_white_spaces && self.move_whitespaces_between_nodes {
+      println_stderr!("llamapun::dnm: Parameter option\
+  move_whitespaces_between_nodes only works in combination with normalize_white_spaces\n\
+  Consider using DNMRange::trim instead");
+    }
+    if (self.stem_words_once || self.stem_words_full)
+        && self.convert_to_lowercase {
+      println_stderr!("llamapun::dnm: Parameter option convert_to_lowercase\
+  is redundant, because stemming converts to lowercase already");
+    }
+  }
 }
 
 /// For some reason `libc::c_void` isn't hashable and cannot be made hashable
@@ -140,13 +164,13 @@ struct TmpParseData {
 /// Very often we'll talk about substrings of the plaintext - words, sentences,
 /// etc. A `DNMRange` stores start and end point of such a substring and has
 /// a reference to the `DNM`.
-pub struct DNMRange <'a> {
+pub struct DNMRange <'dnmrange> {
   pub start : usize,
   pub end : usize,
-  pub dnm : &'a DNM<'a>,
+  pub dnm : &'dnmrange DNM<'dnmrange>,
 }
 
-impl <'a> DNMRange <'a> {
+impl <'dnmrange> DNMRange <'dnmrange> {
   /// Get the plaintext substring corresponding to the range
   pub fn get_plaintext(&self) -> String {
     //self.dnm.plaintext.slice_chars(self.start, self.end).to_owned()
@@ -158,7 +182,7 @@ impl <'a> DNMRange <'a> {
     (&self.dnm.plaintext)[self.start..self.end].trim_right().to_owned()
   }
 
-  pub fn trim(&self) -> DNMRange <'a> {
+  pub fn trim(&self) -> DNMRange <'dnmrange> {
     let mut trimmed_start = self.start;
     let mut trimmed_end = self.end;
     let range_text = self.get_plaintext();
@@ -177,41 +201,16 @@ impl <'a> DNMRange <'a> {
   }
 }
 
-impl <'a> Clone for DNMRange <'a> {
-  fn clone(&self) -> DNMRange <'a> {
+impl <'dnmrange> Clone for DNMRange <'dnmrange> {
+  fn clone(&self) -> DNMRange <'dnmrange> {
     DNMRange {start : self.start, end: self.end, dnm: self.dnm}
   }
 }
 
-/// Prints warnings, if the parameter settings don't make sense.
-/// Doesn't check for every possible stupidity
-fn check_dnm_parameters(parameters: &DNMParameters) {
-  if parameters.stem_words_once && parameters.stem_words_full {
-    println_stderr!("llamapun::dnm: Parameter options stem_words_once\
-and stem_words_full are both set");
-  }
-  if !parameters.normalize_white_spaces && parameters.move_whitespaces_between_nodes {
-    println_stderr!("llamapun::dnm: Parameter option\
-move_whitespaces_between_nodes only works in combination with normalize_white_spaces\n\
-Consider using DNMRange::trim instead");
-  }
-  if !parameters.normalize_white_spaces && parameters.move_whitespaces_between_nodes {
-    println_stderr!("llamapun::dnm: Parameter option\
-move_whitespaces_between_nodes only works in combination with normalize_white_spaces\n\
-Consider using DNMRange::trim instead");
-  }
-  if (parameters.stem_words_once || parameters.stem_words_full)
-      && parameters.convert_to_lowercase {
-    println_stderr!("llamapun::dnm: Parameter option convert_to_lowercase\
-is redundant, because stemming converts to lowercase already");
-  }
-}
-
-
 impl<'dnm> DNM<'dnm> {
   /// Creates a `DNM` for `root`
-  pub fn create_dnm(root: &Node, parameters: DNMParameters) -> DNM {
-    check_dnm_parameters(&parameters);
+  pub fn new(root: &Node, parameters: DNMParameters) -> DNM {
+    parameters.check();
     let mut dnm = DNM {
       plaintext : String::new(),
       parameters : parameters,
@@ -368,6 +367,6 @@ impl<'dnm> DNM<'dnm> {
         self.plaintext.len() - 1    //don't put trailing white space into node
       } else { self.plaintext.len()}));
   }
-  
+
 }
 

@@ -1,9 +1,20 @@
 language: rust
 rust: nightly
-sudo: false
-addons:
-  apt:
-    packages: libxml2-dev
+sudo: required
+dist: trusty
+# addons:
+#   apt:
+#     sources:
+#       - ubuntu-toolchain-r-test
+#     packages: 
+#       - libxml
+#       - libxml2-dev
+
+before_install:
+  - "echo 'APT::Default-Release \"trusty\";' | sudo tee /etc/apt/apt.conf.d/default-release"
+  - "echo 'deb http://archive.ubuntu.com/ubuntu/ wily main universe' | sudo tee /etc/apt/sources.list.d/wily.list"
+  - sudo apt-get update
+  - sudo apt-get --force-yes -y install -t wily libxml2-dev
 
 before_script:
 # load travis-cargo

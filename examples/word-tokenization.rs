@@ -29,8 +29,10 @@ fn main() {
   let para_xpath_result = xpath_context.evaluate("//*[contains(@class,'ltx_para')]").unwrap();
   let mut total_words = 0;
   let mut total_sentences = 0;
+  let mut total_paragraphs = 0;
 
   for para in para_xpath_result.get_nodes_as_vec().iter() {
+    total_paragraphs += 1;
     let dnm = DNM::new(&para, DNMParameters::llamapun_normalization());
 
     let tokenizer = Tokenizer::default();
@@ -121,6 +123,7 @@ fn main() {
 
   println!("--- Frequencies: \n{:?}\n\n", sorted_word_frequencies);
   println!("--- Frequency distribution: \n{:?}\n\n", value_sorted_frequencies);
+  println!("--- Paragraphs total: {:?}",total_paragraphs);
   println!("--- Sentences total: {:?}",total_sentences);
   println!("--- Words total: {:?}",total_words);
   println!("--- Words distinct: {:?}",word_index);

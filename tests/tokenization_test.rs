@@ -28,7 +28,7 @@ fn test_sentence_tokenization_simple() {
     node_map : HashMap::new()};
 
   let simple_tokenizer = Tokenizer::default();
-  let ranges : Vec<DNMRange> = simple_tokenizer.sentences(&simple_dnm).unwrap();
+  let ranges : Vec<DNMRange> = simple_tokenizer.sentences(&simple_dnm);
   assert_eq!(ranges.len(), 6);
 
   let sentences_expected : Vec<&str> = vec![
@@ -92,7 +92,7 @@ fn test_each_paragraph<'a>(doc: &'a Document, expected: Vec<Vec<&'a str>>) {
     // println!("----\n{:?}\n----\n",doc.node_to_string(para));
     // println!("{:?}", dnm.plaintext.trim());
     let tokenizer = Tokenizer::default();
-    let ranges : Vec<DNMRange> = tokenizer.sentences(&dnm).unwrap();
+    let ranges : Vec<DNMRange> = tokenizer.sentences(&dnm);
 
     let mut paragraph_expected_iter = paragraph_expected.iter();
     if paragraph_expected.len() > 1 { paragraph_expected_iter.next(); }

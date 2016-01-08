@@ -36,12 +36,11 @@ fn main() {
     let dnm = DNM::new(&para, DNMParameters::llamapun_normalization());
 
     let tokenizer = Tokenizer::default();
-    let ranges : Vec<DNMRange> = tokenizer.sentences(&dnm).unwrap();
+    let ranges : Vec<DNMRange> = tokenizer.sentences(&dnm);
 
-    for range in ranges {
+    for sentence_range in ranges {
       total_sentences += 1;
-      let sentence = range.get_plaintext();
-      for w in sentence.split(|c: char| !c.is_alphabetic()).filter(|w| w.len() > 0) {
+      for w in tokenizer.words(&sentence_range) {
         total_words += 1;
         let word = w.to_string().to_lowercase();
         let dictionary_index : &i64 = 

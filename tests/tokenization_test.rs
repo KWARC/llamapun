@@ -79,6 +79,7 @@ fn test_sentence_tokenization_arxmliv_html() {
 /*    Auxiliary functions:  */
 /* ======================== */
 fn test_each_paragraph<'a>(doc: &'a Document, expected: Vec<Vec<&'a str>>) {
+  let tokenizer = Tokenizer::default();
   // We will tokenize each logical paragraph, which are the textual logical units in an article
   let xpath_context = Context::new(&doc).unwrap();
   let para_xpath_result = xpath_context.evaluate("//*[contains(@class,'ltx_para')]").unwrap();
@@ -91,7 +92,6 @@ fn test_each_paragraph<'a>(doc: &'a Document, expected: Vec<Vec<&'a str>>) {
     assert_eq!(dnm.plaintext.trim(), paragraph_expected[0]);
     // println!("----\n{:?}\n----\n",doc.node_to_string(para));
     // println!("{:?}", dnm.plaintext.trim());
-    let tokenizer = Tokenizer::default();
     let ranges : Vec<DNMRange> = tokenizer.sentences(&dnm);
 
     let mut paragraph_expected_iter = paragraph_expected.iter();

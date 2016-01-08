@@ -24,18 +24,21 @@ fn main() {
   let mut frequencies: HashMap<i64, i64> = HashMap::new();
   let mut word_index = 0;
 
-  // We will tokenize each logical paragraph, which are the textual logical units in an article
+  // Setup the xpath selector and global totals counters
   let xpath_context = Context::new(&doc).unwrap();
   let para_xpath_result = xpath_context.evaluate("//*[contains(@class,'ltx_para')]").unwrap();
   let mut total_words = 0;
   let mut total_sentences = 0;
   let mut total_paragraphs = 0;
+  // Use the default tokenizer, in a single variable globally to the document
+  let tokenizer = Tokenizer::default();
 
+  // We will tokenize each logical paragraph, which are the textual logical units in an article
   for para in para_xpath_result.get_nodes_as_vec().iter() {
     total_paragraphs += 1;
+    // Create a DNM for the current paragraph
     let dnm = DNM::new(&para, DNMParameters::llamapun_normalization());
 
-    let tokenizer = Tokenizer::default();
     let ranges : Vec<DNMRange> = tokenizer.sentences(&dnm);
 
     for sentence_range in ranges {

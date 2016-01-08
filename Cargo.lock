@@ -2,32 +2,45 @@
 name = "llamapun"
 version = "0.0.1"
 dependencies = [
- "gnuplot 0.0.17 (git+https://github.com/SiegeLord/RustGnuplot.git)",
- "libc 0.1.8 (registry+https://github.com/rust-lang/crates.io-index)",
+ "gnuplot 0.0.20 (git+https://github.com/SiegeLord/RustGnuplot.git)",
+ "libc 0.1.12 (registry+https://github.com/rust-lang/crates.io-index)",
  "libxml 0.0.2 (git+https://github.com/dginev/rust-libxml.git)",
- "regex 0.1.38 (registry+https://github.com/rust-lang/crates.io-index)",
+ "regex 0.1.46 (registry+https://github.com/rust-lang/crates.io-index)",
  "rustmorpha 0.1.0 (git+https://github.com/jfschaefer/rust-morpha.git)",
  "time 0.1.34 (registry+https://github.com/rust-lang/crates.io-index)",
- "unidecode 0.1.9 (git+https://github.com/chowdhurya/rust-unidecode.git)",
+ "unidecode 0.2.0 (git+https://github.com/chowdhurya/rust-unidecode.git)",
+]
+
+[[package]]
+name = "advapi32-sys"
+version = "0.1.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+dependencies = [
+ "winapi 0.2.5 (registry+https://github.com/rust-lang/crates.io-index)",
+ "winapi-build 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
 name = "aho-corasick"
-version = "0.2.1"
+version = "0.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
- "memchr 0.1.3 (registry+https://github.com/rust-lang/crates.io-index)",
+ "memchr 0.1.7 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
-name = "debug-builders"
-version = "0.1.0"
+name = "gcc"
+version = "0.3.21"
 source = "registry+https://github.com/rust-lang/crates.io-index"
+dependencies = [
+ "advapi32-sys 0.1.2 (registry+https://github.com/rust-lang/crates.io-index)",
+ "winapi 0.2.5 (registry+https://github.com/rust-lang/crates.io-index)",
+]
 
 [[package]]
 name = "gnuplot"
-version = "0.0.17"
-source = "git+https://github.com/SiegeLord/RustGnuplot.git#b5e87d7c09065cc44a7b0c1f93886455dd63f880"
+version = "0.0.20"
+source = "git+https://github.com/SiegeLord/RustGnuplot.git#d75a573db97398bfedbfbcca85d691808a243103"
 
 [[package]]
 name = "kernel32-sys"
@@ -40,91 +53,52 @@ dependencies = [
 
 [[package]]
 name = "libc"
-version = "0.1.8"
+version = "0.1.12"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
 name = "libc"
-version = "0.2.2"
+version = "0.2.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
 name = "libxml"
 version = "0.0.2"
-source = "git+https://github.com/dginev/rust-libxml.git#8d614d82dc0e827c035727a82d6abf42c2c0feba"
+source = "git+https://github.com/dginev/rust-libxml.git#a8f1a8ea59aba171530be402dbe59c17551cafb1"
 dependencies = [
- "libc 0.1.8 (registry+https://github.com/rust-lang/crates.io-index)",
+ "gcc 0.3.21 (registry+https://github.com/rust-lang/crates.io-index)",
+ "libc 0.1.12 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
 name = "memchr"
-version = "0.1.3"
+version = "0.1.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
- "libc 0.1.8 (registry+https://github.com/rust-lang/crates.io-index)",
-]
-
-[[package]]
-name = "phf"
-version = "0.7.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-dependencies = [
- "debug-builders 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
- "phf_shared 0.7.3 (registry+https://github.com/rust-lang/crates.io-index)",
-]
-
-[[package]]
-name = "phf_codegen"
-version = "0.7.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-dependencies = [
- "phf_generator 0.7.3 (registry+https://github.com/rust-lang/crates.io-index)",
- "phf_shared 0.7.3 (registry+https://github.com/rust-lang/crates.io-index)",
-]
-
-[[package]]
-name = "phf_generator"
-version = "0.7.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-dependencies = [
- "phf_shared 0.7.3 (registry+https://github.com/rust-lang/crates.io-index)",
- "rand 0.3.8 (registry+https://github.com/rust-lang/crates.io-index)",
-]
-
-[[package]]
-name = "phf_shared"
-version = "0.7.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-
-[[package]]
-name = "rand"
-version = "0.3.8"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-dependencies = [
- "libc 0.1.8 (registry+https://github.com/rust-lang/crates.io-index)",
+ "libc 0.2.4 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
 name = "regex"
-version = "0.1.38"
+version = "0.1.46"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
- "aho-corasick 0.2.1 (registry+https://github.com/rust-lang/crates.io-index)",
- "memchr 0.1.3 (registry+https://github.com/rust-lang/crates.io-index)",
- "regex-syntax 0.1.2 (registry+https://github.com/rust-lang/crates.io-index)",
+ "aho-corasick 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "memchr 0.1.7 (registry+https://github.com/rust-lang/crates.io-index)",
+ "regex-syntax 0.2.2 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
 name = "regex-syntax"
-version = "0.1.2"
+version = "0.2.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
 name = "rustmorpha"
 version = "0.1.0"
-source = "git+https://github.com/jfschaefer/rust-morpha.git#a51533ce1bb987bac28257098246aefe84a24059"
+source = "git+https://github.com/jfschaefer/rust-morpha.git#42fce18ac8db6d1d36918407661b98014840d903"
 dependencies = [
- "libc 0.1.8 (registry+https://github.com/rust-lang/crates.io-index)",
+ "libc 0.1.12 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
@@ -133,18 +107,14 @@ version = "0.1.34"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
  "kernel32-sys 0.2.1 (registry+https://github.com/rust-lang/crates.io-index)",
- "libc 0.2.2 (registry+https://github.com/rust-lang/crates.io-index)",
+ "libc 0.2.4 (registry+https://github.com/rust-lang/crates.io-index)",
  "winapi 0.2.5 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
 name = "unidecode"
-version = "0.1.9"
-source = "git+https://github.com/chowdhurya/rust-unidecode.git#4bdcdb0f3b3c319af33cac6677d6a0b67042c7c8"
-dependencies = [
- "phf 0.7.3 (registry+https://github.com/rust-lang/crates.io-index)",
- "phf_codegen 0.7.3 (registry+https://github.com/rust-lang/crates.io-index)",
-]
+version = "0.2.0"
+source = "git+https://github.com/chowdhurya/rust-unidecode.git#4d4e147811b04afde3d06d75a4d82486a0ca0321"
 
 [[package]]
 name = "winapi"

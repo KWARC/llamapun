@@ -22,7 +22,7 @@ impl <'a> Default for Tokenizer <'a> {
 
 impl <'a> Tokenizer <'a> {
   pub fn sentences(&self, dnm: &'a DNM) -> Vec<DNMRange <'a>> {
-    let text = dnm.plaintext.clone();
+    let text = &dnm.plaintext;
     let mut sentences : Vec<DNMRange <'a>> = Vec::new();
     let mut text_iterator = text.chars().peekable();
     let mut start = 0;

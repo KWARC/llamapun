@@ -41,10 +41,7 @@ fn main() {
     for range in ranges {
       total_sentences += 1;
       let sentence = range.get_plaintext();
-      for w in sentence.split(|c: char| !c.is_alphabetic()) {
-        if w.len() == 0 {
-          continue;
-        }
+      for w in sentence.split(|c: char| !c.is_alphabetic()).filter(|w| w.len() > 0) {
         total_words += 1;
         let word = w.to_string().to_lowercase();
         let dictionary_index : &i64 = 

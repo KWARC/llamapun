@@ -172,20 +172,18 @@ pub struct DNMRange <'dnmrange> {
 
 impl <'dnmrange> DNMRange <'dnmrange> {
   /// Get the plaintext substring corresponding to the range
-  pub fn get_plaintext(&self) -> String {
-    //self.dnm.plaintext.slice_chars(self.start, self.end).to_owned()
-    (&self.dnm.plaintext)[self.start..self.end].to_owned()
+  pub fn get_plaintext(&self) -> &str {
+    &(&self.dnm.plaintext)[self.start..self.end]
   }
   /// Get the plaintext without trailing white spaces
-  pub fn get_plaintext_truncated(&self) -> String {
-    //self.dnm.plaintext.slice_chars(self.start, self.end).trim_right().to_owned()
-    (&self.dnm.plaintext)[self.start..self.end].trim_right().to_owned()
+  pub fn get_plaintext_truncated(&self) -> &str {
+    &(&self.dnm.plaintext)[self.start..self.end].trim_right()
   }
 
   pub fn trim(&self) -> DNMRange <'dnmrange> {
     let mut trimmed_start = self.start;
     let mut trimmed_end = self.end;
-    let range_text : String = self.get_plaintext();
+    let range_text : &str = self.get_plaintext();
 
     for c in range_text.chars() {
       if c.is_whitespace() {

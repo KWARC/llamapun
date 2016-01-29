@@ -1,12 +1,12 @@
 extern crate llamapun;
-extern crate rustlibxml;
+extern crate libxml;
 extern crate libc;
 
-use libc::c_void;
 use llamapun::dnmlib::*;
 use llamapun::tokenizer::*;
-use rustlibxml::tree::*;
-use rustlibxml::xpath::*;
+use libxml::tree::*;
+use libxml::xpath::*;
+use libxml::parser::Parser;
 use std::collections::HashMap;
 
 #[test]
@@ -23,7 +23,7 @@ fn test_sentence_tokenization_simple() {
   let simple_dnm = DNM {
     plaintext : simple_text,
     parameters : DNMParameters::default(),
-    root_node : XmlNodeRef {node_ptr : fake_ptr, node_is_inserted : true},
+    root_node : Node { node_ptr: fake_ptr.clone() },
     node_map : HashMap::new()};
 
   let simple_tokenizer = Tokenizer::default();
@@ -56,7 +56,8 @@ fn test_sentence_tokenization_simple() {
 fn test_sentence_tokenization_arxmliv_xhtml() {
 
   let expected = load_expected_xhtml();
-  let doc = XmlDoc::parse_file("tests/resources/1311.0066.xhtml").unwrap();
+  let parser = Parser::default();
+  let doc = parser.parse_file("tests/resources/1311.0066.xhtml").unwrap();
 
   test_each_paragraph(&doc,expected);
 }
@@ -67,7 +68,8 @@ fn test_sentence_tokenization_arxmliv_xhtml() {
 fn test_sentence_tokenization_arxmliv_html() {
 
   let expected = load_expected_html();
-  let doc = XmlDoc::parse_html_file("tests/resources/0903.1000.html").unwrap();
+  let parser = Parser::default();
+  let doc = parser.parse_file("tests/resources/0903.1000.html").unwrap();
 
   test_each_paragraph(&doc,expected);
 }
@@ -75,9 +77,9 @@ fn test_sentence_tokenization_arxmliv_html() {
 /* ======================== */
 /*    Auxiliary functions:  */
 /* ======================== */
-fn test_each_paragraph<'a>(doc: &'a XmlDoc, expected: Vec<Vec<&'a str>>) {
+fn test_each_paragraph<'a>(doc: &'a Document, expected: Vec<Vec<&'a str>>) {
   // We will tokenize each logical paragraph, which are the textual logical units in an article
-  let xpath_context = XmlXPathContext::new(&doc).unwrap();
+  let xpath_context = Context::new(&doc).unwrap();
   let para_xpath_result = xpath_context.evaluate("//*[contains(@class,'ltx_para')]").unwrap();
 
   let mut expected_iter = expected.iter();

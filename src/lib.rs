@@ -5,7 +5,7 @@
 #![feature(slice_patterns)]
 #![feature(collections)]
 
-extern crate rustlibxml;
+extern crate libxml;
 extern crate libc;
 extern crate regex;
 extern crate unidecode;

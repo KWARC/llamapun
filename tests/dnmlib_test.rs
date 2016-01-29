@@ -1,21 +1,21 @@
 //! Tests for the DNM library
 
 extern crate llamapun;
-extern crate rustlibxml;
+extern crate libxml;
 extern crate libc;
 extern crate rustmorpha;
 
 use llamapun::dnmlib::*;
-// use libc::{c_void, c_int};
-use rustlibxml::tree::XmlDoc;
-use rustlibxml::xpath::{XmlXPathContext};
+use libxml::xpath::Context;
+use libxml::parser::Parser;
 use std::collections::HashMap;
 
 
 #[test]
 /// Test the plaintext generation for a simple file
 fn test_plaintext_simple() {
-    let doc = XmlDoc::parse_file("tests/resources/file01.xml").unwrap();
+    let parser = Parser::default();
+    let doc = parser.parse_file("tests/resources/file01.xml").unwrap();
     let mut options : HashMap<String, SpecialTagsOption> = HashMap::new();
     options.insert("h1".to_string(),
                    SpecialTagsOption::Enter);  //actually default behaviour 
@@ -38,7 +38,8 @@ fn test_plaintext_simple() {
 #[test]
 /// Test the xmlNode -> plaintext mapping
 fn test_xml_node_to_plaintext() {
-    let doc = XmlDoc::parse_file("tests/resources/file01.xml").unwrap();
+    let parser = Parser::default();
+    let doc = parser.parse_file("tests/resources/file01.xml").unwrap();
     let mut options : HashMap<String, SpecialTagsOption> = HashMap::new();
     options.insert("h1".to_string(),
                    SpecialTagsOption::Enter);  //actually default behaviour 
@@ -93,7 +94,8 @@ fn test_xml_node_to_plaintext() {
 #[test]
 /// Test that the normalization according to class attributes works
 fn test_plaintext_normalized_class_names() {
-    let doc = XmlDoc::parse_file("tests/resources/file02.xml").unwrap();
+    let parser = Parser::default();
+    let doc = parser.parse_file("tests/resources/file02.xml").unwrap();
     let mut options : HashMap<String, SpecialTagsOption> = HashMap::new();
     options.insert("normalized".to_string(),
                    SpecialTagsOption::Normalize("[NORMALIZED]".to_string()));
@@ -120,13 +122,14 @@ fn test_plaintext_normalized_class_names() {
 #[test]
 /// test if parameter option `move_whitespaces_between_nodes` works
 fn test_move_whitespaces_between_nodes() {
-    let doc = XmlDoc::parse_file("tests/resources/file01.xml").unwrap();
+    let parser = Parser::default();
+    let doc = parser.parse_file("tests/resources/file01.xml").unwrap();
     let dnm = DNM::create_dnm(&doc.get_root_element().unwrap(),
                               DNMParameters {
                                   move_whitespaces_between_nodes: true,
                                   normalize_white_spaces: true,
                                   ..Default::default() });
-    let context = XmlXPathContext::new(&doc).unwrap();
+    let context = Context::new(&doc).unwrap();
     let result = context.evaluate("/html/body/h2").unwrap();
     assert_eq!(result.get_number_of_nodes(), 1);
     let node = &result.get_nodes_as_vec()[0];
@@ -142,7 +145,8 @@ fn test_move_whitespaces_between_nodes() {
 #[test]
 /// test unicode normalization
 fn test_unicode_normalization() {
-    let doc = XmlDoc::parse_file("tests/resources/file03.xml").unwrap();
+    let parser = Parser::default();
+    let doc = parser.parse_file("tests/resources/file03.xml").unwrap();
     let dnm = DNM::create_dnm(&doc.get_root_element().unwrap(),
                               DNMParameters {
                                   normalize_unicode: true,
@@ -155,7 +159,8 @@ fn test_unicode_normalization() {
 #[test]
 /// test morpha stemming
 fn test_morpha_stemming() {
-    let doc = XmlDoc::parse_file("tests/resources/file04.xml").unwrap();
+    let parser = Parser::default();
+    let doc = parser.parse_file("tests/resources/file04.xml").unwrap();
     let dnm = DNM::create_dnm(&doc.get_root_element().unwrap(),
                               DNMParameters {
                                   stem_words_once: true,

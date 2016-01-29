@@ -7,8 +7,8 @@ authors = ["Jan Frederik Schaefer <j.schaefer@jacobs-university.de>"]
 name = "llamapun"
 crate-type = ["rlib", "dylib", "staticlib"]
 
-[dependencies.rustlibxml]
-git = "https://github.com/jfschaefer/rust-libxml.git"
+[dependencies.libxml]
+git = "https://github.com/dginev/rust-libxml.git"
 [dependencies.unidecode]
 git = "https://github.com/chowdhurya/rust-unidecode.git"
 [dependencies.rustmorpha]
@@ -19,4 +19,4 @@ git = "https://github.com/SiegeLord/RustGnuplot.git"
 
 [dependencies]
 libc = "~0.1"
-regex = "0.1.8"
+regex = "0.1.48"

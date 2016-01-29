@@ -1,4 +1,3 @@
-#![feature(collections)]
 extern crate llamapun;
 extern crate libxml;
 extern crate libc;
@@ -7,7 +6,6 @@ extern crate gnuplot;
 
 use llamapun::dnmlib::*;
 use llamapun::tokenizer::*;
-use libxml::tree::*;
 use libxml::xpath::*;
 use libxml::parser::Parser;
 use std::collections::HashMap;

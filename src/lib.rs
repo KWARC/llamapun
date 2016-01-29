@@ -3,7 +3,6 @@
 //! The original library can be found at https://github.com/KWARC/LLaMaPUn
 
 #![feature(slice_patterns)]
-#![feature(collections)]
 
 extern crate libxml;
 extern crate libc;

@@ -13,6 +13,8 @@ git = "https://github.com/dginev/rust-libxml.git"
 git = "https://github.com/chowdhurya/rust-unidecode.git"
 [dependencies.rustmorpha]
 git = "https://github.com/jfschaefer/rust-morpha.git"
+[dependencies.rustsenna]
+git = "https://github.com/jfschaefer/rust-senna.git"
 
 [dependencies.gnuplot]
 git = "https://github.com/SiegeLord/RustGnuplot.git"
@@ -20,3 +22,4 @@ git = "https://github.com/SiegeLord/RustGnuplot.git"
 [dependencies]
 libc = "~0.1"
 regex = "0.1.48"
+time = "*"

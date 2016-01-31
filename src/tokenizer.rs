@@ -1,4 +1,4 @@
-use dnmlib::*;
+use dnm::*;
 use stopwords;
 use std::collections::vec_deque::*;
 use std::collections::HashSet;
@@ -20,9 +20,9 @@ impl <'a> Default for Tokenizer <'a> {
   }
 }
 
-impl <'a> Tokenizer <'a> {
-  pub fn sentences(&self, dnm: &'a DNM) -> Result<Vec<DNMRange <'a>>, ()> {
-    let text = dnm.plaintext.clone();
+impl <'t, 'a> Tokenizer <'t> {
+  pub fn sentences(&self, dnm: &'a DNM) -> Vec<DNMRange <'a>> {
+    let text = &dnm.plaintext;
     let mut sentences : Vec<DNMRange <'a>> = Vec::new();
     let mut text_iterator = text.chars().peekable();
     let mut start = 0;
@@ -193,7 +193,11 @@ impl <'a> Tokenizer <'a> {
     if alpha_char != None {
       sentences.push(DNMRange{start: start, end: end, dnm: dnm}.trim());
     }
-    return Ok(sentences);
+    return sentences;
+  }
+
+  pub fn words(&self, sentence_range: &'a DNMRange) -> Vec<&'a str>  {
+    sentence_range.get_plaintext().split(|c: char| !c.is_alphabetic()).filter(|w| w.len() > 0).collect()
   }
 }
 

@@ -7,7 +7,7 @@ extern crate rustsenna;
 use rustsenna::senna;
 use tokenizer::Tokenizer;
 use std::io::{self, Write};
-use dnmlib::*;
+use dnm::*;
 
 
 /// Settings for the `SennaAdapter`
@@ -86,7 +86,10 @@ impl<'t> SennaAdapter<'t> {
                 senna::ParseOption::TokenizeOnly
             }
         };
-        let senna_sentence = self.senna.parse(range.get_plaintext(), parseoption);
+
+        {
+            let senna_sentence = self.senna.parse((&range).get_plaintext(), parseoption);
+        }
 
         Sentence {
             range: range,
@@ -96,7 +99,7 @@ impl<'t> SennaAdapter<'t> {
 
     /// processes an entire `DNM`
     pub fn process_dnm<'a>(&mut self, dnm: &'a DNM) -> Vec<Sentence<'a>> {
-        let sentence_ranges : Vec<DNMRange<'a>> = self.tokenizer.sentences(dnm).unwrap();
+        let sentence_ranges : Vec<DNMRange<'a>> = self.tokenizer.sentences(dnm);
         let mut results : Vec<Sentence<'a>> = Vec::with_capacity(sentence_ranges.len());
 
         for sentence in sentence_ranges {
@@ -120,4 +123,3 @@ pub struct Word<'t> {
 
 
 
-ö

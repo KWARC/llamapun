@@ -8,6 +8,7 @@ dependencies = [
  "regex 0.1.48 (registry+https://github.com/rust-lang/crates.io-index)",
  "rustmorpha 0.1.0 (git+https://github.com/jfschaefer/rust-morpha.git)",
  "rustsenna 0.0.1 (git+https://github.com/jfschaefer/rust-senna.git)",
+ "time 0.1.34 (registry+https://github.com/rust-lang/crates.io-index)",
  "unidecode 0.2.0 (git+https://github.com/chowdhurya/rust-unidecode.git)",
 ]
 
@@ -43,6 +44,15 @@ version = "0.0.20"
 source = "git+https://github.com/SiegeLord/RustGnuplot.git#d75a573db97398bfedbfbcca85d691808a243103"
 
 [[package]]
+name = "kernel32-sys"
+version = "0.2.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+dependencies = [
+ "winapi 0.2.5 (registry+https://github.com/rust-lang/crates.io-index)",
+ "winapi-build 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
 name = "libc"
 version = "0.1.12"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -55,7 +65,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 [[package]]
 name = "libxml"
 version = "0.0.2"
-source = "git+https://github.com/dginev/rust-libxml.git#ff522f38ccc257622ef6d473cdeab8b831e8e88c"
+source = "git+https://github.com/dginev/rust-libxml.git#dc6afb54aa51caf44198491d7f2a687fbb4ca515"
 dependencies = [
  "gcc 0.3.21 (registry+https://github.com/rust-lang/crates.io-index)",
  "libc 0.1.12 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -95,9 +105,19 @@ dependencies = [
 [[package]]
 name = "rustsenna"
 version = "0.0.1"
-source = "git+https://github.com/jfschaefer/rust-senna.git#ecaf0be85a56549778197687ae8ac970172491d0"
+source = "git+https://github.com/jfschaefer/rust-senna.git#b9282acb2da505a1c784b52c0fd37b4d5ac84c48"
 dependencies = [
  "libc 0.2.6 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
+name = "time"
+version = "0.1.34"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+dependencies = [
+ "kernel32-sys 0.2.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "libc 0.2.6 (registry+https://github.com/rust-lang/crates.io-index)",
+ "winapi 0.2.5 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]

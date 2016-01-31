@@ -12,7 +12,7 @@ extern crate gnuplot;
 extern crate rustmorpha;
 extern crate rustsenna;
 
-pub mod dnmlib;
+pub mod dnm;
 pub mod stopwords;
 pub mod tokenizer;
-pub mod senna_adapter;
+// pub mod senna_adapter;

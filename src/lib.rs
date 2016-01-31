@@ -10,7 +10,9 @@ extern crate regex;
 extern crate unidecode;
 extern crate gnuplot;
 extern crate rustmorpha;
+extern crate rustsenna;
 
 pub mod dnmlib;
 pub mod stopwords;
 pub mod tokenizer;
+pub mod senna_adapter;

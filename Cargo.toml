@@ -13,6 +13,8 @@ git = "https://github.com/dginev/rust-libxml.git"
 git = "https://github.com/chowdhurya/rust-unidecode.git"
 [dependencies.rustmorpha]
 git = "https://github.com/jfschaefer/rust-morpha.git"
+[dependencies.rustsenna]
+git = "https://github.com/jfschaefer/rust-senna.git"
 
 [dependencies.gnuplot]
 git = "https://github.com/SiegeLord/RustGnuplot.git"

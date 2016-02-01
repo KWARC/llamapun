@@ -5,6 +5,8 @@
 extern crate rustsenna;
 
 use rustsenna::senna;
+use rustsenna::pos::POS;
+use rustsenna::phrase::Phrase;
 use tokenizer::Tokenizer;
 use std::io::{self, Write};
 use dnm::*;
@@ -44,7 +46,7 @@ impl Default for SennaSettings {
 
 /// Makes `rustsenna` work with the `dnmlib`
 pub struct SennaAdapter<'t> {
-    senna: senna::Senna,
+    senna: senna::Senna<'t>,
     tokenizer: Tokenizer<'t>,
     settings: SennaSettings,
 }
@@ -62,8 +64,8 @@ impl<'t> SennaAdapter<'t> {
         settings.check();
         SennaAdapter {
             senna: senna::Senna::new(if settings.senna_path == None {
-                                          rustsenna::sennapath::SENNA_PATH
-                                      } else { settings.senna_path.as_ref().unwrap() }),
+                              rustsenna::sennapath::SENNA_PATH.to_owned()
+                          } else { settings.senna_path.as_ref().unwrap().to_owned() }),
             tokenizer: Tokenizer::default(),
             settings: settings,
         }
@@ -76,7 +78,7 @@ impl<'t> SennaAdapter<'t> {
 
     /// processes a sentence according to the settings
     /// *Important*: The `range` is assumed to represent exactly one sentence
-    pub fn process_sentence<'a>(&mut self, range: DNMRange<'a>) -> Sentence<'a> {
+    pub fn process_sentence<'a>(&mut self, sentence_range: DNMRange<'a>) -> Sentence<'a> {
         let parseoption = {
             if self.settings.do_psg {
                 senna::ParseOption::GeneratePSG
@@ -87,13 +89,32 @@ impl<'t> SennaAdapter<'t> {
             }
         };
 
+        let mut words: Vec<Word<'a>> = Vec::new();
+        let mut psgroot: Option<rustsenna::sentence::PSGNode> = None;
+
         {
-            let senna_sentence = self.senna.parse((&range).get_plaintext(), parseoption);
+            let senna_sentence = self.senna.parse((&sentence_range).get_plaintext(), parseoption);
+            {
+                for word in senna_sentence.get_words() {
+                    words.push(Word {
+                        range: sentence_range.get_subrange(
+                                   word.get_offset_start(), word.get_offset_end()),
+                        pos: word.get_pos(),
+                    });
+                }
+            }
+
+            match senna_sentence.get_psgroot() {
+                None => {},
+                Some(x) => { psgroot = Some((*x).clone()); },
+            }
+
         }
 
         Sentence {
-            range: range,
-            words: vec![],
+            range: sentence_range,
+            words: words,
+            psgroot: psgroot,
         }
     }
 
@@ -114,12 +135,12 @@ impl<'t> SennaAdapter<'t> {
 pub struct Sentence<'t> {
     range: DNMRange<'t>,
     words: Vec<Word<'t>>,
+    psgroot: Option<rustsenna::sentence::PSGNode>,
 }
 
 
 pub struct Word<'t> {
     range: DNMRange<'t>,
+    pos: POS,
 }
-
-
 

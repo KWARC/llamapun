@@ -197,6 +197,11 @@ impl <'dnmrange> DNMRange <'dnmrange> {
         break; }}
     DNMRange {start : trimmed_start, end: trimmed_end, dnm: self.dnm}
   }
+
+  /// returns a subrange, with offsets relative to the beginning of `self`
+  pub fn get_subrange(&self, rel_start: usize, rel_end: usize) -> DNMRange<'dnmrange> {
+    DNMRange {start: self.start + rel_start, end: self.start + rel_end, dnm: self.dnm}
+  }
 }
 
 impl <'dnmrange> Clone for DNMRange <'dnmrange> {

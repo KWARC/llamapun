@@ -13,45 +13,51 @@ use libxml::parser::{Parser, XmlParseError};
 
 pub struct Corpus {
   // Directory-level
-  path : String,
+  pub path : String,
   // Document-level
-  parser : Parser,
-  tokenizer : Tokenizer,
+  pub parser : Parser,
+  pub tokenizer : Tokenizer,
 }
 
 pub struct DocumentIterator<'iter>{
   walker : Box<WalkDirIterator<Item=DirResult<DirEntry>>>,
-  corpus : &'iter Corpus,
+  pub corpus : &'iter Corpus,
 }
 
 pub struct Document<'d> {
-  dom : XmlDoc,
-  tokenizer : &'d Tokenizer
+  pub dom : XmlDoc,
+  pub path : String,
+  pub corpus : &'d Corpus
 }
 
 pub struct ParagraphIterator<'iter> {
   walker : IntoIter<Node>,
-  document : &'iter Document<'iter>
+  pub document : &'iter Document<'iter>
 }
 
-pub struct Paragraph {
-  dnm : DNM
+pub struct Paragraph<'p> {
+  pub dnm : DNM,
+  pub document : &'p Document<'p>
 }
 
 pub struct SentenceIterator<'iter> {
-  paragraph : &'iter Paragraph
+  walker : IntoIter<DNMRange<'iter>>,
+  pub paragraph : &'iter Paragraph<'iter>
 }
 
 pub struct Sentence<'s> {
-  range : DNMRange<'s>,
+  pub range : DNMRange<'s>,
+  pub paragraph : &'s Paragraph<'s>
 }
 
 pub struct WordIterator<'iter> {
-  sentence : &'iter Sentence<'iter>
+  walker : IntoIter<&'iter str>,
+  pub sentence : &'iter Sentence<'iter>
 }
 
 pub struct Word<'w> {
-  range : DNMRange<'w>,
+  pub text : &'w str, // should we use the DNMRange instead???
+  pub sentence : &'w Sentence<'w>
 }
 
 // TODO: May be worth refactoring into several layers of iterators - directory, document, paragraph, sentence, etc. 
@@ -73,10 +79,12 @@ impl<'iter> Iterator for DocumentIterator<'iter> {
           if !file_name.ends_with(".html") {
             continue;
           }
-          println!("Next entry: {:?}", entry);
-          let doc_result = Document::new(file_name, self.corpus);
+          let path = entry.path().to_str().unwrap_or("").to_owned();
+          let doc_result = Document::new(path, self.corpus);
           return match doc_result {
-            Ok(doc) => Some(doc),
+            Ok(doc) => {
+              Some(doc)
+            },
             _ => None
           }
         }
@@ -108,8 +116,9 @@ impl<'d> Document<'d> {
     let dom = try!(owner.parser.parse_file(&filepath));
 
     Ok(Document {
+      path : filepath,
       dom : dom,
-      tokenizer : &owner.tokenizer
+      corpus : owner
     })
   }
 
@@ -128,39 +137,61 @@ impl<'d> Document<'d> {
 
 
 impl<'iter> Iterator for ParagraphIterator<'iter> {
-  type Item = Paragraph;
-  fn next(&mut self) -> Option<Paragraph> {
+  type Item = Paragraph<'iter>;
+  fn next(&mut self) -> Option<Paragraph<'iter>> {
     match self.walker.next() {
       None => None,
       Some(node) => {
         // Create a DNM for the current paragraph
         let dnm = DNM::new(node, DNMParameters::llamapun_normalization());    
-        Some(Paragraph {dnm : dnm})
+        Some(Paragraph {dnm : dnm, document : self.document})
       }
     }
   }
 }
-  
-  //   let ranges : Vec<DNMRange> = tokenizer.sentences(&dnm);
 
-  //   for sentence_range in ranges {
-  //     total_sentences += 1;
-  //     for w in tokenizer.words(&sentence_range) {
-  //       total_words += 1;
-  //       let word = w.to_string().to_lowercase();
-  //       let dictionary_index : &i64 = 
-  //         match dictionary.contains_key(&word) {
-  //         true => dictionary.get(&word).unwrap(),
-  //         false => {
-  //           word_index+=1;
-  //           dictionary.insert(word.clone(), word_index);
-  //           &word_index }
-  //         };
-  //       // print!("{}  ",dictionary_index);
-  //       let word_frequency = frequencies.entry(*dictionary_index).or_insert(0);
-  //       *word_frequency += 1;
-  //       word_frequencies.insert(word.clone(), word_frequency.clone());
-  //     }
-  //     // println!("");
-  //   }
-  // }
+impl<'p> Paragraph<'p> {
+  pub fn iter(&'p mut self) -> SentenceIterator<'p> {
+    let tokenizer = &self.document.corpus.tokenizer;
+    let sentences = tokenizer.sentences(&self.dnm);
+    SentenceIterator {
+      walker : sentences.into_iter(),
+      paragraph : self
+    }
+  }
+}
+
+impl<'iter> Iterator for SentenceIterator<'iter> {
+  type Item = Sentence<'iter>;
+  fn next(&mut self) -> Option<Sentence<'iter>> {
+    match self.walker.next() {
+      None => None,
+      Some(range) => {
+        Some(Sentence {range : range, paragraph : self.paragraph})
+      }
+    }
+  }
+}
+
+impl<'s> Sentence<'s> {
+  pub fn iter(&'s mut self) -> WordIterator<'s> {
+    let tokenizer = &self.paragraph.document.corpus.tokenizer;
+    let words = tokenizer.words(&self.range);
+    WordIterator {
+      walker : words.into_iter(),
+      sentence : self
+    }
+  }
+}
+
+impl<'iter> Iterator for WordIterator<'iter> {
+  type Item = Word<'iter>;
+  fn next(&mut self) -> Option<Word<'iter>> {
+    match self.walker.next() {
+      None => None,
+      Some(text) => {
+        Some(Word {text : text, sentence : self.sentence})
+      }
+    }
+  }
+}

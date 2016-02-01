@@ -6,46 +6,42 @@ extern crate time;
 
 use std::collections::HashMap;
 use time::PreciseTime;
-use libxml::xpath::*;
 use libxml::parser::Parser;
 use gnuplot::*;
 
-use llamapun::dnm::*;
-use llamapun::tokenizer::*;
+use llamapun::tokenizer::Tokenizer;
+use llamapun::data::{Corpus,Document};
 
 fn main() {
   let start_example = PreciseTime::now();
-  let parser = Parser::default_html();
-  let arxivid = "0903.1000";
-  let doc = parser.parse_file(&("tests/resources/".to_string()+arxivid+".html")).unwrap();
-  let end_parse = PreciseTime::now();
+
   let mut dictionary: HashMap<String, i64> = HashMap::new();
   let mut word_frequencies: HashMap<String, i64> = HashMap::new();
   let mut frequencies: HashMap<i64, i64> = HashMap::new();
   let mut word_index = 0;
-
-  // Setup the xpath selector and global totals counters
-  let xpath_context = Context::new(&doc).unwrap();
-  let para_xpath_result = xpath_context.evaluate("//*[contains(@class,'ltx_para')]").unwrap();
   let mut total_words = 0;
   let mut total_sentences = 0;
   let mut total_paragraphs = 0;
-  // Use the default tokenizer, in a single variable globally to the document
-  let tokenizer = Tokenizer::default();
+
+
+  let corpus = Corpus {
+    path: "tests/resources/".to_string(),
+    parser : Parser::default_html(),
+    // Use the default tokenizer, in a single variable globally to the document
+    tokenizer : Tokenizer::default()
+  };
+  let arxivid = "0903.1000";
+  let mut document = Document::new("tests/resources/".to_string()+arxivid+".html", &corpus).unwrap();
+  let end_parse = PreciseTime::now();
 
   // We will tokenize each logical paragraph, which are the textual logical units in an article
-  for para in para_xpath_result.get_nodes_as_vec().into_iter() {
+  for mut paragraph in document.iter() {
     total_paragraphs += 1;
-    // Create a DNM for the current paragraph
-    let dnm = DNM::new(para, DNMParameters::llamapun_normalization());
-
-    let ranges : Vec<DNMRange> = tokenizer.sentences(&dnm);
-
-    for sentence_range in ranges {
+    for mut sentence in paragraph.iter() {
       total_sentences += 1;
-      for w in tokenizer.words(&sentence_range) {
+      for sent_word in sentence.iter() {
         total_words += 1;
-        let word = w.to_string().to_lowercase();
+        let word = sent_word.text.to_string().to_lowercase();
         let dictionary_index : &i64 = 
           match dictionary.contains_key(&word) {
           true => dictionary.get(&word).unwrap(),
@@ -54,15 +50,13 @@ fn main() {
             dictionary.insert(word.clone(), word_index);
             &word_index }
           };
-        // print!("{}  ",dictionary_index);
+
         let word_frequency = frequencies.entry(*dictionary_index).or_insert(0);
         *word_frequency += 1;
         word_frequencies.insert(word.clone(), word_frequency.clone());
       }
-      // println!("");
     }
   }
-  // println!("");
   let end_example = PreciseTime::now();
   
   let mut sorted_dictionary = Vec::new();

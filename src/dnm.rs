@@ -141,13 +141,13 @@ fn node_to_hashable(node : &Node) -> usize {
 /// The `DNM` is essentially a wrapper around the plain text representation
 /// of the document, which facilitates mapping plaintext pieces to the DOM.
 /// This breaks, if the DOM is changed after the DNM generation!
-pub struct DNM<'dnm> {
+pub struct DNM {
   /// The plaintext
   pub plaintext : String,
   /// The options for generation
   pub parameters : DNMParameters,
   /// The root node of the underlying xml tree
-  pub root_node : &'dnm Node,
+  pub root_node : Node,
   /// Maps nodes to plaintext offsets
   //pub node_map : HashMap<Node, (usize, usize)>,
   //pub node_map : HashMap<libc::c_void, (usize, usize)>,
@@ -167,7 +167,7 @@ struct RuntimeParseData {
 pub struct DNMRange <'dnmrange> {
   pub start : usize,
   pub end : usize,
-  pub dnm : &'dnmrange DNM<'dnmrange>,
+  pub dnm : &'dnmrange DNM,
 }
 
 impl <'dnmrange> DNMRange <'dnmrange> {
@@ -205,14 +205,14 @@ impl <'dnmrange> Clone for DNMRange <'dnmrange> {
   }
 }
 
-impl<'dnm> DNM<'dnm> {
+impl DNM {
   /// Creates a `DNM` for `root`
-  pub fn new(root: &Node, parameters: DNMParameters) -> DNM {
+  pub fn new(root: Node, parameters: DNMParameters) -> DNM {
     parameters.check();
     let mut dnm = DNM {
       plaintext : String::new(),
       parameters : parameters,
-      root_node : root,
+      root_node : root.clone(),
       node_map : HashMap::new(),
     };
 
@@ -220,7 +220,7 @@ impl<'dnm> DNM<'dnm> {
       had_whitespace : true,  //no need for leading whitespaces
     };
 
-    dnm.recurse_node_create(root, &mut runtime);
+    dnm.recurse_node_create(&root, &mut runtime);
 
     return dnm
   }

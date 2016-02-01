@@ -34,10 +34,10 @@ fn main() {
   let tokenizer = Tokenizer::default();
 
   // We will tokenize each logical paragraph, which are the textual logical units in an article
-  for para in para_xpath_result.get_nodes_as_vec().iter() {
+  for para in para_xpath_result.get_nodes_as_vec().into_iter() {
     total_paragraphs += 1;
     // Create a DNM for the current paragraph
-    let dnm = DNM::new(&para, DNMParameters::llamapun_normalization());
+    let dnm = DNM::new(para, DNMParameters::llamapun_normalization());
 
     let ranges : Vec<DNMRange> = tokenizer.sentences(&dnm);
 

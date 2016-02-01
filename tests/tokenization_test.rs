@@ -24,7 +24,7 @@ fn test_sentence_tokenization_simple() {
   let simple_dnm = DNM {
     plaintext : simple_text,
     parameters : DNMParameters::llamapun_normalization(),
-    root_node : &fake_node,
+    root_node : fake_node,
     node_map : HashMap::new()};
 
   let simple_tokenizer = Tokenizer::default();
@@ -85,8 +85,8 @@ fn test_each_paragraph<'a>(doc: &'a Document, expected: Vec<Vec<&'a str>>) {
   let para_xpath_result = xpath_context.evaluate("//*[contains(@class,'ltx_para')]").unwrap();
 
   let mut expected_iter = expected.iter();
-  for para in para_xpath_result.get_nodes_as_vec().iter() {
-    let dnm = DNM::new(&para, DNMParameters::llamapun_normalization());
+  for para in para_xpath_result.get_nodes_as_vec().into_iter() {
+    let dnm = DNM::new(para, DNMParameters::llamapun_normalization());
 
     let paragraph_expected = expected_iter.next().unwrap();
     assert_eq!(dnm.plaintext.trim(), paragraph_expected[0]);

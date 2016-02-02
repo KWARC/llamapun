@@ -1,9 +1,9 @@
-The **llamapun** library aims to provide support for a wide array of common **language and mathematics processing** tasks.
+The **llamapun** library hosts common _language and mathematics processing_ algorithms, used by the KWARC research group.
 
 [![Build Status](https://secure.travis-ci.org/KWARC/llamapun.png?branch=master)](http://travis-ci.org/KWARC/llamapun)
 
 ---
-At its core, **lamapun** is a [Rust](http://rust-lang.org/) implementation that aims at minimal footprint and optimal runtime, in order to optimally scale to corpora of millions of documents and tens of billions ot tokens.
+At its core, **lamapun** is a [Rust](http://rust-lang.org/) implementation that aims at minimal footprint and optimal runtime, in order to safely scale to corpora of millions of documents and tens of billions ot tokens.
 
 ## High-level Overview
  * **Source Data**

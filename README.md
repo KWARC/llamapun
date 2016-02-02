@@ -3,11 +3,7 @@ The **llamapun** library aims to provide support for a wide array of common **la
 [![Build Status](https://secure.travis-ci.org/KWARC/llamapun.png?branch=master)](http://travis-ci.org/KWARC/llamapun)
 
 ---
-The migration consists of reorganizing the libraries, and preparing a CPAN-near bundle including a testbed and detailed documentation.
-This process also brings a namespace change to the now properly spelled LLaMaPUn.
-
-Several upcoming deployments of the [CorTeX framework](https://github.com/dginev/CorTeX) have motivated the move to GitHub
-and provide an outlook for a number of fixes and features to be added to the library.
+At its core, **lamapun** is a [Rust](http://rust-lang.org/) implementation that aims at minimal footprint and optimal runtime, in order to optimally scale to corpora of millions of documents and tens of billions ot tokens.
 
 ## High-level Overview
  * **Source Data**

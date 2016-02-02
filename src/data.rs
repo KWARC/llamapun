@@ -1,6 +1,6 @@
 //! Data structures and Iterators for convenient high-level syntax
 use std::vec::IntoIter;
-use walkdir::{Error, DirEntry, WalkDir, WalkDirIterator};
+use walkdir::{DirEntry, WalkDir, WalkDirIterator};
 use walkdir::Result as DirResult;
 
 use dnm::{DNM, DNMRange, DNMParameters};

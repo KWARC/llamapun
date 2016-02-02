@@ -1,14 +1,13 @@
 extern crate llamapun;
 extern crate libxml;
-extern crate libc;
 
-use libc::c_void;
 use llamapun::dnm::*;
 use llamapun::tokenizer::*;
 use libxml::tree::*;
 use libxml::xpath::*;
 use libxml::parser::Parser;
 use std::collections::HashMap;
+use std::ptr; 
 
 #[test]
 /// Test sentence tokenization of a simple document
@@ -20,7 +19,7 @@ fn test_sentence_tokenization_simple() {
    Our most significant result is a stochastic interpretation of the Bernstein \
    approximation of a copula. This interpretation was communicated to us by J. H. B. Kemperman in [?] for \
    2-copulas and we are not aware of its publication elsewhere.".to_string();
-  let fake_node = Node {node_ptr : 0 as *mut libc::c_void};
+  let fake_node = Node {node_ptr : ptr::null_mut()};
   let simple_dnm = DNM {
     plaintext : simple_text,
     parameters : DNMParameters::llamapun_normalization(),

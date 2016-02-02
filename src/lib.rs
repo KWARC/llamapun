@@ -3,6 +3,7 @@
 //! The original library can be found at https://github.com/KWARC/LLaMaPUn
 
 #![feature(slice_patterns)]
+
 extern crate libxml;
 extern crate libc;
 extern crate regex;
@@ -10,9 +11,9 @@ extern crate unidecode;
 extern crate gnuplot;
 extern crate rustmorpha;
 extern crate walkdir;
+extern crate rustsenna;
 
 pub mod dnm;
 pub mod data;
 pub mod stopwords;
 pub mod tokenizer;
-// pub mod glove;

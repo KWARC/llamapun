@@ -14,7 +14,6 @@ use llamapun::data::{Corpus,Document};
 
 fn main() {
   let start_example = PreciseTime::now();
-
   let mut dictionary: HashMap<String, i64> = HashMap::new();
   let mut word_frequencies: HashMap<String, i64> = HashMap::new();
   let mut frequencies: HashMap<i64, i64> = HashMap::new();

@@ -46,7 +46,7 @@ impl Default for SennaSettings {
 /// Makes `rustsenna` work with the `dnmlib`
 pub struct SennaAdapter<'t> {
     senna: senna::Senna<'t>,
-    tokenizer: Tokenizer<'t>,
+    tokenizer: Tokenizer,
     settings: SennaSettings,
 }
 

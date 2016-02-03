@@ -1,6 +1,5 @@
 extern crate llamapun;
 extern crate libxml;
-extern crate libc;
 
 use llamapun::dnm::*;
 use llamapun::tokenizer::*;
@@ -8,6 +7,7 @@ use libxml::tree::*;
 use libxml::xpath::*;
 use libxml::parser::Parser;
 use std::collections::HashMap;
+use std::ptr; 
 
 #[test]
 /// Test sentence tokenization of a simple document
@@ -19,11 +19,11 @@ fn test_sentence_tokenization_simple() {
    Our most significant result is a stochastic interpretation of the Bernstein \
    approximation of a copula. This interpretation was communicated to us by J. H. B. Kemperman in [?] for \
    2-copulas and we are not aware of its publication elsewhere.".to_string();
-  let fake_node = Node {node_ptr : 0 as *mut libc::c_void};
+  let fake_node = Node {node_ptr : ptr::null_mut()};
   let simple_dnm = DNM {
     plaintext : simple_text,
     parameters : DNMParameters::llamapun_normalization(),
-    root_node : &fake_node,
+    root_node : fake_node,
     node_map : HashMap::new()};
 
   let simple_tokenizer = Tokenizer::default();
@@ -84,8 +84,8 @@ fn test_each_paragraph<'a>(doc: &'a Document, expected: Vec<Vec<&'a str>>) {
   let para_xpath_result = xpath_context.evaluate("//*[contains(@class,'ltx_para')]").unwrap();
 
   let mut expected_iter = expected.iter();
-  for para in para_xpath_result.get_nodes_as_vec().iter() {
-    let dnm = DNM::new(&para, DNMParameters::llamapun_normalization());
+  for para in para_xpath_result.get_nodes_as_vec().into_iter() {
+    let dnm = DNM::new(para, DNMParameters::llamapun_normalization());
 
     let paragraph_expected = expected_iter.next().unwrap();
     assert_eq!(dnm.plaintext.trim(), paragraph_expected[0]);

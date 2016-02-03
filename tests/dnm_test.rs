@@ -23,7 +23,7 @@ fn test_plaintext_simple() {
   options.insert("a".to_string(),
                  SpecialTagsOption::Normalize("[link]".to_string()));
   let root = doc.get_root_element().unwrap();
-  let dnm = DNM::new(&root,
+  let dnm = DNM::new(root,
                             DNMParameters {
                                 special_tag_name_options : options,
                                 normalize_white_spaces : true,
@@ -47,7 +47,7 @@ fn test_xml_node_to_plaintext() {
   options.insert("a".to_string(),
                  SpecialTagsOption::Normalize("[link]".to_string()));
   let root = doc.get_root_element().unwrap();
-  let dnm = DNM::new(&root,
+  let dnm = DNM::new(root,
                             DNMParameters {
                                 special_tag_name_options : options,
                                 ..Default::default()
@@ -100,7 +100,7 @@ fn test_plaintext_normalized_class_names() {
   options.insert("normalized".to_string(),
                  SpecialTagsOption::Normalize("[NORMALIZED]".to_string()));
   let root = doc.get_root_element().unwrap();
-  let dnm = DNM::new(&root,
+  let dnm = DNM::new(root,
                             DNMParameters {
                                 special_tag_class_options : options,
                                 normalize_white_spaces : true,
@@ -125,7 +125,7 @@ fn test_move_whitespaces_between_nodes() {
   let parser = Parser::default();
   let doc = parser.parse_file("tests/resources/file01.xml").unwrap();
   let root = doc.get_root_element().unwrap();
-  let dnm = DNM::new(&root,
+  let dnm = DNM::new(root,
                             DNMParameters {
                                 move_whitespaces_between_nodes: true,
                                 normalize_white_spaces: true,
@@ -148,7 +148,7 @@ fn test_unicode_normalization() {
   let parser = Parser::default();
   let doc = parser.parse_file("tests/resources/file03.xml").unwrap();
   let root = doc.get_root_element().unwrap();
-  let dnm = DNM::new(&root, DNMParameters {
+  let dnm = DNM::new(root, DNMParameters {
     normalize_unicode: true,
     ..DNMParameters::default() });
   let node = doc.get_root_element().unwrap();
@@ -161,7 +161,7 @@ fn test_morpha_stemming() {
   let parser = Parser::default();
   let doc = parser.parse_file("tests/resources/file04.xml").unwrap();
   let root = doc.get_root_element().unwrap();
-  let dnm = DNM::new(&root,
+  let dnm = DNM::new(root,
                             DNMParameters {
                                 stem_words_once: true,
                                 ..Default::default() });

@@ -7,12 +7,12 @@ use regex::Regex;
 
 
 // Only initialize auxiliary resources once and keep them in a Tokenizer struct
-pub struct Tokenizer <'a> {
- pub stopwords : HashSet<&'a str>,
+pub struct Tokenizer {
+ pub stopwords : HashSet<&'static str>,
  pub abbreviations : Regex,
 }
-impl <'a> Default for Tokenizer <'a> {
-  fn default() -> Tokenizer <'a> {
+impl Default for Tokenizer {
+  fn default() -> Tokenizer {
     Tokenizer {
       stopwords : stopwords::load(),
       abbreviations : Regex::new(r"^(?:C(?:[ft]|o(?:n[jn]|lo?|rp)?|a(?:l(?:if)?|pt)|mdr|p?l|res)|M(?:[dst]|a(?:[jnry]|ss)|i(?:ch|nn|ss)|o(?:nt)?|ex?|rs?)|A(?:r(?:[ck]|iz)|l(?:t?a)?|ttys?|ssn|dm|pr|ug|ve)|c(?:o(?:rp|l)?|(?:ap)?t|mdr|p?l|res|f)|S(?:e(?:ns?|pt?|c)|(?:up|g)?t|ask|r)|s(?:e(?:ns?|pt?|c)|(?:up|g)?t|r)|a(?:ttys?|ssn|dm|pr|rc|ug|ve|l)|P(?:enna?|-a.s|de?|lz?|rof|a)|D(?:e(?:[cfl]|p?t)|ist|ak|r)|I(?:[as]|n[cd]|da?|.e|ll)|F(?:e[bd]|w?y|ig|la|t)|O(?:k(?:la)?|[cn]t|re)|d(?:e(?:p?t|c)|ist|r)|E(?:xpy?|.g|sp|tc|q)|R(?:e(?:ps?|sp|v)|d)|T(?:e(?:nn|x)|ce|hm)|e(?:xpy?|.g|sp|tc|q)|m(?:[st]|a[jry]|rs?)|r(?:e(?:ps?|sp|v)|d)|N(?:e(?:br?|v)|ov?)|W(?:isc?|ash|yo?)|f(?:w?y|eb|ig|t)|p(?:de?|lz?|rof)|J(?:u[ln]|an|r)|U(?:SAFA|niv|t)|j(?:u[ln]|an|r)|K(?:ans?|en|y)|B(?:lv?d|ros)|b(?:lv?d|ros)|G(?:en|ov|a)|L(?:td?|a)|g(?:en|ov)|i(?:.e|nc)|l(?:td?|a)|[Hh]wa?y|V[ast]|Que|nov?|univ|Yuk|oct|tce|vs)\s?$").unwrap(),
@@ -20,8 +20,8 @@ impl <'a> Default for Tokenizer <'a> {
   }
 }
 
-impl <'t, 'a> Tokenizer <'t> {
-  pub fn sentences(&self, dnm: &'a DNM) -> Vec<DNMRange <'a>> {
+impl Tokenizer {
+  pub fn sentences<'a>(&self, dnm: &'a DNM) -> Vec<DNMRange <'a>> {
     let text = &dnm.plaintext;
     let mut sentences : Vec<DNMRange <'a>> = Vec::new();
     let mut text_iterator = text.chars().peekable();
@@ -196,7 +196,7 @@ impl <'t, 'a> Tokenizer <'t> {
     return sentences;
   }
 
-  pub fn words(&self, sentence_range: &'a DNMRange) -> Vec<&'a str>  {
+  pub fn words<'a>(&self, sentence_range: &'a DNMRange) -> Vec<&'a str>  {
     sentence_range.get_plaintext().split(|c: char| !c.is_alphabetic()).filter(|w| w.len() > 0).collect()
   }
 }

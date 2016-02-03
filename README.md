@@ -6,7 +6,7 @@ The **llamapun** library hosts common _language and mathematics processing_ algo
 ---
 At its core, **lamapun** is a [Rust](http://rust-lang.org/) implementation that aims at minimal footprint and optimal runtime, in order to safely scale to corpora of millions of documents and tens of billions ot tokens.
 
-## High-level Overview
+### Features
  * **Source Data**
    * Built-in support for STEM documents in ([LaTeXML-flavoured](https://github.com/brucemiller/LaTeXML/)) HTML5.
  * **Preprocessing**

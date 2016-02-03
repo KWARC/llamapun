@@ -195,6 +195,10 @@ impl <'dnmrange> DNMRange <'dnmrange> {
         trimmed_end -= 1; }
       else {
         break; }}
+    if trimmed_start > trimmed_end {  // in case range contains only whitespaces
+        trimmed_start = self.start;
+        trimmed_end = self.start;
+    }
     DNMRange {start : trimmed_start, end: trimmed_end, dnm: self.dnm}
   }
 

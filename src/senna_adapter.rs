@@ -6,7 +6,6 @@ extern crate rustsenna;
 
 use rustsenna::senna;
 use rustsenna::pos::POS;
-use rustsenna::phrase::Phrase;
 use tokenizer::Tokenizer;
 use std::io::{self, Write};
 use dnm::*;
@@ -122,9 +121,12 @@ impl<'t> SennaAdapter<'t> {
     pub fn process_dnm<'a>(&mut self, dnm: &'a DNM) -> Vec<Sentence<'a>> {
         let sentence_ranges : Vec<DNMRange<'a>> = self.tokenizer.sentences(dnm);
         let mut results : Vec<Sentence<'a>> = Vec::with_capacity(sentence_ranges.len());
+        // print!("Plain: '{}'\n", dnm.plaintext);
 
         for sentence in sentence_ranges {
-            results.push(self.process_sentence(sentence));
+            if sentence.start < sentence.end {
+                results.push(self.process_sentence(sentence));
+            }
         }
 
         results
@@ -138,9 +140,41 @@ pub struct Sentence<'t> {
     psgroot: Option<rustsenna::sentence::PSGNode>,
 }
 
+impl<'t> Sentence<'t> {
+    pub fn get_range(&self) -> &DNMRange<'t> {
+        &self.range
+    }
+
+    pub fn get_plaintext(&self) -> &str {
+        self.range.get_plaintext()
+    }
+
+    pub fn get_words(&self) -> &Vec<Word<'t>> {
+        &self.words
+    }
+
+    pub fn get_psgroot(&self) -> &Option<rustsenna::sentence::PSGNode> {
+        &self.psgroot
+    }
+}
+
 
 pub struct Word<'t> {
     range: DNMRange<'t>,
     pos: POS,
+}
+
+impl<'t> Word<'t> {
+    pub fn get_range(&self) -> &DNMRange<'t> {
+        &self.range
+    }
+
+    pub fn get_plaintext(&self) -> &str {
+        self.range.get_plaintext()
+    }
+
+    pub fn get_pos(&self) -> POS {
+        self.pos
+    }
 }
 

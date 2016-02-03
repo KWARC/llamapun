@@ -1,11 +1,12 @@
 The **llamapun** library hosts common _language and mathematics processing_ algorithms, used by the KWARC research group.
 
-[![Build Status](https://secure.travis-ci.org/KWARC/llamapun.png?branch=master)](http://travis-ci.org/KWARC/llamapun)
+[![Build Status](https://secure.travis-ci.org/KWARC/llamapun.png?branch=master)](http://travis-ci.org/KWARC/llamapun) [![license](http://img.shields.io/badge/license-GPLv3-blue.svg)](https://raw.githubusercontent.com/KWARC/llamapun/master/LICENSE)
+
 
 ---
 At its core, **lamapun** is a [Rust](http://rust-lang.org/) implementation that aims at minimal footprint and optimal runtime, in order to safely scale to corpora of millions of documents and tens of billions ot tokens.
 
-## High-level Overview
+### Features
  * **Source Data**
    * Built-in support for STEM documents in ([LaTeXML-flavoured](https://github.com/brucemiller/LaTeXML/)) HTML5.
  * **Preprocessing**

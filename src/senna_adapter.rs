@@ -37,7 +37,7 @@ impl Default for SennaSettings {
         SennaSettings {
             senna_path: None,
             do_pos: true,
-            do_psg: true,
+            do_psg: false,
         }
     }
 }

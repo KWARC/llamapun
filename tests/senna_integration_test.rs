@@ -6,7 +6,7 @@ extern crate rustsenna;
 
 use libxml::parser::Parser;
 use llamapun::dnm::{DNM, DNMParameters};
-use llamapun::senna_adapter::{SennaAdapter, SennaSettings};
+use llamapun::senna_adapter::{SennaAdapter};
 use rustsenna::pos::POS;
 
 
@@ -16,11 +16,7 @@ fn test_senna_adapter() {
     let doc = parser.parse_file("tests/resources/1311.0066.xhtml").unwrap();
     let root = doc.get_root_element().unwrap();
     let dnm = DNM::new(root, DNMParameters::llamapun_normalization());
-    let mut senna = SennaAdapter::new(
-        SennaSettings {
-            do_psg: false,   // psg takes a lot of time
-            ..Default::default()
-        });
+    let mut senna = SennaAdapter::default();
     let sentences = senna.process_dnm(&dnm);
 
     assert!(sentences.len() > 5);

@@ -42,9 +42,8 @@ impl Tokenizer {
         Some('.') | Some(':') => {
           // Baseline condition - only split when we have a following uppercase letter
           // Get next non-space, non-quote character
-          while (text_iterator.peek() != None) && 
-                (text_iterator.peek().unwrap().is_whitespace() ||
-                 text_iterator.peek() == Some(&'\'')) {
+          while text_iterator.peek().unwrap_or(&'.').is_whitespace() ||
+                 text_iterator.peek() == Some(&'\'') {
             let space_char = text_iterator.next().unwrap();
             end+= space_char.len_utf8();
           }
@@ -54,7 +53,7 @@ impl Tokenizer {
             // Ok, uppercase, but is it a stopword? If so, we must ALWAYS break the sentence:
             let mut next_word_length = 0;
             let mut next_word : Vec<char> = Vec::new();
-            while (text_iterator.peek() != None) && text_iterator.peek().unwrap().is_alphabetic() && (next_word_length<20) {
+            while text_iterator.peek().unwrap_or(&'.').is_alphabetic() && (next_word_length<20) {
               let word_char = text_iterator.next().unwrap();
               next_word.push(word_char);
               next_word_length += word_char.len_utf8();
@@ -140,7 +139,7 @@ impl Tokenizer {
           match text_iterator.peek() {
             Some(&'\n') => { // second newline             
               // Get next non-space character
-              while (text_iterator.peek() != None) && text_iterator.peek().unwrap().is_whitespace() {
+              while text_iterator.peek().unwrap_or(&'.').is_whitespace() {
                 let space_char = text_iterator.next().unwrap();
                 end+= space_char.len_utf8();
               }
@@ -148,7 +147,7 @@ impl Tokenizer {
               // Get the next word
               let mut next_word_length = 0;
               let mut next_word : Vec<char> = Vec::new();
-              while (text_iterator.peek() != None) && text_iterator.peek().unwrap().is_alphabetic() && (next_word_length<20) {
+              while text_iterator.peek().unwrap_or(&'.').is_alphabetic() && (next_word_length<20) {
                 let word_char = text_iterator.next().unwrap();
                 next_word.push(word_char);
                 next_word_length += word_char.len_utf8();
@@ -157,7 +156,7 @@ impl Tokenizer {
               let is_lower_word = next_word.len()>0 && next_word[0].is_lowercase();
               let next_word_string : String = next_word.into_iter().collect();
               // Sentence-break, UNLESS a "MathFormula" or a "lowercase word" follows, or a non-alpha char
-              if (next_word_string == "") || (next_word_string == "MathFormula") || (is_lower_word) {
+              if (next_word_string.is_empty()) || (next_word_string == "MathFormula") || (is_lower_word) {
                 // We consumed the next word, add it to the left window
                 for next_word_char in next_word_string.chars() {
                   left_window.push_back(next_word_char); 
@@ -193,7 +192,9 @@ impl Tokenizer {
     if alpha_char != None {
       sentences.push(DNMRange{start: start, end: end, dnm: dnm}.trim());
     }
-    return sentences;
+
+    // Filter out edge cases that return empty ranges
+    return sentences.into_iter().filter(|range| range.start < range.end ).collect();
   }
 
   pub fn words<'a, 'b>(&'b self, sentence_range: &'a DNMRange<'b>) -> /* Vec<&'a str> */ Vec<DNMRange> {

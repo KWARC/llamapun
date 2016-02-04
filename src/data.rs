@@ -121,14 +121,23 @@ impl<'iter> Iterator for DocumentIterator<'iter> {
   }
 }
 
-impl Corpus {
-  pub fn new(dirpath : String) -> Self {
+impl Default for Corpus {
+  fn default() -> Corpus {
     Corpus {
-      path : dirpath,
+      path : ".".to_string(),
       tokenizer : Tokenizer::default(),
       parser : Parser::default_html(),
       senna : RefCell::new(Senna::new(SENNA_PATH.to_owned())),
       senna_options : Cell::new(SennaParseOptions::default()),
+    }
+  }
+}
+
+impl Corpus {
+  pub fn new(dirpath : String) -> Self {
+    Corpus {
+      path : dirpath,
+      ..Corpus::default()
     }
   }
 

@@ -8,8 +8,13 @@ The **llamapun** library hosts common _language and mathematics processing_ algo
 At its core, **lamapun** is a [Rust](http://rust-lang.org/) implementation that aims at minimal footprint and optimal runtime, in order to safely scale to corpora of millions of documents and tens of billions ot tokens.
 
 ### Features
+ * **Programming API**
+   * High-level iterators over the narrative elements of scientific documents
+   * Zero-cost abstractions over the source data, as well as over linguistic annotations of various granularity.
+
  * **Source Data**
    * Built-in support for STEM documents in ([LaTeXML-flavoured](https://github.com/brucemiller/LaTeXML/)) HTML5.
+
  * **Preprocessing**
    * Unicode normalization,
    * Stopwords - based on widely accepted lists, enhanced for STEM texts,
@@ -19,18 +24,19 @@ At its core, **lamapun** is a [Rust](http://rust-lang.org/) implementation that 
    * Tokenization - rule-based sentence segmentation, and [SENNA](http://ml.nec-labs.com/senna/) word tokenization
 
  * **Shallow Analysis**
-   * Language identification (via [libTextCat](http://software.wise-guys.nl/libtextcat/)),
-   * N-gram footprints,
    * Part-of-speech tagging (via [SENNA](http://ml.nec-labs.com/senna/)),
    * Named Entity recognition (via [SENNA](http://ml.nec-labs.com/senna/)),
    * Chunking and shallow parsing (via [SENNA](http://ml.nec-labs.com/senna/)),
+   * [GloVe](http://nlp.stanford.edu/projects/glove/) (Rust reimplementation)
+   * [TODO] Language identification (via [libTextCat](http://software.wise-guys.nl/libtextcat/)),
+   * [TODO] N-gram footprints,
    * [TODO] "Definition" paragraph discrimination task (training SVM classifiers, based on TF/IDF and Ngram BoW features, via [libsvm](https://github.com/cjlin1/libsvm))
    * [TODO] "Declaration" sentence discrimination task (training CRF models via [CRFsuite](http://www.chokkan.org/software/crfsuite/)).
 
  * **Representation Toolkit**
    * Document Narrative Model (DNM) addition to the XML DOM
-   * XPointer and string offset annotation support
-   * Integration with the [CorTeX](https://github.com/dginev/CorTeX) processing framework
+   * [TODO] XPointer and string offset annotation support
+   * [TODO] Integration with the [CorTeX](https://github.com/dginev/CorTeX) processing framework
    * [TOPORT] Shared Packed parse forests for mathematical formulas (aka "disjunctive logical forms")
 
  * **Programming API**

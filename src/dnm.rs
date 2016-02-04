@@ -195,14 +195,13 @@ impl <'dnmrange> DNMRange <'dnmrange> {
         trimmed_end -= 1; }
       else {
         break; }}
-
     // Edge case: when the given input is whitespace only, start will be larger than end.
     // In that case return the 0-width range at the original end marker.
     if trimmed_start >= trimmed_end {
-      DNMRange {start : self.end, end: self.end, dnm: self.dnm}
-    } else {
-      DNMRange {start : trimmed_start, end: trimmed_end, dnm: self.dnm}
+      trimmed_start = self.end;
+      trimmed_end = self.end;
     }
+    DNMRange {start : trimmed_start, end: trimmed_end, dnm: self.dnm}
   }
 
   /// returns a subrange, with offsets relative to the beginning of `self`

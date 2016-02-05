@@ -1,3 +1,0 @@
-struct Shuffle {
-  everybody : bool
-}

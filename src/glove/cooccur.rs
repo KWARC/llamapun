@@ -1,6 +1,6 @@
-///  Tool to calculate word-word cooccurrence statistics
+/// Calculate word-word cooccurrence statistics
 ///
-///  Adapted from: https://raw.githubusercontent.com/stanfordnlp/GloVe/master/src/cooccur.c
+/// Adapted from: https://raw.githubusercontent.com/stanfordnlp/GloVe/master/src/cooccur.c
 
 const TSIZE : i32 = 1048576;
 const SEED : i32 = 1159241;

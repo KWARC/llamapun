@@ -82,9 +82,9 @@ fn main() {
     "distribution_word_freq.png");
 
   // Print out the final report:
-  println!("--- Dictionary: \n{:?}\n\n", inorder_dictionary);
-  println!("--- Frequencies: \n{:?}\n\n", unigrams.sort());
-  println!("--- Frequency distribution: \n{:?}\n\n", value_sorted_frequencies);
+  println!("--- Dictionary: \n{:?}\n", inorder_dictionary);
+  println!("--- Frequencies: \n{:?}\n", unigrams.sort());
+  println!("--- Frequency distribution: \n{:?}\n", value_sorted_frequencies);
   println!("--- Paragraphs total: {:?}",total_paragraphs);
   println!("--- Sentences total: {:?}",total_sentences);
   println!("--- Words total: {:?}",total_words);

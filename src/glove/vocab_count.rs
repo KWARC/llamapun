@@ -2,13 +2,14 @@
 ///
 /// Adapted from: https://raw.githubusercontent.com/stanfordnlp/GloVe/master/src/vocab_count.c
 
-use std::collections::HashMap;
+use data::Corpus;
+use ngrams::Unigrams;
 
-const MAX_STRING_LENGTH : i32 = 1000
-const TSIZE : i32 = 1048576
-const SEED : i32  1159241
+const MAX_STRING_LENGTH : i32 = 1000;
+const TSIZE : i32 = 1048576;
+const SEED : i32 = 1159241;
 
-struct CountOptions {
+pub struct CountOptions {
   verbose : u32, // 0,1, or 2
   min_count : u32, // min occurrences for inclusion in vocab
   max_vocab : Option<u32>, // None for no limit
@@ -18,30 +19,39 @@ impl Default for CountOptions {
     CountOptions {
       verbose : 2,
       min_count : 1,
-      max_vocab : 0
+      max_vocab : None
     }
   }
 }
 
-pub fn get_counts(options: Option<CountOptions>) {
-  let mut vocabulary = HashMap::new();
+pub fn get_counts(mut corpus : Corpus, input_options: Option<CountOptions>) {
+  let options = match input_options {
+    Some(opts) => opts,
+    None => CountOptions::default()
+  };
+  let mut vocabulary = Unigrams::new();
   let mut token_count : usize = 0;
   let mut j : usize = 0;
   let mut vocab_size : usize = 12500;
   let mut format : String;
-  char str[MAX_STRING_LENGTH + 1];
 
   println!("BUILDING VOCABULARY");
   if options.verbose > 1 {
     println!("Processed {:?} tokens.", token_count);
   }
   // Insert all tokens into a hash table
-  for token in options.walker {
-    vocabulary.insert(token)
-    token_count += 1;
-    if token_count % 100000 == 0 {
-      if options.verbose > 1 {
-        println!("\033[11G{:?} tokens.", token_count);
+  for mut document in corpus.iter() {
+    for mut paragraph in document.iter() {
+      for mut sentence in paragraph.iter() {
+        for mut word in sentence.iter() {
+          vocabulary.insert(word.text.to_owned());
+          token_count += 1;
+          if options.verbose > 1 {
+            if token_count % 100000 == 0 {
+              println!("\033[11G{:?} tokens.", token_count);
+            }
+          }
+        }
       }
     }
   }

@@ -196,8 +196,25 @@ impl Tokenizer {
     return sentences;
   }
 
-  pub fn words<'a>(&self, sentence_range: &'a DNMRange) -> Vec<&'a str>  {
-    sentence_range.get_plaintext().split(|c: char| !c.is_alphabetic()).filter(|w| w.len() > 0).collect()
+  pub fn words<'a, 'b>(&'b self, sentence_range: &'a DNMRange<'b>) -> /* Vec<&'a str> */ Vec<DNMRange> {
+    // sentence_range.get_plaintext().split(|c: char| !c.is_alphabetic()).filter(|w| w.len() > 0).collect()
+    let text_iterator = sentence_range.get_plaintext().chars().peekable();
+    let mut start = 0usize;
+    let mut end = 0usize;
+    let mut result : Vec<DNMRange> = Vec::new();
+    for c in text_iterator {
+        end += 1;
+        if !c.is_alphabetic() {
+            if start+1 < end {
+                result.push(sentence_range.get_subrange(start, end));
+            }
+            start = end;
+        }
+    }
+    if start+1 < end {
+        result.push(sentence_range.get_subrange(start, end));
+    }
+    result
   }
 }
 

@@ -106,7 +106,7 @@ dependencies = [
 [[package]]
 name = "rustsenna"
 version = "0.0.1"
-source = "git+https://github.com/jfschaefer/rust-senna.git#f3a5d163e7a1759769e51c155606366e7112e173"
+source = "git+https://github.com/jfschaefer/rust-senna.git#1457d6abe55df320dc5c86e99c08cdb55ee947f9"
 dependencies = [
  "libc 0.2.6 (registry+https://github.com/rust-lang/crates.io-index)",
 ]

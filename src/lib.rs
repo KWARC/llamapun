@@ -3,6 +3,7 @@
 //! The original library can be found at https://github.com/KWARC/LLaMaPUn
 
 #![feature(slice_patterns)]
+#![feature(type_ascription)]
 
 extern crate libxml;
 extern crate libc;
@@ -17,5 +18,5 @@ pub mod dnm;
 pub mod data;
 pub mod stopwords;
 pub mod tokenizer;
-pub mod senna_adapter;
+// pub mod senna_adapter;
 

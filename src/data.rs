@@ -1,5 +1,6 @@
 //! Data structures and Iterators for convenient high-level syntax
 use std::vec::IntoIter;
+use std::cell::{RefCell, Cell};
 use walkdir::{DirEntry, WalkDir, WalkDirIterator};
 use walkdir::Result as DirResult;
 
@@ -11,12 +12,19 @@ use libxml::tree::Node;
 use libxml::xpath::Context;
 use libxml::parser::{Parser, XmlParseError};
 
+use rustsenna::sennapath::SENNA_PATH;
+use rustsenna::senna::{Senna, SennaParseOptions};
+use rustsenna::pos::POS;
+use rustsenna::sentence::Sentence as SennaSentence;
+
 pub struct Corpus {
   // Directory-level
   pub path : String,
   // Document-level
   pub parser : Parser,
   pub tokenizer : Tokenizer,
+  pub senna : RefCell<Senna>,
+  pub senna_options : Cell<SennaParseOptions>,
 }
 
 pub struct DocumentIterator<'iter>{
@@ -27,7 +35,7 @@ pub struct DocumentIterator<'iter>{
 pub struct Document<'d> {
   pub dom : XmlDoc,
   pub path : String,
-  pub corpus : &'d Corpus
+  pub corpus : &'d Corpus,
 }
 
 pub struct ParagraphIterator<'iter> {
@@ -42,22 +50,32 @@ pub struct Paragraph<'p> {
 
 pub struct SentenceIterator<'iter> {
   walker : IntoIter<DNMRange<'iter>>,
-  pub paragraph : &'iter Paragraph<'iter>
+  // pub paragraph : &'iter Paragraph<'iter>
+  pub document : &'iter Document<'iter>,
 }
 
 pub struct Sentence<'s> {
   pub range : DNMRange<'s>,
-  pub paragraph : &'s Paragraph<'s>
+  // pub paragraph : &'s Paragraph<'s>
+  pub document : &'s Document<'s>,
+  pub senna_sentence : Option<SennaSentence<'s>>,
 }
 
-pub struct WordIterator<'iter> {
-  walker : IntoIter<&'iter str>,
+pub struct SimpleWordIterator<'iter> {
+  walker : IntoIter<DNMRange<'iter>>,
+  pub sentence : &'iter Sentence<'iter>
+}
+
+pub struct SennaWordIterator<'iter> {
+  // walker : IntoIter<SennaWord<'iter>>,
+  pos : usize,
   pub sentence : &'iter Sentence<'iter>
 }
 
 pub struct Word<'w> {
-  pub text : &'w str, // should we use the DNMRange instead???
-  pub sentence : &'w Sentence<'w>
+  pub range : DNMRange<'w>,// &'w str, // should we use the DNMRange instead???
+  pub sentence : &'w Sentence<'w>,
+  pub pos : POS,
 }
 
 // TODO: May be worth refactoring into several layers of iterators - directory, document, paragraph, sentence, etc. 
@@ -100,10 +118,12 @@ impl Corpus {
       path : dirpath,
       tokenizer : Tokenizer::default(),
       parser : Parser::default_html(),
+      senna : RefCell::new(Senna::new(SENNA_PATH.to_owned())),
+      senna_options : Cell::new(SennaParseOptions::default()),
     }
   }
 
-  pub fn iter(&mut self) -> DocumentIterator {
+  pub fn iter(& mut self) -> DocumentIterator {
     DocumentIterator {
       walker : Box::new(WalkDir::new(self.path.clone()).into_iter()),
       corpus : self
@@ -156,7 +176,7 @@ impl<'p> Paragraph<'p> {
     let sentences = tokenizer.sentences(&self.dnm);
     SentenceIterator {
       walker : sentences.into_iter(),
-      paragraph : self
+      document : self.document,
     }
   }
 }
@@ -167,31 +187,65 @@ impl<'iter> Iterator for SentenceIterator<'iter> {
     match self.walker.next() {
       None => None,
       Some(range) => {
-        Some(Sentence {range : range, paragraph : self.paragraph})
+        let sentence = Sentence { range: range, document: self.document, senna_sentence : None };
+        Some(sentence)
       }
     }
   }
 }
 
 impl<'s> Sentence<'s> {
-  pub fn iter(&'s mut self) -> WordIterator<'s> {
-    let tokenizer = &self.paragraph.document.corpus.tokenizer;
+  pub fn simple_iter(&'s mut self) -> SimpleWordIterator<'s> {
+    let tokenizer = &self.document.corpus.tokenizer;
     let words = tokenizer.words(&self.range);
-    WordIterator {
+    SimpleWordIterator {
       walker : words.into_iter(),
       sentence : self
     }
   }
+
+  pub fn senna_iter(&'s mut self) -> SennaWordIterator<'s> {
+    SennaWordIterator {
+      pos : 0usize,
+      sentence : if self.senna_sentence.is_none() {self.senna_parse()} else { self },
+    }
+  }
+
+  pub fn senna_parse(&'s mut self) -> &Self {
+    self.senna_sentence = Some(self.document.corpus.senna.borrow_mut().parse((&self.range).get_plaintext(),
+                                          self.document.corpus.senna_options.get()));
+    self
+  }
 }
 
-impl<'iter> Iterator for WordIterator<'iter> {
+impl<'iter> Iterator for SimpleWordIterator<'iter> {
   type Item = Word<'iter>;
   fn next(&mut self) -> Option<Word<'iter>> {
     match self.walker.next() {
       None => None,
-      Some(text) => {
-        Some(Word {text : text, sentence : self.sentence})
+      Some(range) => {
+        Some(Word {range : range, sentence : self.sentence, pos : POS::NOT_SET})
       }
     }
   }
 }
+
+impl<'iter> Iterator for SennaWordIterator<'iter> {
+  type Item = Word<'iter>;
+  fn next(&mut self) -> Option<Word<'iter>> {
+    // match self.walker.next() {
+    let pos = self.pos;
+    self.pos += 1;
+    let sent = &self.sentence;
+    let sen_sent_wrapped = &sent.senna_sentence;
+    let sen_sent = sen_sent_wrapped.as_ref().unwrap();
+    if pos < sen_sent.get_words().len() {
+      let senna_word = &sen_sent.get_words()[pos];
+      let range = self.sentence.range.get_subrange(senna_word.get_offset_start(), senna_word.get_offset_end());
+      Some(Word { range : range, sentence : self.sentence, pos : senna_word.get_pos() } )
+    } else {
+      None
+    }
+  }
+}
+

@@ -6,10 +6,8 @@ extern crate time;
 
 use std::collections::HashMap;
 use time::PreciseTime;
-use libxml::parser::Parser;
 use gnuplot::*;
 
-use llamapun::tokenizer::Tokenizer;
 use llamapun::data::{Corpus,Document};
 
 fn main() {
@@ -23,12 +21,13 @@ fn main() {
   let mut total_paragraphs = 0;
 
 
-  let corpus = Corpus {
-    path: "tests/resources/".to_string(),
-    parser : Parser::default_html(),
-    // Use the default tokenizer, in a single variable globally to the document
-    tokenizer : Tokenizer::default()
-  };
+  // let corpus = Corpus {
+  //   path: "tests/resources/".to_string(),
+  //   parser : Parser::default_html(),
+  //   // Use the default tokenizer, in a single variable globally to the document
+  //   tokenizer : Tokenizer::default()
+  // };
+  let corpus = Corpus::new("tests/resources/".to_string());
   let arxivid = "0903.1000";
   let mut document = Document::new("tests/resources/".to_string()+arxivid+".html", &corpus).unwrap();
   let end_parse = PreciseTime::now();
@@ -38,9 +37,9 @@ fn main() {
     total_paragraphs += 1;
     for mut sentence in paragraph.iter() {
       total_sentences += 1;
-      for sent_word in sentence.iter() {
+      for sent_word in sentence.simple_iter() {
         total_words += 1;
-        let word = sent_word.text.to_string().to_lowercase();
+        let word = sent_word.range.get_plaintext().to_string().to_lowercase();
         let dictionary_index : &i64 = 
           match dictionary.contains_key(&word) {
           true => dictionary.get(&word).unwrap(),

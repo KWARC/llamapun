@@ -33,7 +33,7 @@ fn main() {
   let end_parse = PreciseTime::now();
 
   // We will tokenize each logical paragraph, which are the textual logical units in an article
-  for mut paragraph in document.iter() {
+  for mut paragraph in document.paragraph_iter() {
     total_paragraphs += 1;
     for mut sentence in paragraph.iter() {
       total_sentences += 1;

@@ -36,6 +36,7 @@ pub struct Document<'d> {
   pub dom : XmlDoc,
   pub path : String,
   pub corpus : &'d Corpus,
+  pub dnm : Option<DNM>,
 }
 
 pub struct ParagraphIterator<'iter> {
@@ -129,6 +130,10 @@ impl Corpus {
       corpus : self
     }
   }
+
+  pub fn load_doc(&self, path : String) -> Result<Document, XmlParseError> {
+    Document::new(path, self)
+  }
 }
 
 impl<'d> Document<'d> {
@@ -138,11 +143,12 @@ impl<'d> Document<'d> {
     Ok(Document {
       path : filepath,
       dom : dom,
-      corpus : owner
+      corpus : owner,
+      dnm : None,
     })
   }
 
-  pub fn iter(&mut self) -> ParagraphIterator {
+  pub fn paragraph_iter(&mut self) -> ParagraphIterator {
     let xpath_context = Context::new(&self.dom).unwrap();
     let paras = match xpath_context.evaluate("//*[contains(@class,'ltx_para')]") {
       Ok(xpath_result) => xpath_result.get_nodes_as_vec(),
@@ -151,6 +157,18 @@ impl<'d> Document<'d> {
     ParagraphIterator {
       walker : paras.into_iter(),
       document : self
+    }
+  }
+
+  pub fn sentence_iter(&mut self) -> SentenceIterator {
+    if self.dnm.is_none() {
+      self.dnm = Some(DNM::new(self.dom.get_root_element().unwrap(), DNMParameters::llamapun_normalization()));
+    }
+    let tokenizer = &self.corpus.tokenizer;
+    let sentences = tokenizer.sentences(self.dnm.as_ref().unwrap());
+    SentenceIterator {
+      walker : sentences.into_iter(),
+      document: self,
     }
   }
 }

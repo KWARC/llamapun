@@ -205,8 +205,12 @@ impl<'iter> Iterator for SentenceIterator<'iter> {
     match self.walker.next() {
       None => None,
       Some(range) => {
-        let sentence = Sentence { range: range, document: self.document, senna_sentence : None };
-        Some(sentence)
+        if range.is_empty() {
+          self.next()
+        } else {
+          let sentence = Sentence { range: range, document: self.document, senna_sentence : None };
+          Some(sentence)
+        }
       }
     }
   }

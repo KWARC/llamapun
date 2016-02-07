@@ -176,7 +176,7 @@ impl <'dnmrange> DNMRange <'dnmrange> {
     &(&self.dnm.plaintext)[self.start..self.end]
   }
   /// Get the plaintext without trailing white spaces
-  pub fn get_plaintext_truncated(&self) -> &str {
+  pub fn get_plaintext_truncated(&self) -> &'dnmrange str {
     &(&self.dnm.plaintext)[self.start..self.end].trim_right()
   }
 
@@ -195,7 +195,20 @@ impl <'dnmrange> DNMRange <'dnmrange> {
         trimmed_end -= 1; }
       else {
         break; }}
+    if trimmed_start > trimmed_end {  // in case range contains only whitespaces
+        trimmed_start = self.start;
+        trimmed_end = self.start;
+    }
     DNMRange {start : trimmed_start, end: trimmed_end, dnm: self.dnm}
+  }
+
+  /// returns a subrange, with offsets relative to the beginning of `self`
+  pub fn get_subrange(&self, rel_start: usize, rel_end: usize) -> DNMRange<'dnmrange> {
+    DNMRange {start: self.start + rel_start, end: self.start + rel_end, dnm: self.dnm}
+  }
+
+  pub fn is_empty(&self) -> bool {
+      self.start == self.end
   }
 }
 

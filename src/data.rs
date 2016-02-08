@@ -12,10 +12,10 @@ use libxml::tree::Node;
 use libxml::xpath::Context;
 use libxml::parser::{Parser, XmlParseError};
 
-use rustsenna::sennapath::SENNA_PATH;
-use rustsenna::senna::{Senna, SennaParseOptions};
-use rustsenna::pos::POS;
-use rustsenna::sentence::Sentence as SennaSentence;
+use senna::sennapath::SENNA_PATH;
+use senna::senna::{Senna, SennaParseOptions};
+use senna::pos::POS;
+use senna::sentence::Sentence as SennaSentence;
 
 pub struct Corpus {
   // Directory-level

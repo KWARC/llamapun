@@ -1,8 +1,5 @@
 extern crate gnuplot;
 use gnuplot::*;
-//use gnuplot::{Figure, DataType, PointSymbol, Color, Rotate, PointSize};
-
-use std::collections::HashMap;
 use std::hash::Hash;
 
 pub fn plot_simple<T : Clone+Eq+Hash+DataType>(

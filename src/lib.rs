@@ -15,10 +15,10 @@ extern crate rustmorpha;
 extern crate walkdir;
 extern crate senna;
 
+#[macro_use] pub mod util;
 pub mod dnm;
 pub mod data;
 pub mod stopwords;
 pub mod tokenizer;
 pub mod ngrams;
 pub mod util;
-

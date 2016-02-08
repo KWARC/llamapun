@@ -14,14 +14,12 @@ use llamapun::util::plot::*;
 
 fn main() {
   let start_example = PreciseTime::now();
+
   let mut dictionary = Dictionary::new();
-  let mut unigrams = Unigrams::new();
-  let mut word_index = 0;
+  let mut unigrams = Unigrams::default();
   let mut total_words = 0;
   let mut total_sentences = 0;
   let mut total_paragraphs = 0;
-  let mut dict = Dictionary::default();
-  let mut unigrams = Unigrams::default();
 
   // let corpus = Corpus {
   //   path: "tests/resources/".to_string(),
@@ -99,4 +97,3 @@ fn main() {
   println!("    Finished report generation in {:?}ms",end_example.to(end_reports).num_milliseconds());
   println!("    Total time: {:?}ms", start_example.to(end_reports).num_milliseconds());
 }
-

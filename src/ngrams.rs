@@ -57,4 +57,7 @@ impl Unigrams {
     as_vec.sort_by(|a,b| a.1.cmp(&b.1));
     return as_vec
   }
+  pub fn count(&self) -> usize {
+    self.map.len()
+  }
 }

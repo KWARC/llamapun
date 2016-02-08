@@ -1,0 +1,3 @@
+struct Shuffle {
+  everybody : bool
+}

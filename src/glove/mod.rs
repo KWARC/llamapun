@@ -1,5 +1,6 @@
-mod cooccur;
 mod vocab_count;
+mod cooccur;
+mod shuffle;
 
 use data::Corpus;
 
@@ -9,7 +10,7 @@ pub struct Glove {
 
 impl Glove {
   pub fn train(corpus : Corpus) -> Glove {
-    let mut model = Glove {tokens : 0};
+    let model = Glove {tokens : 0};
     model
   }
 }

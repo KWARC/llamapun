@@ -19,11 +19,9 @@ fn main() {
   };
   // Initializing
   let start_example = PreciseTime::now();
-  let mut doc_count = 0;
-  let mut word_count = 0;
 
   // Train the GloVe model, on an HTML corpus
-  let mut corpus = Corpus::new(directory);
+  let corpus = Corpus::new(directory);
   let model : Glove = Glove::train(corpus);
 
   let end_parse = PreciseTime::now();

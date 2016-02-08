@@ -1,7 +1,7 @@
 extern crate llamapun;
-extern crate rustsenna;
+extern crate senna;
 use llamapun::data::{Corpus};
-use rustsenna::pos::POS;
+use senna::pos::POS;
 
 #[test]
 fn can_iterate_corpus() {

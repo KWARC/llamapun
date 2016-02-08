@@ -14,6 +14,7 @@ use llamapun::util::plot::*;
 
 fn main() {
   let start_example = PreciseTime::now();
+
   let mut dictionary = Dictionary::new();
   let mut unigrams = Unigrams::default();
   let mut total_words = 0;

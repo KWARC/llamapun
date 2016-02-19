@@ -234,8 +234,11 @@ impl<'s> Sentence<'s> {
   }
 
   pub fn senna_parse(&'s mut self) -> &Self {
-    self.senna_sentence = Some(self.document.corpus.senna.borrow_mut().parse((&self.range).get_plaintext(),
+    if self.senna_sentence.is_none() {
+        self.senna_sentence = 
+            Some(self.document.corpus.senna.borrow_mut().parse((&self.range).get_plaintext(),
                                           self.document.corpus.senna_options.get()));
+    }
     self
   }
 }

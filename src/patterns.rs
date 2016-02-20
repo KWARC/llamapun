@@ -47,7 +47,7 @@ fn get_top_psg_of_word(sent: &SSentence, pos: usize) -> Option<PSGPhrase> {
             let mut root = p.as_ref();
             loop {
                 match pos.cmp(&get_psg_start(root)) {
-                    Ordering::Less => {
+                    Ordering::Greater => {
                         let mut new_root: Option<&PSGPhrase> = None;
                         // find last child that starts a word with less than pos
                         for child in root.get_children() {
@@ -55,20 +55,23 @@ fn get_top_psg_of_word(sent: &SSentence, pos: usize) -> Option<PSGPhrase> {
                                 &PSGNode::Leaf(_) => {  }
                                 &PSGNode::Parent(ref p) => {
                                     match pos.cmp(&get_psg_start(p.as_ref())) {
-                                        Ordering::Less => { new_root = Some(p.as_ref()); }
+                                        Ordering::Greater => { new_root = Some(p.as_ref()); }
                                         Ordering::Equal => { return Some(p.as_ref().clone()); }
-                                        Ordering::Greater => { return None; }
+                                        Ordering::Less => { break; }
                                     }
                                 }
                             }
                         }
-                        root = new_root.unwrap();
+                        match new_root {
+                            None => { return None; }
+                            Some(n) => { root = n; }
+                        }
                     }
                     Ordering::Equal => {
                         return Some(root.clone());
                     }
-                    Ordering::Greater => {
-                        return None;
+                    Ordering::Less => {
+                        unreachable!();
                     }
                 }
             }
@@ -89,6 +92,30 @@ fn psg_get_top_left_child_phrase(pt: Phrase, psg: &PSGPhrase) -> Option<PSGPhras
     }
 }
 
+fn psg_get_bottom_left_child_phrase(pt: Phrase, psg: &PSGPhrase) -> Option<PSGPhrase> {
+    let top = psg_get_top_left_child_phrase(pt, psg);
+    match top {
+        None => { return None; }
+        Some(x) => {
+            let mut r = x;
+            loop {
+                let tmp : PSGPhrase;
+                match &r.get_children()[0] {
+                    &PSGNode::Leaf(_) => { break; }
+                    &PSGNode::Parent(ref p) => {
+                        match psg_get_top_left_child_phrase(pt, p.as_ref()) {
+                            None => { break; }
+                            Some(x) => { tmp = x; }
+                        }
+                    }
+                }
+                r = tmp;
+            }
+            return Some(r);
+        }
+    }
+}
+
 
 
 /*
@@ -102,8 +129,8 @@ pub enum Pattern<'t, MarkerT, NoteT> where MarkerT: 't + Clone , NoteT: 't + Clo
     WP(&'t str, Vec<POS>),
     // WsP(Vec<&'t str>, Vec<POS>),
     P(Vec<POS>),
-    Phr0(Phrase),
-    // PhrS(Phrase, &'t Pattern<'t, MarkerT, NoteT>),
+    Phr0(Phrase, bool),   // bool: True if from top, i.e. highest phrase
+    PhrS(Phrase, bool, &'t Pattern<'t, MarkerT, NoteT>),
     // PhrE(Phrase, &'t Pattern<'t, MarkerT, NoteT>),
     // PhrSE(Phrase, &'t Pattern<'t, MarkerT, NoteT>, &'t Pattern<'t, MarkerT, NoteT>),
     Marked(MarkerT, Vec<NoteT>, &'t Pattern<'t, MarkerT, NoteT>),
@@ -112,17 +139,17 @@ pub enum Pattern<'t, MarkerT, NoteT> where MarkerT: 't + Clone , NoteT: 't + Clo
 
 #[derive(Clone)]
 pub struct Match<MarkerT: Clone, NoteT: Clone> {
-    marks: Vec<Mark<MarkerT, NoteT>>,
-    match_start: usize,
-    match_end: usize,
+    pub marks: Vec<Mark<MarkerT, NoteT>>,
+    pub match_start: usize,
+    pub match_end: usize,
 }
 
 #[derive(Clone)]
 pub struct Mark<MarkerT, NoteT> where MarkerT: Clone, NoteT: Clone {
-    offset_start: usize,  // in words
-    offset_end: usize,
-    marker: MarkerT,
-    notes: Vec<NoteT>,
+    pub offset_start: usize,  // in words
+    pub offset_end: usize,
+    pub marker: MarkerT,
+    pub notes: Vec<NoteT>,
 }
 
 
@@ -132,11 +159,12 @@ pub struct Mark<MarkerT, NoteT> where MarkerT: Clone, NoteT: Clone {
  */
 
 impl <'t, MarkerT: Clone, NoteT: Clone> Pattern<'t, MarkerT, NoteT> {
-    pub fn match_sentence<'a>(sentence: &'a mut Sentence<'a>, pattern: &Pattern<'t, MarkerT, NoteT>)
+    pub fn match_sentence<'a>(sentence: &'a Sentence<'a>, pattern: &Pattern<'t, MarkerT, NoteT>)
                     -> Vec<Match<MarkerT, NoteT>> {
         let mut matches : Vec<Match<MarkerT, NoteT>> = Vec::new();
-        let s = sentence.senna_parse();
-        let sensent = &s.senna_sentence;
+        // let s = sentence.senna_parse();
+        // let sensent = &s.senna_sentence;
+        let sensent = &sentence.senna_sentence;
 
         for i in 0..sensent.as_ref().unwrap().get_words().len() {
             match Pattern::rec_match(pattern, i, sensent.as_ref().unwrap()) {
@@ -187,8 +215,8 @@ impl <'t, MarkerT: Clone, NoteT: Clone> Pattern<'t, MarkerT, NoteT> {
                     return None;
                 }
             }
-            &Pattern::Marked(ref marker, ref notes, ref pattern) => {
-                let m = Pattern::rec_match(pattern, pos, sent);
+            &Pattern::Marked(ref marker, ref notes, ref pat) => {
+                let m = Pattern::rec_match(pat, pos, sent);
                 match m {
                     None => { return None; }
                     Some((marks, end)) => {
@@ -210,8 +238,8 @@ impl <'t, MarkerT: Clone, NoteT: Clone> Pattern<'t, MarkerT, NoteT> {
             &Pattern::Seq(ref seq) => {
                 let mut cur_pos = pos;
                 let mut new_marks : Box<Vec<Mark<MarkerT, NoteT>>> = Box::new(Vec::new());
-                for pattern in seq {
-                    let m = Pattern::rec_match(pattern, cur_pos, sent);
+                for pat in seq {
+                    let m = Pattern::rec_match(pat, cur_pos, sent);
                     match m {
                         None => { return None; }
                         Some((marks, end)) => {
@@ -229,18 +257,40 @@ impl <'t, MarkerT: Clone, NoteT: Clone> Pattern<'t, MarkerT, NoteT> {
                     return Some((None, cur_pos));
                 }
             }
-            &Pattern::Phr0(pat) => {
+            &Pattern::Phr0(phr, top) => {
                 match get_top_psg_of_word(sent, pos) {
-                    None => {
-                        return None;
-                    }
+                    None => { return None; }
                     Some(ref r) => {
-                        match psg_get_top_left_child_phrase(pat, r) {
-                            None => {
-                                return None;
-                            }
+                        match if top {psg_get_top_left_child_phrase(phr, r)}
+                              else   {psg_get_bottom_left_child_phrase(phr, r)} {
+                            None => { return None; }
                             Some(ref p) => {
                                 return Some((None, get_psg_end(p)));
+                            }
+                        }
+                    }
+                }
+            }
+            &Pattern::PhrS(phr, top, s_pat) => {
+                match get_top_psg_of_word(sent, pos) {
+                    None => { return None; }
+                    Some(ref r) => {
+                        match if top {psg_get_top_left_child_phrase(phr, r)}
+                              else   {psg_get_bottom_left_child_phrase(phr, r)} {
+                            None => { return None; }
+                            Some(ref p) => {
+                                let m = Pattern::rec_match(s_pat, pos, sent);
+                                match m {
+                                    None => { return None; }
+                                    Some((marks, end)) => {
+                                        let p_end = get_psg_end(p);
+                                        if end <= p_end {
+                                            return Some((marks, p_end));
+                                        } else {
+                                            return None;
+                                        }
+                                    }
+                                }
                             }
                         }
                     }

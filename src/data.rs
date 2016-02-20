@@ -124,6 +124,10 @@ impl Corpus {
     }
   }
 
+  pub fn set_senna_options(&mut self, options: SennaParseOptions) {
+      self.senna_options.set(options);
+  }
+
   pub fn iter(& mut self) -> DocumentIterator {
     DocumentIterator {
       walker : Box::new(WalkDir::new(self.path.clone()).into_iter()),

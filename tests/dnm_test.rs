@@ -15,7 +15,7 @@ use std::collections::HashMap;
 #[test]
 fn test_plaintext_simple() {
   let parser = Parser::default();
-  let doc = parser.parse_file("tests/resources/file01.xml").unwrap();
+  let doc = parser.parse_file("tests/resources/file01.xml").expect("Couldn't load test xml file");
   let mut options : HashMap<String, SpecialTagsOption> = HashMap::new();
   options.insert("h1".to_string(),
                  SpecialTagsOption::Enter);  //actually default behaviour 
@@ -39,7 +39,7 @@ fn test_plaintext_simple() {
 #[test]
 fn test_xml_node_to_plaintext() {
   let parser = Parser::default();
-  let doc = parser.parse_file("tests/resources/file01.xml").unwrap();
+  let doc = parser.parse_file("tests/resources/file01.xml").expect("Couldn't load test xml file");
   let mut options : HashMap<String, SpecialTagsOption> = HashMap::new();
   options.insert("h1".to_string(),
                  SpecialTagsOption::Enter);  //actually default behaviour 
@@ -95,7 +95,7 @@ fn test_xml_node_to_plaintext() {
 #[test]
 fn test_plaintext_normalized_class_names() {
   let parser = Parser::default();
-  let doc = parser.parse_file("tests/resources/file02.xml").unwrap();
+  let doc = parser.parse_file("tests/resources/file02.xml").expect("Couldn't load test xml file");
   let mut options : HashMap<String, SpecialTagsOption> = HashMap::new();
   options.insert("normalized".to_string(),
                  SpecialTagsOption::Normalize("[NORMALIZED]".to_string()));
@@ -113,7 +113,7 @@ fn test_plaintext_normalized_class_names() {
     #[test]
     /// Test the default math normalization on some real math document
     fn test_default_math_normalization() {
-        let doc = parser.parse_file("tests/resources/1311.0066.xhtml").unwrap();
+        let doc = parser.parse_file("tests/resources/1311.0066.xhtml").expect("Couldn't load test xml file");
         let dnm = DNM::new(&doc.get_root_element().unwrap(),
                                   DNMParameters::llamapun_normalization());
         assert_eq!(dnm.plaintext, "abc");
@@ -123,7 +123,7 @@ fn test_plaintext_normalized_class_names() {
 #[test]
 fn test_move_whitespaces_between_nodes() {
   let parser = Parser::default();
-  let doc = parser.parse_file("tests/resources/file01.xml").unwrap();
+  let doc = parser.parse_file("tests/resources/file01.xml").expect("Couldn't load test xml file");
   let root = doc.get_root_element().unwrap();
   let dnm = DNM::new(root,
                             DNMParameters {
@@ -146,7 +146,7 @@ fn test_move_whitespaces_between_nodes() {
 #[test]
 fn test_unicode_normalization() {
   let parser = Parser::default();
-  let doc = parser.parse_file("tests/resources/file03.xml").unwrap();
+  let doc = parser.parse_file("tests/resources/file03.xml").expect("Couldn't load test xml file");
   let root = doc.get_root_element().unwrap();
   let dnm = DNM::new(root, DNMParameters {
     normalize_unicode: true,
@@ -159,7 +159,7 @@ fn test_unicode_normalization() {
 #[test]
 fn test_morpha_stemming() {
   let parser = Parser::default();
-  let doc = parser.parse_file("tests/resources/file04.xml").unwrap();
+  let doc = parser.parse_file("tests/resources/file04.xml").expect("Couldn't load test xml file");
   let root = doc.get_root_element().unwrap();
   let dnm = DNM::new(root,
                             DNMParameters {

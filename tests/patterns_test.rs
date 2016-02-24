@@ -28,8 +28,8 @@ fn test_number_of_seq_matches() {
     let mut match_count = 0;
     let p_certain = Pattern::W("certain");
     let p_properties = Pattern::W("properties");
-    let pattern : Pattern<&str, &str> = Pattern::Seq(vec![&p_certain,
-                                                          &p_properties]);
+    let pattern : Pattern<&str, &str> = Pattern::Seq(vec![p_certain,
+                                                          p_properties]);
     for mut sentence in document.sentence_iter() {
         let s = sentence.senna_parse();
         match_count += Pattern::match_sentence(&s, &pattern).len();
@@ -55,7 +55,7 @@ fn test_simple_marked_phrase_match() {
     let p_phr_marked = Pattern::Marked("mathobject", vec!["definiens"],
                                        &p_ind_phrs);
     let pattern : Pattern<&str, &str> = Pattern::Seq(
-        vec![&p_let, &p_mf, &p_be, &p_phr_marked]);
+        vec![p_let, p_mf, p_be, p_phr_marked]);
     for mut sentence in document.sentence_iter() {
         let s = sentence.senna_parse();
         let matches = Pattern::match_sentence(&s, &pattern);

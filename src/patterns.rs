@@ -7,6 +7,7 @@ use data::Sentence;
 
 use std::io::{self, Write};
 use std::cmp::Ordering;
+use std::ascii::AsciiExt;
 
 
 
@@ -124,6 +125,7 @@ fn psg_get_bottom_left_child_phrase(pt: Phrase, psg: &PSGPhrase) -> Option<PSGPh
 
 #[derive(Clone)]
 pub enum Pattern<'t, MarkerT, NoteT> where MarkerT: 't + Clone , NoteT: 't + Clone {
+    AnyW,
     W(&'t str),
     // Ws(Vec<&'t str>),
     WP(&'t str, Vec<POS>),
@@ -131,10 +133,11 @@ pub enum Pattern<'t, MarkerT, NoteT> where MarkerT: 't + Clone , NoteT: 't + Clo
     P(Vec<POS>),
     Phr0(Phrase, bool),   // bool: True if from top, i.e. highest phrase
     PhrS(Phrase, bool, &'t Pattern<'t, MarkerT, NoteT>),
-    // PhrE(Phrase, &'t Pattern<'t, MarkerT, NoteT>),
+    PhrE(Phrase, bool, &'t Pattern<'t, MarkerT, NoteT>),
     // PhrSE(Phrase, &'t Pattern<'t, MarkerT, NoteT>, &'t Pattern<'t, MarkerT, NoteT>),
     Marked(MarkerT, Vec<NoteT>, &'t Pattern<'t, MarkerT, NoteT>),
-    Seq(Vec<&'t Pattern<'t, MarkerT, NoteT>>),
+    Seq(Vec<Pattern<'t, MarkerT, NoteT>>),
+    Or(Vec<Pattern<'t, MarkerT, NoteT>>),
 }
 
 #[derive(Clone)]
@@ -191,9 +194,14 @@ impl <'t, MarkerT: Clone, NoteT: Clone> Pattern<'t, MarkerT, NoteT> {
             return None;
         }
         match pattern {
+            &Pattern::AnyW => {
+                return Some((None, pos+1));
+            }
+
             &Pattern::W(s) => {
                 let word = &sent.get_words()[pos];
-                if word.get_string() == s {
+                // if word.get_string() == s {
+                if word.get_string().eq_ignore_ascii_case(&s) {
                     return Some((None, pos+1));
                 } else {
                     return None;
@@ -201,7 +209,8 @@ impl <'t, MarkerT: Clone, NoteT: Clone> Pattern<'t, MarkerT, NoteT> {
             }
             &Pattern::WP(s, ref p) => {
                 let word = &sent.get_words()[pos];
-                if word.get_string() == s && p.contains(&word.get_pos()) {
+                // if word.get_string() == s && p.contains(&word.get_pos()) {
+                if word.get_string().eq_ignore_ascii_case(&s) && p.contains(&word.get_pos()) {
                     return Some((None, pos+1));
                 } else {
                     return None;
@@ -295,6 +304,46 @@ impl <'t, MarkerT: Clone, NoteT: Clone> Pattern<'t, MarkerT, NoteT> {
                         }
                     }
                 }
+            }
+
+            &Pattern::PhrE(phr, top, e_pat) => {
+                match get_top_psg_of_word(sent, pos) {
+                    None => { return None; }
+                    Some(ref r) => {
+                        match if top {psg_get_top_left_child_phrase(phr, r)}
+                              else   {psg_get_bottom_left_child_phrase(phr, r)} {
+                            None => { return None; }
+                            Some(ref p) => {
+                                let p_end = get_psg_end(p);
+                                for i in 0..(p_end-pos) {
+                                    let m = Pattern::rec_match(e_pat, pos+i, sent);
+                                    match m {
+                                        None => { continue; }
+                                        Some((marks, end)) => {
+                                            if end <= p_end {
+                                                return Some((marks, p_end));
+                                            }
+                                        }
+                                    }
+                                }
+                                return None;   // end could not be matched
+                            }
+                        }
+                    }
+                }
+            }
+
+            &Pattern::Or(ref options) => {
+                for pat in options {
+                    let m = Pattern::rec_match(pat, pos, sent);
+                    match m {
+                        None => { continue; }
+                        Some(x) => {
+                            return Some(x);
+                        }
+                    }
+                }
+                return None;
             }
         }
     }

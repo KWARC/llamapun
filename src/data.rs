@@ -17,21 +17,29 @@ use senna::senna::{Senna, SennaParseOptions};
 use senna::pos::POS;
 use senna::sentence::Sentence as SennaSentence;
 
+/// An iterable Corpus of HTML5 documents
 pub struct Corpus {
-  // Directory-level
+  /// root directory
   pub path : String,
-  // Document-level
+  /// document HTML5 parser
   pub parser : Parser,
+  /// `DNM`-aware sentence and word tokenizer
   pub tokenizer : Tokenizer,
+  /// `Senna` object for shallow language analysis
   pub senna : RefCell<Senna>,
+  /// `Senna` parsing options
   pub senna_options : Cell<SennaParseOptions>,
 }
 
+/// File-system iterator yielding individual documents
 pub struct DocumentIterator<'iter>{
+  /// the directory walker
   walker : Box<WalkDirIterator<Item=DirResult<DirEntry>>>,
+  /// reference to the parent corpus
   pub corpus : &'iter Corpus,
 }
 
+///
 pub struct Document<'d> {
   pub dom : XmlDoc,
   pub path : String,
@@ -79,7 +87,7 @@ pub struct Word<'w> {
   pub pos : POS,
 }
 
-// TODO: May be worth refactoring into several layers of iterators - directory, document, paragraph, sentence, etc. 
+// TODO: May be worth refactoring into several layers of iterators - directory, document, paragraph, sentence, etc.
 impl<'iter> Iterator for DocumentIterator<'iter> {
   type Item = Document<'iter>;
   fn next(&mut self) -> Option<Document<'iter>> {
@@ -181,7 +189,7 @@ impl<'iter> Iterator for ParagraphIterator<'iter> {
       None => None,
       Some(node) => {
         // Create a DNM for the current paragraph
-        let dnm = DNM::new(node, DNMParameters::llamapun_normalization());    
+        let dnm = DNM::new(node, DNMParameters::llamapun_normalization());
         Some(Paragraph {dnm : dnm, document : self.document})
       }
     }

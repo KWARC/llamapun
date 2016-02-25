@@ -4,6 +4,7 @@
 
 #![feature(slice_patterns)]
 #![feature(type_ascription)]
+#![warn(missing_docs)]
 
 extern crate libxml;
 extern crate libc;

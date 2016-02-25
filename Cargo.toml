@@ -8,7 +8,7 @@ name = "llamapun"
 crate-type = ["rlib", "dylib", "staticlib"]
 
 [dependencies.libxml]
-git = "https://github.com/dginev/rust-libxml.git"
+git = "https://github.com/KWARC/rust-libxml.git"
 [dependencies.unidecode]
 git = "https://github.com/chowdhurya/rust-unidecode.git"
 [dependencies.rustmorpha]

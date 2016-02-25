@@ -1,6 +1,7 @@
 The **llamapun** library hosts common _language and mathematics processing_ algorithms, used by the KWARC research group.
 
-[![Build Status](https://secure.travis-ci.org/KWARC/llamapun.png?branch=master)](http://travis-ci.org/KWARC/llamapun) [![license](http://img.shields.io/badge/license-GPLv3-blue.svg)](https://raw.githubusercontent.com/KWARC/llamapun/master/LICENSE)
+[![Build Status](https://secure.travis-ci.org/KWARC/llamapun.png?branch=master)](http://travis-ci.org/KWARC/llamapun)
+[![license](http://img.shields.io/badge/license-GPLv3-blue.svg)](https://raw.githubusercontent.com/KWARC/llamapun/master/LICENSE)
 
 
 ---
@@ -16,7 +17,7 @@ At its core, **lamapun** is a [Rust](http://rust-lang.org/) implementation that 
    * Purification of text and math modality (e.g. move trailing dots left in math back into the sentence text),
    * Stemming - adaptation of the [Morpha](http://www.sussex.ac.uk/Users/johnca/morph.html) stemmer,
    * Tokenization - rule-based sentence segmentation, and [SENNA](http://ml.nec-labs.com/senna/) word tokenization
- 
+
  * **Shallow Analysis**
    * Language identification (via [libTextCat](http://software.wise-guys.nl/libtextcat/)),
    * N-gram footprints,
@@ -25,7 +26,7 @@ At its core, **lamapun** is a [Rust](http://rust-lang.org/) implementation that 
    * Chunking and shallow parsing (via [SENNA](http://ml.nec-labs.com/senna/)),
    * [TODO] "Definition" paragraph discrimination task (training SVM classifiers, based on TF/IDF and Ngram BoW features, via [libsvm](https://github.com/cjlin1/libsvm))
    * [TODO] "Declaration" sentence discrimination task (training CRF models via [CRFsuite](http://www.chokkan.org/software/crfsuite/)).
- 
+
  * **Representation Toolkit**
    * Document Narrative Model (DNM) addition to the XML DOM
    * XPointer and string offset annotation support
@@ -36,11 +37,11 @@ At its core, **lamapun** is a [Rust](http://rust-lang.org/) implementation that 
    * High-level iterators over the narrative elements of scientific documents
    * Zero-cost abstractions over the source data, as well as over linguistic annotations of various granularity.
 
- 
-## Contact
-Feel free to send any feedback to the project maintainer at d.ginev@jacobs-university.de
 
 ---
 
-Please remember that all third-party tools (such as the [SENNA](http://ml.nec-labs.com/senna/) NLP toolkit) enforce their own licensing constraints.
-**Disclaimer:** This Github repository is a successor to the now deprecated [C+Perl LLaMaPUn implementation](https://github.com/KWARC/deprecated-LLaMaPUn).
+**Disclaimers:**
+
+  1. Please remember that all third-party tools (such as the [SENNA](http://ml.nec-labs.com/senna/) NLP toolkit) enforce their own licensing constraints.
+
+  2. This Github repository is a successor to the now deprecated [C+Perl LLaMaPUn implementation](https://github.com/KWARC/deprecated-LLaMaPUn).

@@ -1,10 +1,14 @@
-sudo: false
+sudo: required
+dist: trusty
+
 language: rust
 rust: nightly
 
-addons:
-  apt:
-    packages: libxml2-dev
+before_install:
+  - "echo 'APT::Default-Release \"trusty\";' | sudo tee /etc/apt/apt.conf.d/default-release"
+  - "echo 'deb http://archive.ubuntu.com/ubuntu/ wily main universe' | sudo tee /etc/apt/sources.list.d/wily.list"
+  - sudo apt-get update
+  - sudo apt-get --force-yes -y install -t wily libxml2-dev
 
 after_success: ./scripts/doc-upload.sh
 env:

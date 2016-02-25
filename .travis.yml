@@ -1,42 +1,12 @@
+sudo: false
 language: rust
 rust: nightly
-sudo: required
-dist: trusty
-# addons:
-#   apt:
-#     sources:
-#       - ubuntu-toolchain-r-test
-#     packages: 
-#       - libxml
-#       - libxml2-dev
 
-before_install:
-  - "echo 'APT::Default-Release \"trusty\";' | sudo tee /etc/apt/apt.conf.d/default-release"
-  - "echo 'deb http://archive.ubuntu.com/ubuntu/ wily main universe' | sudo tee /etc/apt/sources.list.d/wily.list"
-  - sudo apt-get update
-  - sudo apt-get --force-yes -y install -t wily libxml2-dev
+addons:
+  apt:
+    packages: libxml2-dev
 
-before_script:
-# load travis-cargo
-  - |
-      pip install 'travis-cargo<0.2' --user &&
-      export PATH=$HOME/.local/bin:$PATH
-script:
-  - travis-cargo build
-  - travis-cargo test
-  # - travis-cargo bench
-  # - travis-cargo doc
-after_success:
-  - travis-cargo coveralls --no-sudo
-  # upload the documentation (automatically only actually runs on the master branch, not individual PRs)
-  # - | 
-  #     export TRAVIS_BRANCH=master &&
-  #     export TRAVIS_PULL_REQUEST=false &&
-  #     travis-cargo doc-upload
-
+after_success: ./scripts/doc-upload.sh
 env:
   global:
-    # override the default `--features unstable` used for the nightly branch
-    - TRAVIS_CARGO_NIGHTLY_FEATURE=""
-    # encrypted github token for doc upload
-    - secure: xUGnnfKOeDrV1jxamRV3aH1z8VqYNe6BVxVAUZCC5XjR/6b3UCL+4dQ2cWo7JWAO43OuEA5KD7GVGjheXwxiIo2kujKvzsInJoCbNEIkFwN3pCKi+QU0vI+Q3k8OGx20vS7dFlrdzaCpwrsXq8TJWojL77xN3XgJyv34Eu/DFc8CzQqcGybpoG88prXjmXQWuyckqEpGPvlM5zxxP7TFlx9jHf+ng+p4BZbJDSNyHlntGS2Mn4f2c5ENmVO/EogW1Ox9UIuFJYr/rSgSymmURTVUmudt5iWaYU6bZs9DpIuD/0ZSL/0tKsyQhmnJNM7JZ7NRg/8zosQRVz/5x+JbClw7CLuZG0mnCMx5pFVGAcTtNIFlYTA0i2k3kjOlt339IOdQWAflUnb/Uj39XKOtzi2J7fMhS+BkKdLwsIf4g97JKcxrxX4595dpcuUCmFvnDfxORnqaE/5xGn4QPb1lfk1NlaYMBhS5nnL4fw+NmhS/eOddXJDh7hO9QOgR/qPvxttU/JlGxZmzpr6vJESd9l+RjfnO8HMMbJ5Y2YMjdZ6uuVY1qhOVXX1eP4QqQf9B8kbvnf9WC856DZTdNq0CeXX3ISfEgmO+ts1R6Py9IWf0cimFzrMesxMB/xECg7kFQOdLYZg6GnFEM3MXB2Dsy+IeWrofE/0fyq8PLfDO2/Y=
+    secure: "lYfydO4axg/baSnNhXqiyz/2Rd0ixQVVThGXt65lzB72t+XKZFtViX1KNrk2v3oVUxuwOlraE5rn3wT/cB3UiwwbmYGNlqMWB64URSJwegeviiB3ofD8iCfLmNctgbiDGrglSpubTJuu2GVF1NU5FHzTsy4MuPrURqJ3PWdnoU9ZLynQN+WyvTPMHq5nyv3l6mlNXRqY8ylgu1bWZwODkJCA2a7dWnAXyvU8J75PuUPpNc9ArhxsJQgX8Aur9OYgfjMItPSb4ovqEdLOkMLAGvinCdWcbSaqEMM8AncANlrz61mbhKKtW0OIPxNSMfcQRlAW6ulYYiK+GgORpiaWNbSRgZzj0XotWOj14KY56yTkC84QQgwlSGfPqY7xFhIQehUNkep9/elNu8gJjUBeS2yj1QgVs64NQiG+/pfJTKwd8toWcnMzsxZTv1dziTUcZZMlbmQFXfIMjZQfM2dAIJNDUeSDZNCyoML6mZxJ2Wdq/1CdUz46RlawIYs2SjQqdNL6rEMQFOBp0goUsVzzejJvNcZXoLYbv8F0FBHglKKTEsXPz7dqmieS84ytsCxIw/UZspYiCGulXd+S0odNzJklG8F+QjdEQA1rMlCFOgTYzocNw6IwMdxofgfINlDvGo1LnEhVAivBKMb52OEIGh2crr+CnBSHkegAFC/VnBY="

@@ -8,7 +8,7 @@ name = "llamapun"
 crate-type = ["rlib", "dylib", "staticlib"]
 
 [dependencies.libxml]
-git = "https://github.com/dginev/rust-libxml.git"
+git = "https://github.com/jfschaefer/rust-libxml.git"
 [dependencies.unidecode]
 git = "https://github.com/chowdhurya/rust-unidecode.git"
 [dependencies.rustmorpha]
@@ -24,3 +24,4 @@ libc = "~0.1"
 regex = "0.1.48"
 time = "*"
 walkdir = "0.1"
+

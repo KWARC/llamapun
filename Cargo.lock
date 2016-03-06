@@ -4,8 +4,8 @@ version = "0.0.1"
 dependencies = [
  "gnuplot 0.0.20 (git+https://github.com/SiegeLord/RustGnuplot.git)",
  "libc 0.1.12 (registry+https://github.com/rust-lang/crates.io-index)",
- "libxml 0.0.2 (git+https://github.com/dginev/rust-libxml.git)",
- "regex 0.1.54 (registry+https://github.com/rust-lang/crates.io-index)",
+ "libxml 0.0.3 (git+https://github.com/jfschaefer/rust-libxml.git)",
+ "regex 0.1.55 (registry+https://github.com/rust-lang/crates.io-index)",
  "rust-senna 0.0.1 (git+https://github.com/jfschaefer/rust-senna.git)",
  "rustmorpha 0.1.0 (git+https://github.com/jfschaefer/rust-morpha.git)",
  "time 0.1.34 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -23,7 +23,7 @@ dependencies = [
 
 [[package]]
 name = "gcc"
-version = "0.3.24"
+version = "0.3.25"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
@@ -52,10 +52,10 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
 name = "libxml"
-version = "0.0.2"
-source = "git+https://github.com/dginev/rust-libxml.git#759e9ad31f73a0faba8eae94264b6475d61096dc"
+version = "0.0.3"
+source = "git+https://github.com/jfschaefer/rust-libxml.git#33f1b4d43b2f097f6297ebd35faaf2b1d22ced2c"
 dependencies = [
- "gcc 0.3.24 (registry+https://github.com/rust-lang/crates.io-index)",
+ "gcc 0.3.25 (registry+https://github.com/rust-lang/crates.io-index)",
  "libc 0.1.12 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
@@ -69,7 +69,7 @@ dependencies = [
 
 [[package]]
 name = "regex"
-version = "0.1.54"
+version = "0.1.55"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
  "aho-corasick 0.5.1 (registry+https://github.com/rust-lang/crates.io-index)",

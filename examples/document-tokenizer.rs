@@ -56,14 +56,14 @@ fn get_plaintext(node: &Node) -> (String, Vec<usize>, Vec<Node>) {
         let classvals = node.get_class_names();
         if name == "math" || classvals.contains("ltx_equation") || classvals.contains("ltx_equationgroup") {
             plaintext.push_str("MathFormula");
-            for _ in 0..11 {
-                offsets.push(0);
+            for i in 0..11 {
+                offsets.push(i);
                 nodes.push(node.clone());
             }
         } else if name == "cite" {
             plaintext.push_str("CitationElement");
-            for _ in 0..15 {
-                offsets.push(0);
+            for i in 0..15 {
+                offsets.push(i);
                 nodes.push(node.clone());
             }
         } else if name == "table" {
@@ -103,11 +103,39 @@ pub fn main() {
     let mut senna = Senna::new(SENNA_PATH.to_owned());
     let tokenizer = Tokenizer::default();
 
+    let mut sentence_id_counter = 0usize;
+
     let mut corpus = Corpus::new(corpus_path.to_owned());
-    for mut document in corpus.iter() {
+    for document in corpus.iter() {
         println!("Processing \"{}\"", &document.path);
-        let mut dom = document.dom;
+        let dom = document.dom;
         let xpath_context = Context::new(&dom).unwrap();
+
+
+        // Remove ltx_p nodes
+        match xpath_context.evaluate("//*[contains(@class,'ltx_para')]//p[contains(@class,'ltx_p')]") {
+            Ok(result) => {
+                for ltx_p in result.get_nodes_as_vec() {
+                    // move children out
+                    loop {
+                        match ltx_p.get_first_child() {
+                            None => { break; },   // Done
+                            Some(child) => {
+                                child.unlink();
+                                ltx_p.add_prev_sibling(child).unwrap();
+                            }
+                        }
+                    }
+                    ltx_p.unlink();
+                    ltx_p.free();
+                }
+            },
+            Err(_) => {
+                writeln!(std::io::stderr(), "Warning: Didn't remove any //*[contains(@class,'ltx_para')]//p[contains(@class,'ltx_p')]").unwrap();
+            }
+        }
+
+
         let paras = match xpath_context.evaluate("//*[contains(@class,'ltx_para')]") {
             Ok(result) => result.get_nodes_as_vec(),
             Err(_) => {
@@ -117,7 +145,7 @@ pub fn main() {
         };
 
         for para in paras {
-            let (plaintext, offsets, nodes) = get_plaintext(&para);
+            let (plaintext, _, _) = get_plaintext(&para);
             // Need to create DNM for sentence tokenizer
             let dnm = DNM {
                 plaintext : plaintext,
@@ -128,7 +156,7 @@ pub fn main() {
             let sentences = tokenizer.sentences(&dnm);
             for sentence in sentences {
                 // find lowest parent of range
-                let (plaintext, offsets, nodes) = get_plaintext(&para); // Need to recalculate it every round
+                let (_, offsets, nodes) = get_plaintext(&para); // Need to recalculate it every round
                 let start_node = &nodes[sentence.start];
                 let start_parents : Vec<Node> = get_parent_chain(start_node, &para);
                 let end_node = &nodes[sentence.end-1];
@@ -141,13 +169,48 @@ pub fn main() {
                     si -= 1;
                     ei -= 1;
                 }
+
+                let senna_parse = senna.parse(sentence.get_plaintext(), SennaParseOptions { pos: true, psg: true,});
                 
                 let common_parent = &start_parents[si];
 
                 if common_parent.is_text_node() {
-                    // TODO: Simply split it
+                    let before = Node::new_text_node(&dom, &dnm.plaintext[sentence.start - offsets[sentence.start]..sentence.start]).unwrap();
+                    let core = Node::new_text_node(&dom, &dnm.plaintext[sentence.start..sentence.end]).unwrap();
+                    let mut textend = sentence.start+1;
+                    while textend < offsets.len() && offsets[textend] > 0 {
+                        textend += 1;
+                    }
+                    let after = Node::new_text_node(&dom, &dnm.plaintext[sentence.end..textend]).unwrap();
+
+                    let snode = Node::new("span", None, &dom).unwrap();
+                    snode.add_property("class", "sentence");
+                    snode.add_property("id", &format!("sentence.{}", sentence_id_counter));
+                    sentence_id_counter += 1;
+                    snode.add_property("psg", senna_parse.get_psgstring().unwrap());
+                    common_parent.add_prev_sibling(snode.clone()).unwrap();
+                    snode.add_prev_sibling(before).unwrap();
+                    let break_ = Node::new("BREAK", None, &dom).unwrap();
+                    common_parent.add_prev_sibling(break_.clone()).unwrap();
+                    break_.add_prev_sibling(after).unwrap();
+                    break_.unlink();
+                    break_.free();
+                    common_parent.unlink();
+                    common_parent.free();
+                    snode.add_child(&core).unwrap();
                 } else if common_parent == start_node && common_parent == end_node {
-                    // TODO: Annotate it or print warning
+                    if offsets[sentence.start] == 0 && (sentence.end == offsets.len() || offsets[sentence.end] == 0) {
+                        let snode = Node::new("span", None, &dom).unwrap();
+                        snode.add_property("class", "sentence");
+                        snode.add_property("id", &format!("sentence.{}", sentence_id_counter));
+                        sentence_id_counter += 1;
+                        common_parent.add_prev_sibling(snode.clone()).unwrap();
+                        common_parent.unlink();
+                        snode.add_child(common_parent).unwrap();
+                    } else {
+                        writeln!(std::io::stderr(), "Warning: Couldn't split sentence (doesn't match token boundaries): \"{}\"",
+                                                    sentence.get_plaintext()).unwrap();
+                    }
                 } else {
                     // make sure splitting is possible
                     let mut act_start = start_parents[si - 1].clone();
@@ -156,9 +219,10 @@ pub fn main() {
                             !is_child_of(&nodes[sentence.start-1], &act_start, &para)) {
 
                         // let act_end = &end_parents[ei - 1];
-                        // writeln!(std::io::stderr(), "NAMES: \"{}\" > \"{}\" | \"{}\"", common_parent.get_name(), act_start.get_name(), act_end.get_name()).unwrap();
+                        // writeln!(std::io::stderr(), "NAMES: \"{}\" > \"{}\" | \"{}\"", dom.node_to_string(&common_parent), dom.node_to_string(&act_start), dom.node_to_string(&act_end)).unwrap();
                         writeln!(std::io::stderr(), "Warning: Couldn't split sentence (at beginning): \"{}\"",
                                                     sentence.get_plaintext()).unwrap();
+                        continue;
                     }
                     let mut act_end = end_parents[ei - 1].clone();
                     if !(sentence.end == dnm.plaintext.len()-1 ||
@@ -166,6 +230,7 @@ pub fn main() {
                             !is_child_of(&nodes[sentence.end+1], &act_end, &para)) {
                         writeln!(std::io::stderr(), "Warning: Couldn't split sentence (at end): \"{}\"",
                                                     sentence.get_plaintext()).unwrap();
+                        continue;
                     }
                     
                     // split text nodes
@@ -189,10 +254,11 @@ pub fn main() {
                     if act_end.is_text_node() && sentence.end < dnm.plaintext.len() - 1 &&
                                          offsets[sentence.end+1] != 0 {
                         let before = Node::new_text_node(&dom, &dnm.plaintext[sentence.end - offsets[sentence.end]..sentence.end]).unwrap();
-                        let mut textend = sentence.end + 1;
+                        let mut textend = sentence.end+1;
                         while textend < offsets.len() && offsets[textend] > 0 {
                             textend += 1;
                         }
+                        
                         let after = Node::new_text_node(&dom, &dnm.plaintext[sentence.end..textend]).unwrap();
                         let stop = Node::new("STOP", None, &dom).unwrap();
                         act_end.add_prev_sibling(stop.clone()).unwrap();
@@ -208,23 +274,22 @@ pub fn main() {
 
                     let snode = Node::new("span", None, &dom).unwrap();
                     snode.add_property("class", "sentence");
-                    act_start.add_prev_sibling(snode.clone());
-                    writeln!(std::io::stderr(), "END ({})", dom.node_to_string(&act_end)).unwrap();
+                    snode.add_property("id", &format!("sentence.{}", sentence_id_counter));
+                    sentence_id_counter += 1;
+                    snode.add_property("psg", senna_parse.get_psgstring().unwrap());
+                    act_start.add_prev_sibling(snode.clone()).unwrap();
                     while act_start != act_end {    // iterate with act_start to act_end and move everything inside snode
-                        writeln!(std::io::stderr(), "OK ({})", &dnm.plaintext[sentence.start..sentence.end]).unwrap();
-                        writeln!(std::io::stderr(), "OK ({})", dom.node_to_string(&act_start)).unwrap();
                         let tmp = act_start.get_next_sibling().unwrap();
                         act_start.unlink();
-                        snode.add_child(&act_start);
+                        snode.add_child(&act_start).unwrap();
                         act_start = tmp;
                     }
                     act_end.unlink();
-                    snode.add_child(&act_end);
-                    writeln!(std::io::stderr(), "DONE ({})", dom.node_to_string(&act_end)).unwrap();
+                    snode.add_child(&act_end).unwrap();
                 }
             }
         }
-        dom.save_file("/tmp/test.html");
+        dom.save_file("/tmp/test.html").unwrap();
     }
 }
 

@@ -21,4 +21,3 @@ pub mod data;
 pub mod stopwords;
 pub mod tokenizer;
 pub mod ngrams;
-pub mod util;

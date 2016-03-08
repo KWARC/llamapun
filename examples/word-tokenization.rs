@@ -39,7 +39,7 @@ fn main() {
       total_sentences += 1;
       for sent_word in sentence.simple_iter() {
         total_words += 1;
-        let word = sent_word.text.to_string().to_lowercase();
+        let word = sent_word.range.get_plaintext().to_string().to_lowercase();
         dictionary.insert(word.clone());
         unigrams.insert(word);
       }

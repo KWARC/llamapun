@@ -24,7 +24,9 @@ pub fn main() {
     None => "token_model.txt".to_string()
   };
 
-
+  let mut document_count = 0;
+  let mut paragraph_count = 0;
+  let mut sentence_count = 0;
   let mut word_count = 0;
   let mut formula_count = 0;
   let mut citation_count = 0;
@@ -40,8 +42,11 @@ pub fn main() {
 
   let mut corpus = Corpus::new(corpus_path);
   for mut document in corpus.iter() {
+    document_count += 1;
     for mut paragraph in document.paragraph_iter() {
+      paragraph_count += 1;
       for mut sentence in paragraph.iter() {
+        sentence_count += 1;
         for word in sentence.simple_iter() {
           if !word.range.is_empty() {
             let word_string = word.range.get_plaintext().to_lowercase();
@@ -73,6 +78,9 @@ pub fn main() {
   };
 
   println!("Token model finished, gathered: ");
+  println!("{:?} documents;", document_count);
+  println!("{:?} paragraphs;", paragraph_count);
+  println!("{:?} sentences;", sentence_count);
   println!("{:?} words;", word_count);
   println!("{:?} formulas;", formula_count);
   println!("{:?} inline cites;", citation_count);

@@ -27,7 +27,8 @@ impl Tokenizer {
     let mut text_iterator = text.chars().peekable();
     let mut start = 0;
     let mut end = 0;
-    let mut left_window : VecDeque<char> = VecDeque::with_capacity(9);
+    let window_size = 13;
+    let mut left_window : VecDeque<char> = VecDeque::with_capacity(window_size);
 
     loop {
       let c = text_iterator.next();
@@ -58,21 +59,22 @@ impl Tokenizer {
               next_word.push(word_char);
               next_word_length += word_char.len_utf8();
             }
-            // There must be a cleaner way of doing this recast into &str
+
             let next_word_string : String = next_word.into_iter().collect();
             let lower_word_string : String = next_word_string.to_lowercase();
+            // TODO: is there a cleaner way of doing this recast into &str?
             let lower_word_str : &str = &lower_word_string;
             // Always break the sentence when we see a stopword
             if self.stopwords.contains(lower_word_str) {
               // Reset the left window
-              left_window = VecDeque::with_capacity(9);
+              left_window = VecDeque::with_capacity(window_size);
               // New sentence
               sentences.push(DNMRange{start: start, end: end, dnm: dnm}.trim());
               start = end;
               end+=next_word_length;
             } else { // Regular word case.
               // Check for abbreviations:
-              // Longest abbreviation is 6 characters, so take window of 8 chars to the left (allow for a space before dot)
+              // Longest abbreviation is 6 characters, but MathFormula is 11, so take window of window_size chars to the left (allow for a space before dot)
               let lw_string : String = left_window.clone().into_iter().collect();
               let lw_str : &str = &lw_string;
               let lw_opt = lw_str.trim().split(|c: char| !c.is_alphabetic()).last();
@@ -88,12 +90,12 @@ impl Tokenizer {
                 self.abbreviations.is_match(lw_word) {
 
                 left_window.push_back('.');
-                if left_window.len() > 8 { left_window.pop_front(); }
+                if left_window.len() >= window_size { left_window.pop_front(); }
               }
               //TODO: Handle dot-dot-dot "..."
               else { // Not a special case, break the sentence
                 // Reset the left window
-                left_window = VecDeque::with_capacity(9);
+                left_window = VecDeque::with_capacity(window_size);
                 // New sentence
                 sentences.push(DNMRange{start: start, end: end, dnm: dnm}.trim());
                 start = end;
@@ -101,7 +103,7 @@ impl Tokenizer {
               // We consumed the next word, so make sure we reflect that in either case:
               for next_word_char in next_word_string.chars() {
                 left_window.push_back(next_word_char);
-                if left_window.len() > 8 { left_window.pop_front(); }
+                if left_window.len() >= window_size { left_window.pop_front(); }
               }
               end += next_word_length;
             }
@@ -110,7 +112,7 @@ impl Tokenizer {
             match text_iterator.peek() {
               Some(&'*') | Some(&'"') | Some(&'(') => {
                 // Reset the left window
-                left_window = VecDeque::with_capacity(9);
+                left_window = VecDeque::with_capacity(window_size);
                 // New sentence
                 sentences.push(DNMRange{start: start, end: end, dnm: dnm}.trim());
                 start = end;
@@ -118,7 +120,7 @@ impl Tokenizer {
               _ => {
                 // TODO: Maybe break on lowercase stopwords here? unclear...
                 left_window.push_back('.');
-                if left_window.len() > 8 { left_window.pop_front(); }
+                if left_window.len() >= window_size { left_window.pop_front(); }
               }
             }
           }
@@ -126,7 +128,7 @@ impl Tokenizer {
         Some('?') | Some('!') => {
           if !is_bounded(left_window.back(),text_iterator.peek()) {
             // Reset the left window
-            left_window = VecDeque::with_capacity(9);
+            left_window = VecDeque::with_capacity(window_size);
             // New sentence
             sentences.push(DNMRange{start: start, end: end, dnm: dnm}.trim());
             start = end;
@@ -160,26 +162,36 @@ impl Tokenizer {
                 // We consumed the next word, add it to the left window
                 for next_word_char in next_word_string.chars() {
                   left_window.push_back(next_word_char);
-                  if left_window.len() > 8 { left_window.pop_front(); }
+                  if left_window.len() >= window_size { left_window.pop_front(); }
                 }
               }
               else {
                 // Sentence-break found:
-                left_window = VecDeque::with_capacity(9);
+                left_window = VecDeque::with_capacity(window_size);
                 sentences.push(DNMRange{start: start, end: end, dnm: dnm}.trim());
                 start = end;
               }
 
               // We consumed the next word, so make sure we reflect that in either case:
               end += next_word_length;
-            }
+            },
             _ => {}
           }
         },
         Some(x) => {
+          // "MathFormula\nCapitalized" case is a sentence break
+          if x.is_uppercase(){
+            let lw_string : String = left_window.clone().into_iter().collect();
+            if lw_string == "MathFormula\n" {
+              // Sentence-break found:
+              left_window = VecDeque::with_capacity(window_size);
+              sentences.push(DNMRange{start: start, end: end, dnm: dnm}.trim());
+              start = end;
+            }
+          }
           // Increment the left window
           left_window.push_back(x);
-          if left_window.len() > 8 {
+          if left_window.len() >= window_size {
             left_window.pop_front();
           }
         },

@@ -49,7 +49,8 @@ pub fn main() {
         sentence_count += 1;
         for word in sentence.simple_iter() {
           if !word.range.is_empty() {
-            let word_string = word.range.get_plaintext().to_lowercase();
+            let mut word_string = word.range.get_plaintext().to_lowercase();
+            utf_truncate(&mut word_string, 50);
             if word_string == "mathformula" {
               formula_count += 1;
             } else if word_string == "citationelement" {
@@ -87,3 +88,16 @@ pub fn main() {
 
 }
 
+fn utf_truncate(input : &mut String, maxsize: usize) {
+  let mut utf_maxsize = input.len();
+  if utf_maxsize >= maxsize {
+    { let mut char_iter = input.char_indices();
+    while utf_maxsize >= maxsize {
+      utf_maxsize = match char_iter.next_back() {
+        Some((index, _)) => index,
+        _ => 0
+      };
+    } } // Extra {} wrap to limit the immutable borrow of char_indices()
+    input.truncate(utf_maxsize);
+  }
+}

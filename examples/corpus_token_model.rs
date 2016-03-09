@@ -2,6 +2,7 @@
 // file at the top-level directory of this distribution.
 //
 extern crate llamapun;
+extern crate time;
 
 use std::env;
 use std::io::prelude::*;
@@ -12,6 +13,7 @@ use llamapun::data::Corpus;
 
 /// Given a CorTeX corpus of HTML5 documents, extract a token model as a single file
 pub fn main() {
+  let start = time::get_time();
   // Read input arguments
   let mut input_args = env::args();
   let _ = input_args.next(); // skip process name
@@ -71,6 +73,10 @@ pub fn main() {
         }
       }
     }
+
+    if document_count % 1000 == 0 {
+      println!("-- processed documents: {:?}", document_count);
+    }
   }
 
   match token_writer.flush() {
@@ -78,7 +84,10 @@ pub fn main() {
     _ => {}
   };
 
-  println!("Token model finished, gathered: ");
+  let end = time::get_time();
+  let duration_sec = (end - start).num_milliseconds() / 1000;
+  println!("---");
+  println!("Token model finished in {:?}s, gathered: ", duration_sec);
   println!("{:?} documents;", document_count);
   println!("{:?} paragraphs;", paragraph_count);
   println!("{:?} sentences;", sentence_count);

@@ -182,7 +182,7 @@ impl Tokenizer {
           // "MathFormula\nCapitalized" case is a sentence break
           if x.is_uppercase(){
             let lw_string : String = left_window.clone().into_iter().collect();
-            if lw_string == "MathFormula\n" {
+            if lw_string == "MathFormula" {
               // Sentence-break found:
               left_window = VecDeque::with_capacity(window_size);
               sentences.push(DNMRange{start: start, end: end, dnm: dnm}.trim());

@@ -27,7 +27,7 @@ impl Tokenizer {
     let mut text_iterator = text.chars().peekable();
     let mut start = 0;
     let mut end = 0;
-    let window_size = 13;
+    let window_size = 12; // size of max string + 1
     let mut left_window : VecDeque<char> = VecDeque::with_capacity(window_size);
 
     loop {
@@ -179,14 +179,14 @@ impl Tokenizer {
           }
         },
         Some(x) => {
-          // "MathFormula\nCapitalized" case is a sentence break
-          if x.is_uppercase(){
+          // "MathFormula\nCapitalized" case is a sentence break (but never "MathFormula\nMathFormula")
+          if x.is_uppercase() && x != 'M' {
             let lw_string : String = left_window.clone().into_iter().collect();
             if lw_string == "MathFormula" {
-              // Sentence-break found:
+              // Sentence-break found, but exclude the current letter from the end:
               left_window = VecDeque::with_capacity(window_size);
-              sentences.push(DNMRange{start: start, end: end, dnm: dnm}.trim());
-              start = end;
+              sentences.push(DNMRange{start: start, end: end-x.len_utf8(), dnm: dnm}.trim());
+              start = end-x.len_utf8();
             }
           }
           // Increment the left window

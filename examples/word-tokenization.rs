@@ -5,9 +5,6 @@ extern crate time;
 
 use std::collections::HashMap;
 use time::PreciseTime;
-use libxml::parser::Parser;
-
-use llamapun::tokenizer::Tokenizer;
 use llamapun::ngrams::{Dictionary,Unigrams};
 use llamapun::data::{Corpus,Document};
 use llamapun::util::plot::*;

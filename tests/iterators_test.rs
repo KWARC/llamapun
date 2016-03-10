@@ -12,7 +12,7 @@ fn can_iterate_corpus() {
       for mut sentence in paragraph.iter() {
         for word in sentence.simple_iter() {
           word_count+=1;
-          assert!(! word.range.is_empty());
+          assert!(!word.range.is_empty());
           assert!(word.pos == POS::NOT_SET);
         }
       }

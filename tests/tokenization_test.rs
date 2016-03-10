@@ -1,5 +1,6 @@
 extern crate llamapun;
 extern crate libxml;
+extern crate regex;
 
 use llamapun::dnm::*;
 use llamapun::tokenizer::*;
@@ -7,7 +8,8 @@ use libxml::tree::*;
 use libxml::xpath::*;
 use libxml::parser::Parser;
 use std::collections::HashMap;
-use std::ptr; 
+use std::ptr;
+use regex::Regex;
 
 #[test]
 /// Test sentence tokenization of a simple document
@@ -48,7 +50,7 @@ fn test_sentence_tokenization_simple() {
     };
     assert_eq!(s1, s2);
   }
-  
+
 }
 
 #[test]
@@ -78,6 +80,7 @@ fn test_sentence_tokenization_arxmliv_html() {
 /*    Auxiliary functions:  */
 /* ======================== */
 fn test_each_paragraph<'a>(doc: &'a Document, expected: Vec<Vec<&'a str>>) {
+  let multispace = Regex::new(r"\s+").unwrap();
   let tokenizer = Tokenizer::default();
   // We will tokenize each logical paragraph, which are the textual logical units in an article
   let xpath_context = Context::new(&doc).unwrap();
@@ -88,7 +91,9 @@ fn test_each_paragraph<'a>(doc: &'a Document, expected: Vec<Vec<&'a str>>) {
     let dnm = DNM::new(para, DNMParameters::llamapun_normalization());
 
     let paragraph_expected = expected_iter.next().unwrap();
-    assert_eq!(dnm.plaintext.trim(), paragraph_expected[0]);
+    let expected_paragraph = multispace.replace_all(&paragraph_expected[0], "_");
+    let result_paragraph  = multispace.replace_all(dnm.plaintext.trim(), "_");
+    assert_eq!(result_paragraph, expected_paragraph);
     // println!("----\n{:?}\n----\n",doc.node_to_string(para));
     // println!("{:?}", dnm.plaintext.trim());
     let ranges : Vec<DNMRange> = tokenizer.sentences(&dnm);
@@ -100,7 +105,10 @@ fn test_each_paragraph<'a>(doc: &'a Document, expected: Vec<Vec<&'a str>>) {
         None => "".to_string(),
         Some(x) => x.to_string()
       };
-      assert_eq!(range.get_plaintext(), expected_para_text);
+      // Normalize multispace treatment, since different versions of libxml2 are a little flaky here.
+      let expected_text = multispace.replace_all(&expected_para_text, "_");
+      let result_text  = multispace.replace_all(range.get_plaintext(), "_");
+      assert_eq!(result_text, expected_text);
     }
   }
 }

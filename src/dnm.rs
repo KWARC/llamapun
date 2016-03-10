@@ -195,9 +195,11 @@ impl <'dnmrange> DNMRange <'dnmrange> {
         trimmed_end -= 1; }
       else {
         break; }}
-    if trimmed_start > trimmed_end {  // in case range contains only whitespaces
-        trimmed_start = self.start;
-        trimmed_end = self.start;
+    // Edge case: when the given input is whitespace only, start will be larger than end.
+    // In that case return the 0-width range at the original end marker.
+    if trimmed_start >= trimmed_end {
+      trimmed_start = self.end;
+      trimmed_end = self.end;
     }
     DNMRange {start : trimmed_start, end: trimmed_end, dnm: self.dnm}
   }
@@ -248,7 +250,7 @@ impl DNM {
 
   /// The heart of the dnm generation...
   fn recurse_node_create(&mut self, node: &Node, runtime: &mut RuntimeParseData) {
-    match node.is_text_node() { 
+    match node.is_text_node() {
       true => self.text_node_create(node, runtime),
       false => self.intermediate_node_create(node,runtime)
     };
@@ -380,7 +382,7 @@ impl DNM {
       }
     }
 
-    self.node_map.insert(node_to_hashable(node), (offset_start, 
+    self.node_map.insert(node_to_hashable(node), (offset_start,
       if self.parameters.move_whitespaces_between_nodes && self.plaintext.len() > offset_start && runtime.had_whitespace {
         self.plaintext.len() - 1    //don't put trailing white space into node
       } else { self.plaintext.len()}));

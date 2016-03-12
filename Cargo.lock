@@ -29,7 +29,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 [[package]]
 name = "gnuplot"
 version = "0.0.20"
-source = "git+https://github.com/SiegeLord/RustGnuplot.git#d75a573db97398bfedbfbcca85d691808a243103"
+source = "git+https://github.com/SiegeLord/RustGnuplot.git#cd2e36474684d3af105e23c6334647dccd9f2bac"
 
 [[package]]
 name = "kernel32-sys"
@@ -47,7 +47,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
 name = "libc"
-version = "0.2.7"
+version = "0.2.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
@@ -64,7 +64,7 @@ name = "memchr"
 version = "0.1.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
- "libc 0.2.7 (registry+https://github.com/rust-lang/crates.io-index)",
+ "libc 0.2.8 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
@@ -86,9 +86,9 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 [[package]]
 name = "rust-senna"
 version = "0.0.1"
-source = "git+https://github.com/jfschaefer/rust-senna.git#866ad923b9837a6c7c9b17e9fd8482689da5104e"
+source = "git+https://github.com/jfschaefer/rust-senna.git#a7d07d6a6d999602bb81c56f684ff0261c47f60a"
 dependencies = [
- "libc 0.2.7 (registry+https://github.com/rust-lang/crates.io-index)",
+ "libc 0.2.8 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
@@ -105,7 +105,7 @@ version = "0.1.34"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
  "kernel32-sys 0.2.1 (registry+https://github.com/rust-lang/crates.io-index)",
- "libc 0.2.7 (registry+https://github.com/rust-lang/crates.io-index)",
+ "libc 0.2.8 (registry+https://github.com/rust-lang/crates.io-index)",
  "winapi 0.2.5 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 

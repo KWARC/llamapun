@@ -51,9 +51,9 @@ fn test_simple_marked_phrase_match() {
     let p_mf = Pattern::W("MathFormula");
     let p_be = Pattern::W("be");
     let p_indep = Pattern::W("independent");
-    let p_ind_phrs = Pattern::PhrS(Phrase::NP, false, &p_indep);
+    let p_ind_phrs = Pattern::PhrS(Phrase::NP, false, Box::new(p_indep));
     let p_phr_marked = Pattern::Marked("mathobject", vec!["definiens"],
-                                       &p_ind_phrs);
+                                       Box::new(p_ind_phrs));
     let pattern : Pattern<&str, &str> = Pattern::Seq(
         vec![p_let, p_mf, p_be, p_phr_marked]);
     for mut sentence in document.sentence_iter() {

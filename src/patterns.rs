@@ -132,10 +132,10 @@ pub enum Pattern<'t, MarkerT, NoteT> where MarkerT: 't + Clone , NoteT: 't + Clo
     // WsP(Vec<&'t str>, Vec<POS>),
     P(Vec<POS>),
     Phr0(Phrase, bool),   // bool: True if from top, i.e. highest phrase
-    PhrS(Phrase, bool, &'t Pattern<'t, MarkerT, NoteT>),
-    PhrE(Phrase, bool, &'t Pattern<'t, MarkerT, NoteT>),
+    PhrS(Phrase, bool, Box<Pattern<'t, MarkerT, NoteT>>),
+    PhrE(Phrase, bool, Box<Pattern<'t, MarkerT, NoteT>>),
     // PhrSE(Phrase, &'t Pattern<'t, MarkerT, NoteT>, &'t Pattern<'t, MarkerT, NoteT>),
-    Marked(MarkerT, Vec<NoteT>, &'t Pattern<'t, MarkerT, NoteT>),
+    Marked(MarkerT, Vec<NoteT>, Box<Pattern<'t, MarkerT, NoteT>>),
     Seq(Vec<Pattern<'t, MarkerT, NoteT>>),
     Or(Vec<Pattern<'t, MarkerT, NoteT>>),
 }
@@ -280,7 +280,7 @@ impl <'t, MarkerT: Clone, NoteT: Clone> Pattern<'t, MarkerT, NoteT> {
                     }
                 }
             }
-            &Pattern::PhrS(phr, top, s_pat) => {
+            &Pattern::PhrS(phr, top, ref s_pat) => {
                 match get_top_psg_of_word(sent, pos) {
                     None => { return None; }
                     Some(ref r) => {
@@ -288,7 +288,7 @@ impl <'t, MarkerT: Clone, NoteT: Clone> Pattern<'t, MarkerT, NoteT> {
                               else   {psg_get_bottom_left_child_phrase(phr, r)} {
                             None => { return None; }
                             Some(ref p) => {
-                                let m = Pattern::rec_match(s_pat, pos, sent);
+                                let m = Pattern::rec_match(&s_pat, pos, sent);
                                 match m {
                                     None => { return None; }
                                     Some((marks, end)) => {
@@ -306,7 +306,7 @@ impl <'t, MarkerT: Clone, NoteT: Clone> Pattern<'t, MarkerT, NoteT> {
                 }
             }
 
-            &Pattern::PhrE(phr, top, e_pat) => {
+            &Pattern::PhrE(phr, top, ref e_pat) => {
                 match get_top_psg_of_word(sent, pos) {
                     None => { return None; }
                     Some(ref r) => {
@@ -316,7 +316,7 @@ impl <'t, MarkerT: Clone, NoteT: Clone> Pattern<'t, MarkerT, NoteT> {
                             Some(ref p) => {
                                 let p_end = get_psg_end(p);
                                 for i in 0..(p_end-pos) {
-                                    let m = Pattern::rec_match(e_pat, pos+i, sent);
+                                    let m = Pattern::rec_match(&e_pat, pos+i, sent);
                                     match m {
                                         None => { continue; }
                                         Some((marks, end)) => {

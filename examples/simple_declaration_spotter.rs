@@ -2,18 +2,13 @@ extern crate llamapun;
 extern crate senna;
 extern crate libxml;
 
-use std::io::Write;
 
-use llamapun::dnm::{DNM, DNMParameters, DNMRange};
-use llamapun::data::{Corpus, Sentence};
+use llamapun::data::Corpus;
 use llamapun::patterns::Pattern as P;
 
 use senna::phrase::Phrase;
-use senna::senna::SennaParseOptions;
-use senna::pos::POS;
 
 use senna::sentence::Sentence as SSentence;
-use senna::sentence::Word as SWord;
 use libxml::xpath::Context;
 
 
@@ -33,10 +28,10 @@ pub fn main() {
 
     let p_indefinite_article = P::Or(vec![P::W("a"), P::W("an"), P::W("any"), P::W("some"), P::W("every")]);
     let p_mathformula = P::W("MathFormula");
-    let p_mf_marked = P::Marked("definiendum", vec![], &p_mathformula);
+    let p_mf_marked = P::Marked("definiendum", vec![], Box::new(p_mathformula));
 
-    let p_short_dfs = P::PhrS(Phrase::NP, false, &p_indefinite_article);
-    let p_short_dfs_marked = P::Marked("definiens", vec!["with article", "short"], &p_short_dfs);
+    let p_short_dfs = P::PhrS(Phrase::NP, false, Box::new(p_indefinite_article));
+    let p_short_dfs_marked = P::Marked("definiens", vec!["with article", "short"], Box::new(p_short_dfs));
 
     // let p_quantifier_existential = P::Seq(vec![P::W("there"), P::Or(vec![P::W("is"), P::W("exists")])]);
     // let p_quantifier_universal = P::W("for");

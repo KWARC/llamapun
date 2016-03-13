@@ -1,4 +1,7 @@
 //! Data structures and Iterators for convenient high-level syntax
+
+use std::io;
+use std::io::Write;
 use std::vec::IntoIter;
 use std::cell::{RefCell, Cell};
 use walkdir::{DirEntry, WalkDir, WalkDirIterator};
@@ -16,6 +19,8 @@ use senna::sennapath::SENNA_PATH;
 use senna::senna::{Senna, SennaParseOptions};
 use senna::pos::POS;
 use senna::sentence::Sentence as SennaSentence;
+use senna::sentence::Word as SennaWord;
+use senna::util::parse_psg;
 
 pub struct Corpus {
   // Directory-level
@@ -37,6 +42,7 @@ pub struct Document<'d> {
   pub path : String,
   pub corpus : &'d Corpus,
   pub dnm : Option<DNM>,
+  pub xpath_context: Context,
 }
 
 pub struct ParagraphIterator<'iter> {
@@ -52,6 +58,12 @@ pub struct Paragraph<'p> {
 pub struct SentenceIterator<'iter> {
   walker : IntoIter<DNMRange<'iter>>,
   // pub paragraph : &'iter Paragraph<'iter>
+  pub document : &'iter Document<'iter>,
+}
+
+pub struct AnnotatedSentenceIterator<'iter> {
+  pos: usize,
+  sentences: Vec<Node>,
   pub document : &'iter Document<'iter>,
 }
 
@@ -143,18 +155,20 @@ impl Corpus {
 impl<'d> Document<'d> {
   pub fn new(filepath: String, owner: &'d Corpus) -> Result<Self, XmlParseError> {
     let dom = try!(owner.parser.parse_file(&filepath));
+    let xpc = Context::new(&dom).unwrap();
 
     Ok(Document {
       path : filepath,
       dom : dom,
       corpus : owner,
       dnm : None,
+      xpath_context: xpc,
     })
   }
 
   pub fn paragraph_iter(&mut self) -> ParagraphIterator {
-    let xpath_context = Context::new(&self.dom).unwrap();
-    let paras = match xpath_context.evaluate("//*[contains(@class,'ltx_para')]") {
+    //let xpath_context = Context::new(&self.dom).unwrap();
+    let paras = match self.xpath_context.evaluate("//*[contains(@class,'ltx_para')]") {
       Ok(xpath_result) => xpath_result.get_nodes_as_vec(),
       _ => Vec::new()
     };
@@ -172,6 +186,19 @@ impl<'d> Document<'d> {
     let sentences = tokenizer.sentences(self.dnm.as_ref().unwrap());
     SentenceIterator {
       walker : sentences.into_iter(),
+      document: self,
+    }
+  }
+
+  pub fn annotated_sentence_iter(&mut self) -> AnnotatedSentenceIterator {
+    if self.dnm.is_none() {
+      self.dnm = Some(DNM::new(self.dom.get_root_element().unwrap(), DNMParameters::llamapun_normalization()));
+    }
+    let sentences = self.xpath_context.evaluate("//*[contains(@class,'ltx_para')]//span[contains(@class,'sentence')]")
+                                 .expect("Could not evalute sentence XPATH");
+    AnnotatedSentenceIterator {
+      pos: 0,
+      sentences: sentences.get_nodes_as_vec(),
       document: self,
     }
   }
@@ -216,6 +243,71 @@ impl<'iter> Iterator for SentenceIterator<'iter> {
           Some(sentence)
         }
       }
+    }
+  }
+}
+
+
+/* pub struct AnnotatedSentenceIterator<'iter> {
+  pos: usize,
+  sentences: Vec<Node>,
+  pub document : &'iter Document<'iter>,
+} */
+
+impl<'iter> Iterator for AnnotatedSentenceIterator<'iter> {
+  type Item = Sentence<'iter>;
+  fn next(&mut self) -> Option<Sentence<'iter>> {
+    if self.sentences.len() > self.pos {
+      self.pos = self.pos + 1;
+      if self.sentences.len() > self.pos {
+        let sentence_node = &self.sentences[self.pos];
+        let sentence_id = sentence_node.get_property("id").expect("Sentence doesn't have id");
+        let word_nodes = match self.document.xpath_context.evaluate(
+                                    &format!("//span[@id='{}']//span[contains(@class,'word')]", sentence_id)) {
+            Ok(result) => result.get_nodes_as_vec(),
+            Err(_) => {
+                writeln!(io::stderr(), "Warning: Found sentence without words (@id='{}')", sentence_id).unwrap();
+                vec![]
+            }
+        };
+        // get words of sentences in raw form
+        let mut words_raw : Vec<(DNMRange, POS)> = Vec::new();
+        for word_node in word_nodes {
+            let pos_tag_string = word_node.get_property("pos").expect("Word doesn't have pos tag");
+            let pos_tag_str : &str = &pos_tag_string;
+            let pos_map = &self.document.corpus.senna.borrow().pos_map;
+            let pos_tag = pos_map.get(pos_tag_str)
+                                 .expect(&format!("Unknown pos tag: \"{}\"", pos_tag_str));
+            let dnmrange = self.document.dnm.as_ref().unwrap().get_range_of_node(&word_node).unwrap();
+            words_raw.push((dnmrange, *pos_tag));
+        }
+        // sort the words
+        words_raw.sort_by(|&(ref a,_), &(ref b,_)| a.start.cmp(&b.start));
+        let sentence_range = self.document.dnm.as_ref().unwrap().get_range_of_node(&sentence_node).unwrap();
+        let mut ssent = SennaSentence::new(sentence_range.get_plaintext());
+        ssent.set_psgstring(sentence_node.get_property("psg").expect("Sentence doesn't have psg"));
+        let psg_map = &self.document.corpus.senna.borrow().psg_map;
+        let psgroot = parse_psg(ssent.get_psgstring().unwrap().as_bytes(),
+                                             &mut 0, &mut 0, psg_map);
+        ssent.set_psgroot(psgroot);
+        for i in 0..words_raw.len() {
+            let mut word = SennaWord::new(words_raw[i].0.start - sentence_range.start,
+                                     words_raw[i].0.end - sentence_range.start,
+                                     words_raw[i].0.get_plaintext(), i as u32);
+            word.set_pos(words_raw[i].1);
+            ssent.push_word(word);
+        }
+        
+        Some(Sentence {
+            range: sentence_range.clone(),
+            document: self.document,
+            senna_sentence: Some(ssent),
+        })
+      } else {
+        None
+      }
+    } else {
+      None
     }
   }
 }

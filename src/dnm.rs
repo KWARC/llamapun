@@ -172,7 +172,7 @@ pub struct DNMRange <'dnmrange> {
 
 impl <'dnmrange> DNMRange <'dnmrange> {
   /// Get the plaintext substring corresponding to the range
-  pub fn get_plaintext(&self) -> &str {
+  pub fn get_plaintext(&self) -> &'dnmrange str {
     &(&self.dnm.plaintext)[self.start..self.end]
   }
   /// Get the plaintext without trailing white spaces

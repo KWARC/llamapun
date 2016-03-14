@@ -72,6 +72,7 @@ pub struct Sentence<'s> {
   // pub paragraph : &'s Paragraph<'s>
   pub document : &'s Document<'s>,
   pub senna_sentence : Option<SennaSentence<'s>>,
+  pub node : Option<Node>,
 }
 
 pub struct SimpleWordIterator<'iter> {
@@ -239,7 +240,7 @@ impl<'iter> Iterator for SentenceIterator<'iter> {
         if range.is_empty() {
           self.next()
         } else {
-          let sentence = Sentence { range: range, document: self.document, senna_sentence : None };
+          let sentence = Sentence { range: range, document: self.document, senna_sentence : None, node: None };
           Some(sentence)
         }
       }
@@ -247,12 +248,6 @@ impl<'iter> Iterator for SentenceIterator<'iter> {
   }
 }
 
-
-/* pub struct AnnotatedSentenceIterator<'iter> {
-  pos: usize,
-  sentences: Vec<Node>,
-  pub document : &'iter Document<'iter>,
-} */
 
 impl<'iter> Iterator for AnnotatedSentenceIterator<'iter> {
   type Item = Sentence<'iter>;
@@ -302,6 +297,7 @@ impl<'iter> Iterator for AnnotatedSentenceIterator<'iter> {
             range: sentence_range.clone(),
             document: self.document,
             senna_sentence: Some(ssent),
+            node: Some(sentence_node.clone()),
         })
       } else {
         None

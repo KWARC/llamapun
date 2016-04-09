@@ -136,6 +136,7 @@ pub enum Pattern<'t, MarkerT, NoteT> where MarkerT: 't + Clone , NoteT: 't + Clo
     PhrE(Phrase, bool, Box<Pattern<'t, MarkerT, NoteT>>),
     // PhrSE(Phrase, &'t Pattern<'t, MarkerT, NoteT>, &'t Pattern<'t, MarkerT, NoteT>),
     Marked(MarkerT, Vec<NoteT>, Box<Pattern<'t, MarkerT, NoteT>>),
+    MarkedExcl(MarkerT, Vec<NoteT>, Box<Pattern<'t, MarkerT, NoteT>>, usize /* excluded from front */, usize /* excluded from end */),
     Seq(Vec<Pattern<'t, MarkerT, NoteT>>),
     Or(Vec<Pattern<'t, MarkerT, NoteT>>),
 }
@@ -232,6 +233,26 @@ impl <'t, MarkerT: Clone, NoteT: Clone> Pattern<'t, MarkerT, NoteT> {
                         let nm : Mark <MarkerT, NoteT> = Mark {
                                     offset_start: pos,
                                     offset_end: end,
+                                    marker: marker.clone(),
+                                    notes: notes.clone(),
+                                };
+                        let ms = match marks {
+                            None => { Box::new(vec![nm])   }
+                            Some(mut v) => { (*v).push(nm); v }
+                        };
+
+                        return Some((Some(ms), end));
+                    }
+                }
+            }
+            &Pattern::MarkedExcl(ref marker, ref notes, ref pat, startexcl, endexcl) => {
+                let m = Pattern::rec_match(pat, pos, sent);
+                match m {
+                    None => { return None; }
+                    Some((marks, end)) => {
+                        let nm : Mark <MarkerT, NoteT> = Mark {
+                                    offset_start: pos+startexcl,
+                                    offset_end: end-endexcl,
                                     marker: marker.clone(),
                                     notes: notes.clone(),
                                 };

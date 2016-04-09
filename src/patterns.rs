@@ -341,7 +341,7 @@ impl <'t, MarkerT: Clone, NoteT: Clone> Pattern<'t, MarkerT, NoteT> {
                                     match m {
                                         None => { continue; }
                                         Some((marks, end)) => {
-                                            if end <= p_end {
+                                            if end == p_end {
                                                 return Some((marks, p_end));
                                             }
                                         }
@@ -379,7 +379,7 @@ impl <'t, MarkerT: Clone, NoteT: Clone> Pattern<'t, MarkerT, NoteT> {
                                                 match m {
                                                     None => { continue; }
                                                     Some((marks2, end2)) => {
-                                                        if end2 <= p_end {
+                                                        if end2 == p_end {
                                                             if marks2.is_some() {
                                                                 (*new_marks).extend_from_slice(&marks2.unwrap());
                                                             }

@@ -134,7 +134,7 @@ pub enum Pattern<'t, MarkerT, NoteT> where MarkerT: 't + Clone , NoteT: 't + Clo
     Phr0(Phrase, bool),   // bool: True if from top, i.e. highest phrase
     PhrS(Phrase, bool, Box<Pattern<'t, MarkerT, NoteT>>),
     PhrE(Phrase, bool, Box<Pattern<'t, MarkerT, NoteT>>),
-    // PhrSE(Phrase, &'t Pattern<'t, MarkerT, NoteT>, &'t Pattern<'t, MarkerT, NoteT>),
+    PhrSE(Phrase, bool, Box<Pattern<'t, MarkerT, NoteT>>, Box<Pattern<'t, MarkerT, NoteT>>),
     Marked(MarkerT, Vec<NoteT>, Box<Pattern<'t, MarkerT, NoteT>>),
     MarkedExcl(MarkerT, Vec<NoteT>, Box<Pattern<'t, MarkerT, NoteT>>, usize /* excluded from front */, usize /* excluded from end */),
     Seq(Vec<Pattern<'t, MarkerT, NoteT>>),
@@ -354,6 +354,61 @@ impl <'t, MarkerT: Clone, NoteT: Clone> Pattern<'t, MarkerT, NoteT> {
                 }
             }
 
+            &Pattern::PhrSE(phr, top, ref s_pat, ref e_pat) => {
+                let mut new_marks : Box<Vec<Mark<MarkerT, NoteT>>> = Box::new(Vec::new());
+                match get_top_psg_of_word(sent, pos) {
+                    None => { return None; }
+                    Some(ref r) => {
+                        match if top {psg_get_top_left_child_phrase(phr, r)}
+                              else   {psg_get_bottom_left_child_phrase(phr, r)} {
+                            None => { return None; }
+                            Some(ref p) => {
+                                // check s_pat
+                                let m = Pattern::rec_match(&s_pat, pos, sent);
+                                match m {
+                                    None => { return None; }
+                                    Some((marks, end)) => {
+                                        if marks.is_some() {
+                                            (*new_marks).extend_from_slice(&marks.unwrap());
+                                        }
+                                        let p_end = get_psg_end(p);
+                                        if end <= p_end {
+                                            // check e_pat
+                                            for i in 0..(p_end-pos) {
+                                                let m = Pattern::rec_match(&e_pat, pos+i, sent);
+                                                match m {
+                                                    None => { continue; }
+                                                    Some((marks2, end2)) => {
+                                                        if end2 <= p_end {
+                                                            if marks2.is_some() {
+                                                                (*new_marks).extend_from_slice(&marks2.unwrap());
+                                                            }
+                                                            if (*new_marks).len() > 0 {
+                                                                return Some((Some(new_marks), p_end));
+                                                            } else {
+                                                                return Some((None, p_end));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        } else {
+                                            return None;
+                                        }
+                                    }
+                                }
+                                return None;   // end could not be matched
+                            }
+                        }
+                    }
+                }
+            }
+
+                        /* Some((marks, end)) => {
+                            match marks {
+                                None => { }
+                                Some(v) => { (*new_marks).extend_from_slice(&v) }
+                            }; */
             &Pattern::Or(ref options) => {
                 for pat in options {
                     let m = Pattern::rec_match(pat, pos, sent);

@@ -9,7 +9,6 @@ use llamapun::patterns::Pattern as P;
 use senna::phrase::Phrase;
 
 use senna::sentence::Sentence as SSentence;
-use libxml::xpath::Context;
 
 
 fn print_range(sentence: &SSentence, from: usize, to: usize) {
@@ -20,7 +19,7 @@ fn print_range(sentence: &SSentence, from: usize, to: usize) {
 
 
 pub fn main() {
-    let mut corpus = Corpus::new("tests/resources/".to_string());
+    let corpus = Corpus::new("tests/resources/".to_string());
 
     /*
      * Create pattern
@@ -45,7 +44,7 @@ pub fn main() {
 
     // let mut document = corpus.load_doc("tests/resources/1311.0066.xhtml".to_string()).unwrap();
     let mut document = corpus.load_doc("/tmp/test.html".to_string()).unwrap();
-    for mut sentence in document.annotated_sentence_iter() {
+    for sentence in document.annotated_sentence_iter() {
         let matches = P::match_sentence(&sentence, &p_let_pattern);
         let ssent = sentence.senna_sentence.as_ref().unwrap();
         for match_ in &matches {

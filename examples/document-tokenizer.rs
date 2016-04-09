@@ -228,8 +228,10 @@ pub fn main() {
 
     let mut sentence_id_counter = 0usize;
 
-    let mut corpus = Corpus::new(corpus_path.to_owned());
-    for document in corpus.iter() {
+    let corpus = Corpus::new(corpus_path.to_owned());
+    // for document in corpus.iter() {
+    let document = corpus.load_doc("tests/resources/1311.0066.xhtml".to_string()).unwrap();
+    if true {
         println!("Processing \"{}\"", &document.path);
         let dom = document.dom;
         let xpath_context = Context::new(&dom).unwrap();
@@ -304,7 +306,7 @@ pub fn main() {
                 }
             }
         }
-        dom.save_file("/tmp/test.html").unwrap();
+        dom.save_file("/tmp/1311.0066.annotated.xhtml").unwrap();
     }
 }
 

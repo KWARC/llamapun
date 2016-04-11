@@ -191,7 +191,7 @@ impl <'t, MarkerT: Clone, NoteT: Clone> Pattern<'t, MarkerT, NoteT> {
 
     fn rec_match(pattern: &Pattern<'t, MarkerT, NoteT>, pos: usize, sent: &SSentence)
             -> Option<(Option<Box<Vec<Mark<MarkerT, NoteT>>>>, usize)> {   //(markers, endpos)
-        if pos > sent.get_words().len() {
+        if pos >= sent.get_words().len() {
             return None;
         }
         match pattern {

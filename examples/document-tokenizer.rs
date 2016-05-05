@@ -56,13 +56,13 @@ fn get_plaintext(node: &Node) -> (String, Vec<usize>, Vec<Node>) {
         let name = node.get_name();
         let classvals = node.get_class_names();
         if name == "math" || classvals.contains("ltx_equation") || classvals.contains("ltx_equationgroup") {
-            plaintext.push_str("MathFormula");
+            plaintext.push_str("mathformula");
             for i in 0..11 {
                 offsets.push(i);
                 nodes.push(node.clone());
             }
         } else if name == "cite" {
-            plaintext.push_str("CitationElement");
+            plaintext.push_str("citationelement");
             for i in 0..15 {
                 offsets.push(i);
                 nodes.push(node.clone());
@@ -216,6 +216,25 @@ fn annotate(node : Node, root: &Node, range: &DNMRange, dnm: &DNM, dom: &DOM) ->
     return true;
 }
 
+fn add_ids_to_math(root: &Node, id: &str) {
+    let mut c : Option<Node>;
+    let mut tmp : Option<Node> = root.get_first_child();
+    let mut idcounter = 0;
+    loop {
+        c = tmp;
+        match &c {
+            &Some(ref child) => {
+                let childid = format!("{}.{}", id, idcounter);
+                idcounter += 1;
+                child.remove_property_with_name("id");
+                child.add_property("id", &childid);
+                add_ids_to_math(&child, &childid);
+                tmp = child.get_next_sibling();
+            },
+            &None => break,
+        }
+    }
+}
 
 
 pub fn main() {
@@ -306,7 +325,35 @@ pub fn main() {
                 }
             }
         }
-        dom.save_file("/tmp/1311.0066.annotated.xhtml").unwrap();
+
+        // add ids into mathml
+        let mathtags = match xpath_context.evaluate("//math") {
+            Ok(result) => result.get_nodes_as_vec(),
+            Err(_) => {
+                writeln!(std::io::stderr(), "Warning: No paragraphs found").unwrap();
+                vec![]
+            }
+        };
+
+        let mut mathidcounter = 0;
+        for mathtag in mathtags {
+            /* let id = match mathtag.get_property("id") {
+                None => {
+                    let newid = format!("math.{}", mathidcounter);
+                    mathtag.add_property("id", newid);
+                    newid
+                }
+                Some(i) => &i
+            };
+            */
+            mathtag.remove_property_with_name("id");
+            let newid = format!("math.{}", mathidcounter);
+            mathidcounter += 1;
+            mathtag.add_property("id", &newid);
+            add_ids_to_math(&mathtag, &newid);
+        }
+
+        dom.save_file(if args.len() > 2 { &args[2] } else { println!("Saving at /tmp/out.xhtml"); "/tmp/out.xhtml" }).unwrap();
     }
 }
 

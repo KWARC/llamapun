@@ -299,11 +299,12 @@ pub fn main() {
             };
             let sentences = tokenizer.sentences(&dnm);
             for sentence in sentences {
-                let senna_parse = senna.parse(sentence.get_plaintext(), SennaParseOptions { pos: true, psg: true,});
+                let pt = sentence.get_plaintext().replace("MathFormula", "mathformula");
+                let senna_parse = senna.parse(&pt, SennaParseOptions { pos: true, psg: true,});
                 let snode = Node::new("span", None, &dom).unwrap();
                 snode.add_property("class", "sentence");
                 // Colors help to easily see missing annotations
-                // snode.add_property("style", "color:red");
+                snode.add_property("style", "color:darkgreen");
                 snode.add_property("id", &format!("sentence.{}", sentence_id_counter));
                 sentence_id_counter += 1;
                 snode.add_property("psg", senna_parse.get_psgstring().unwrap());

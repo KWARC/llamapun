@@ -9,6 +9,7 @@
 
 # Vim swap files
 *.swp
+*.swo
 
 # Images
 *.png

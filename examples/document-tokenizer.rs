@@ -1,3 +1,4 @@
+#![feature(str_char)]
 extern crate llamapun;
 extern crate libxml;
 extern crate senna;
@@ -116,9 +117,16 @@ fn annotate(node : Node, root: &Node, range: &DNMRange, dnm: &DNM, dom: &DOM) ->
         let before = Node::new_text_node(&dom, &dnm.plaintext[range.start - offsets[range.start]..range.start]).unwrap();
         let core = Node::new_text_node(&dom, &dnm.plaintext[range.start..range.end]).unwrap();
         let mut textend = range.start+1;
-        while textend < offsets.len() && offsets[textend] > 0 {
+        while textend < offsets.len() && textend < dnm.plaintext.len() && offsets[textend] > 0 {
             textend += 1;
         }
+        // writeln!(std::io::stderr(), "off: {}", offsets[range.start+1]).unwrap();
+        // writeln!(std::io::stderr(), "offset ({}, {})", range.end, textend).unwrap();
+        // if range.end == 369 {
+        //     writeln!(std::io::stderr(), "   x{}y", dnm.plaintext.char_at(369)).unwrap();
+        //     writeln!(std::io::stderr(), "   x{}y", dnm.plaintext.char_at(370)).unwrap();
+        // }
+        // writeln!(std::io::stderr(), "Trying {}", &dnm.plaintext[range.end..textend]).unwrap();
         let after = Node::new_text_node(&dom, &dnm.plaintext[range.end..textend]).unwrap();
 
         common_parent.add_prev_sibling(node.clone()).unwrap();
@@ -186,7 +194,7 @@ fn annotate(node : Node, root: &Node, range: &DNMRange, dnm: &DNM, dom: &DOM) ->
             offsets[range.end+1] != 0 {
                 let before = Node::new_text_node(&dom, &dnm.plaintext[range.end - offsets[range.end]..range.end]).unwrap();
                 let mut textend = range.end+1;
-                while textend < offsets.len() && offsets[textend] > 0 {
+                while textend < offsets.len() && textend < dnm.plaintext.len() && offsets[textend] > 0 {
                     textend += 1;
                 }
 
@@ -239,8 +247,11 @@ fn add_ids_to_math(root: &Node, id: &str) {
 
 pub fn main() {
     let args : Vec<_> = env::args().collect();
-    let corpus_path : &str = if args.len() > 1 { &args[1] } else { "tests/resources/" };
-    println!("Loading corpus from \"{}\"", corpus_path);
+    // let corpus_path : &str = if args.len() > 1 { &args[1] } else { "tests/resources/" };
+    // println!("Loading corpus from \"{}\"", corpus_path);
+    let corpus_path = "tests/resources/";
+    let in_doc = &args[1];
+    let out_doc = &args[2];
 
     let mut senna = Senna::new(SENNA_PATH.to_owned());
     let tokenizer = Tokenizer::default();
@@ -249,7 +260,8 @@ pub fn main() {
 
     let corpus = Corpus::new(corpus_path.to_owned());
     // for document in corpus.iter() {
-    let document = corpus.load_doc("tests/resources/1311.0066.xhtml".to_string()).unwrap();
+    // let document = corpus.load_doc("tests/resources/1311.0066.xhtml".to_string()).unwrap();
+    let document = corpus.load_doc(in_doc.to_string()).unwrap();
     if true {
         println!("Processing \"{}\"", &document.path);
         let dom = document.dom;
@@ -300,6 +312,7 @@ pub fn main() {
             let sentences = tokenizer.sentences(&dnm);
             for sentence in sentences {
                 let pt = sentence.get_plaintext().replace("MathFormula", "mathformula");
+                writeln!(std::io::stderr(), "Sentence: '{}'", pt).unwrap();
                 let senna_parse = senna.parse(&pt, SennaParseOptions { pos: true, psg: true,});
                 let snode = Node::new("span", None, &dom).unwrap();
                 snode.add_property("class", "sentence");
@@ -354,7 +367,8 @@ pub fn main() {
             add_ids_to_math(&mathtag, &newid);
         }
 
-        dom.save_file(if args.len() > 2 { &args[2] } else { println!("Saving at /tmp/out.xhtml"); "/tmp/out.xhtml" }).unwrap();
+        // dom.save_file(if args.len() > 2 { &args[2] } else { println!("Saving at /tmp/out.xhtml"); "/tmp/out.xhtml" }).unwrap();
+        dom.save_file(out_doc).unwrap();
     }
 }
 

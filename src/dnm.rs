@@ -11,17 +11,7 @@ use std::mem;
 use std::io::Write;
 use unidecode::unidecode;
 use libxml::tree::*;
-
-/// Print error message to stderr
-/// from http://stackoverflow.com/questions/27588416/how-to-send-output-to-stderr
-macro_rules! println_stderr(
-    ($($arg:tt)*) => (
-        match writeln!(&mut ::std::io::stderr(), $($arg)* ) {
-            Ok(_) => {},
-            Err(x) => panic!("Unable to write to stderr: {}", x),
-        }
-    )
-);
+// use util::macros::*;
 
 
 /// Specifies how to deal with a certain tag

@@ -1,3 +1,4 @@
+//! Provides functionality for tokenizing sentences and words
 use dnm::*;
 use stopwords;
 use std::collections::vec_deque::*;
@@ -6,9 +7,12 @@ use std::cmp;
 use regex::Regex;
 
 
-// Only initialize auxiliary resources once and keep them in a Tokenizer struct
+/// Stores auxiliary resources required by the tokenizer so that they need to be initialized only
+/// once
 pub struct Tokenizer {
+ /// set of stopwords
  pub stopwords : HashSet<&'static str>,
+ /// regular expression for abbreviations
  pub abbreviations : Regex,
 }
 impl Default for Tokenizer {
@@ -21,6 +25,7 @@ impl Default for Tokenizer {
 }
 
 impl Tokenizer {
+  /// gets the sentences from a dnm
   pub fn sentences<'a>(&self, dnm: &'a DNM) -> Vec<DNMRange <'a>> {
     let text = &dnm.plaintext;
     let mut sentences : Vec<DNMRange <'a>> = Vec::new();
@@ -209,6 +214,7 @@ impl Tokenizer {
     return sentences.into_iter().filter(|range| range.start < range.end ).collect();
   }
 
+  /// returns the words of a sentence using simple heuristics
   pub fn words<'a, 'b>(&'b self, sentence_range: &'a DNMRange<'b>) -> /* Vec<&'a str> */ Vec<DNMRange> {
     let text_iterator = sentence_range.get_plaintext().chars().peekable();
     let mut start = 0usize;
@@ -230,6 +236,7 @@ impl Tokenizer {
   }
 }
 
+/// checks whether two characters are matching brackets or quotation marks
 fn is_bounded<'a>(left: Option<&'a char>, right: Option<&'a char>) -> bool {
   let pair = [left, right];
   return match pair {

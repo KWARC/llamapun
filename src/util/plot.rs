@@ -1,7 +1,9 @@
+//! Some plotting functionality using gnuplot
 extern crate gnuplot;
 use gnuplot::*;
 use std::hash::Hash;
 
+/// A simple plot
 pub fn plot_simple<T : Clone+Eq+Hash+DataType>(
   map : &Vec<(T,usize)>, x_label: &str, y_label: &str, title: &str, pathname : &str) {
 

@@ -165,8 +165,11 @@ struct RuntimeParseData {
 /// etc. A `DNMRange` stores start and end point of such a substring and has
 /// a reference to the `DNM`.
 pub struct DNMRange <'dnmrange> {
+  /// Offset of the beginning of the range
   pub start : usize,
+  /// Offset of the end of the range
   pub end : usize,
+  /// DNM containing this range
   pub dnm : &'dnmrange DNM,
 }
 
@@ -180,6 +183,7 @@ impl <'dnmrange> DNMRange <'dnmrange> {
     &(&self.dnm.plaintext)[self.start..self.end].trim_right()
   }
 
+  /// Returns a `DNMRange` with the leading and trailing whitespaces removed
   pub fn trim(&self) -> DNMRange <'dnmrange> {
     let mut trimmed_start = self.start;
     let mut trimmed_end = self.end;
@@ -209,6 +213,7 @@ impl <'dnmrange> DNMRange <'dnmrange> {
     DNMRange {start: self.start + rel_start, end: self.start + rel_end, dnm: self.dnm}
   }
 
+  /// checks whether the range is empty
   pub fn is_empty(&self) -> bool {
       self.start == self.end
   }

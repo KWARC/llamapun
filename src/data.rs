@@ -39,51 +39,81 @@ pub struct DocumentIterator<'iter>{
   pub corpus : &'iter Corpus,
 }
 
-///
+/// One of our math documents.
 pub struct Document<'d> {
+  /// The DOM of the document
   pub dom : XmlDoc,
+  /// The file path of the document
   pub path : String,
+  /// A reference to the corpus containing this document
   pub corpus : &'d Corpus,
+  /// If it exists, the DNM corresponding to this document
   pub dnm : Option<DNM>,
 }
 
+/// An iterator of paragraphs of a `Document`
 pub struct ParagraphIterator<'iter> {
+  /// A walker over paragraph nodes
   walker : IntoIter<Node>,
+  /// A reference to the document over which we iterate
   pub document : &'iter Document<'iter>
 }
 
+/// A paragraph of a document with a DNM
 pub struct Paragraph<'p> {
+  /// The dnm of this paragraph
   pub dnm : DNM,
+  /// A reference to the document containing this paragraph
   pub document : &'p Document<'p>
 }
 
+/// An iterator over the sentences of a document/paragraph
 pub struct SentenceIterator<'iter> {
+  /// The walker over the sentence ranges
   walker : IntoIter<DNMRange<'iter>>,
   // pub paragraph : &'iter Paragraph<'iter>
+  /// A reference to the document we are working on
   pub document : &'iter Document<'iter>,
 }
 
+/// A sentence in a document
 pub struct Sentence<'s> {
+  /// The range of the sentence
   pub range : DNMRange<'s>,
   // pub paragraph : &'s Paragraph<'s>
+  /// The document containing this sentence
   pub document : &'s Document<'s>,
+  /// If it exists, also the senna version of the sentence,
+  /// which can contain additional information such as
+  /// POS tags and syntactic parse trees
   pub senna_sentence : Option<SennaSentence<'s>>,
 }
 
+/// An iterator over the words of a sentence, where the words are only defined by their ranges
 pub struct SimpleWordIterator<'iter> {
+  /// The walker over the words
   walker : IntoIter<DNMRange<'iter>>,
+  /// The sentence containing the words
   pub sentence : &'iter Sentence<'iter>
 }
 
+/// An iterator over the words of a sentence, where the words
+/// (and potentially additional information) are obtained using senna
 pub struct SennaWordIterator<'iter> {
   // walker : IntoIter<SennaWord<'iter>>,
+  /// position of the next word
   pos : usize,
+  /// The sentence we are iterating over
   pub sentence : &'iter Sentence<'iter>
 }
 
+/// A word with a POS tag
 pub struct Word<'w> {
+  /// The range of the word
   pub range : DNMRange<'w>,// &'w str, // should we use the DNMRange instead???
+  /// The sentence containing this word
   pub sentence : &'w Sentence<'w>,
+  /// The part-of-speech tag of the word (or POS::NOT_SET)
   pub pos : POS,
 }
 
@@ -134,6 +164,7 @@ impl Default for Corpus {
 }
 
 impl Corpus {
+  /// Create a new corpus with the base directory `dirpath`
   pub fn new(dirpath : String) -> Self {
     Corpus {
       path : dirpath,
@@ -141,6 +172,7 @@ impl Corpus {
     }
   }
 
+  /// Get an iterator over the documents
   pub fn iter(& mut self) -> DocumentIterator {
     DocumentIterator {
       walker : Box::new(WalkDir::new(self.path.clone()).into_iter()),
@@ -148,12 +180,14 @@ impl Corpus {
     }
   }
 
+  /// Load a specific document in the corpus
   pub fn load_doc(&self, path : String) -> Result<Document, XmlParseError> {
     Document::new(path, self)
   }
 }
 
 impl<'d> Document<'d> {
+  /// Load a new document
   pub fn new(filepath: String, owner: &'d Corpus) -> Result<Self, XmlParseError> {
     let dom = try!(owner.parser.parse_file(&filepath));
 
@@ -165,6 +199,7 @@ impl<'d> Document<'d> {
     })
   }
 
+  /// Get an iterator over the paragraphs of the document
   pub fn paragraph_iter(&mut self) -> ParagraphIterator {
     let xpath_context = Context::new(&self.dom).unwrap();
     let paras = match xpath_context.evaluate("//*[contains(@class,'ltx_para')]") {
@@ -177,6 +212,7 @@ impl<'d> Document<'d> {
     }
   }
 
+  /// Get an iterator over the sentences of the document
   pub fn sentence_iter(&mut self) -> SentenceIterator {
     if self.dnm.is_none() {
       self.dnm = Some(DNM::new(self.dom.get_root_element().unwrap(), DNMParameters::llamapun_normalization()));
@@ -206,6 +242,7 @@ impl<'iter> Iterator for ParagraphIterator<'iter> {
 }
 
 impl<'p> Paragraph<'p> {
+  /// Get an iterator over the sentences in this paragraph
   pub fn iter(&'p mut self) -> SentenceIterator<'p> {
     let tokenizer = &self.document.corpus.tokenizer;
     let sentences = tokenizer.sentences(&self.dnm);
@@ -234,6 +271,7 @@ impl<'iter> Iterator for SentenceIterator<'iter> {
 }
 
 impl<'s> Sentence<'s> {
+  /// Get an iterator over the words (using rudimentary heuristics)
   pub fn simple_iter(&'s mut self) -> SimpleWordIterator<'s> {
     let tokenizer = &self.document.corpus.tokenizer;
     let words = tokenizer.words(&self.range);
@@ -243,6 +281,7 @@ impl<'s> Sentence<'s> {
     }
   }
 
+  /// Get an iterator over the words using Senna
   pub fn senna_iter(&'s mut self) -> SennaWordIterator<'s> {
     SennaWordIterator {
       pos : 0usize,
@@ -250,6 +289,7 @@ impl<'s> Sentence<'s> {
     }
   }
 
+  /// Parses the sentence using Senna. The parse options are set in the `Corpus`
   pub fn senna_parse(&'s mut self) -> &Self {
     self.senna_sentence = Some(self.document.corpus.senna.borrow_mut().parse((&self.range).get_plaintext(),
                                           self.document.corpus.senna_options.get()));

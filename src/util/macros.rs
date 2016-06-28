@@ -1,3 +1,5 @@
+//! A few useful macros
+
 #[macro_export]
 macro_rules! println_stderr(
     ($($arg:tt)*) => ({

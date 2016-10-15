@@ -24,7 +24,7 @@ At its core, **lamapun** is a [Rust](http://rust-lang.org/) implementation that 
    * Part-of-speech tagging (via [SENNA](http://ml.nec-labs.com/senna/)),
    * Named Entity recognition (via [SENNA](http://ml.nec-labs.com/senna/)),
    * Chunking and shallow parsing (via [SENNA](http://ml.nec-labs.com/senna/)),
-   * [GloVe](http://nlp.stanford.edu/projects/glove/) (Rust reimplementation)
+   * [TODO] [GloVe](http://nlp.stanford.edu/projects/glove/) (Rust reimplementation)
    * [TODO] Language identification (via [libTextCat](http://software.wise-guys.nl/libtextcat/)),
    * [TODO] N-gram footprints,
    * [TODO] "Definition" paragraph discrimination task (training SVM classifiers, based on TF/IDF and Ngram BoW features, via [libsvm](https://github.com/cjlin1/libsvm))

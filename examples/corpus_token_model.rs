@@ -19,7 +19,7 @@ pub fn main() {
   let _ = input_args.next(); // skip process name
   let corpus_path = match input_args.next() {
     Some(path) => path,
-    None => "tests/resources/".to_string()
+    None => "../tests/resources/".to_string()
   };
   let token_model_filepath = match input_args.next() {
     Some(path) => path,

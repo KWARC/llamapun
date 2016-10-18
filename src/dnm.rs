@@ -165,11 +165,11 @@ pub struct DNMRange<'dnmrange> {
 impl<'dnmrange> DNMRange<'dnmrange> {
   /// Get the plaintext substring corresponding to the range
   pub fn get_plaintext(&self) -> &str {
-    &(&self.dnm.plaintext)[self.start..self.end]
+    &(self.dnm.plaintext)[self.start..self.end]
   }
   /// Get the plaintext without trailing white spaces
   pub fn get_plaintext_truncated(&self) -> &'dnmrange str {
-    &(&self.dnm.plaintext)[self.start..self.end].trim_right()
+    (self.dnm.plaintext)[self.start..self.end].trim_right()
   }
 
   /// Returns a `DNMRange` with the leading and trailing whitespaces removed
@@ -245,12 +245,12 @@ impl DNM {
 
     dnm.recurse_node_create(&root, &mut runtime);
 
-    return dnm;
+    dnm
   }
 
   /// Get the plaintext range of a node
   pub fn get_range_of_node(&self, node: &Node) -> Result<DNMRange, ()> {
-    match self.node_map.get(&node_to_hashable(&node)) {
+    match self.node_map.get(&node_to_hashable(node)) {
       Some(&(start, end)) => {
         Ok(DNMRange {
           start: start,
@@ -264,10 +264,11 @@ impl DNM {
 
   /// The heart of the dnm generation...
   fn recurse_node_create(&mut self, node: &Node, runtime: &mut RuntimeParseData) {
-    match node.is_text_node() {
-      true => self.text_node_create(node, runtime),
-      false => self.intermediate_node_create(node, runtime),
-    };
+    if node.is_text_node() {
+      self.text_node_create(node, runtime)
+    } else {
+      self.intermediate_node_create(node, runtime)
+    }
   }
 
   fn text_node_create(&mut self, node: &Node, runtime: &mut RuntimeParseData) {
@@ -299,10 +300,8 @@ impl DNM {
           }
           self.plaintext.push(' ');
           runtime.had_whitespace = true;
-          if self.parameters.move_whitespaces_between_nodes {
-            if still_in_leading_whitespaces {
-              offset_start += 1;
-            }
+          if self.parameters.move_whitespaces_between_nodes && still_in_leading_whitespaces {
+            offset_start += 1;
           }
         } else {
           self.plaintext.push(c);
@@ -346,11 +345,11 @@ impl DNM {
               if !runtime.had_whitespace || !self.parameters.normalize_white_spaces {
                 self.plaintext.push(' ');
               }
-              self.plaintext.push_str(&token);
+              self.plaintext.push_str(token);
               self.plaintext.push(' ');
               runtime.had_whitespace = true;
             } else {
-              self.plaintext.push_str(&token);
+              self.plaintext.push_str(token);
               // tokens are considered non-whitespace
               runtime.had_whitespace = false;
             }
@@ -368,11 +367,11 @@ impl DNM {
               if !runtime.had_whitespace || !self.parameters.normalize_white_spaces {
                 self.plaintext.push(' ');
               }
-              self.plaintext.push_str(&f(&node));
+              self.plaintext.push_str(&f(node));
               self.plaintext.push(' ');
               runtime.had_whitespace = true;
             } else {
-              self.plaintext.push_str(&f(&node));
+              self.plaintext.push_str(&f(node));
               // Return value of f is not considered a white space
               runtime.had_whitespace = false;
             }
@@ -400,14 +399,12 @@ impl DNM {
       }
     } // End scope of self.parameters borrow, to allow mutable self borrow for recurse_node_create
     // Recurse into children
-    let mut child_option = node.get_first_child();
-    loop {
-      match child_option {
-        Some(child) => {
-          self.recurse_node_create(&child, runtime);
-          child_option = child.get_next_sibling();
-        }
-        None => break,
+    if let Some(child) = node.get_first_child() {
+      self.recurse_node_create(&child, runtime);
+      let mut child_node = child;
+      while let Some(child) = child_node.get_next_sibling() {
+        self.recurse_node_create(&child, runtime);
+        child_node = child;
       }
     }
 

@@ -147,7 +147,7 @@ impl<'iter> Iterator for DocumentIterator<'iter> {
         }
       }
     }
-    return None
+    None
   }
 }
 

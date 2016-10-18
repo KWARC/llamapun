@@ -11,7 +11,7 @@ use std::fs::File;
 
 use llamapun::data::Corpus;
 
-/// Given a CorTeX corpus of HTML5 documents, extract a token model as a single file
+/// Given a `CorTeX` corpus of HTML5 documents, extract a token model as a single file
 pub fn main() {
   let start = time::get_time();
   // Read input arguments
@@ -40,7 +40,7 @@ pub fn main() {
     }
   };
   let mut token_writer = BufWriter::with_capacity(10485760, token_model_file);
-  let space = " ".as_bytes();
+  let space = b" ";
 
   let mut corpus = Corpus::new(corpus_path);
   for mut document in corpus.iter() {
@@ -61,14 +61,12 @@ pub fn main() {
               word_count += 1;
             }
             // print to the token model file
-            match token_writer.write(word_string.as_bytes()) {
-              Err(e) => println!("-- Failed to print to output buffer! Proceed with caution;\n{:?}",e),
-              _ => {}
-            };
-            match token_writer.write(space) {
-              Err(e) => println!("-- Failed to print to output buffer! Proceed with caution;\n{:?}",e),
-              _ => {}
-            };
+            if let Err(e) = token_writer.write(word_string.as_bytes()) {
+              println!("-- Failed to print to output buffer! Proceed with caution;\n{:?}",e);
+            }
+            if let Err(e) = token_writer.write(space) {
+              println!("-- Failed to print to output buffer! Proceed with caution;\n{:?}",e);
+            }
           }
         }
       }
@@ -79,10 +77,9 @@ pub fn main() {
     }
   }
 
-  match token_writer.flush() {
-    Err(e) => println!("-- Failed to print to output buffer! Proceed with caution;\n{:?}",e),
-    _ => {}
-  };
+  if let Err(e) = token_writer.flush() {
+    println!("-- Failed to print to output buffer! Proceed with caution;\n{:?}",e);
+  }
 
   let end = time::get_time();
   let duration_sec = (end - start).num_milliseconds() / 1000;

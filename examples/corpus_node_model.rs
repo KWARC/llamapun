@@ -17,7 +17,7 @@ use llamapun::data::Corpus;
 static SPACE : &'static [u8] = b" ";
 static NEWLINE : &'static [u8] = b"\n";
 
-/// Given a CorTeX corpus of HTML5 documents, extract a node model as a single file
+/// Given a `CorTeX` corpus of HTML5 documents, extract a node model as a single file
 pub fn main() {
   let start = time::get_time();
   // Read input arguments
@@ -70,10 +70,9 @@ pub fn main() {
     }
   }
 
-  match node_model_writer.flush() {
-    Err(e) => println!("-- Failed to print to model output buffer! Proceed with caution;\n{:?}",e),
-    _ => {}
-  };
+  if let Err(e) = node_model_writer.flush() {
+    println!("-- Failed to print to model output buffer! Proceed with caution;\n{:?}",e);
+  }
 
   let end = time::get_time();
   let duration_sec = (end - start).num_milliseconds() / 1000;
@@ -83,30 +82,24 @@ pub fn main() {
   let mut total_counts_vec: Vec<(&String, &u32)> = total_counts.iter().collect();
   total_counts_vec.sort_by(|a, b| b.1.cmp(a.1));
 
-  for &(key, val) in total_counts_vec.iter() {
-    match node_statistics_writer.write(key.as_bytes()) {
-      Err(e) => println!("-- Failed to print to statistics output buffer! Proceed with caution;\n{:?}",e),
-      _ => {}
-    };
-    match node_statistics_writer.write(SPACE) {
-      Err(e) => println!("-- Failed to print to statistics output buffer! Proceed with caution;\n{:?}",e),
-      _ => {}
-    };
-    match node_statistics_writer.write(val.to_string().as_bytes()) {
-      Err(e) => println!("-- Failed to print to statistics output buffer! Proceed with caution;\n{:?}",e),
-      _ => {}
-    };
-    match node_statistics_writer.write(NEWLINE) {
-      Err(e) => println!("-- Failed to print to statistics output buffer! Proceed with caution;\n{:?}",e),
-      _ => {}
-    };
+  for (key, val) in total_counts_vec {
+    if let Err(e) = node_statistics_writer.write(key.as_bytes()) {
+      println!("-- Failed to print to statistics output buffer! Proceed with caution;\n{:?}",e);
+    }
+    if let Err(e) = node_statistics_writer.write(SPACE) {
+      println!("-- Failed to print to statistics output buffer! Proceed with caution;\n{:?}",e);
+    }
+    if let Err(e) = node_statistics_writer.write(val.to_string().as_bytes()) {
+      println!("-- Failed to print to statistics output buffer! Proceed with caution;\n{:?}",e);
+    }
+    if let Err(e) = node_statistics_writer.write(NEWLINE) {
+      println!("-- Failed to print to statistics output buffer! Proceed with caution;\n{:?}",e);
+    }
   }
   // Close the writer
-  match node_statistics_writer.flush() {
-    Err(e) => println!("-- Failed to print to statistics output buffer! Proceed with caution;\n{:?}",e),
-    _ => {}
-  };
-
+  if let Err(e) = node_statistics_writer.flush() {
+    println!("-- Failed to print to statistics output buffer! Proceed with caution;\n{:?}",e);
+  }
 }
 
 
@@ -118,10 +111,10 @@ fn dfs_record<W>(node: &Node, total_counts: &mut HashMap<String, u32>, node_mode
 
   let node_name = node.get_name();
   let mut model_token = node_name.clone();
-  let class_attr = node.get_property("class").unwrap_or(String::new());
+  let class_attr = node.get_property("class").unwrap_or_default();
   let mut classes_split = class_attr.split(' ').collect::<Vec<_>>();
   classes_split.sort();
-  for class_model_token in classes_split.iter() {
+  for class_model_token in classes_split {
     if class_model_token.is_empty() {
       continue;
     }
@@ -134,25 +127,22 @@ fn dfs_record<W>(node: &Node, total_counts: &mut HashMap<String, u32>, node_mode
     *node_count += 1;
   }
   // Write the model_token of the current node into the buffer
-  match node_model_writer.write(model_token.as_bytes()) {
-    Err(e) => println!("-- Failed to print to model output buffer! Proceed with caution;\n{:?}",e),
-    _ => {}
-  };
-  match node_model_writer.write(SPACE) {
-    Err(e) => println!("-- Failed to print to model output buffer! Proceed with caution;\n{:?}",e),
-    _ => {}
-  };
+  if let Err(e) = node_model_writer.write(model_token.as_bytes()) {
+    println!("-- Failed to print to model output buffer! Proceed with caution;\n{:?}",e);
+  }
+  if let Err(e) = node_model_writer.write(SPACE) {
+    println!("-- Failed to print to model output buffer! Proceed with caution;\n{:?}",e);
+  }
 
   // Recurse into all children (DFS), except for math and tables
   if (node_name != "math") && (node_name != "table") {
-    let mut child_option = node.get_first_child();
-    loop {
-      match child_option {
-        Some(child) => {
-          dfs_record(&child, total_counts, node_model_writer);
-          child_option = child.get_next_sibling();
-        }
-        None => break,
+    if let Some(child) = node.get_first_child() {
+      dfs_record(&child, total_counts, node_model_writer);
+      let mut child_node = child;
+
+      while let Some(child) = child_node.get_next_sibling() {
+        dfs_record(&child, total_counts, node_model_writer);
+        child_node = child;
       }
     }
   }

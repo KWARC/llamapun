@@ -31,11 +31,11 @@ impl Dictionary {
   pub fn sort(&self) -> Vec<(String, usize)> {
     let mut as_vec = self.map.clone().into_iter().collect::<Vec<_>>();
     as_vec.sort_by(|a,b| a.1.cmp(&b.1));
-    return as_vec
+    as_vec
   }
   /// get the number of entries in the dictionary
   pub fn count(&self) -> usize {
-    self.index.clone()
+    self.index
   }
 }
 
@@ -56,7 +56,7 @@ impl Unigrams {
   /// Get the word count
   pub fn get(&self, word: &str) -> usize {
     match self.map.get(word) {
-      Some(count) => count.clone(),
+      Some(count) => *count,
       None => 0
     }
   }
@@ -69,7 +69,7 @@ impl Unigrams {
   pub fn sort(&self) -> Vec<(String, usize)> {
     let mut as_vec = self.map.clone().into_iter().collect::<Vec<_>>();
     as_vec.sort_by(|a,b| a.1.cmp(&b.1));
-    return as_vec
+    as_vec
   }
   /// get the number of different words inserted
   pub fn count(&self) -> usize {

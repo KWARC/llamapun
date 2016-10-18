@@ -38,10 +38,8 @@ impl Tokenizer {
     loop {
       let c = text_iterator.next();
       // Length increase:
-      match c {
-        Some(x) => {
-          end += x.len_utf8(); }
-        None => {}
+      if let Some(x) = c {
+        end += x.len_utf8();
       }
 
       match c {
@@ -143,44 +141,41 @@ impl Tokenizer {
         // Some('\u{2022}'),Some('*') => { // bullet point for itemize
         // Some('\u{220e}') => { // QED symbol
         Some('\n') => { // newline
-          match text_iterator.peek() {
-            Some(&'\n') => { // second newline
-              // Get next non-space character
-              while text_iterator.peek().unwrap_or(&'.').is_whitespace() {
-                let space_char = text_iterator.next().unwrap();
-                end+= space_char.len_utf8();
+          if let Some(&'\n') = text_iterator.peek() { // second newline
+            // Get next non-space character
+            while text_iterator.peek().unwrap_or(&'.').is_whitespace() {
+              let space_char = text_iterator.next().unwrap();
+              end+= space_char.len_utf8();
+            }
+            if text_iterator.peek() == None {break;}
+            // Get the next word
+            let mut next_word_length = 0;
+            let mut next_word : Vec<char> = Vec::new();
+            while text_iterator.peek().unwrap_or(&'.').is_alphabetic() && (next_word_length<20) {
+              let word_char = text_iterator.next().unwrap();
+              next_word.push(word_char);
+              next_word_length += word_char.len_utf8();
+            }
+            // There must be a cleaner way of doing this recast into &str
+            let is_lower_word = !next_word.is_empty() && next_word[0].is_lowercase();
+            let next_word_string : String = next_word.into_iter().collect();
+            // Sentence-break, UNLESS a "MathFormula" or a "lowercase word" follows, or a non-alpha char
+            if (next_word_string.is_empty()) || (next_word_string == "MathFormula") || (is_lower_word) {
+              // We consumed the next word, add it to the left window
+              for next_word_char in next_word_string.chars() {
+                left_window.push_back(next_word_char);
+                if left_window.len() >= window_size { left_window.pop_front(); }
               }
-              if text_iterator.peek() == None {break;}
-              // Get the next word
-              let mut next_word_length = 0;
-              let mut next_word : Vec<char> = Vec::new();
-              while text_iterator.peek().unwrap_or(&'.').is_alphabetic() && (next_word_length<20) {
-                let word_char = text_iterator.next().unwrap();
-                next_word.push(word_char);
-                next_word_length += word_char.len_utf8();
-              }
-              // There must be a cleaner way of doing this recast into &str
-              let is_lower_word = next_word.len()>0 && next_word[0].is_lowercase();
-              let next_word_string : String = next_word.into_iter().collect();
-              // Sentence-break, UNLESS a "MathFormula" or a "lowercase word" follows, or a non-alpha char
-              if (next_word_string.is_empty()) || (next_word_string == "MathFormula") || (is_lower_word) {
-                // We consumed the next word, add it to the left window
-                for next_word_char in next_word_string.chars() {
-                  left_window.push_back(next_word_char);
-                  if left_window.len() >= window_size { left_window.pop_front(); }
-                }
-              }
-              else {
-                // Sentence-break found:
-                left_window = VecDeque::with_capacity(window_size);
-                sentences.push(DNMRange{start: start, end: end, dnm: dnm}.trim());
-                start = end;
-              }
+            }
+            else {
+              // Sentence-break found:
+              left_window = VecDeque::with_capacity(window_size);
+              sentences.push(DNMRange{start: start, end: end, dnm: dnm}.trim());
+              start = end;
+            }
 
-              // We consumed the next word, so make sure we reflect that in either case:
-              end += next_word_length;
-            },
-            _ => {}
+            // We consumed the next word, so make sure we reflect that in either case:
+            end += next_word_length;
           }
         },
         Some(x) => {
@@ -211,7 +206,7 @@ impl Tokenizer {
     }
 
     // Filter out edge cases that return empty ranges
-    return sentences.into_iter().filter(|range| range.start < range.end ).collect();
+    sentences.into_iter().filter(|range| range.start < range.end ).collect()
   }
 
   /// returns the words of a sentence using simple heuristics
@@ -239,12 +234,12 @@ impl Tokenizer {
 /// checks whether two characters are matching brackets or quotation marks
 fn is_bounded<'a>(left: Option<&'a char>, right: Option<&'a char>) -> bool {
   let pair = [left, right];
-  return match pair {
+  match pair {
     [Some(&'['), Some(&']')] | [Some(&'('), Some(&')')] | [Some(&'{'), Some(&'}')] | [Some(&'"'), Some(&'"')] => {
       true
     },
     _ => {
       false
     }
-  };
+  }
 }

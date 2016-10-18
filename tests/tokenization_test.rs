@@ -54,7 +54,7 @@ fn test_sentence_tokenization_simple() {
 }
 
 #[test]
-/// Test sentence tokenization of an arXMLiv XHTML document
+/// Test sentence tokenization of an `arXMLiv` XHTML document
 fn test_sentence_tokenization_arxmliv_xhtml() {
 
   let expected = load_expected_xhtml();
@@ -66,7 +66,7 @@ fn test_sentence_tokenization_arxmliv_xhtml() {
 
 
 #[test]
-/// Test sentence tokenization of an arXMLiv HTML document
+/// Test sentence tokenization of an `arXMLiv` HTML document
 fn test_sentence_tokenization_arxmliv_html() {
 
   let expected = load_expected_html();
@@ -83,15 +83,15 @@ fn test_each_paragraph<'a>(doc: &'a Document, expected: Vec<Vec<&'a str>>) {
   let multispace = Regex::new(r"\s+").unwrap();
   let tokenizer = Tokenizer::default();
   // We will tokenize each logical paragraph, which are the textual logical units in an article
-  let xpath_context = Context::new(&doc).unwrap();
+  let xpath_context = Context::new(doc).unwrap();
   let para_xpath_result = xpath_context.evaluate("//*[contains(@class,'ltx_para')]").unwrap();
 
   let mut expected_iter = expected.iter();
-  for para in para_xpath_result.get_nodes_as_vec().into_iter() {
+  for para in para_xpath_result.get_nodes_as_vec() {
     let dnm = DNM::new(para, DNMParameters::llamapun_normalization());
 
     let paragraph_expected = expected_iter.next().unwrap();
-    let expected_paragraph = multispace.replace_all(&paragraph_expected[0], "_");
+    let expected_paragraph = multispace.replace_all(paragraph_expected[0], "_");
     let result_paragraph  = multispace.replace_all(dnm.plaintext.trim(), "_");
     assert_eq!(result_paragraph, expected_paragraph);
     // println!("----\n{:?}\n----\n",doc.node_to_string(para));
@@ -754,7 +754,7 @@ fn load_expected_xhtml<'a>() -> Vec<Vec<&'a str>> {
          "Same procedures as theorem 4.31.",
          "Note that we don\'t need to assume the characteristic of ground field MathFormula is 0, but need to ignore torsion.\n[?]"]
   ];
-  return expected_xhtml;
+  expected_xhtml
 }
 
 fn load_expected_html<'a>() -> Vec<Vec<&'a str>> {
@@ -924,5 +924,5 @@ fn load_expected_html<'a>() -> Vec<Vec<&'a str>> {
          "MathFormula\n\nby the definition of MathFormula and the independence of the random variables.",
          "We see from this that\n\nMathFormula"],
   ];
-  return expected_html;
+  expected_html
 }

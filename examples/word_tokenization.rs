@@ -47,9 +47,9 @@ fn main() {
   // Word frequencies in order of document appearance
   let inorder_dictionary = dictionary.sort();
   let mut inorder_frequency: Vec<(usize, usize)> = Vec::new();
-  for entry in inorder_dictionary.iter() {
+  for entry in &inorder_dictionary {
     let frequency = unigrams.get(&entry.0);
-    inorder_frequency.push((entry.1.clone(), frequency));
+    inorder_frequency.push((entry.1, frequency));
   }
   plot_simple(&inorder_frequency,
     "Word index, in order of document occurrence",
@@ -60,14 +60,14 @@ fn main() {
   // Sorted gnuplot of frequency distribution:
   let mut frequency_distribution = HashMap::new();
   // Obtain the distribution from the raw frequency data
-  for &(_,value) in inorder_frequency.iter() {
+  for (_,value) in inorder_frequency {
     let words_with_frequency = frequency_distribution.entry(value).or_insert(0);
     *words_with_frequency += 1;
   }
   // Perform sort
   let mut value_sorted_frequencies = Vec::new();
-  for (index,value) in frequency_distribution.iter() {
-    value_sorted_frequencies.push((value.clone(), index.clone())); // ( # Distinct words , Frequency )
+  for (index,value) in frequency_distribution {
+    value_sorted_frequencies.push((value, index)); // ( # Distinct words , Frequency )
   }
   value_sorted_frequencies.sort_by(|a, b| a.1.cmp(&b.1));
   plot_simple(&value_sorted_frequencies,

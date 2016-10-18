@@ -1,6 +1,6 @@
 extern crate llamapun;
 extern crate senna;
-use llamapun::data::{Corpus};
+use llamapun::data::{Corpus, Document};
 use senna::pos::POS;
 
 #[test]
@@ -27,7 +27,7 @@ fn can_iterate_corpus() {
 fn can_load_document_directly() {
   let corpus = Corpus::new(".".to_string());
   let mut word_count = 0;
-  let mut document = corpus.load_doc("tests/resources/0903.1000.html".to_string()).unwrap();
+  let mut document = Document::new("tests/resources/0903.1000.html".to_string(), &corpus).unwrap();
   for mut paragraph in document.paragraph_iter() {
     for mut sentence in paragraph.iter() {
       for word in sentence.simple_iter() {
@@ -45,7 +45,7 @@ fn can_load_document_directly() {
 fn can_iterate_sentences_directly() {
   let corpus = Corpus::new(".".to_string());
   let mut word_count = 0;
-  let mut document = corpus.load_doc("tests/resources/0903.1000.html".to_string()).unwrap();
+  let mut document = Document::new("tests/resources/0903.1000.html".to_string(), &corpus).unwrap();
   for mut sentence in document.sentence_iter() {
     for word in sentence.simple_iter() {
       word_count+=1;

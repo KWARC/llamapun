@@ -22,9 +22,9 @@ impl Dictionary {
   pub fn insert(&mut self, word : String) {
     let map = &mut self.map;
     // Only record if new
-    if !map.contains_key(&word) {
+    let word_index = map.entry(word).or_insert(self.index + 1);
+    if *word_index > self.index {
       self.index += 1;
-      map.insert(word, self.index);
     }
   }
   /// get the entries of the dictionary sorted by occurence

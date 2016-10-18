@@ -4,6 +4,9 @@ use stopwords;
 use std::collections::vec_deque::*;
 use std::collections::HashSet;
 use std::cmp;
+use std::iter::Peekable;
+use std::str::Chars;
+
 use regex::Regex;
 
 
@@ -35,19 +38,16 @@ impl Tokenizer {
     let window_size = 12; // size of max string + 1
     let mut left_window : VecDeque<char> = VecDeque::with_capacity(window_size);
 
-    loop {
-      let c = text_iterator.next();
-      // Length increase:
-      if let Some(x) = c {
-        end += x.len_utf8();
-      }
+    while let Some(sentence_char) = text_iterator.next() {
+      // Bookkeep the end position
+      end += sentence_char.len_utf8();
 
-      match c {
-        Some('.') | Some(':') => {
+      match sentence_char {
+        '.' | ':' => {
           // Baseline condition - only split when we have a following uppercase letter
           // Get next non-space, non-quote character
           while text_iterator.peek().unwrap_or(&'.').is_whitespace() ||
-                 text_iterator.peek() == Some(&'\'') {
+                text_iterator.peek() == Some(&'\'') {
             let space_char = text_iterator.next().unwrap();
             end+= space_char.len_utf8();
           }
@@ -55,20 +55,10 @@ impl Tokenizer {
           // Uppercase next?
           if text_iterator.peek().unwrap().is_uppercase() {
             // Ok, uppercase, but is it a stopword? If so, we must ALWAYS break the sentence:
-            let mut next_word_length = 0;
-            let mut next_word : Vec<char> = Vec::new();
-            while text_iterator.peek().unwrap_or(&'.').is_alphabetic() && (next_word_length<20) {
-              let word_char = text_iterator.next().unwrap();
-              next_word.push(word_char);
-              next_word_length += word_char.len_utf8();
-            }
-
-            let next_word_string : String = next_word.into_iter().collect();
-            let lower_word_string : String = next_word_string.to_lowercase();
-            // TODO: is there a cleaner way of doing this recast into &str?
-            let lower_word_str : &str = &lower_word_string;
+            let (next_word_string, next_word_length) = next_word_with_length(&mut text_iterator);
+            let next_word_lc = next_word_string.to_lowercase();
             // Always break the sentence when we see a stopword
-            if self.stopwords.contains(lower_word_str) {
+            if self.stopwords.contains(next_word_lc.as_str()) {
               // Reset the left window
               left_window = VecDeque::with_capacity(window_size);
               // New sentence
@@ -87,10 +77,10 @@ impl Tokenizer {
               };
               // Don't consider single letters followed by a punctuation sign an end of a sentence,
               // Also "a.m." and "p.m." shouldn't get split
-              if (lw_word.len() == 1) && (lw_word != "I") ||
-                // Don't sentence-break colons followed by a formula
-                (c == Some(':')) && (next_word_string == "MathFormula") ||
-                self.abbreviations.is_match(lw_word) {
+              if ((lw_word.len() == 1) && (lw_word != "I")) ||
+                  // Don't sentence-break colons followed by a formula
+                  ((sentence_char == ':') && (next_word_string == "MathFormula")) ||
+                  self.abbreviations.is_match(lw_word) {
 
                 left_window.push_back('.');
                 if left_window.len() >= window_size { left_window.pop_front(); }
@@ -128,7 +118,7 @@ impl Tokenizer {
             }
           }
         },
-        Some('?') | Some('!') => {
+        '?' | '!' => {
           if !is_bounded(left_window.back(),text_iterator.peek()) {
             // Reset the left window
             left_window = VecDeque::with_capacity(window_size);
@@ -140,7 +130,7 @@ impl Tokenizer {
         // TODO:
         // Some('\u{2022}'),Some('*') => { // bullet point for itemize
         // Some('\u{220e}') => { // QED symbol
-        Some('\n') => { // newline
+        '\n' => { // newline
           if let Some(&'\n') = text_iterator.peek() { // second newline
             // Get next non-space character
             while text_iterator.peek().unwrap_or(&'.').is_whitespace() {
@@ -149,18 +139,10 @@ impl Tokenizer {
             }
             if text_iterator.peek() == None {break;}
             // Get the next word
-            let mut next_word_length = 0;
-            let mut next_word : Vec<char> = Vec::new();
-            while text_iterator.peek().unwrap_or(&'.').is_alphabetic() && (next_word_length<20) {
-              let word_char = text_iterator.next().unwrap();
-              next_word.push(word_char);
-              next_word_length += word_char.len_utf8();
-            }
-            // There must be a cleaner way of doing this recast into &str
-            let is_lower_word = !next_word.is_empty() && next_word[0].is_lowercase();
-            let next_word_string : String = next_word.into_iter().collect();
+            let (next_word_string, next_word_length) = next_word_with_length(&mut text_iterator);
             // Sentence-break, UNLESS a "MathFormula" or a "lowercase word" follows, or a non-alpha char
-            if (next_word_string.is_empty()) || (next_word_string == "MathFormula") || (is_lower_word) {
+            if next_word_string.is_empty() || (next_word_string == "MathFormula") ||
+               next_word_string.chars().next().unwrap().is_lowercase() {
               // We consumed the next word, add it to the left window
               for next_word_char in next_word_string.chars() {
                 left_window.push_back(next_word_char);
@@ -178,30 +160,29 @@ impl Tokenizer {
             end += next_word_length;
           }
         },
-        Some(x) => {
+        other_char => {
           // "MathFormula\nCapitalized" case is a sentence break (but never "MathFormula\nMathFormula")
-          if x.is_uppercase() && x != 'M' {
+          if other_char.is_uppercase() && other_char != 'M' {
             let lw_string : String = left_window.clone().into_iter().collect();
             if lw_string == "MathFormula" {
               // Sentence-break found, but exclude the current letter from the end:
               left_window = VecDeque::with_capacity(window_size);
-              sentences.push(DNMRange{start: start, end: end-x.len_utf8(), dnm: dnm}.trim());
-              start = end-x.len_utf8();
+              sentences.push(DNMRange{start: start, end: end-other_char.len_utf8(), dnm: dnm}.trim());
+              start = end-other_char.len_utf8();
             }
           }
           // Increment the left window
-          left_window.push_back(x);
+          left_window.push_back(other_char);
           if left_window.len() >= window_size {
             left_window.pop_front();
           }
-        },
-        None => { break; }
+        }
       }
     }
+
     end = cmp::min(end, text.len());
-    let last_left_window : String = left_window.clone().into_iter().collect();
-    let alpha_char = last_left_window.find(|c: char| c.is_alphabetic());
-    if alpha_char != None {
+    let last_left_window : String = left_window.into_iter().collect();
+    if let Some(_) = last_left_window.find(|c: char| c.is_alphabetic()) {
       sentences.push(DNMRange{start: start, end: end, dnm: dnm}.trim());
     }
 
@@ -242,4 +223,18 @@ fn is_bounded<'a>(left: Option<&'a char>, right: Option<&'a char>) -> bool {
       false
     }
   }
+}
+
+/// Obtains the next word from the `Peekable<Chars>` iterator, where only alphabetic characters are accepted, and a max length of 20 is imposed
+fn next_word_with_length(text_iterator: &mut Peekable<Chars>) -> (String, usize) {
+  let mut next_word_length = 0;
+  let mut next_word : Vec<char> = Vec::new();
+  while next_word_length<20 && text_iterator.peek().unwrap_or(&'.').is_alphabetic() {
+    let word_char = text_iterator.next().unwrap();
+    next_word.push(word_char);
+    next_word_length += word_char.len_utf8();
+  }
+
+  let next_word : String = next_word.into_iter().collect();
+  (next_word, next_word_length)
 }

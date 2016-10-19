@@ -130,6 +130,19 @@ fn node_to_hashable(node: &Node) -> usize {
   unsafe { mem::transmute::<*mut libc::c_void, usize>(node.node_ptr) }
 }
 
+/// Some temporary data for the parser
+pub struct RuntimeParseData {
+  /// plaintext is currently terminated by some whitespace
+  had_whitespace: bool,
+}
+impl Default for RuntimeParseData {
+  fn default() -> RuntimeParseData {
+    RuntimeParseData {
+      had_whitespace: true // skip leading whitespace
+    }
+  }
+}
+
 /// The `DNM` is essentially a wrapper around the plain text representation
 /// of the document, which facilitates mapping plaintext pieces to the DOM.
 /// This breaks, if the DOM is changed after the DNM generation!
@@ -142,12 +155,22 @@ pub struct DNM {
   pub root_node: Node,
   /// Maps nodes to plaintext offsets
   pub node_map: HashMap<usize, (usize, usize)>,
+  /// A runtime object used for holding auxiliary state
+  // TODO: Would love to make the runtime a `private` field,
+  //       but it requires some refactoring and rethinking the DNM-creation API
+  pub runtime : RuntimeParseData
 }
 
-/// Some temporary data for the parser
-struct RuntimeParseData {
-  /// plaintext is currently terminated by some whitespace
-  had_whitespace: bool,
+impl Default for DNM {
+  fn default() -> DNM {
+    DNM {
+      parameters: DNMParameters::default(),
+      root_node: Node::mock(),
+      plaintext: String::new(),
+      node_map: HashMap::new(),
+      runtime: RuntimeParseData::default(),
+    }
+  }
 }
 
 impl DNM {
@@ -155,15 +178,12 @@ impl DNM {
   pub fn new(root: Node, parameters: DNMParameters) -> DNM {
     parameters.check();
     let mut dnm = DNM {
-      plaintext: String::new(),
       parameters: parameters,
       root_node: root.clone(),
-      node_map: HashMap::new(),
+      ..DNM::default()
     };
 
-    let mut runtime = RuntimeParseData { had_whitespace: true /* no need for leading whitespaces */ };
-
-    dnm.recurse_node_create(&root, &mut runtime);
+    dnm.recurse_node_create(&root);
 
     dnm
   }
@@ -183,15 +203,15 @@ impl DNM {
   }
 
   /// The heart of the dnm generation...
-  fn recurse_node_create(&mut self, node: &Node, runtime: &mut RuntimeParseData) {
+  fn recurse_node_create(&mut self, node: &Node) {
     if node.is_text_node() {
-      self.text_node_create(node, runtime)
+      self.text_node_create(node)
     } else {
-      self.intermediate_node_create(node, runtime)
+      self.intermediate_node_create(node)
     }
   }
 
-  fn text_node_create(&mut self, node: &Node, runtime: &mut RuntimeParseData) {
+  fn text_node_create(&mut self, node: &Node) {
     let mut offset_start = self.plaintext.len();
     let mut still_in_leading_whitespaces = true;
 
@@ -215,17 +235,17 @@ impl DNM {
     if self.parameters.normalize_white_spaces {
       for c in content.to_string().chars() {
         if c.is_whitespace() {
-          if runtime.had_whitespace {
+          if self.runtime.had_whitespace {
             continue;
           }
           self.plaintext.push(' ');
-          runtime.had_whitespace = true;
+          self.runtime.had_whitespace = true;
           if self.parameters.move_whitespaces_between_nodes && still_in_leading_whitespaces {
             offset_start += 1;
           }
         } else {
           self.plaintext.push(c);
-          runtime.had_whitespace = false;
+          self.runtime.had_whitespace = false;
           still_in_leading_whitespaces = false;
         }
       }
@@ -234,7 +254,7 @@ impl DNM {
     }
     self.node_map.insert(node_to_hashable(node),
                          (offset_start,
-                          if self.parameters.move_whitespaces_between_nodes && self.plaintext.len() > offset_start && runtime.had_whitespace {
+                          if self.parameters.move_whitespaces_between_nodes && self.plaintext.len() > offset_start && self.runtime.had_whitespace {
                            self.plaintext.len() - 1  //don't put trailing white space into node
                          } else {
                            self.plaintext.len()
@@ -242,7 +262,7 @@ impl DNM {
     return;
   }
 
-  fn intermediate_node_create(&mut self, node: &Node, runtime: &mut RuntimeParseData) {
+  fn intermediate_node_create(&mut self, node: &Node) {
     let offset_start = self.plaintext.len();
     let name: String = node.get_name();
     {
@@ -262,20 +282,20 @@ impl DNM {
           Some(&SpecialTagsOption::Enter) => break,
           Some(&SpecialTagsOption::Normalize(ref token)) => {
             if self.parameters.wrap_tokens {
-              if !runtime.had_whitespace || !self.parameters.normalize_white_spaces {
+              if !self.runtime.had_whitespace || !self.parameters.normalize_white_spaces {
                 self.plaintext.push(' ');
               }
               self.plaintext.push_str(token);
               self.plaintext.push(' ');
-              runtime.had_whitespace = true;
+              self.runtime.had_whitespace = true;
             } else {
               self.plaintext.push_str(token);
               // tokens are considered non-whitespace
-              runtime.had_whitespace = false;
+              self.runtime.had_whitespace = false;
             }
             self.node_map.insert(node_to_hashable(node),
                                  (offset_start,
-                                  if self.parameters.move_whitespaces_between_nodes && (self.plaintext.len() > offset_start) && runtime.had_whitespace {
+                                  if self.parameters.move_whitespaces_between_nodes && (self.plaintext.len() > offset_start) && self.runtime.had_whitespace {
                                    self.plaintext.len() - 1    //don't put trailing white space into node
                                  } else {
                                    self.plaintext.len()
@@ -284,20 +304,20 @@ impl DNM {
           }
           Some(&SpecialTagsOption::FunctionNormalize(f)) => {
             if self.parameters.wrap_tokens {
-              if !runtime.had_whitespace || !self.parameters.normalize_white_spaces {
+              if !self.runtime.had_whitespace || !self.parameters.normalize_white_spaces {
                 self.plaintext.push(' ');
               }
               self.plaintext.push_str(&f(node));
               self.plaintext.push(' ');
-              runtime.had_whitespace = true;
+              self.runtime.had_whitespace = true;
             } else {
               self.plaintext.push_str(&f(node));
               // Return value of f is not considered a white space
-              runtime.had_whitespace = false;
+              self.runtime.had_whitespace = false;
             }
             self.node_map.insert(node_to_hashable(node),
                                  (offset_start,
-                                  if self.parameters.move_whitespaces_between_nodes && self.plaintext.len() > offset_start && runtime.had_whitespace {
+                                  if self.parameters.move_whitespaces_between_nodes && self.plaintext.len() > offset_start && self.runtime.had_whitespace {
                                    self.plaintext.len() - 1    //don't put trailing white space into node
                                  } else {
                                    self.plaintext.len()
@@ -307,7 +327,7 @@ impl DNM {
           Some(&SpecialTagsOption::Skip) => {
             self.node_map.insert(node_to_hashable(node),
                                  (offset_start,
-                                  if self.parameters.move_whitespaces_between_nodes && self.plaintext.len() > offset_start && runtime.had_whitespace {
+                                  if self.parameters.move_whitespaces_between_nodes && self.plaintext.len() > offset_start && self.runtime.had_whitespace {
                                    self.plaintext.len() - 1    //don't put trailing white space into node
                                  } else {
                                    self.plaintext.len()
@@ -320,17 +340,17 @@ impl DNM {
     } // End scope of self.parameters borrow, to allow mutable self borrow for recurse_node_create
     // Recurse into children
     if let Some(child) = node.get_first_child() {
-      self.recurse_node_create(&child, runtime);
+      self.recurse_node_create(&child);
       let mut child_node = child;
       while let Some(child) = child_node.get_next_sibling() {
-        self.recurse_node_create(&child, runtime);
+        self.recurse_node_create(&child);
         child_node = child;
       }
     }
 
     self.node_map.insert(node_to_hashable(node),
                          (offset_start,
-                          if self.parameters.move_whitespaces_between_nodes && self.plaintext.len() > offset_start && runtime.had_whitespace {
+                          if self.parameters.move_whitespaces_between_nodes && self.plaintext.len() > offset_start && self.runtime.had_whitespace {
                            self.plaintext.len() - 1    //don't put trailing white space into node
                          } else {
                            self.plaintext.len()

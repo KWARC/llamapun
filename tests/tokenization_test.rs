@@ -8,8 +8,6 @@ use llamapun::tokenizer::*;
 use libxml::tree::*;
 use libxml::xpath::*;
 use libxml::parser::Parser;
-use std::collections::HashMap;
-use std::ptr;
 use regex::Regex;
 
 #[test]
@@ -22,12 +20,10 @@ fn test_sentence_tokenization_simple() {
    Our most significant result is a stochastic interpretation of the Bernstein \
    approximation of a copula. This interpretation was communicated to us by J. H. B. Kemperman in [?] for \
    2-copulas and we are not aware of its publication elsewhere.".to_string();
-  let fake_node = Node {node_ptr : ptr::null_mut()};
   let simple_dnm = DNM {
     plaintext : simple_text,
     parameters : DNMParameters::llamapun_normalization(),
-    root_node : fake_node,
-    node_map : HashMap::new()};
+    ..DNM::default()};
 
   let simple_tokenizer = Tokenizer::default();
   let ranges : Vec<DNMRange> = simple_tokenizer.sentences(&simple_dnm);

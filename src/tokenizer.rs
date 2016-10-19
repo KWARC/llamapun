@@ -1,6 +1,5 @@
 //! Provides functionality for tokenizing sentences and words
-use dnm::DNM;
-use dnm::range::DNMRange;
+use dnm::{DNM, DNMRange};
 use stopwords;
 use std::collections::vec_deque::*;
 use std::collections::HashSet;

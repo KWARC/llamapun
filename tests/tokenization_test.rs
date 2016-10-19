@@ -2,8 +2,7 @@ extern crate llamapun;
 extern crate libxml;
 extern crate regex;
 
-use llamapun::dnm::{DNM, DNMParameters};
-use llamapun::dnm::range::DNMRange;
+use llamapun::dnm::{DNM, DNMParameters, DNMRange};
 use llamapun::tokenizer::*;
 use libxml::tree::*;
 use libxml::xpath::*;

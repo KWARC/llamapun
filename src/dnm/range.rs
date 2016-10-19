@@ -1,4 +1,4 @@
-//! The `dnm::range` submodule provides data structure for indexing into a DNM object's plaintext
+//! The `dnm::range` submodule provides data structures for indexing into a DNM object's plaintext
 
 use dnm::DNM;
 /// Very often we'll talk about substrings of the plaintext - words, sentences,

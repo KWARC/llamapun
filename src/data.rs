@@ -4,8 +4,7 @@ use std::cell::{RefCell, Cell};
 use walkdir::{DirEntry, WalkDir, WalkDirIterator};
 use walkdir::Result as DirResult;
 
-use dnm::{DNM, DNMParameters};
-use dnm::range::DNMRange;
+use dnm::{DNM, DNMParameters, DNMRange};
 use tokenizer::Tokenizer;
 
 use libxml::tree::Document as XmlDoc;

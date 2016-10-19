@@ -7,15 +7,11 @@ authors = ["Jan Frederik Schaefer <j.schaefer@jacobs-university.de>", "Deyan Gin
 name = "llamapun"
 crate-type = ["rlib", "dylib", "staticlib"]
 
-[dependencies.unidecode]
-git = "https://github.com/chowdhurya/rust-unidecode.git"
 [dependencies.rustmorpha]
 git = "https://github.com/jfschaefer/rust-morpha.git"
 [dependencies.rust-senna]
 git = "https://github.com/jfschaefer/rust-senna.git"
 version = "*"
-[dependencies.gnuplot]
-git = "https://github.com/SiegeLord/RustGnuplot.git"
 
 [dependencies]
 libc = "~0.1"
@@ -23,3 +19,5 @@ regex = "0.1.48"
 time = "*"
 walkdir = "0.1"
 libxml = "~0.0.61"
+gnuplot = "~0.0.21"
+unidecode = "~0.2.0"

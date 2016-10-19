@@ -2,14 +2,14 @@
 name = "llamapun"
 version = "0.0.1"
 dependencies = [
- "gnuplot 0.0.21 (git+https://github.com/SiegeLord/RustGnuplot.git)",
+ "gnuplot 0.0.21 (registry+https://github.com/rust-lang/crates.io-index)",
  "libc 0.1.12 (registry+https://github.com/rust-lang/crates.io-index)",
  "libxml 0.0.61 (registry+https://github.com/rust-lang/crates.io-index)",
  "regex 0.1.73 (registry+https://github.com/rust-lang/crates.io-index)",
  "rust-senna 0.0.1 (git+https://github.com/jfschaefer/rust-senna.git)",
  "rustmorpha 0.1.0 (git+https://github.com/jfschaefer/rust-morpha.git)",
  "time 0.1.35 (registry+https://github.com/rust-lang/crates.io-index)",
- "unidecode 0.2.0 (git+https://github.com/chowdhurya/rust-unidecode.git)",
+ "unidecode 0.2.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "walkdir 0.1.5 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
@@ -29,7 +29,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 [[package]]
 name = "gnuplot"
 version = "0.0.21"
-source = "git+https://github.com/SiegeLord/RustGnuplot.git#a6e7e29118284cf588356777e5e1a8e152e1fdcb"
+source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
 name = "kernel32-sys"
@@ -130,7 +130,7 @@ dependencies = [
 [[package]]
 name = "unidecode"
 version = "0.2.0"
-source = "git+https://github.com/chowdhurya/rust-unidecode.git#4d4e147811b04afde3d06d75a4d82486a0ca0321"
+source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
 name = "utf8-ranges"
@@ -159,7 +159,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 [metadata]
 "checksum aho-corasick 0.5.2 (registry+https://github.com/rust-lang/crates.io-index)" = "2b3fb52b09c1710b961acb35390d514be82e4ac96a9969a8e38565a29b878dc9"
 "checksum gcc 0.3.32 (registry+https://github.com/rust-lang/crates.io-index)" = "dcb000abd6df9df4c637f75190297ebe56c1d7e66b56bbf3b4aa7aece15f61a2"
-"checksum gnuplot 0.0.21 (git+https://github.com/SiegeLord/RustGnuplot.git)" = "<none>"
+"checksum gnuplot 0.0.21 (registry+https://github.com/rust-lang/crates.io-index)" = "584bf0393239edf835f3b7330dc7c44c53d97964eeaf6a03b59962331e66a520"
 "checksum kernel32-sys 0.2.2 (registry+https://github.com/rust-lang/crates.io-index)" = "7507624b29483431c0ba2d82aece8ca6cdba9382bff4ddd0f7490560c056098d"
 "checksum libc 0.1.12 (registry+https://github.com/rust-lang/crates.io-index)" = "e32a70cf75e5846d53a673923498228bbec6a8624708a9ea5645f075d6276122"
 "checksum libc 0.2.14 (registry+https://github.com/rust-lang/crates.io-index)" = "39dfaaa0f4da0f1a06876c5d94329d739ad0150868069cc235f1ddf80a0480e7"
@@ -172,7 +172,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 "checksum thread-id 2.0.0 (registry+https://github.com/rust-lang/crates.io-index)" = "a9539db560102d1cef46b8b78ce737ff0bb64e7e18d35b2a5688f7d097d0ff03"
 "checksum thread_local 0.2.6 (registry+https://github.com/rust-lang/crates.io-index)" = "55dd963dbaeadc08aa7266bf7f91c3154a7805e32bb94b820b769d2ef3b4744d"
 "checksum time 0.1.35 (registry+https://github.com/rust-lang/crates.io-index)" = "3c7ec6d62a20df54e07ab3b78b9a3932972f4b7981de295563686849eb3989af"
-"checksum unidecode 0.2.0 (git+https://github.com/chowdhurya/rust-unidecode.git)" = "<none>"
+"checksum unidecode 0.2.0 (registry+https://github.com/rust-lang/crates.io-index)" = "d2adb95ee07cd579ed18131f2d9e7a17c25a4b76022935c7f2460d2bfae89fd2"
 "checksum utf8-ranges 0.1.3 (registry+https://github.com/rust-lang/crates.io-index)" = "a1ca13c08c41c9c3e04224ed9ff80461d97e121589ff27c753a16cb10830ae0f"
 "checksum walkdir 0.1.5 (registry+https://github.com/rust-lang/crates.io-index)" = "7ad450634b9022aeb0e8e7f1c79c1ded92d0fc5bee831033d148479771bd218d"
 "checksum winapi 0.2.8 (registry+https://github.com/rust-lang/crates.io-index)" = "167dc9d6949a9b857f3451275e911c3f44255842c1f7a76f33c55103a909087a"

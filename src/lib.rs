@@ -4,7 +4,9 @@
 
 #![feature(slice_patterns)]
 #![feature(type_ascription)]
+#![feature(plugin)]
 #![deny(missing_docs)]
+#![plugin(clippy)]
 
 extern crate libxml;
 extern crate libc;

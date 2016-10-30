@@ -21,6 +21,8 @@ extern crate gnuplot;
 extern crate rustmorpha;
 extern crate walkdir;
 extern crate senna;
+extern crate crypto;
+#[macro_use] extern crate lazy_static;
 
 #[macro_use] pub mod util;
 pub mod dnm;

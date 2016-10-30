@@ -5,8 +5,13 @@
 #![feature(slice_patterns)]
 #![feature(type_ascription)]
 #![feature(plugin)]
-#![deny(missing_docs)]
 #![plugin(clippy)]
+#![deny(missing_docs,
+        trivial_casts,
+        trivial_numeric_casts,
+        unsafe_code,
+        unused_import_braces,
+        unused_qualifications)]
 
 extern crate libxml;
 extern crate libc;

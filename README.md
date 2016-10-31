@@ -39,6 +39,21 @@ At its core, **llamapun** is a [Rust](http://rust-lang.org/) implementation that
 
 ---
 
+**Getting started**
+
+Run
+```bash
+cargo build
+```
+in the project directory. 
+
+In case of errors, it's recommended to switch to the nightly builds of rust (https://github.com/rust-lang-nursery/rustup.rs#working-with-nightly-rust), 
+i.e. using rustup (www.rustup.rs) and keep it updated (run 'rustup update' on a regular basis).
+
+For problems with libxml, it helps to install its development headers (libxml2-dev is the package name for a Debian-based Linux).
+
+---
+
 **Disclaimers:**
 
   1. Please remember that all third-party tools (such as the [SENNA](http://ml.nec-labs.com/senna/) NLP toolkit) enforce their own licensing constraints.

@@ -9,7 +9,6 @@
 #![deny(missing_docs,
         trivial_casts,
         trivial_numeric_casts,
-        unsafe_code,
         unused_import_braces,
         unused_qualifications)]
 
@@ -21,6 +20,8 @@ extern crate gnuplot;
 extern crate rustmorpha;
 extern crate walkdir;
 extern crate senna;
+extern crate crypto;
+#[macro_use] extern crate lazy_static;
 
 #[macro_use] pub mod util;
 pub mod dnm;

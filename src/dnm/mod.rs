@@ -3,6 +3,7 @@
 //! which is needed for most NLP tools.
 mod range;
 mod parameters;
+mod c14n;
 
 extern crate libc;
 extern crate unidecode;

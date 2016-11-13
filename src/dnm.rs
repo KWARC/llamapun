@@ -8,10 +8,8 @@ extern crate rustmorpha;
 
 use std::collections::HashMap;
 use std::mem;
-use std::io::Write;
 use unidecode::unidecode;
 use libxml::tree::*;
-// use util::macros::*;
 
 
 /// Specifies how to deal with a certain tag
@@ -21,7 +19,6 @@ pub enum SpecialTagsOption {
   /// Normalize tag, replacing it by some token
   Normalize(String),
   /// Normalize tag, obtain replacement string by function call
-  //FunctionNormalize(|&Node| -> String),
   FunctionNormalize(fn(&Node) -> String),
   /// Skip tag
   Skip,
@@ -102,22 +99,22 @@ impl DNMParameters {
   /// Doesn't check for every possible stupidity
   fn check(&self) {
     if self.stem_words_once && self.stem_words_full {
-      println_stderr!("llamapun::dnm: Parameter options stem_words_once\
+      panic!("llamapun::dnm: Parameter options stem_words_once\
   and stem_words_full are both set");
     }
     if !self.normalize_white_spaces && self.move_whitespaces_between_nodes {
-      println_stderr!("llamapun::dnm: Parameter option\
+      panic!("llamapun::dnm: Parameter option\
   move_whitespaces_between_nodes only works in combination with normalize_white_spaces\n\
   Consider using DNMRange::trim instead");
     }
     if !self.normalize_white_spaces && self.move_whitespaces_between_nodes {
-      println_stderr!("llamapun::dnm: Parameter option\
+      panic!("llamapun::dnm: Parameter option\
   move_whitespaces_between_nodes only works in combination with normalize_white_spaces\n\
   Consider using DNMRange::trim instead");
     }
     if (self.stem_words_once || self.stem_words_full)
         && self.convert_to_lowercase {
-      println_stderr!("llamapun::dnm: Parameter option convert_to_lowercase\
+      panic!("llamapun::dnm: Parameter option convert_to_lowercase\
   is redundant, because stemming converts to lowercase already");
     }
   }
@@ -296,7 +293,6 @@ impl DNM {
     }
 
     self.insert_node_into_node_map(context, node, offset_start);
-    return;
   }
 
   fn push_whitespace(&self, context : &mut ParsingContext) -> bool {

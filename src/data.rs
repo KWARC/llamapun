@@ -21,8 +21,10 @@ use senna::sentence::Sentence as SennaSentence;
 pub struct Corpus {
   /// root directory
   pub path : String,
+  /// document XHTML5 parser
+  pub xml_parser : Parser,
   /// document HTML5 parser
-  pub parser : Parser,
+  pub html_parser : Parser,
   /// `DNM`-aware sentence and word tokenizer
   pub tokenizer : Tokenizer,
   /// `Senna` object for shallow language analysis
@@ -126,16 +128,9 @@ impl<'iter> Iterator for DocumentIterator<'iter> {
       let next_entry = walker.next();
       if next_entry.is_none() {
         break;
-      } else {
-        let next_entry_result = next_entry.unwrap();
-        if next_entry_result.is_err() {
-          continue;
-        } else {
-          let entry = next_entry_result.unwrap(); // unwrap the walkdir::Result
-          let file_name = entry.file_name().to_str().unwrap_or("").to_owned();
-          if !file_name.ends_with(".html") {
-            continue;
-          }
+      } else if let Ok(entry) = next_entry.unwrap() {
+        let file_name = entry.file_name().to_str().unwrap_or("").to_owned();
+        if file_name.ends_with(".html") || file_name.ends_with(".xhtml") {
           let path = entry.path().to_str().unwrap_or("").to_owned();
           let doc_result = Document::new(path, self.corpus);
           return match doc_result {
@@ -156,7 +151,8 @@ impl Default for Corpus {
     Corpus {
       path : ".".to_string(),
       tokenizer : Tokenizer::default(),
-      parser : Parser::default_html(),
+      xml_parser :  Parser::default(),
+      html_parser : Parser::default_html(),
       senna : RefCell::new(Senna::new(SENNA_PATH.to_owned())),
       senna_options : Cell::new(SennaParseOptions::default()),
     }
@@ -184,7 +180,11 @@ impl Corpus {
 impl<'d> Document<'d> {
   /// Load a new document
   pub fn new(filepath: String, owner: &'d Corpus) -> Result<Self, XmlParseError> {
-    let dom = try!(owner.parser.parse_file(&filepath));
+    let dom = if filepath.ends_with(".xhtml") {
+      try!(owner.xml_parser.parse_file(&filepath))
+    } else {
+      try!(owner.html_parser.parse_file(&filepath))
+    };
 
     Ok(Document {
       path : filepath,

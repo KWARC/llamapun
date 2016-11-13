@@ -6,9 +6,8 @@ extern crate libc;
 extern crate rustmorpha;
 
 use llamapun::dnm::*;
-// use libc::{c_void, c_int};
 use libxml::parser::Parser;
-use libxml::xpath::{Context};
+use libxml::xpath::Context;
 use std::collections::HashMap;
 
 
@@ -34,6 +33,52 @@ fn test_plaintext_simple() {
 }
 
 
+#[test]
+fn test_back_mapping_simple() {
+  let parser = Parser::default();
+  let doc = parser.parse_file("tests/resources/file01.xml").unwrap();
+  let root = doc.get_root_element().unwrap();
+  let mut options : HashMap<String, SpecialTagsOption> = HashMap::new();
+  options.insert("a".to_string(), SpecialTagsOption::Normalize("[link]".to_string()));
+  let dnm = DNM::new(root,
+                            DNMParameters {
+                                special_tag_name_options : options,
+                                normalize_white_spaces: true,
+                                support_back_mapping: true,
+                                ..Default::default() });
+
+  let range = DNMRange {
+      start: 32,
+      end: 35,
+      dnm: &dnm,
+  };
+
+  assert_eq!(range.get_plaintext(), "and");
+
+  // test serialization
+  let string = range.serialize();
+  assert_eq!(string, "arange(string-index(//body[1]/text()[4],10),string-index(//body[1]/text()[4],13))");
+  
+  // test deserialization
+  let xpath_context = Context::new(&doc).unwrap();
+  let range2 = DNMRange::deserialize(&string, &dnm, &xpath_context);
+  assert_eq!(range2.get_plaintext(), "and");
+
+
+  let range3 = DNMRange {
+      start: 26,
+      end: 30,
+      dnm: &dnm,
+  };
+
+  assert_eq!(range3.get_plaintext(), "link");
+  let string2 = range3.serialize();
+  assert_eq!(string2, "arange(//body[1]/a[1],//body[1]/text()[4])");
+
+  let range4 = DNMRange::deserialize(&string2, &dnm, &xpath_context);
+
+  assert_eq!(range4.get_plaintext(), "[link]");
+}
 
 
 #[test]
@@ -119,28 +164,6 @@ fn test_plaintext_normalized_class_names() {
         assert_eq!(dnm.plaintext, "abc");
     }
 */
-
-#[test]
-fn test_move_whitespaces_between_nodes() {
-  let parser = Parser::default();
-  let doc = parser.parse_file("tests/resources/file01.xml").unwrap();
-  let root = doc.get_root_element().unwrap();
-  let dnm = DNM::new(root,
-                            DNMParameters {
-                                move_whitespaces_between_nodes: true,
-                                normalize_white_spaces: true,
-                                ..Default::default() });
-  let context = Context::new(&doc).unwrap();
-  let result = context.evaluate("/html/body/h2").unwrap();
-  assert_eq!(result.get_number_of_nodes(), 1);
-  let node = &result.get_nodes_as_vec()[0];
-  if let Some(node) = node.get_next_sibling() {
-    let range = dnm.get_range_of_node(&node).unwrap();
-    assert_eq!(range.get_plaintext(), "Some text");
-  } else {
-    assert!(false);   // node should have had a sibling
-  }
-}
 
 
 #[test]

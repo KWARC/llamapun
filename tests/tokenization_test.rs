@@ -26,7 +26,10 @@ fn test_sentence_tokenization_simple() {
     plaintext : simple_text,
     parameters : DNMParameters::llamapun_normalization(),
     root_node : fake_node,
-    node_map : HashMap::new()};
+    node_map : HashMap::new(),
+    offset_to_node : Vec::new(),
+    offset_to_node_offset : Vec::new()};
+
 
   let simple_tokenizer = Tokenizer::default();
   let ranges : Vec<DNMRange> = simple_tokenizer.sentences(&simple_dnm);

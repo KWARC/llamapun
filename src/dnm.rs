@@ -146,9 +146,11 @@ pub struct DNM {
 
 
 /// Some temporary data for the parser
-struct RuntimeParseData {
+struct ParsingContext {
   /// plaintext is currently terminated by some whitespace
   had_whitespace : bool,
+  plaintext : String,
+  node_map : HashMap<usize, (usize, usize)>,
 }
 
 /// Very often we'll talk about substrings of the plaintext - words, sentences,
@@ -226,11 +228,16 @@ impl DNM {
       node_map : HashMap::new(),
     };
 
-    let mut runtime = RuntimeParseData {
+    let mut context = ParsingContext {
       had_whitespace : true,  //no need for leading whitespaces
+      plaintext : String::new(),
+      node_map : HashMap::new(),
     };
 
-    dnm.recurse_node_create(&root, &mut runtime);
+    dnm.handle_node(&root, &mut context);
+
+    dnm.plaintext = context.plaintext;
+    dnm.node_map = context.node_map;
 
     return dnm
   }
@@ -244,15 +251,15 @@ impl DNM {
   }
 
   /// The heart of the dnm generation...
-  fn recurse_node_create(&mut self, node: &Node, runtime: &mut RuntimeParseData) {
+  fn handle_node(&self, node: &Node, context: &mut ParsingContext) {
     match node.is_text_node() {
-      true => self.text_node_create(node, runtime),
-      false => self.intermediate_node_create(node,runtime)
+      true => self.handle_text_node(node, context),
+      false => self.handle_intermediate_node(node,context)
     };
   }
 
-  fn text_node_create(&mut self, node : &Node, runtime : &mut RuntimeParseData) {
-    let mut offset_start = self.plaintext.len();
+  fn handle_text_node(&self, node : &Node, context : &mut ParsingContext) {
+    let mut offset_start = context.plaintext.len();
     let mut still_in_leading_whitespaces = true;
 
     //possibly normalize unicode
@@ -271,9 +278,7 @@ impl DNM {
     if self.parameters.normalize_white_spaces {
       for c in content.to_string().chars() {
         if c.is_whitespace() {
-          if runtime.had_whitespace { continue; }
-          self.plaintext.push(' ');
-          runtime.had_whitespace = true;
+          if !self.push_whitespace(context) { continue; }
           if self.parameters.move_whitespaces_between_nodes {
             if still_in_leading_whitespaces {
               offset_start += 1;
@@ -281,106 +286,94 @@ impl DNM {
           }
         }
         else {
-          self.plaintext.push(c);
-          runtime.had_whitespace = false;
+          context.plaintext.push(c);
+          context.had_whitespace = false;
           still_in_leading_whitespaces = false;
         }
       }
     } else {
-      self.plaintext.push_str(&content);
+      context.plaintext.push_str(&content);
     }
-    self.node_map.insert(node_to_hashable(node), (offset_start,
-      if self.parameters.move_whitespaces_between_nodes && self.plaintext.len() > offset_start && runtime.had_whitespace {
-        self.plaintext.len() - 1  //don't put trailing white space into node
-      } else { self.plaintext.len() }));
+
+    self.insert_node_into_node_map(context, node, offset_start);
     return;
   }
 
-  fn intermediate_node_create(&mut self, node : &Node, runtime : &mut RuntimeParseData) {
-    let offset_start = self.plaintext.len();
+  fn push_whitespace(&self, context : &mut ParsingContext) -> bool {
+      if !context.had_whitespace || !self.parameters.normalize_white_spaces {
+          context.plaintext.push(' ');
+          context.had_whitespace = true;
+          return true;
+      }
+      return false;
+  }
+
+  fn push_token(&self, context : &mut ParsingContext, token : &str) {
+        if self.parameters.wrap_tokens {
+            self.push_whitespace(context);
+            context.plaintext.push_str(token);
+            context.had_whitespace = false;  // disputable, but I don't consider tokens as whitespaces
+            self.push_whitespace(context);
+        } else {
+            context.plaintext.push_str(token);
+            context.had_whitespace = false;
+        }
+  }
+
+  fn insert_node_into_node_map(&self, context : &mut ParsingContext, node : &Node, start : usize) {
+      context.node_map.insert(node_to_hashable(node),
+          (start,
+              if self.parameters.move_whitespaces_between_nodes && (context.plaintext.len() > start) && context.had_whitespace {
+                  context.plaintext.len() - 1    //don't put trailing white space into node
+              } else { context.plaintext.len() }));
+  }
+
+  fn handle_intermediate_node(&self, node : &Node, context : &mut ParsingContext) {
+    let offset_start = context.plaintext.len();
     let name : String = node.get_name();
-    { // Start scope of self.parameters borrow, to allow mutable self borrow for recurse_node_create
     let mut rules = Vec::new();
     // First class rules, as more specific
     for classname in node.get_class_names() {
       let class_rule = self.parameters.special_tag_class_options.get(&classname);
-      rules.push(class_rule);
+      rules.push(class_rule.clone());
     }
     // Then element rules as more general
-    rules.push(self.parameters.special_tag_name_options.get(&name));
+    rules.push(self.parameters.special_tag_name_options.get(&name).clone());
 
     for rule in rules {  //iterate over applying rules
       match rule {
         Some(&SpecialTagsOption::Enter) => break,
         Some(&SpecialTagsOption::Normalize(ref token)) => {
-          if self.parameters.wrap_tokens {
-            if !runtime.had_whitespace || !self.parameters.normalize_white_spaces {
-              self.plaintext.push(' ');
-            }
-            self.plaintext.push_str(&token);
-            self.plaintext.push(' ');
-            runtime.had_whitespace = true;
-          } else {
-            self.plaintext.push_str(&token);
-            //tokens are considered non-whitespace
-            runtime.had_whitespace = false;
-          }
-          self.node_map.insert(node_to_hashable(node),
-            (offset_start,
-              if self.parameters.move_whitespaces_between_nodes && (self.plaintext.len() > offset_start) && runtime.had_whitespace {
-                  self.plaintext.len() - 1    //don't put trailing white space into node
-              } else { self.plaintext.len() }));
+          self.push_token(context, &token);
+          self.insert_node_into_node_map(context, node, offset_start);
           return;
         },
         Some(&SpecialTagsOption::FunctionNormalize(f)) => {
-          if self.parameters.wrap_tokens {
-            if !runtime.had_whitespace ||
-               !self.parameters.normalize_white_spaces {
-                self.plaintext.push(' ');
-            }
-            self.plaintext.push_str(&f(&node));
-            self.plaintext.push(' ');
-            runtime.had_whitespace = true;
-          } else {
-            self.plaintext.push_str(&f(&node));
-            //Return value of f is not considered a white space
-            runtime.had_whitespace = false;
-          }
-          self.node_map.insert(node_to_hashable(node),
-            (offset_start,
-              if self.parameters.move_whitespaces_between_nodes && self.plaintext.len() > offset_start && runtime.had_whitespace {
-                self.plaintext.len() - 1    //don't put trailing white space into node
-              } else { self.plaintext.len() }));
+          self.push_token(context, &f(&node));
+          self.insert_node_into_node_map(context, node, offset_start);
           return;
         },
         Some(&SpecialTagsOption::Skip) => {
-          self.node_map.insert(node_to_hashable(node),
-            (offset_start,
-            if self.parameters.move_whitespaces_between_nodes && self.plaintext.len() > offset_start && runtime.had_whitespace {
-              self.plaintext.len() - 1    //don't put trailing white space into node
-            } else { self.plaintext.len() }));
+          self.insert_node_into_node_map(context, node, offset_start);
           return;
         },
         None => continue
       }
     }
-    } // End scope of self.parameters borrow, to allow mutable self borrow for recurse_node_create
+
     // Recurse into children
     let mut child_option = node.get_first_child();
     loop {
       match child_option {
         Some(child) => {
-          self.recurse_node_create(&child, runtime);
+          self.handle_node(&child, context);
           child_option = child.get_next_sibling();
         },
         None => break
       }
     }
 
-    self.node_map.insert(node_to_hashable(node), (offset_start,
-      if self.parameters.move_whitespaces_between_nodes && self.plaintext.len() > offset_start && runtime.had_whitespace {
-        self.plaintext.len() - 1    //don't put trailing white space into node
-      } else { self.plaintext.len()}));
+    self.insert_node_into_node_map(context, node, offset_start);
   }
 }
 

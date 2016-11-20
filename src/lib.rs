@@ -4,8 +4,6 @@
 
 #![feature(slice_patterns)]
 #![feature(type_ascription)]
-#![feature(plugin)]
-#![plugin(clippy)]
 #![deny(missing_docs,
         trivial_casts,
         trivial_numeric_casts,

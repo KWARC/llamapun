@@ -20,7 +20,7 @@ fn test_plaintext_simple() {
   options.insert("h2".to_string(), SpecialTagsOption::Skip);
   options.insert("a".to_string(),
                  SpecialTagsOption::Normalize("[link]".to_string()));
-  let root = doc.get_root_element().unwrap();
+  let root = doc.get_root_element();
   let dnm = DNM::new(root,
                             DNMParameters {
                                 special_tag_name_options : options,
@@ -42,13 +42,13 @@ fn test_xml_node_to_plaintext() {
   options.insert("h2".to_string(), SpecialTagsOption::Skip);
   options.insert("a".to_string(),
                  SpecialTagsOption::Normalize("[link]".to_string()));
-  let root = doc.get_root_element().unwrap();
+  let root = doc.get_root_element();
   let dnm = DNM::new(root,
                             DNMParameters {
                                 special_tag_name_options : options,
                                 ..Default::default()
                             });
-  let mut node = doc.get_root_element().unwrap();
+  let mut node = doc.get_root_element();
   match node.get_first_child() {
     Some(n) => node = n,
     None => assert!(false)  //DOM generation failed
@@ -94,7 +94,7 @@ fn test_plaintext_normalized_class_names() {
   let mut options : HashMap<String, SpecialTagsOption> = HashMap::new();
   options.insert("normalized".to_string(),
                  SpecialTagsOption::Normalize("[NORMALIZED]".to_string()));
-  let root = doc.get_root_element().unwrap();
+  let root = doc.get_root_element();
   let dnm = DNM::new(root,
                             DNMParameters {
                                 special_tag_class_options : options,
@@ -109,7 +109,7 @@ fn test_plaintext_normalized_class_names() {
     /// Test the default math normalization on some real math document
     fn test_default_math_normalization() {
         let doc = parser.parse_file("tests/resources/1311.0066.xhtml").unwrap();
-        let dnm = DNM::new(&doc.get_root_element().unwrap(),
+        let dnm = DNM::new(&doc.get_root_element(),
                                   DNMParameters::llamapun_normalization());
         assert_eq!(dnm.plaintext, "abc");
     }
@@ -119,7 +119,7 @@ fn test_plaintext_normalized_class_names() {
 fn test_move_whitespaces_between_nodes() {
   let parser = Parser::default();
   let doc = parser.parse_file("tests/resources/file01.xml").unwrap();
-  let root = doc.get_root_element().unwrap();
+  let root = doc.get_root_element();
   let dnm = DNM::new(root,
                             DNMParameters {
                                 move_whitespaces_between_nodes: true,
@@ -142,11 +142,11 @@ fn test_move_whitespaces_between_nodes() {
 fn test_unicode_normalization() {
   let parser = Parser::default();
   let doc = parser.parse_file("tests/resources/file03.xml").unwrap();
-  let root = doc.get_root_element().unwrap();
+  let root = doc.get_root_element();
   let dnm = DNM::new(root, DNMParameters {
     normalize_unicode: true,
     ..DNMParameters::default() });
-  let node = doc.get_root_element().unwrap();
+  let node = doc.get_root_element();
   let dnmrange = dnm.get_range_of_node(&node).unwrap();
   assert_eq!(dnmrange.get_plaintext().trim(), "At houEUR...");
 }
@@ -156,12 +156,12 @@ fn test_unicode_normalization() {
 fn test_morpha_stemming() {
   let parser = Parser::default();
   let doc = parser.parse_file("tests/resources/file04.xml").unwrap();
-  let root = doc.get_root_element().unwrap();
+  let root = doc.get_root_element();
   let dnm = DNM::new(root,
                             DNMParameters {
                                 stem_words_once: true,
                                 ..Default::default() });
-  let node = doc.get_root_element().unwrap();
+  let node = doc.get_root_element();
   let dnmrange = dnm.get_range_of_node(&node).unwrap().trim();
 
   assert_eq!(dnmrange.get_plaintext().trim(), "here be one sentence with multiple word.");

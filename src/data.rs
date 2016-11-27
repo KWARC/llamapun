@@ -210,7 +210,7 @@ impl<'d> Document<'d> {
   /// Get an iterator over the sentences of the document
   pub fn sentence_iter(&mut self) -> SentenceIterator {
     if self.dnm.is_none() {
-      self.dnm = Some(DNM::new(self.dom.get_root_element().unwrap(), DNMParameters::llamapun_normalization()));
+      self.dnm = Some(DNM::new(self.dom.get_root_element(), DNMParameters::llamapun_normalization()));
     }
     let tokenizer = &self.corpus.tokenizer;
     let sentences = tokenizer.sentences(self.dnm.as_ref().unwrap());

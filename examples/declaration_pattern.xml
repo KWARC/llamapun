@@ -1,0 +1,89 @@
+<?xml version="1.0"?>
+<pattern_file>
+    <meta>
+        <description>
+            An example pattern file, which can be used for a simple declaration spotter.
+        </description>
+        <author>
+            Jan Frederik Schaefer (jfschaefer@outlook.com)
+        </author>
+    </meta>
+
+
+    <pos_rule name="article">
+        <pos tag="DT"/>
+    </pos_rule>
+
+    <word_rule name="indefinite article">
+        <meta>
+            <description>
+                Matches an indefinite article.
+            </description>
+        </meta>
+        <word_pos ref="article">
+            <word_or>
+                <word>a</word>
+                <word>an</word>
+                <word>some</word>
+                <word>any</word>
+                <word>each</word>
+            </word_or>
+        </word_pos>
+    </word_rule>
+
+
+
+    <seq_rule name="definiens">
+        <meta>
+            <description>
+                Matches a potential definiens.
+                The core definiens is marked as &quot;core definiens&quot;
+                and the complete definiens is marked as &quot;complete definiens&quot;.
+                Example: any abelian group of degree 7.
+                The core definiens is any abelian group and the complete definiens is the entire example.
+            </description>
+        </meta>
+
+        <seq_marker name="complete definiens">
+            <phrase tag="NP">
+                <match_type>longest</match_type>
+                <starts_with_seq containment="lessorequal">
+                    <seq_marker name="core definiens">
+                        <phrase tag="NP">
+                            <match_type>shortest</match_type>
+                            <starts_with_seq containment="lessorequal">
+                                <seq_word><word_ref ref="indefinite article"/></seq_word>
+                            </starts_with_seq>
+                        </phrase>
+                    </seq_marker>
+                </starts_with_seq>
+            </phrase>
+        </seq_marker>
+    </seq_rule>
+
+    <math_rule name="definiendum">
+        <math_any/>
+    </math_rule>
+
+
+    <word_rule name="let">
+        <word_or>
+            <word>let</word>
+            <word>Let</word>
+        </word_or>
+    </word_rule>
+
+
+    <seq_rule name="declaration">
+        <seq_marker name="declaration phrase">
+            <seq_seq>
+                <seq_word><word_ref ref="let"/></seq_word>
+                <seq_word><word_math><math_ref ref="definiendum"/></word_math></seq_word>
+                <seq_word><word>be</word></seq_word>
+                <seq_ref ref="definiens"/>
+            </seq_seq>
+        </seq_marker>
+    </seq_rule>
+
+
+</pattern_file>

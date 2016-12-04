@@ -4,7 +4,8 @@
 
 #![feature(slice_patterns)]
 #![feature(type_ascription)]
-#![warn(missing_docs)]
+#![feature(box_syntax, box_patterns)]
+// #![warn(missing_docs)]
 
 extern crate libxml;
 extern crate libc;
@@ -21,3 +22,4 @@ pub mod data;
 pub mod stopwords;
 pub mod tokenizer;
 pub mod ngrams;
+pub mod patterns;

@@ -8,7 +8,6 @@ extern crate rustmorpha;
 
 use std::collections::HashMap;
 use std::mem;
-use std::io::Write;
 use unidecode::{unidecode, unidecode_char};
 use libxml::tree::*;
 use libxml::xpath::{Context};
@@ -26,8 +25,21 @@ pub enum SpecialTagsOption {
   Skip,
 }
 
+/// Clone can't be derived for functions yet
+impl Clone for SpecialTagsOption {
+    fn clone(&self) -> SpecialTagsOption {
+        match self {
+            &SpecialTagsOption::Enter => SpecialTagsOption::Enter,
+            &SpecialTagsOption::Normalize(ref s) => SpecialTagsOption::Normalize(s.clone()),
+            &SpecialTagsOption::FunctionNormalize(f) => SpecialTagsOption::FunctionNormalize(f),
+            &SpecialTagsOption::Skip => SpecialTagsOption::Skip,
+        }
+    }
+}
 
-/// Paremeters for the DNM generation
+
+#[derive(Clone)]
+/// Parameters for the DNM generation
 pub struct DNMParameters {
   /// How to deal with special tags (e.g. `<math>` tags)
   pub special_tag_name_options: HashMap<String, SpecialTagsOption>,

@@ -29,6 +29,8 @@ pub struct Corpus {
   pub senna : RefCell<Senna>,
   /// `Senna` parsing options
   pub senna_options : Cell<SennaParseOptions>,
+  /// Default setting for `DNM` generation
+  pub dnm_parameters : DNMParameters,
 }
 
 /// File-system iterator yielding individual documents
@@ -159,6 +161,7 @@ impl Default for Corpus {
       parser : Parser::default_html(),
       senna : RefCell::new(Senna::new(SENNA_PATH.to_owned())),
       senna_options : Cell::new(SennaParseOptions::default()),
+      dnm_parameters : DNMParameters::llamapun_normalization(),
     }
   }
 }
@@ -215,7 +218,7 @@ impl<'d> Document<'d> {
   /// Get an iterator over the sentences of the document
   pub fn sentence_iter(&mut self) -> SentenceIterator {
     if self.dnm.is_none() {
-      self.dnm = Some(DNM::new(self.dom.get_root_element().unwrap(), DNMParameters::llamapun_normalization()));
+      self.dnm = Some(DNM::new(self.dom.get_root_element().unwrap(), self.corpus.dnm_parameters.clone()));
     }
     let tokenizer = &self.corpus.tokenizer;
     let sentences = tokenizer.sentences(self.dnm.as_ref().unwrap());
@@ -234,7 +237,7 @@ impl<'iter> Iterator for ParagraphIterator<'iter> {
       None => None,
       Some(node) => {
         // Create a DNM for the current paragraph
-        let dnm = DNM::new(node, DNMParameters::llamapun_normalization());
+        let dnm = DNM::new(node, self.document.corpus.dnm_parameters.clone());
         Some(Paragraph {dnm : dnm, document : self.document})
       }
     }

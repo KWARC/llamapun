@@ -1,4 +1,3 @@
-#![feature(str_char)]
 extern crate llamapun;
 extern crate libxml;
 extern crate senna;
@@ -97,7 +96,9 @@ fn get_plaintext(node: &Node) -> (String, Vec<usize>, Vec<Node>) {
 
 fn annotate(node : Node, root: &Node, range: &DNMRange, dnm: &DNM, dom: &DOM) -> bool {
     // find lowest parent of range
+
     let (_, offsets, nodes) = get_plaintext(root); // Need to recalculate it every round
+
     let start_node = &nodes[range.start];
     let start_parents : Vec<Node> = get_parent_chain(start_node, root);
     let end_node = &nodes[range.end-1];
@@ -114,19 +115,16 @@ fn annotate(node : Node, root: &Node, range: &DNMRange, dnm: &DNM, dom: &DOM) ->
     let common_parent = &start_parents[si];
 
     if common_parent.is_text_node() {
-        let before = Node::new_text_node(&dom, &dnm.plaintext[range.start - offsets[range.start]..range.start]).unwrap();
+        let start_before = fix_byte_index(range.start - offsets[range.start], dnm.plaintext.clone());
+        let before = Node::new_text_node(&dom, &dnm.plaintext[start_before..range.start]).unwrap();
         let core = Node::new_text_node(&dom, &dnm.plaintext[range.start..range.end]).unwrap();
         let mut textend = range.start+1;
-        while textend < offsets.len() && textend < dnm.plaintext.len() && offsets[textend] > 0 {
+        while textend < offsets.len() && offsets[textend] > 0 {
             textend += 1;
         }
-        // writeln!(std::io::stderr(), "off: {}", offsets[range.start+1]).unwrap();
-        // writeln!(std::io::stderr(), "offset ({}, {})", range.end, textend).unwrap();
-        // if range.end == 369 {
-        //     writeln!(std::io::stderr(), "   x{}y", dnm.plaintext.char_at(369)).unwrap();
-        //     writeln!(std::io::stderr(), "   x{}y", dnm.plaintext.char_at(370)).unwrap();
-        // }
-        // writeln!(std::io::stderr(), "Trying {}", &dnm.plaintext[range.end..textend]).unwrap();
+
+        textend = fix_byte_index(textend, dnm.plaintext.clone());
+
         let after = Node::new_text_node(&dom, &dnm.plaintext[range.end..textend]).unwrap();
 
         common_parent.add_prev_sibling(node.clone()).unwrap();
@@ -174,11 +172,15 @@ fn annotate(node : Node, root: &Node, range: &DNMRange, dnm: &DNM, dom: &DOM) ->
 
         // split text nodes
         if act_start.is_text_node() && offsets[range.start] != 0 {  // have to split act_start
-            let before = Node::new_text_node(&dom, &dnm.plaintext[range.start-offsets[range.start]..range.start]).unwrap();
+            let before_start = fix_byte_index(range.start - offsets[range.start], dnm.plaintext.clone());
+            let before = Node::new_text_node(&dom, &dnm.plaintext[before_start..range.start]).unwrap();
             let mut textend = range.start+1;
             while offsets[textend] > 0 {  // can't run to end of array, because in that case we'd have a text node as common parent (checked for before)
                 textend += 1;
             }
+
+            textend = fix_byte_index(textend, dnm.plaintext.clone());
+
             let after = Node::new_text_node(&dom, &dnm.plaintext[range.start..textend]).unwrap();
             let break_ = Node::new("BREAK", None, &dom).unwrap();  // make sure text nodes don't get merged into act_start
             act_start.add_prev_sibling(break_.clone()).unwrap();
@@ -192,11 +194,14 @@ fn annotate(node : Node, root: &Node, range: &DNMRange, dnm: &DNM, dom: &DOM) ->
         }
         if act_end.is_text_node() && range.end < dnm.plaintext.len() - 1 &&
             offsets[range.end+1] != 0 {
-                let before = Node::new_text_node(&dom, &dnm.plaintext[range.end - offsets[range.end]..range.end]).unwrap();
+                let before_start = fix_byte_index(range.end - offsets[range.end], dnm.plaintext.clone());
+                let before = Node::new_text_node(&dom, &dnm.plaintext[before_start..range.end]).unwrap();
                 let mut textend = range.end+1;
-                while textend < offsets.len() && textend < dnm.plaintext.len() && offsets[textend] > 0 {
+                while textend < offsets.len() && offsets[textend] > 0 {
                     textend += 1;
                 }
+
+                textend = fix_byte_index(textend, dnm.plaintext.clone());
 
                 let after = Node::new_text_node(&dom, &dnm.plaintext[range.end..textend]).unwrap();
                 let stop = Node::new("STOP", None, &dom).unwrap();
@@ -224,6 +229,28 @@ fn annotate(node : Node, root: &Node, range: &DNMRange, dnm: &DNM, dom: &DOM) ->
     return true;
 }
 
+/* Takes a possibly invalid byte index to plaintext and returns a close and valid byte index. A byte index is invalid iff it does
+   not point to a char boundary */
+fn fix_byte_index(mut byte_index : usize, plaintext : String) -> usize {
+    //for (byte, char) in plaintext.clone().char_indices() {
+        //println!("Indices {} {} {} {}", byte, char, plaintext.is_char_boundary(byte), textend);
+    //}
+
+    if !plaintext.is_char_boundary(byte_index){
+        if byte_index > plaintext.len() {
+            // plaintext.len() is always a char boundary
+            byte_index = plaintext.len();
+        }else {
+            while byte_index < plaintext.as_bytes().len() && !plaintext.is_char_boundary(byte_index){
+                // increase to the next char boundary
+                byte_index += 1;
+            }
+        }
+    }
+    byte_index
+}
+
+
 fn add_ids_to_math(root: &Node, id: &str) {
     let mut c : Option<Node>;
     let mut tmp : Option<Node> = root.get_first_child();
@@ -247,11 +274,8 @@ fn add_ids_to_math(root: &Node, id: &str) {
 
 pub fn main() {
     let args : Vec<_> = env::args().collect();
-    // let corpus_path : &str = if args.len() > 1 { &args[1] } else { "tests/resources/" };
-    // println!("Loading corpus from \"{}\"", corpus_path);
-    let corpus_path = "tests/resources/";
-    let in_doc = &args[1];
-    let out_doc = &args[2];
+    let corpus_path : &str = if args.len() > 1 { &args[1] } else { "tests/resources/" };
+    println!("Loading corpus from \"{}\"", corpus_path);
 
     let mut senna = Senna::new(SENNA_PATH.to_owned());
     let tokenizer = Tokenizer::default();
@@ -259,9 +283,12 @@ pub fn main() {
     let mut sentence_id_counter = 0usize;
 
     let corpus = Corpus::new(corpus_path.to_owned());
-    // for document in corpus.iter() {
-    // let document = corpus.load_doc("tests/resources/1311.0066.xhtml".to_string()).unwrap();
-    let document = corpus.load_doc(in_doc.to_string()).unwrap();
+    //for document in corpus.iter() {
+    if args.len() <= 1 {
+        return;
+    }
+
+    let document = corpus.load_doc(args[1].clone()).unwrap();
     if true {
         println!("Processing \"{}\"", &document.path);
         let dom = document.dom;
@@ -304,15 +331,14 @@ pub fn main() {
             let (plaintext, _, _) = get_plaintext(&para);
             // Need to create DNM for sentence tokenizer
             let dnm = DNM {
-                plaintext : plaintext,
-                parameters : DNMParameters::default(),
-                root_node : para.clone(),
-                node_map : HashMap::new(),
+                plaintext: plaintext,
+                parameters: DNMParameters::default(),
+                root_node: para.clone(),
+                node_map: HashMap::new(),
             };
             let sentences = tokenizer.sentences(&dnm);
             for sentence in sentences {
                 let pt = sentence.get_plaintext().replace("MathFormula", "mathformula");
-                writeln!(std::io::stderr(), "Sentence: '{}'", pt).unwrap();
                 let senna_parse = senna.parse(&pt, SennaParseOptions { pos: true, psg: true,});
                 let snode = Node::new("span", None, &dom).unwrap();
                 snode.add_property("class", "sentence");
@@ -352,14 +378,14 @@ pub fn main() {
         let mut mathidcounter = 0;
         for mathtag in mathtags {
             /* let id = match mathtag.get_property("id") {
-                None => {
-                    let newid = format!("math.{}", mathidcounter);
-                    mathtag.add_property("id", newid);
-                    newid
-                }
-                Some(i) => &i
-            };
-            */
+           None => {
+               let newid = format!("math.{}", mathidcounter);
+               mathtag.add_property("id", newid);
+               newid
+           }
+           Some(i) => &i
+       };
+       */
             mathtag.remove_property_with_name("id");
             let newid = format!("math.{}", mathidcounter);
             mathidcounter += 1;
@@ -367,8 +393,10 @@ pub fn main() {
             add_ids_to_math(&mathtag, &newid);
         }
 
-        // dom.save_file(if args.len() > 2 { &args[2] } else { println!("Saving at /tmp/out.xhtml"); "/tmp/out.xhtml" }).unwrap();
-        dom.save_file(out_doc).unwrap();
+        dom.save_file(if args.len() > 2 { &args[2] } else {
+            println!("Saving at /tmp/out.html");
+            "/tmp/out.html"
+        }).unwrap();
     }
 }
 

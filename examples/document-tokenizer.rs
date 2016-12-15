@@ -99,6 +99,17 @@ fn annotate(node : Node, root: &Node, range: &DNMRange, dnm: &DNM, dom: &DOM) ->
 
     let (_, offsets, nodes) = get_plaintext(root); // Need to recalculate it every round
 
+
+
+    if range.start == range.end {
+        return false;
+    }
+
+    if range.end > nodes.len(){
+        writeln!(std::io::stderr(), "Warning: range.end > nodes.len() in annotate. Something went wrong here before").unwrap();
+        return false;
+    }
+
     let start_node = &nodes[range.start];
     let start_parents : Vec<Node> = get_parent_chain(start_node, root);
     let end_node = &nodes[range.end-1];
@@ -115,9 +126,11 @@ fn annotate(node : Node, root: &Node, range: &DNMRange, dnm: &DNM, dom: &DOM) ->
     let common_parent = &start_parents[si];
 
     if common_parent.is_text_node() {
-        let start_before = fix_byte_index(range.start - offsets[range.start], dnm.plaintext.clone());
-        let before = Node::new_text_node(&dom, &dnm.plaintext[start_before..range.start]).unwrap();
-        let core = Node::new_text_node(&dom, &dnm.plaintext[range.start..range.end]).unwrap();
+        let before_start = fix_byte_index(range.start - offsets[range.start], dnm.plaintext.clone());
+        let before_end   = fix_byte_index(range.start, dnm.plaintext.clone());
+        let core_end     = fix_byte_index(range.end, dnm.plaintext.clone());
+        let before = Node::new_text_node(&dom, &dnm.plaintext[before_start..before_end]).unwrap();
+        let core = Node::new_text_node(&dom, &dnm.plaintext[before_end..core_end]).unwrap();
         let mut textend = range.start+1;
         while textend < offsets.len() && offsets[textend] > 0 {
             textend += 1;
@@ -125,7 +138,7 @@ fn annotate(node : Node, root: &Node, range: &DNMRange, dnm: &DNM, dom: &DOM) ->
 
         textend = fix_byte_index(textend, dnm.plaintext.clone());
 
-        let after = Node::new_text_node(&dom, &dnm.plaintext[range.end..textend]).unwrap();
+        let after = Node::new_text_node(&dom, &dnm.plaintext[core_end..textend]).unwrap();
 
         common_parent.add_prev_sibling(node.clone()).unwrap();
         node.add_prev_sibling(before).unwrap();
@@ -173,7 +186,9 @@ fn annotate(node : Node, root: &Node, range: &DNMRange, dnm: &DNM, dom: &DOM) ->
         // split text nodes
         if act_start.is_text_node() && offsets[range.start] != 0 {  // have to split act_start
             let before_start = fix_byte_index(range.start - offsets[range.start], dnm.plaintext.clone());
-            let before = Node::new_text_node(&dom, &dnm.plaintext[before_start..range.start]).unwrap();
+            let before_end = fix_byte_index(range.start, dnm.plaintext.clone());
+
+            let before = Node::new_text_node(&dom, &dnm.plaintext[before_start..before_end]).unwrap();
             let mut textend = range.start+1;
             while offsets[textend] > 0 {  // can't run to end of array, because in that case we'd have a text node as common parent (checked for before)
                 textend += 1;
@@ -181,7 +196,7 @@ fn annotate(node : Node, root: &Node, range: &DNMRange, dnm: &DNM, dom: &DOM) ->
 
             textend = fix_byte_index(textend, dnm.plaintext.clone());
 
-            let after = Node::new_text_node(&dom, &dnm.plaintext[range.start..textend]).unwrap();
+            let after = Node::new_text_node(&dom, &dnm.plaintext[before_end..textend]).unwrap();
             let break_ = Node::new("BREAK", None, &dom).unwrap();  // make sure text nodes don't get merged into act_start
             act_start.add_prev_sibling(break_.clone()).unwrap();
             break_.add_prev_sibling(before).unwrap();
@@ -195,15 +210,15 @@ fn annotate(node : Node, root: &Node, range: &DNMRange, dnm: &DNM, dom: &DOM) ->
         if act_end.is_text_node() && range.end < dnm.plaintext.len() - 1 &&
             offsets[range.end+1] != 0 {
                 let before_start = fix_byte_index(range.end - offsets[range.end], dnm.plaintext.clone());
-                let before = Node::new_text_node(&dom, &dnm.plaintext[before_start..range.end]).unwrap();
+                let before_end = fix_byte_index(range.end, dnm.plaintext.clone());
+                let before = Node::new_text_node(&dom, &dnm.plaintext[before_start..before_end]).unwrap();
                 let mut textend = range.end+1;
                 while textend < offsets.len() && offsets[textend] > 0 {
                     textend += 1;
                 }
 
                 textend = fix_byte_index(textend, dnm.plaintext.clone());
-
-                let after = Node::new_text_node(&dom, &dnm.plaintext[range.end..textend]).unwrap();
+                let after = Node::new_text_node(&dom, &dnm.plaintext[before_end..textend]).unwrap();
                 let stop = Node::new("STOP", None, &dom).unwrap();
                 act_end.add_prev_sibling(stop.clone()).unwrap();
                 let tmp = stop.add_prev_sibling(before).unwrap();
@@ -226,15 +241,16 @@ fn annotate(node : Node, root: &Node, range: &DNMRange, dnm: &DNM, dom: &DOM) ->
         act_end.unlink();
         node.add_child(&act_end).unwrap();
     }
+
     return true;
 }
 
 /* Takes a possibly invalid byte index to plaintext and returns a close and valid byte index. A byte index is invalid iff it does
    not point to a char boundary */
 fn fix_byte_index(mut byte_index : usize, plaintext : String) -> usize {
-    //for (byte, char) in plaintext.clone().char_indices() {
-        //println!("Indices {} {} {} {}", byte, char, plaintext.is_char_boundary(byte), textend);
-    //}
+   // for (byte, char) in plaintext.clone().char_indices() {
+   //     println!("Indices {} {} {}, Goal {}", byte, char, plaintext.is_char_boundary(byte), byte_index);
+   // }
 
     if !plaintext.is_char_boundary(byte_index){
         if byte_index > plaintext.len() {
@@ -247,6 +263,7 @@ fn fix_byte_index(mut byte_index : usize, plaintext : String) -> usize {
             }
         }
     }
+   // println!("byte_index {}", byte_index);
     byte_index
 }
 
@@ -282,102 +299,105 @@ pub fn main() {
 
     let mut sentence_id_counter = 0usize;
 
-    let corpus = Corpus::new(corpus_path.to_owned());
-    //for document in corpus.iter() {
-    if args.len() <= 1 {
-        return;
-    }
+    let mut corpus = Corpus::new(corpus_path.to_owned());
+    for document in corpus.iter() {
+        if args.len() <= 1 {
+            return;
+        }
 
-    let document = corpus.load_doc(args[1].clone()).unwrap();
-    if true {
-        println!("Processing \"{}\"", &document.path);
-        let dom = document.dom;
-        let xpath_context = Context::new(&dom).unwrap();
+        // let document = corpus.load_doc(args[1].clone()).unwrap();
+        if true {
+            println!("Processing \"{}\"", &document.path);
+            let dom = document.dom;
+            let xpath_context = Context::new(&dom).unwrap();
 
 
-        // Remove ltx_p nodes
-        match xpath_context.evaluate("//*[contains(@class,'ltx_para')]//p[contains(@class,'ltx_p')]") {
-            Ok(result) => {
-                for ltx_p in result.get_nodes_as_vec() {
-                    // move children out
-                    loop {
-                        match ltx_p.get_first_child() {
-                            None => { break; },   // Done
-                            Some(child) => {
-                                child.unlink();
-                                ltx_p.add_prev_sibling(child).unwrap();
+            // Remove ltx_p nodes
+            match xpath_context.evaluate("//*[contains(@class,'ltx_para')]//p[contains(@class,'ltx_p')]") {
+                Ok(result) => {
+                    for ltx_p in result.get_nodes_as_vec() {
+                        // move children out
+                        loop {
+                            match ltx_p.get_first_child() {
+                                None => { break; },   // Done
+                                Some(child) => {
+                                    child.unlink();
+                                    ltx_p.add_prev_sibling(child).unwrap();
+                                }
                             }
                         }
+                        ltx_p.unlink();
+                        ltx_p.free();
                     }
-                    ltx_p.unlink();
-                    ltx_p.free();
+                },
+                Err(_) => {
+                    writeln!(std::io::stderr(), "Warning: Didn't remove any //*[contains(@class,'ltx_para')]//p[contains(@class,'ltx_p')]").unwrap();
                 }
-            },
-            Err(_) => {
-                writeln!(std::io::stderr(), "Warning: Didn't remove any //*[contains(@class,'ltx_para')]//p[contains(@class,'ltx_p')]").unwrap();
             }
-        }
 
 
-        let paras = match xpath_context.evaluate("//*[contains(@class,'ltx_para')]") {
-            Ok(result) => result.get_nodes_as_vec(),
-            Err(_) => {
-                writeln!(std::io::stderr(), "Warning: No paragraphs found").unwrap();
-                vec![]
-            }
-        };
-
-        for para in paras {
-            let (plaintext, _, _) = get_plaintext(&para);
-            // Need to create DNM for sentence tokenizer
-            let dnm = DNM {
-                plaintext: plaintext,
-                parameters: DNMParameters::default(),
-                root_node: para.clone(),
-                node_map: HashMap::new(),
+            let paras = match xpath_context.evaluate("//*[contains(@class,'ltx_para')]") {
+                Ok(result) => result.get_nodes_as_vec(),
+                Err(_) => {
+                    writeln!(std::io::stderr(), "Warning: No paragraphs found").unwrap();
+                    vec![]
+                }
             };
-            let sentences = tokenizer.sentences(&dnm);
-            for sentence in sentences {
-                let pt = sentence.get_plaintext().replace("MathFormula", "mathformula");
-                let senna_parse = senna.parse(&pt, SennaParseOptions { pos: true, psg: true,});
-                let snode = Node::new("span", None, &dom).unwrap();
-                snode.add_property("class", "sentence");
-                // Colors help to easily see missing annotations
-                snode.add_property("style", "color:darkgreen");
-                snode.add_property("id", &format!("sentence.{}", sentence_id_counter));
-                sentence_id_counter += 1;
-                snode.add_property("psg", senna_parse.get_psgstring().unwrap());
 
-                annotate(snode, &para, &sentence, &dnm, &dom);
+            for para in paras {
+                let (plaintext, _, _) = get_plaintext(&para);
+                // Need to create DNM for sentence tokenizer
+                let dnm = DNM {
+                    plaintext: plaintext,
+                    parameters: DNMParameters::default(),
+                    root_node: para.clone(),
+                    node_map: HashMap::new(),
+                };
+                let sentences = tokenizer.sentences(&dnm);
+                for sentence in sentences {
+                    let pt = sentence.get_plaintext().replace("MathFormula", "mathformula");
+                    //let senna_parse = senna.parse(&pt, SennaParseOptions { pos: true, psg: true,});
+                    let snode = Node::new("span", None, &dom).unwrap();
+                    snode.add_property("class", "sentence");
+                    // Colors help to easily see missing annotations
+                    snode.add_property("style", "color:darkgreen");
+                    snode.add_property("id", &format!("sentence.{}", sentence_id_counter));
+                    sentence_id_counter += 1;
+                    //snode.add_property("psg", senna_parse.get_psgstring().unwrap());
 
-                let mut word_id_counter = 0usize;
+                    annotate(snode, &para, &sentence, &dnm, &dom);
 
-                for word in senna_parse.get_words() {
-                    let wnode = Node::new("span", None, &dom).unwrap();
-                    wnode.add_property("class", "word");
-                    // wnode.add_property("style", "color:blue");
-                    wnode.add_property("id", &format!("word.{}.{}", sentence_id_counter, word_id_counter));
-                    word_id_counter += 1;
-                    wnode.add_property("pos", word.get_pos().to_str());
+                    let mut word_id_counter = 0usize;
 
-                    let word_range = sentence.get_subrange(word.get_offset_start(), word.get_offset_end());
-                    annotate(wnode, &para, &word_range, &dnm, &dom);
+                    for word in tokenizer.words(&sentence) {
+                        //for word in senna_parse.get_words() {
+                        let wnode = Node::new("span", None, &dom).unwrap();
+                        wnode.add_property("class", "word");
+                        // wnode.add_property("style", "color:blue");
+                        wnode.add_property("id", &format!("word.{}.{}", sentence_id_counter, word_id_counter));
+                        word_id_counter += 1;
+                        //    wnode.add_property("pos", word.get_pos().to_str());
+                        //let word_range = sentence.get_subrange(word.get_offset_start(), word.get_offset_end());
+                      //  let word_range = sentence.get_subrange(word.start, word.end);
+//                        println!("word {} word.start {} word.end {}, sentence.start {}, sentence.end {}", word.get_plaintext(), word.start, word.end,
+  //                          sentence.start, sentence.end);
+                        annotate(wnode, &para, &word, &dnm, &dom);
+                    }
                 }
             }
-        }
 
-        // add ids into mathml
-        let mathtags = match xpath_context.evaluate("//math") {
-            Ok(result) => result.get_nodes_as_vec(),
-            Err(_) => {
-                writeln!(std::io::stderr(), "Warning: No paragraphs found").unwrap();
-                vec![]
-            }
-        };
+            // add ids into mathml
+            let mathtags = match xpath_context.evaluate("//math") {
+                Ok(result) => result.get_nodes_as_vec(),
+                Err(_) => {
+                    writeln!(std::io::stderr(), "Warning: No paragraphs found").unwrap();
+                    vec![]
+                }
+            };
 
-        let mut mathidcounter = 0;
-        for mathtag in mathtags {
-            /* let id = match mathtag.get_property("id") {
+            let mut mathidcounter = 0;
+            for mathtag in mathtags {
+                /* let id = match mathtag.get_property("id") {
            None => {
                let newid = format!("math.{}", mathidcounter);
                mathtag.add_property("id", newid);
@@ -386,17 +406,18 @@ pub fn main() {
            Some(i) => &i
        };
        */
-            mathtag.remove_property_with_name("id");
-            let newid = format!("math.{}", mathidcounter);
-            mathidcounter += 1;
-            mathtag.add_property("id", &newid);
-            add_ids_to_math(&mathtag, &newid);
-        }
+                mathtag.remove_property_with_name("id");
+                let newid = format!("math.{}", mathidcounter);
+                mathidcounter += 1;
+                mathtag.add_property("id", &newid);
+                add_ids_to_math(&mathtag, &newid);
+            }
 
-        dom.save_file(if args.len() > 2 { &args[2] } else {
-            println!("Saving at /tmp/out.html");
-            "/tmp/out.html"
-        }).unwrap();
+            dom.save_file(if args.len() > 2 { &args[2] } else {
+                println!("Saving at /tmp/out.html");
+                "/tmp/out.html"
+            }).unwrap();
+        }
     }
 }
 

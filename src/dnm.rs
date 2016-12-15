@@ -173,7 +173,7 @@ pub struct DNMRange <'dnmrange> {
 impl <'dnmrange> DNMRange <'dnmrange> {
   /// Get the plaintext substring corresponding to the range
   pub fn get_plaintext(&self) -> &'dnmrange str {
-    &(&self.dnm.plaintext)[self.start..self.end]
+      &(&self.dnm.plaintext)[self.start..self.end]
   }
   /// Get the plaintext without trailing white spaces
   pub fn get_plaintext_truncated(&self) -> &'dnmrange str {
@@ -191,6 +191,7 @@ impl <'dnmrange> DNMRange <'dnmrange> {
       else {
         break; }}
     for c in range_text.chars().rev() {
+
       if c.is_whitespace() {
         trimmed_end -= 1; }
       else {
@@ -199,7 +200,18 @@ impl <'dnmrange> DNMRange <'dnmrange> {
         trimmed_start = self.start;
         trimmed_end = self.start;
     }
-    DNMRange {start : trimmed_start, end: trimmed_end, dnm: self.dnm}
+
+    //decrease the byte index to the next non-boundary index
+    while !self.dnm.plaintext.is_char_boundary(trimmed_start){
+      trimmed_start -= 1;
+    }
+
+    //increase the byte index to the next non-boundary index
+    while !self.dnm.plaintext.is_char_boundary(trimmed_end){
+      trimmed_end += 1;
+    }
+    DNMRange { start: trimmed_start, end: trimmed_end, dnm: self.dnm }
+
   }
 
   /// returns a subrange, with offsets relative to the beginning of `self`

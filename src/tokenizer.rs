@@ -193,6 +193,7 @@ impl Tokenizer {
     if alpha_char != None {
       sentences.push(DNMRange{start: start, end: end, dnm: dnm}.trim());
     }
+
     return sentences;
   }
 
@@ -202,8 +203,10 @@ impl Tokenizer {
     let mut start = 0usize;
     let mut end = 0usize;
     let mut result : Vec<DNMRange> = Vec::new();
+
     for c in text_iterator {
-        end += 1;
+      //end += 1;
+      end += c.len_utf8();
         if !c.is_alphabetic() {
             if start+1 < end {
                 result.push(sentence_range.get_subrange(start, end));
@@ -214,6 +217,13 @@ impl Tokenizer {
     if start+1 < end {
         result.push(sentence_range.get_subrange(start, end));
     }
+
+    let sentence_len = sentence_range.get_plaintext().len();
+    if end != sentence_len {
+      println!("end {}, sentence_len {}", end, sentence_len);
+      panic!("tokenizer words() end != sentence_len");
+    }
+
     result
   }
 }

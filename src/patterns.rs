@@ -23,8 +23,7 @@ pub struct PatternMarker {
 
 #[derive(Clone)]
 pub struct MathMarker {
-    pub start_node : Node,
-    pub end_node : Node,
+    pub node : Node,
     pub marker : PatternMarker,
 }
 
@@ -47,12 +46,64 @@ pub struct Match<'t> {
     pub sub_matches : Vec<Match<'t>>,
 }
 
+#[derive(Clone, PartialEq, Eq)]
+pub enum MathChildrenMatchType {
+    StartsWith,
+    MatchesExactly,
+    EndsWith,
+    Arbitrary
+}
+
+impl MathChildrenMatchType {
+    pub fn from_str(string : &str) -> Result<MathChildrenMatchType, String> {
+        match string {
+            "starts_with" => Ok(MathChildrenMatchType::StartsWith),
+            "exact" => Ok(MathChildrenMatchType::MatchesExactly),
+            "ends_with" => Ok(MathChildrenMatchType::EndsWith),
+            "arbitrary" => Ok(MathChildrenMatchType::Arbitrary),
+            other => Err(format!("Unknown match_type for match_children \"{}\"", other)),
+        }
+    }
+}
+
+#[derive(Clone, PartialEq, Eq)]
+pub enum MathDescendantMatchType {
+    First,
+    AtLeastOne,
+    Arbitrary
+}
+
+impl MathDescendantMatchType {
+    pub fn from_str(string : &str) -> Result<MathDescendantMatchType, String> {
+        match string {
+            "first" => Ok(MathDescendantMatchType::First),
+            "at_least_one" => Ok(MathDescendantMatchType::AtLeastOne),
+            "arbitrary" => Ok(MathDescendantMatchType::Arbitrary),
+            other => Err(format!("Unknon match_type for math_descendant \"{}\"", other)),
+        }
+    }
+}
+
 
 #[derive(Clone)]
-pub enum MathPattern {
+pub enum MathPattern {   // matches always exactly one node!
     AnyMath,
     MathRef(usize),
     Marked(Box<MathPattern>, PatternMarker),
+    MathOr(Vec<MathPattern>),
+    MathNode(Option<String> /* node name */,
+             Option<usize> /* m_text_ref */,
+             Option<(Vec<MathPattern>, MathChildrenMatchType)> /*children */),
+    MathDescendant(Box<MathPattern>, MathDescendantMatchType),
+}
+
+#[derive(Clone)]
+pub enum MTextPattern {
+    AnyMText,
+    MTextOr(Vec<MTextPattern>),
+    MTextLit(String),
+    MTextNot(Box<MTextPattern>),
+    MTextRef(usize),
 }
 
 
@@ -137,6 +188,12 @@ pub struct MathRule {
 }
 
 #[derive(Clone)]
+pub struct MTextRule {
+    pub description: MetaDescription,
+    pub pattern: MTextPattern,
+}
+
+#[derive(Clone)]
 pub struct SequenceRule {
     pub description: MetaDescription,
     pub pattern: SequencePattern,
@@ -149,10 +206,12 @@ struct PCtx<'t> {  // pattern loading context
     word_rules : Vec<Option<WordRule>>,
     seq_rules : Vec<Option<SequenceRule>>,
     math_rules : Vec<Option<MathRule>>,
+    mtext_rules : Vec<Option<MTextRule>>,
     pos_rules : Vec<Option<PosRule>>,
     word_name_map : HashMap<String, usize>,
     seq_name_map : HashMap<String, usize>,
     math_name_map : HashMap<String, usize>,
+    mtext_name_map : HashMap<String, usize>,
     pos_name_map : HashMap<String, usize>,
 }
 
@@ -163,11 +222,13 @@ pub struct PatternFile {
     pub word_rules: Vec<WordRule>,
     pub pos_rules: Vec<PosRule>,
     pub math_rules: Vec<MathRule>,
+    pub mtext_rules: Vec<MTextRule>,
     pub sequence_rules: Vec<SequenceRule>,
 
     pub word_rule_names: HashMap<String, usize>,
     pub pos_rule_names: HashMap<String, usize>,
     pub math_rule_names: HashMap<String, usize>,
+    pub mtext_rule_names: HashMap<String, usize>,
     pub sequence_rule_names: HashMap<String, usize>,
 }
 
@@ -201,6 +262,17 @@ fn get_non_text_children(node : &Node) -> Result<Vec<Node>, String> {
         } else {
             children.push(cur_.clone());
         }
+        cur = cur_.get_next_sibling();
+    }
+}
+
+fn fast_get_non_text_children(node : &Node) -> Vec<Node> {
+    let mut cur = node.get_first_child();
+    let mut children : Vec<Node> = Vec::new();
+    loop {
+        if cur.is_none() { return children; }
+        let cur_ = cur.unwrap();
+        if !cur_.is_text_node() { children.push(cur_.clone()); }
         cur = cur_.get_next_sibling();
     }
 }
@@ -290,6 +362,39 @@ impl PatternMarker {
     }
 }
 
+impl MTextPattern {
+    fn load_from_node(node : &Node, pctx : &mut PCtx) -> Result<MTextPattern, String> {
+        match node.get_name().as_ref() {
+            "mtext_any" => {
+                try!(assert_no_child(node));
+                Ok(MTextPattern::AnyMText)
+            }
+            "mtext_or" => {
+                let mut options : Vec<MTextPattern> = Vec::new();
+                for cur in &try!(get_non_text_children(node)) {
+                    options.push(try!(MTextPattern::load_from_node(cur, pctx)));
+                }
+                Ok(MTextPattern::MTextOr(options))
+            }
+            "mtext_lit" => {
+                try!(assert_no_child(node));
+                let lit = try!(require_node_property(node, "str"));
+                Ok(MTextPattern::MTextLit(lit))
+            }
+            "mtext_not" => {
+                Ok(MTextPattern::MTextNot(Box::new(try!(MTextPattern::load_from_node(&try!(get_only_child(node)),
+                                                                                     pctx)))))
+            }
+            "mtext_ref" => {
+                try!(assert_no_child(node));
+                let ref_str = try!(require_node_property(node, "ref"));
+                Ok(MTextPattern::MTextRef(pctx.get_mtext_rule(&ref_str)))
+            }
+            unknown => Err(format!("Expected mtext node, found \"{}\"", unknown))
+        }
+    }
+}
+
 impl MathPattern {
     fn load_from_node(node : &Node, pctx : &mut PCtx) -> Result<MathPattern, String> {
         match node.get_name().as_ref() {
@@ -305,7 +410,58 @@ impl MathPattern {
                 try!(assert_no_child(node));
                 let ref_str = try!(require_node_property(node, "ref"));
                 Ok(MathPattern::MathRef(pctx.get_math_rule(&ref_str)))
-            },
+            }
+            "math_or" => {
+                let mut options : Vec<MathPattern> = Vec::new();
+                for cur in &try!(get_non_text_children(node)) {
+                    options.push(try!(MathPattern::load_from_node(cur, pctx)));
+                }
+                Ok(MathPattern::MathOr(options))
+            }
+            "math_node" => {
+                let node_name : Option<String> = node.get_property("name");
+                let mut mtextref : Option<usize> = None;
+                let mut children : Option<(Vec<MathPattern>, MathChildrenMatchType)> = None;
+                for cur in &try!(get_non_text_children(node)) {
+                    match cur.get_name().as_ref() {
+                        "math_children" => {
+                            if children.is_some() {
+                                return Err("\"math_node\" had multiple children \"math_children\"".to_string());
+                            }
+                            let match_type = try!(MathChildrenMatchType::from_str(
+                                    &try!(require_node_property(cur, "match_type"))));
+                            let mut child_nodes : Vec<MathPattern> = Vec::new();
+                            for cur_cur in &try!(get_non_text_children(cur)) {
+                                child_nodes.push(try!(MathPattern::load_from_node(cur_cur, pctx)));
+                            }
+                            if child_nodes.len() == 0 {
+                                return Err("\"math_children\" is emty".to_string()); // would cause problems later
+                            }
+                            children = Some((child_nodes, match_type));
+                        }
+                        "mtext_ref" => {
+                            if mtextref.is_some() {
+                                return Err("\"math_node\" had multiple children \"mtext_ref\"".to_string());
+                            }
+                            try!(assert_no_child(cur));
+                            let ref_str = try!(require_node_property(cur, "ref"));
+                            mtextref = Some(pctx.get_mtext_rule(&ref_str));
+                        }
+                        other => {
+                            return Err(format!("Expected \"mtext_ref\" or \"math_children\", but found \"{}\"",
+                                               other));
+                        }
+                    }
+                }
+                Ok(MathPattern::MathNode(node_name, mtextref, children))
+            }
+            "math_descendant" => {
+                let match_type = try!(MathDescendantMatchType::from_str(
+                        &try!(require_node_property(node, "match_type"))));
+                let child = Box::new(try!(MathPattern::load_from_node(&try!(get_only_child(node)), pctx)));
+                Ok(MathPattern::MathDescendant(child, match_type))
+                
+            }
             unknown => Err(format!("Expected math node, found \"{}\"", unknown))
         }
     }
@@ -517,7 +673,7 @@ fn load_rule<PatternT, RuleT> (load_f: fn(&Node, &mut PCtx) -> Result<PatternT, 
                 meta_opt = Some(try!(MetaDescription::load_from_node(cur, name.clone())
                                      .map_err(|e| format!("error when loading meta node in word_rule \"{}\":\n{}",
                                                           &name, e))));
-            },
+            }
             x => {
                 if rule_opt.is_some() {
                     return Err(format!("Unexpected node \"{}\" in {} \"{}\"", x, rule_type, &name));
@@ -578,6 +734,19 @@ impl MathRule {
     }
 }
 
+impl MTextRule {
+    fn load_from_node(node: &Node, pctx: &mut PCtx) -> Result<MTextRule, String> {
+        Ok(try!(load_rule(MTextPattern::load_from_node, node, pctx, "mtext_rule", MTextRule::generate_rule)))
+    }
+
+    fn generate_rule(pattern : MTextPattern, description : MetaDescription) -> MTextRule {
+        MTextRule {
+            description : description,
+            pattern : pattern,
+        }
+    }
+}
+
 impl SequenceRule {
     fn load_from_node(node: &Node, pctx: &mut PCtx) -> Result<SequenceRule, String> {
         Ok(try!(load_rule(SequencePattern::load_from_node, node, pctx, "seq_rule", SequenceRule::generate_rule)))
@@ -590,22 +759,6 @@ impl SequenceRule {
         }
     }
 }
-
-
-/*
-struct PCtx<'t> {  // pattern loading context
-    pos_map : HashMap<&'t str, POS>,
-    phrase_map : HashMap<&'t str, Phrase>,
-    word_rules : Vec<Option<WordRule>>,
-    seq_rules : Vec<Option<SequenceRule>>,
-    math_rules : Vec<Option<MathRule>>,
-    pos_rules : Vec<Option<PosRule>>,
-    word_map : HashMap<String, usize>,
-    seq_map : HashMap<String, usize>,
-    math_map : HashMap<String, usize>,
-    pos_map : HashMap<String, usize>,
-}
-*/
 
 
 fn get_rule_position<RuleT>(rules : &mut Vec<Option<RuleT>>, map : &mut HashMap<String, usize>, rule_name : &str) -> usize {
@@ -631,16 +784,22 @@ impl<'t> PCtx<'t> {
             word_rules : Vec::new(),
             seq_rules : Vec::new(),
             math_rules : Vec::new(),
+            mtext_rules : Vec::new(),
             pos_rules : Vec::new(),
             word_name_map : HashMap::new(),
             seq_name_map : HashMap::new(),
             math_name_map : HashMap::new(),
+            mtext_name_map : HashMap::new(),
             pos_name_map : HashMap::new(),
         }
     }
 
     fn get_math_rule(&mut self, rule_name : &str) -> usize {
         get_rule_position(&mut self.math_rules, &mut self.math_name_map, rule_name)
+    }
+
+    fn get_mtext_rule(&mut self, rule_name : &str) -> usize {
+        get_rule_position(&mut self.mtext_rules, &mut self.mtext_name_map, rule_name)
     }
     
     fn get_pos_rule(&mut self, rule_name : &str) -> usize {
@@ -665,11 +824,21 @@ impl<'t> PCtx<'t> {
         Ok(())
     }
 
+    fn add_mtext_rule(&mut self, node : &Node) -> Result<(), String> {
+        let rule = try!(MTextRule::load_from_node(node, self));
+        let pos = self.get_mtext_rule(&rule.description.name);
+        if self.mtext_rules[pos].is_some() {
+            return Err(format!("Conflict: Multiple definitions of mtext_rule \"{}\"", &rule.description.name));
+        }
+        self.mtext_rules[pos] = Some(rule);
+        Ok(())
+    }
+
     fn add_word_rule(&mut self, node : &Node) -> Result<(), String> {
         let rule = try!(WordRule::load_from_node(node, self));
         let pos = self.get_word_rule(&rule.description.name);
         if self.word_rules[pos].is_some() {
-            return Err(format!("Conflict: Multiple definitions of math_rule \"{}\"", &rule.description.name));
+            return Err(format!("Conflict: Multiple definitions of word_rule \"{}\"", &rule.description.name));
         }
         self.word_rules[pos] = Some(rule);
         Ok(())
@@ -689,7 +858,7 @@ impl<'t> PCtx<'t> {
         let rule = try!(SequenceRule::load_from_node(node, self));
         let pos = self.get_sequence_rule(&rule.description.name);
         if self.seq_rules[pos].is_some() {
-            return Err(format!("Conflict: Multiple definitions of math_rule \"{}\"", &rule.description.name));
+            return Err(format!("Conflict: Multiple definitions of seq_rule \"{}\"", &rule.description.name));
         }
         self.seq_rules[pos] = Some(rule);
         Ok(())
@@ -704,6 +873,11 @@ impl<'t> PCtx<'t> {
         for (name, pos) in &self.math_name_map {
             if self.math_rules[*pos].is_none() {
                 return Err(format!("Couldn't find definition for math_rule \"{}\"", name));
+            }
+        }
+        for (name, pos) in &self.mtext_name_map {
+            if self.mtext_rules[*pos].is_none() {
+                return Err(format!("Couldn't find definition for mtext_rule \"{}\"", name));
             }
         }
         for (name, pos) in &self.seq_name_map {
@@ -739,12 +913,15 @@ impl PatternFile {
                     }
                     meta_opt = Some(try!(MetaDescription::load_from_node(cur, file_name.to_string())
                                          .map_err(&err_map)));
-                },
+                }
                 "pos_rule" => {
                     try!(pctx.add_pos_rule(cur).map_err(&err_map));
                 }
                 "math_rule" => {
                     try!(pctx.add_math_rule(cur).map_err(&err_map));
+                }
+                "mtext_rule" => {
+                    try!(pctx.add_mtext_rule(cur).map_err(&err_map));
                 }
                 "word_rule" => {
                     try!(pctx.add_word_rule(cur).map_err(&err_map));
@@ -770,11 +947,13 @@ impl PatternFile {
             pos_rules : pctx.pos_rules.iter().map(|o| o.as_ref().unwrap().clone()).collect(),
             sequence_rules : pctx.seq_rules.iter().map(|o| o.as_ref().unwrap().clone()).collect(),
             math_rules : pctx.math_rules.iter().map(|o| o.as_ref().unwrap().clone()).collect(),
+            mtext_rules : pctx.mtext_rules.iter().map(|o| o.as_ref().unwrap().clone()).collect(),
 
             word_rule_names : pctx.word_name_map,
             pos_rule_names : pctx.pos_name_map,
             sequence_rule_names : pctx.seq_name_map,
             math_rule_names : pctx.math_name_map,
+            mtext_rule_names : pctx.mtext_name_map,
         });
 
     }
@@ -934,7 +1113,7 @@ impl PatternFile {
                         _matches : matches,
                         start : pos,
                         end : longest,
-                        matched : true,   // don't use `matched` (consider SequenceMatchType::Any)
+                        matched : true,   // don't use `matched` (because SequenceMatchType::Any matches always)
                     }
                 }
             }
@@ -990,11 +1169,37 @@ impl PatternFile {
             }
             &WordPattern::MathWord(ref math_pattern) => {
                 let node = range.dnm.offset_to_node[range.start + word.get_offset_start()].clone();
-                if node.get_name() == "math" {
-                    InternalWordMatch { _matches : Vec::new(), matched : true }    // TODO: Implement actual math matching
-                } else {
-                    InternalWordMatch { _matches : Vec::new(), matched : false }
+                if node.get_name() != "math" {
+                    return InternalWordMatch { _matches : Vec::new(), matched : false };
                 }
+                let children = fast_get_non_text_children(&node);
+                if children.len() == 0 {
+                    return InternalWordMatch { _matches : Vec::new(), matched : false };
+                }
+                
+                // TODO: Make the following code work in the general case!!!
+                let mut m : InternalMathMatch;
+                if children[0].get_name() == "semantics" {
+                    let c = fast_get_non_text_children(&children[0]);
+                    if c.len() == 0 {
+                        return InternalWordMatch { _matches : Vec::new(), matched : false };
+                    }
+                    m = self.match_math(&math_pattern, &c[0]);
+                } else {
+                    m = self.match_math(&math_pattern, &children[0]);
+                }
+                if m.matched {
+                    InternalWordMatch {
+                        _matches : m._matches,
+                        matched : true,
+                    }
+                } else {
+                    InternalWordMatch {
+                        _matches : Vec::new(),
+                        matched : false,
+                    }
+                }
+
             }
             &WordPattern::AnyWord => InternalWordMatch { _matches : Vec::new(), matched : true },
             &WordPattern::WordNot(box ref p) => {
@@ -1017,6 +1222,128 @@ impl PatternFile {
         }
     }
 
+    fn match_math<'t>(&self, rule : &MathPattern, node : &Node) -> InternalMathMatch<'t> {
+        match rule {
+            &MathPattern::AnyMath => InternalMathMatch { _matches : Vec::new(), matched : true, },
+            &MathPattern::MathRef(o) => self.match_math(&self.math_rules[o].pattern, node),
+            &MathPattern::Marked(box ref pattern, ref marker) => {
+                let m = self.match_math(&pattern, node);
+                if m.matched {
+                    InternalMathMatch {
+                        _matches : vec![ Match {
+                            marker : MarkerEnum::Math(MathMarker {
+                                node : node.clone(),
+                                marker : marker.clone() }),
+                            sub_matches : m._matches}],
+                        matched : true,
+                    }
+                } else { InternalMathMatch::no_match() }
+            }
+            &MathPattern::MathOr(ref patterns) => {
+                for pattern in patterns {
+                    let m = self.match_math(pattern, node);
+                    if m.matched { return m; }
+                }
+                InternalMathMatch::no_match()
+            }
+            &MathPattern::MathNode(ref name, ref mtext, ref children) => {
+                // Here we will use that each MathPattern matches exactly one node for optimization
+                // purposes
+
+                if name.is_some() && name.as_ref().unwrap() != &node.get_name() {
+                    return InternalMathMatch::no_match();
+                }
+
+                if mtext.is_some() {
+                    let content = get_simple_node_content(node, false);
+                    if content.is_err() {
+                        return InternalMathMatch::no_match();
+                    }
+                    if !self.match_mtext(&self.mtext_rules[mtext.unwrap()].pattern, &content.unwrap()) {
+                        return InternalMathMatch::no_match();
+                    }
+                }
+
+                if children.is_some() {
+                    let &(ref child_rules, ref match_type) = children.as_ref().unwrap();
+                    let c_nodes = fast_get_non_text_children(node);
+
+                    if c_nodes.len() < child_rules.len() {
+                        return InternalMathMatch::no_match();
+                    }
+
+                    let mut start_pos = 0usize;
+                    if match_type == &MathChildrenMatchType::MatchesExactly &&
+                        c_nodes.len() != child_rules.len() {
+                        return InternalMathMatch::no_match();
+                    }
+                    if match_type == &MathChildrenMatchType::EndsWith {
+                        start_pos = c_nodes.len() - child_rules.len();
+                    }
+
+                    loop {
+                        // try to match all children
+                        let mut matches : Vec<Match> = Vec::new();
+                        let mut matched = true;
+                        for i in 0..child_rules.len() {
+                            let m = self.match_math(&child_rules[i], &c_nodes[i]);
+                            if m.matched {
+                                matches.extend_from_slice(&m._matches[..]);
+                            } else {
+                                matched = false;
+                                break;
+                            }
+                        }
+                        if matched {
+                            return InternalMathMatch { _matches : matches, matched : true };
+                        }
+                        if match_type != &MathChildrenMatchType::Arbitrary { break; }
+                        start_pos += 1;
+                        if c_nodes.len() < child_rules.len() { break; }
+                    }
+                    return InternalMathMatch::no_match();
+                }
+
+                return InternalMathMatch { _matches : Vec::new(), matched : true };  // no child matches required
+            }
+            &MathPattern::MathDescendant(box ref pattern, ref match_type) => {
+                let mut matches : Vec<Match> = Vec::new();
+                let mut matched = false;
+                let m = self.match_math(&pattern, node);
+                if m.matched {
+                    matched = true;
+                    matches.extend_from_slice(&m._matches[..]);
+                }
+                for child in &fast_get_non_text_children(node) {
+                    if matched && match_type == &MathDescendantMatchType::First {
+                        return InternalMathMatch { _matches : matches, matched : true };
+                    }
+                    let m = self.match_math(&pattern, &child);
+                    if m.matched {
+                        matched = true;
+                        matches.extend_from_slice(&m._matches[..]);
+                    }
+                }
+                
+                if matched || match_type == &MathDescendantMatchType::Arbitrary {
+                    InternalMathMatch { _matches : matches, matched : true }
+                } else {
+                    InternalMathMatch::no_match()
+                }
+            }
+        }
+    }
+
+    fn match_mtext(&self, rule : &MTextPattern, string : &str) -> bool {
+        match rule {
+            &MTextPattern::AnyMText => true,
+            &MTextPattern::MTextOr(ref ps) => ps.into_iter().any(|p| self.match_mtext(&p, string)),
+            &MTextPattern::MTextLit(ref s) => s == string,
+            &MTextPattern::MTextNot(box ref p) => !self.match_mtext(&p, string),
+            &MTextPattern::MTextRef(o) => self.match_mtext(&self.mtext_rules[o].pattern, string),
+        }
+    }
+
     fn match_pos(&self, rule : &PosPattern, pos : POS) -> bool {
         match rule {
             &PosPattern::Pos(p) => p == pos,
@@ -1028,12 +1355,27 @@ impl PatternFile {
 
 }
 
+struct InternalMathMatch<'t> {
+    _matches : Vec<Match<'t>>,
+    matched : bool,
+}
+
+impl<'t> InternalMathMatch<'t> {
+    fn no_match() -> InternalMathMatch<'t> {
+        InternalMathMatch {
+            _matches : Vec::new(),
+            matched : false,
+        }
+    }
+}
+
 struct InternalSeqMatch<'t> {
     _matches : Vec<Match<'t>>,
     start : usize,
     end : usize,
     matched : bool,
 }
+
 
 impl<'t> InternalSeqMatch<'t> {
     fn no_match() -> InternalSeqMatch<'t> {

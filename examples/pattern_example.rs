@@ -8,7 +8,12 @@ use senna::senna::SennaParseOptions;
 
 
 pub fn main() {
-    let pattern_file = PatternFile::load("examples/declaration_pattern.xml").unwrap();
+    let pattern_file_result = PatternFile::load("examples/declaration_pattern.xml");
+    let pattern_file = match pattern_file_result {
+        Err(x) => panic!(x),
+        Ok(x) => x,
+    };
+
     let mut corpus = Corpus::new("tests/resources/".to_string());
     corpus.senna_options = std::cell::Cell::new( SennaParseOptions { pos : true, psg : true } );
     corpus.dnm_parameters.support_back_mapping = true;

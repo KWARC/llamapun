@@ -14,6 +14,14 @@
         <pos tag="DT"/>
     </pos_rule>
 
+
+    <word_rule name="let">
+        <word_or>
+            <word>let</word>
+            <word>Let</word>
+        </word_or>
+    </word_rule>
+
     <word_rule name="indefinite article">
         <meta>
             <description>
@@ -32,8 +40,62 @@
     </word_rule>
 
 
+    <mtext_rule name="relation">
+        <mtext_or>
+            <mtext_lit str="∈"/>
+            <mtext_lit str="⊆"/>
+            <mtext_lit str="&lt;"/>
+            <mtext_lit str="&gt;"/>
+        </mtext_or>
+    </mtext_rule>
 
-    <seq_rule name="definiens">
+
+    <math_rule name="let_definiendum">
+        <math_marker name="let definiendum formula">
+            <math_any/>
+        </math_marker>
+    </math_rule>
+
+
+    <math_rule name="identifier">
+        <math_or>
+            <math_node name="mi" />
+            <math_node name="msub">
+                <math_children match_type="starts_with">
+                    <math_ref ref="identifier" />
+                </math_children>
+            </math_node>
+            <math_node name="msup">
+                <math_children match_type="starts_with">
+                    <math_ref ref="identifier" />
+                </math_children>
+            </math_node>
+            <math_node name="msubsup">
+                <math_children match_type="starts_with">
+                    <math_ref ref="identifier" />
+                </math_children>
+            </math_node>
+        </math_or>
+    </math_rule>
+
+
+    <math_rule name="relational_definiendum">
+        <math_node name="mrow">
+            <math_children match_type="exact">
+                <math_ref ref="identifier" />
+                <math_node name="mo">
+                    <mtext_ref ref="relation" />
+                </math_node>
+                <math_or>
+                    <math_node name="mrow" />
+                    <math_ref ref="identifier" />
+                </math_or>
+            </math_children>
+        </math_node>
+    </math_rule>
+
+
+    <seq_rule name="let_definiens">
         <meta>
             <description>
                 Matches a potential definiens.
@@ -44,11 +106,11 @@
             </description>
         </meta>
 
-        <seq_marker name="complete definiens">
+        <seq_marker name="complete text definiens">
             <phrase tag="NP">
                 <match_type>longest</match_type>
                 <starts_with_seq containment="lessorequal">
-                    <seq_marker name="core definiens">
+                    <seq_marker name="core text definiens">
                         <phrase tag="NP">
                             <match_type>shortest</match_type>
                             <starts_with_seq containment="lessorequal">
@@ -61,29 +123,42 @@
         </seq_marker>
     </seq_rule>
 
-    <math_rule name="definiendum">
-        <math_any/>
-    </math_rule>
 
-
-    <word_rule name="let">
-        <word_or>
-            <word>let</word>
-            <word>Let</word>
-        </word_or>
-    </word_rule>
-
-
-    <seq_rule name="declaration">
-        <seq_marker name="declaration phrase">
+    <seq_rule name="let_declaration">
+        <seq_marker name="let declaration phrase">
             <seq_seq>
                 <seq_word><word_ref ref="let"/></seq_word>
-                <seq_word><word_math><math_ref ref="definiendum"/></word_math></seq_word>
+                <seq_word><word_math><math_ref ref="let_definiendum"/></word_math></seq_word>
                 <seq_word><word>be</word></seq_word>
-                <seq_ref ref="definiens"/>
+                <seq_ref ref="let_definiens"/>
             </seq_seq>
         </seq_marker>
     </seq_rule>
 
+    <seq_rule name="short_declaration">
+        <seq_marker name="short declaration phrase">
+            <seq_seq>
+                <seq_or match_type="first">
+                    <seq_word><word>where</word></seq_word>
+                    <seq_seq>
+                        <seq_word><word>for</word></seq_word>
+                        <seq_word>
+                            <word_or>
+                                <word_ref ref="indefinite article" />
+                                <word>all</word>
+                            </word_or>
+                        </seq_word>
+                    </seq_seq>
+                </seq_or>
+                <seq_word><word_math><math_ref ref="relational_definiendum" /></word_math></seq_word>
+            </seq_seq>
+        </seq_marker>
+    </seq_rule>
 
+    <seq_rule name="declaration">
+        <seq_or match_type="first">
+            <seq_ref ref="let_declaration" />
+            <seq_ref ref="short_declaration" />
+        </seq_or>
+    </seq_rule>
 </pattern_file>

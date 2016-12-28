@@ -232,6 +232,11 @@ pub struct PatternFile {
     pub sequence_rule_names: HashMap<String, usize>,
 }
 
+
+fn is_comment_node(node : &Node) -> bool {
+    node.get_type().unwrap() == NodeType::CommentNode
+}
+
 fn get_simple_node_content(node : &Node, trim: bool) -> Result<String, String> {
     let child = node.get_first_child();
     if child.is_none() {
@@ -259,7 +264,7 @@ fn get_non_text_children(node : &Node) -> Result<Vec<Node>, String> {
                 return Err(format!("found unexpected text in \"{}\" node: \"{}\"",
                                    node.get_name(), cur_.get_content().trim()));
             }
-        } else {
+        } else if !is_comment_node(&cur_) {
             children.push(cur_.clone());
         }
         cur = cur_.get_next_sibling();
@@ -272,7 +277,7 @@ fn fast_get_non_text_children(node : &Node) -> Vec<Node> {
     loop {
         if cur.is_none() { return children; }
         let cur_ = cur.unwrap();
-        if !cur_.is_text_node() { children.push(cur_.clone()); }
+        if !cur_.is_text_node() && !is_comment_node(&cur_) { children.push(cur_.clone()); }
         cur = cur_.get_next_sibling();
     }
 }
@@ -354,7 +359,7 @@ fn require_node_property(node : &Node, property : &str) -> Result<String, String
 impl PatternMarker {
     fn load_from_node(node : &Node) -> Result<PatternMarker, String> {
         let name = try!(require_node_property(node, "name"));
-        let tags = match node.get_property("tags") {   // TODO: Add regex: [a-zA-Z0-9 ]+(,[a-zA-Z0-9 ]+)*
+        let tags = match node.get_property("tags") {   // TODO: Add regex: [a-zA-Z0-9_]+(,[a-zA-Z0-9_]+)*
             None => Vec::new(),
             Some(value) => value.split(",").map(|s| s.trim().to_string()).collect(),
         };
@@ -641,7 +646,7 @@ impl SequencePattern {
                     Some(ref m) => match m.as_ref() {
                         "first" => SequenceMatchType::First,
                         "atleastone" => SequenceMatchType::AtLeastOne,
-                        "any" => SequenceMatchType::AtLeastOne,
+                        "any" => SequenceMatchType::Any,
                         "longest" => SequenceMatchType::Longest,
                         unknown => { return Err(format!("Unknown sequence match_type \"{}\"", unknown)) }
                     }
@@ -795,22 +800,27 @@ impl<'t> PCtx<'t> {
     }
 
     fn get_math_rule(&mut self, rule_name : &str) -> usize {
+        println!("Get math rule \"{}\"", rule_name);
         get_rule_position(&mut self.math_rules, &mut self.math_name_map, rule_name)
     }
 
     fn get_mtext_rule(&mut self, rule_name : &str) -> usize {
+        println!("Get mtext rule \"{}\"", rule_name);
         get_rule_position(&mut self.mtext_rules, &mut self.mtext_name_map, rule_name)
     }
     
     fn get_pos_rule(&mut self, rule_name : &str) -> usize {
+        println!("Get pos rule \"{}\"", rule_name);
         get_rule_position(&mut self.pos_rules, &mut self.pos_name_map, rule_name)
     }
 
     fn get_word_rule(&mut self, rule_name : &str) -> usize {
+        println!("Get word rule \"{}\"", rule_name);
         get_rule_position(&mut self.word_rules, &mut self.word_name_map, rule_name)
     }
 
     fn get_sequence_rule(&mut self, rule_name : &str) -> usize {
+        println!("Get seq rule \"{}\"", rule_name);
         get_rule_position(&mut self.seq_rules, &mut self.seq_name_map, rule_name)
     }
 
@@ -1082,7 +1092,7 @@ impl PatternFile {
             &SequencePattern::SeqOr(ref patterns, ref match_type) => {
                 let mut matches : Vec<Match> = Vec::new();
                 let mut matched = false;
-                let mut longest = 0usize;
+                let mut longest = pos;
                 for p in patterns {
                     let m = self.match_seq(p, sentence, phraseTree, range, pos);
                     if m.matched {

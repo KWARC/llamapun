@@ -2,6 +2,7 @@
 
 use std::collections::HashMap;
 use libxml::tree::*;
+use std::rc::Rc;
 
 /// Some temporary data for the parser
 pub struct RuntimeParseData {
@@ -18,19 +19,20 @@ impl Default for RuntimeParseData {
 
 
 /// Specifies how to deal with a certain tag
+#[derive(Clone)]
 pub enum SpecialTagsOption {
   /// Recurse into tag (default behaviour)
   Enter,
   /// Normalize tag, replacing it by some token
   Normalize(String),
   /// Normalize tag, obtain replacement string by function call
-  FunctionNormalize(fn(&Node) -> String),
+  FunctionNormalize(Rc<fn(&Node) -> String>),
   /// Skip tag
   Skip,
 }
 
 
-/// Paremeters for the DNM generation
+/// Parameters for the DNM generation
 pub struct DNMParameters {
   /// How to deal with special tags (e.g. `<math>` tags)
   pub special_tag_name_options: HashMap<String, SpecialTagsOption>,
@@ -43,9 +45,6 @@ pub struct DNMParameters {
   pub normalize_white_spaces: bool,
   /// put spaces before and after tokens
   pub wrap_tokens: bool,
-  /// if there is a trailing white space in a tag, don't make it part
-  /// of that tag. Requires `normalize_white_spaces` to be set.
-  pub move_whitespaces_between_nodes: bool,
   /// Replace unicode characters by the ascii code representation
   pub normalize_unicode: bool,
   /// Apply the morpha stemmer once to the text nodes
@@ -53,8 +52,10 @@ pub struct DNMParameters {
   /// Apply the morpha stemmer to the text nodes
   /// as often as it changes something
   pub stem_words_full: bool,
-  /// Move to lowercase (remark: The stemmer does automatically)
+  /// Move to lowercase (remark: The stemmer does this automatically)
   pub convert_to_lowercase: bool,
+  /// Support back mapping, i.e. mapping plaintext offsets back to the DOM
+  pub support_back_mapping: bool,
 }
 
 impl Default for DNMParameters {
@@ -65,11 +66,11 @@ impl Default for DNMParameters {
       special_tag_class_options: HashMap::new(),
       normalize_white_spaces: true,
       wrap_tokens: false,
-      move_whitespaces_between_nodes: false,
       normalize_unicode: false,
       stem_words_once: false,
       stem_words_full: false,
       convert_to_lowercase: false,
+      support_back_mapping: false,
     }
   }
 }
@@ -99,7 +100,6 @@ impl DNMParameters {
       special_tag_class_options: class_options,
       normalize_white_spaces: false, // Keeping it raw for tokenization best results, newlines are meaningful
       wrap_tokens: false,
-      move_whitespaces_between_nodes: false, // Keeping it raw for tokenization best results
       normalize_unicode: true,
       ..Default::default()
     }
@@ -112,19 +112,13 @@ impl DNMParameters {
       println_stderr!("llamapun::dnm: Parameter options stem_words_once\
   and stem_words_full are both set");
     }
-    if !self.normalize_white_spaces && self.move_whitespaces_between_nodes {
-      println_stderr!("llamapun::dnm: Parameter option\
-  move_whitespaces_between_nodes only works in combination with normalize_white_spaces\n\
-  Consider using DNMRange::trim instead");
-    }
-    if !self.normalize_white_spaces && self.move_whitespaces_between_nodes {
-      println_stderr!("llamapun::dnm: Parameter option\
-  move_whitespaces_between_nodes only works in combination with normalize_white_spaces\n\
-  Consider using DNMRange::trim instead");
-    }
     if (self.stem_words_once || self.stem_words_full) && self.convert_to_lowercase {
       println_stderr!("llamapun::dnm: Parameter option convert_to_lowercase\
   is redundant, because stemming converts to lowercase already");
+    }
+    if (self.stem_words_once || self.stem_words_full) && self.support_back_mapping {
+      println_stderr!("llamapun::dnm: Parameter option support_back_mapping\
+  does not work in combination with word stemming yet");
     }
   }
 }

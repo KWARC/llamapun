@@ -21,6 +21,8 @@ pub use dnm::parameters::{SpecialTagsOption, RuntimeParseData, DNMParameters};
 pub struct DNM {
   /// The plaintext
   pub plaintext: String,
+  /// As the plaintext is UTF-8: the byte offsets of the characters
+  pub byte_offsets: Vec<usize>,
   /// The options for generation
   pub parameters: DNMParameters,
   /// The root node of the underlying xml tree
@@ -43,6 +45,7 @@ impl Default for DNM {
       parameters: DNMParameters::default(),
       root_node: Node::mock(),
       plaintext: String::new(),
+      byte_offsets: Vec::new(),
       node_map: HashMap::new(),
       runtime: RuntimeParseData::default(),
       back_map: Vec::new(),
@@ -55,7 +58,7 @@ impl Default for DNM {
 macro_rules! record_node_map(
   ($dnm: expr, $node: expr, $offset_start: expr) => (
   {
-    $dnm.node_map.insert($node.to_hashable(), ($offset_start, $dnm.plaintext.len()));
+    $dnm.node_map.insert($node.to_hashable(), ($offset_start, $dnm.runtime.chars.len()));
   }
   )
 );
@@ -68,10 +71,10 @@ macro_rules! push_token(
     }
 
     if !$dnm.parameters.support_back_mapping {
-      $dnm.plaintext.push_str($token);
+      $dnm.runtime.chars.extend($token.chars());
     } else {
       for c in $token.chars() {
-        $dnm.plaintext.push(c);
+        $dnm.runtime.chars.push(c);
         $dnm.back_map.push(($node.clone(), -1));
       }
     }
@@ -88,7 +91,7 @@ macro_rules! push_whitespace(
   ($dnm: expr, $node: expr, $offset: expr) => (
   {
     if !$dnm.runtime.had_whitespace || !$dnm.parameters.normalize_white_spaces {
-      $dnm.plaintext.push(' ');
+      $dnm.runtime.chars.push(' ');
       $dnm.runtime.had_whitespace = true;
       if $dnm.parameters.support_back_mapping {
         $dnm.back_map.push(($node.clone(), $offset));
@@ -113,6 +116,14 @@ impl DNM {
 
     // Depth-first traversal of the DOM extracting a plaintext representation and building a node<->text map.
     dnm.recurse_node_create(&root);
+
+    // generate plaintext
+    assert_eq!(dnm.plaintext.len(), 0);
+    for c in &dnm.runtime.chars {
+        dnm.byte_offsets.push(dnm.plaintext.len());
+        dnm.plaintext.push(*c);
+    }
+    dnm.byte_offsets.push(dnm.plaintext.len());   // to have the length of the last char as well
 
     dnm
   }
@@ -141,10 +152,10 @@ impl DNM {
   }
 
   fn text_node_create(&mut self, node: &Node) {
-    let offset_start = self.plaintext.len();
+    let offset_start = self.runtime.chars.len();
     let mut string = node.get_content();
     let mut offsets : Vec<i32> = if self.parameters.support_back_mapping {
-                                   (0i32..(string.len() as i32)).collect()
+                                   (0i32..(string.chars().count() as i32)).collect()
                                  } else { Vec::new() };
 
     // string processing steps
@@ -156,12 +167,12 @@ impl DNM {
     self.normalize_whitespace(&mut string, &mut offsets);
 
     // push results
-    self.plaintext.push_str(&string);
+    self.runtime.chars.extend(string.chars());
     if self.parameters.support_back_mapping {
+      assert_eq!(string.chars().count(), offsets.len());
       for offset in offsets {
         self.back_map.push((node.clone(), offset));
       }
-      assert_eq!(self.plaintext.len(), self.back_map.len());
     }
 
     record_node_map!(self, node, offset_start);
@@ -232,7 +243,7 @@ impl DNM {
 
 
   fn intermediate_node_create(&mut self, node: &Node) {
-    let offset_start = self.plaintext.len();
+    let offset_start = self.runtime.chars.len();
     let name: String = node.get_name();
     {
       // Start scope of self.parameters borrow, to allow mutable self borrow for recurse_node_create

@@ -28,12 +28,12 @@ impl<'dnmrange> Clone for DNMRange<'dnmrange> {
 
 impl<'dnmrange> DNMRange<'dnmrange> {
   /// Get the plaintext substring corresponding to the range
-  pub fn get_plaintext(&self) -> &str {
-    &(self.dnm.plaintext)[self.start..self.end]
+  pub fn get_plaintext(&self) -> &'dnmrange str {
+    &(self.dnm.plaintext)[self.dnm.byte_offsets[self.start]..self.dnm.byte_offsets[self.end]]
   }
   /// Get the plaintext without trailing white spaces
   pub fn get_plaintext_truncated(&self) -> &'dnmrange str {
-    (self.dnm.plaintext)[self.start..self.end].trim_right()
+    self.get_plaintext().trim_right()
   }
 
   /// Returns a `DNMRange` with the leading and trailing whitespaces removed
@@ -78,6 +78,35 @@ impl<'dnmrange> DNMRange<'dnmrange> {
     }
   }
 
+  /// returns a subrange from a pair of byte offsets (not character offsets, remember, we're in
+  /// UTF-8)
+  pub fn get_subrange_from_byte_offsets(&self, rel_start: usize, rel_end: usize) -> DNMRange<'dnmrange> {
+    DNMRange {
+      start : self.byte_offset_bisection(self.dnm.byte_offsets[self.start] + rel_start, self.start, self.end),
+      end : self.byte_offset_bisection(self.dnm.byte_offsets[self.start] + rel_end - 1, self.start, self.end)+1,
+      dnm : self.dnm
+    }
+  }
+
+  fn byte_offset_bisection(&self, target_byte: usize, lower_char: usize, upper_char: usize) -> usize {
+    if lower_char == upper_char {
+      return lower_char;
+    } else if upper_char == lower_char + 1 {
+      if self.dnm.byte_offsets[upper_char] <= target_byte {
+        return upper_char;
+      } else {
+        return lower_char;
+      }
+    }
+
+    let middle_char = (lower_char + upper_char)/2;
+    if self.dnm.byte_offsets[middle_char] > target_byte {
+      self.byte_offset_bisection(target_byte, lower_char, middle_char)
+    } else {
+      self.byte_offset_bisection(target_byte, middle_char, upper_char)
+    }
+  }
+
   /// checks whether the range is empty
   pub fn is_empty(&self) -> bool {
     self.start == self.end
@@ -92,6 +121,9 @@ impl<'dnmrange> DNMRange<'dnmrange> {
 
   /// serializes a DNMRange into an XPointer
   pub fn serialize(&self) -> String {
+    if !self.dnm.parameters.support_back_mapping {
+      panic!("DNMRange::serialize: DNM did not generate the back_map");
+    }
     let (ref node1, offset1) = self.dnm.back_map[self.start];
     let (ref node2, offset2) = self.dnm.back_map[self.end];
     DNMRange::create_arange(&DNMRange::serialize_offset(&self.dnm.root_node, node1, offset1, false),

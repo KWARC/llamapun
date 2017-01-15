@@ -8,11 +8,15 @@ use std::rc::Rc;
 pub struct RuntimeParseData {
   /// plaintext is currently terminated by some whitespace
   pub had_whitespace: bool,
+  /// plaintext representation as vector of chars (to deal with UTF-8 mess)
+  /// TODO: Use plaintext/byte_offsets directly instead
+  pub chars : Vec<char>,
 }
 impl Default for RuntimeParseData {
   fn default() -> RuntimeParseData {
     RuntimeParseData {
-      had_whitespace: true // skip leading whitespace
+      had_whitespace: true, // skip leading whitespace
+      chars : Vec::new(),
     }
   }
 }
@@ -70,7 +74,7 @@ impl Default for DNMParameters {
       stem_words_once: false,
       stem_words_full: false,
       convert_to_lowercase: false,
-      support_back_mapping: false,
+      support_back_mapping: true,
     }
   }
 }

@@ -32,6 +32,28 @@ fn test_plaintext_simple() {
 }
 
 
+#[test]
+fn test_non_normalized_unicode() {
+  let parser = Parser::default();
+  let doc = parser.parse_file("tests/resources/file05.xml").unwrap();
+  let root = doc.get_root_element();
+  let dnm = DNM::new(root.clone(), DNMParameters {
+    normalize_unicode: false,
+    ..DNMParameters::default() });
+  let entire_range = dnm.get_range_of_node(&root).unwrap();
+  let trimmed = entire_range.trim();
+  let unicode = trimmed.get_subrange(0, 7);
+  assert_eq!(unicode.get_plaintext(), "Unicöde");
+  let unicode2 = trimmed.get_subrange_from_byte_offsets(0, 7);
+  assert_eq!(unicode2.get_plaintext(), "Unicöd");  // ö has two bytes in UTF-8
+  let privet1 = trimmed.get_subrange(13, 19);
+  assert_eq!(privet1.get_plaintext(), "привет");
+  let privet2 = trimmed.get_subrange_from_byte_offsets(14, 26);
+  assert_eq!(privet2.get_plaintext(), "привет");
+  let privet3 = trimmed.get_subrange_from_byte_offsets(14, 25);  // last byte of last char is cut off - should still work!
+  assert_eq!(privet3.get_plaintext(), "привет");
+}
+
 
 #[test]
 fn test_xml_node_to_plaintext() {
@@ -174,6 +196,7 @@ fn test_morpha_stemming() {
   let dnm = DNM::new(root,
                             DNMParameters {
                                 stem_words_once: true,
+                                support_back_mapping: false,
                                 ..Default::default() });
   let node = doc.get_root_element();
   let dnmrange = dnm.get_range_of_node(&node).unwrap().trim();

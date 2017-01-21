@@ -4,7 +4,11 @@
 
 #![feature(slice_patterns)]
 #![feature(type_ascription)]
-#![deny(missing_docs, trivial_casts, trivial_numeric_casts, unused_import_braces,
+#![feature(box_patterns)]
+#![deny(missing_docs,
+        trivial_casts,
+        trivial_numeric_casts,
+        unused_import_braces,
         unused_qualifications)]
 
 extern crate crypto;
@@ -26,3 +30,4 @@ pub mod data;
 pub mod stopwords;
 pub mod tokenizer;
 pub mod ngrams;
+pub mod patterns;

@@ -353,8 +353,8 @@ fn match_word<'t>(pf : &PatternFile, rule : &WordPattern, word : &Word, range : 
                 InternalWordMatch::no_match()
             }
         }
-        &WordPattern::WordPos(rule_pos, box ref word_pattern) => {
-            if match_pos(pf, &pf.pos_rules[rule_pos].pattern, word.get_pos()) {
+        &WordPattern::WordPos(ref pos_pattern, box ref word_pattern) => {
+            if match_pos(pf, &pos_pattern, word.get_pos()) {
                 match_word(pf, &word_pattern, word, range)
             } else {
                 InternalWordMatch::no_match()

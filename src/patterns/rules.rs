@@ -269,8 +269,8 @@ pub enum WordPattern {
     WordOr(Vec<WordPattern>),
     /// Matches, if a word corresponds to the string
     Word(String),
-    /// Restricts the POS by referencing a `PosPattern`
-    WordPos(usize, Box<WordPattern>),
+    /// Restricts the word by a `PosPattern`
+    WordPos(PosPattern, Box<WordPattern>),
     /// Matches, if the word corresponds to a math node matching the `MathPattern`
     MathWord(MathPattern),
     /// Matches any word
@@ -641,10 +641,35 @@ impl WordPattern {
                                 try!(PatternMarker::load_from_node(node))))
             }
             "word_pos" => {
-                let ref_str = try!(require_node_property(node, "ref"));
-                Ok(WordPattern::WordPos(
-                        pctx.get_pos_rule(&ref_str),
-                        Box::new(try!(WordPattern::load_from_node(&try!(get_only_child(node)), pctx)))))
+                let mut word_pattern = None;
+                let mut pos_pattern = None;
+
+                for cur in &try!(get_non_text_children(node)) {
+                    match cur.get_name().as_ref() {
+                        "pos" => {
+                            if pos_pattern.is_some() {
+                                return Err("Cannot have multiple 'pos' nodes in a 'word_pos' node".to_string());
+                            }
+                            pos_pattern = Some(try!(PosPattern::load_from_node(cur, pctx)));
+                        }
+                        _ => {
+                            if word_pattern.is_some() {
+                                return Err("Cannot have multiple word pattern in a 'word_pos' node".to_string());
+                            }
+                            word_pattern = Some(try!(WordPattern::load_from_node(cur, pctx)));
+                        }
+                    }
+                }
+
+                if !word_pattern.is_some() {
+                    return Err("'word_pos' node does not contain a word pattern".to_string());
+                }
+
+                if !pos_pattern.is_some() {
+                    return Err("'word_pos' node does not contain a 'pos' node".to_string());
+                }
+
+                Ok(WordPattern::WordPos(pos_pattern.unwrap(), Box::new(word_pattern.unwrap())))
             }
             unknown => Err(format!("Expected word node, found \"{}\"", unknown))
         }

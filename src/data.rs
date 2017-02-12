@@ -315,7 +315,8 @@ impl<'iter> Iterator for SennaWordIterator<'iter> {
     let sen_sent = sen_sent_wrapped.as_ref().unwrap();
     if pos < sen_sent.get_words().len() {
       let senna_word = &sen_sent.get_words()[pos];
-      let range = self.sentence.range.get_subrange(senna_word.get_offset_start(), senna_word.get_offset_end());
+      let range = self.sentence.range.get_subrange_from_byte_offsets(senna_word.get_offset_start(),
+                                                                     senna_word.get_offset_end());
       Some(Word { range : range, sentence : self.sentence, pos : senna_word.get_pos() } )
     } else {
       None

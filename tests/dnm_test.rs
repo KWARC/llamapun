@@ -6,7 +6,7 @@ extern crate rustmorpha;
 
 use llamapun::dnm::*;
 use libxml::parser::Parser;
-use libxml::xpath::{Context};
+use libxml::xpath::Context;
 use std::collections::HashMap;
 
 
@@ -29,6 +29,29 @@ fn test_plaintext_simple() {
                             });
   assert_eq!(dnm.plaintext.trim(),
              "Title Some text [link] and a bit more text.");
+}
+
+
+#[test]
+fn test_non_normalized_unicode() {
+  let parser = Parser::default();
+  let doc = parser.parse_file("tests/resources/file05.xml").unwrap();
+  let root = doc.get_root_element();
+  let dnm = DNM::new(root.clone(), DNMParameters {
+    normalize_unicode: false,
+    ..DNMParameters::default() });
+  let entire_range = dnm.get_range_of_node(&root).unwrap();
+  let trimmed = entire_range.trim();
+  let unicode = trimmed.get_subrange(0, 7);
+  assert_eq!(unicode.get_plaintext(), "Unicöde");
+  let unicode2 = trimmed.get_subrange_from_byte_offsets(0, 7);
+  assert_eq!(unicode2.get_plaintext(), "Unicöd");  // ö has two bytes in UTF-8
+  let privet1 = trimmed.get_subrange(13, 19);
+  assert_eq!(privet1.get_plaintext(), "привет");
+  let privet2 = trimmed.get_subrange_from_byte_offsets(14, 26);
+  assert_eq!(privet2.get_plaintext(), "привет");
+  let privet3 = trimmed.get_subrange_from_byte_offsets(14, 25);  // last byte of last char is cut off - should still work!
+  assert_eq!(privet3.get_plaintext(), "привет");
 }
 
 
@@ -86,6 +109,52 @@ fn test_xml_node_to_plaintext() {
   assert_eq!(dnm.get_range_of_node(&node).unwrap().get_plaintext().trim(), "[link]");
 }
 
+#[test]
+fn test_back_mapping_simple() {
+  let parser = Parser::default();
+  let doc = parser.parse_file("tests/resources/file01.xml").unwrap();
+  let root = doc.get_root_element();
+  let mut options : HashMap<String, SpecialTagsOption> = HashMap::new();
+  options.insert("a".to_string(), SpecialTagsOption::Normalize("[link]".to_string()));
+  let dnm = DNM::new(root,
+                            DNMParameters {
+                                special_tag_name_options : options,
+                                normalize_white_spaces: true,
+                                support_back_mapping: true,
+                                ..Default::default() });
+
+  let range = DNMRange {
+      start: 32,
+      end: 35,
+      dnm: &dnm,
+  };
+
+  assert_eq!(range.get_plaintext(), "and");
+
+  // test serialization
+  let string = range.serialize();
+  assert_eq!(string, "arange(string-index(//body[1]/text()[4],10),string-index(//body[1]/text()[4],13))");
+  
+  // test deserialization
+  let xpath_context = Context::new(&doc).unwrap();
+  let range2 = DNMRange::deserialize(&string, &dnm, &xpath_context);
+  assert_eq!(range2.get_plaintext(), "and");
+
+
+  let range3 = DNMRange {
+      start: 26,
+      end: 30,
+      dnm: &dnm,
+  };
+
+  assert_eq!(range3.get_plaintext(), "link");
+  let string2 = range3.serialize();
+  assert_eq!(string2, "arange(//body[1]/a[1],//body[1]/text()[4])");
+
+  let range4 = DNMRange::deserialize(&string2, &dnm, &xpath_context);
+
+  assert_eq!(range4.get_plaintext(), "[link]");
+}
 
 #[test]
 fn test_plaintext_normalized_class_names() {
@@ -102,39 +171,6 @@ fn test_plaintext_normalized_class_names() {
                                 ..Default::default()
                             });
   assert_eq!(dnm.plaintext.trim(), "[NORMALIZED] Else");
-}
-
-/*
-    #[test]
-    /// Test the default math normalization on some real math document
-    fn test_default_math_normalization() {
-        let doc = parser.parse_file("tests/resources/1311.0066.xhtml").unwrap();
-        let dnm = DNM::new(&doc.get_root_element(),
-                                  DNMParameters::llamapun_normalization());
-        assert_eq!(dnm.plaintext, "abc");
-    }
-*/
-
-#[test]
-fn test_move_whitespaces_between_nodes() {
-  let parser = Parser::default();
-  let doc = parser.parse_file("tests/resources/file01.xml").unwrap();
-  let root = doc.get_root_element();
-  let dnm = DNM::new(root,
-                            DNMParameters {
-                                move_whitespaces_between_nodes: true,
-                                normalize_white_spaces: true,
-                                ..Default::default() });
-  let context = Context::new(&doc).unwrap();
-  let result = context.evaluate("/html/body/h2").unwrap();
-  assert_eq!(result.get_number_of_nodes(), 1);
-  let node = &result.get_nodes_as_vec()[0];
-  if let Some(node) = node.get_next_sibling() {
-    let range = dnm.get_range_of_node(&node).unwrap();
-    assert_eq!(range.get_plaintext(), "Some text");
-  } else {
-    assert!(false);   // node should have had a sibling
-  }
 }
 
 
@@ -160,6 +196,7 @@ fn test_morpha_stemming() {
   let dnm = DNM::new(root,
                             DNMParameters {
                                 stem_words_once: true,
+                                support_back_mapping: false,
                                 ..Default::default() });
   let node = doc.get_root_element();
   let dnmrange = dnm.get_range_of_node(&node).unwrap().trim();

@@ -10,7 +10,7 @@ extern crate unidecode;
 extern crate rustmorpha;
 
 use std::collections::HashMap;
-use unidecode::unidecode;
+use unidecode::{unidecode, unidecode_char};
 use libxml::tree::*;
 pub use dnm::range::DNMRange;
 pub use dnm::parameters::{SpecialTagsOption, RuntimeParseData, DNMParameters};
@@ -21,6 +21,8 @@ pub use dnm::parameters::{SpecialTagsOption, RuntimeParseData, DNMParameters};
 pub struct DNM {
   /// The plaintext
   pub plaintext: String,
+  /// As the plaintext is UTF-8: the byte offsets of the characters
+  pub byte_offsets: Vec<usize>,
   /// The options for generation
   pub parameters: DNMParameters,
   /// The root node of the underlying xml tree
@@ -30,7 +32,11 @@ pub struct DNM {
   /// A runtime object used for holding auxiliary state
   // TODO: Would love to make the runtime a `private` field,
   //       but it requires some refactoring and rethinking the DNM-creation API
-  pub runtime : RuntimeParseData
+  pub runtime : RuntimeParseData,
+  /// maps an offset to the corresponding node, and the offset in the node
+  /// offset -1 means that the offset corresponds to the entire node
+  /// this is e.g. used if a node is replaced by a token.
+  pub back_map : Vec<(Node, i32)>,
 }
 
 impl Default for DNM {
@@ -39,8 +45,10 @@ impl Default for DNM {
       parameters: DNMParameters::default(),
       root_node: Node::mock(),
       plaintext: String::new(),
+      byte_offsets: Vec::new(),
       node_map: HashMap::new(),
       runtime: RuntimeParseData::default(),
+      back_map: Vec::new(),
     }
   }
 }
@@ -50,12 +58,48 @@ impl Default for DNM {
 macro_rules! record_node_map(
   ($dnm: expr, $node: expr, $offset_start: expr) => (
   {
-    // Record plaintext range in node map
-    let mut offset_end = $dnm.plaintext.len();
-    if $dnm.parameters.move_whitespaces_between_nodes && $dnm.runtime.had_whitespace && offset_end > $offset_start {
-      offset_end -= 1
+    $dnm.node_map.insert($node.to_hashable(), ($offset_start, $dnm.runtime.chars.len()));
+  }
+  )
+);
+
+macro_rules! push_token(
+  ($dnm: expr, $token: expr, $node: expr) => (
+  {
+    if $dnm.parameters.wrap_tokens {
+      push_whitespace!($dnm, $node, -1);
     }
-    $dnm.node_map.insert($node.to_hashable(), ($offset_start,offset_end));
+
+    if !$dnm.parameters.support_back_mapping {
+      $dnm.runtime.chars.extend($token.chars());
+    } else {
+      for c in $token.chars() {
+        $dnm.runtime.chars.push(c);
+        $dnm.back_map.push(($node.clone(), -1));
+      }
+    }
+    $dnm.runtime.had_whitespace = false;
+
+    if $dnm.parameters.wrap_tokens {
+      push_whitespace!($dnm, $node, -1);
+    }
+  }
+  )
+);
+
+macro_rules! push_whitespace(
+  ($dnm: expr, $node: expr, $offset: expr) => (
+  {
+    if !$dnm.runtime.had_whitespace || !$dnm.parameters.normalize_white_spaces {
+      $dnm.runtime.chars.push(' ');
+      $dnm.runtime.had_whitespace = true;
+      if $dnm.parameters.support_back_mapping {
+        $dnm.back_map.push(($node.clone(), $offset));
+      }
+      true
+    } else {
+      false
+    }
   }
   )
 );
@@ -72,6 +116,14 @@ impl DNM {
 
     // Depth-first traversal of the DOM extracting a plaintext representation and building a node<->text map.
     dnm.recurse_node_create(&root);
+
+    // generate plaintext
+    assert_eq!(dnm.plaintext.len(), 0);
+    for c in &dnm.runtime.chars {
+        dnm.byte_offsets.push(dnm.plaintext.len());
+        dnm.plaintext.push(*c);
+    }
+    dnm.byte_offsets.push(dnm.plaintext.len());   // to have the length of the last char as well
 
     dnm
   }
@@ -100,49 +152,98 @@ impl DNM {
   }
 
   fn text_node_create(&mut self, node: &Node) {
-    let mut offset_start = self.plaintext.len();
-    let mut still_in_leading_whitespaces = true;
+    let offset_start = self.runtime.chars.len();
+    let mut string = node.get_content();
+    let mut offsets : Vec<i32> = if self.parameters.support_back_mapping {
+                                   (0i32..(string.chars().count() as i32)).collect()
+                                 } else { Vec::new() };
 
-    let mut content = node.get_content();
-    if self.parameters.normalize_unicode {
-      content = unidecode(&content);
-    }
-    if self.parameters.stem_words_once {
-      content = rustmorpha::stem(&content);
-    }
-    if self.parameters.stem_words_full {
-      content = rustmorpha::full_stem(&content);
-    }
+    // string processing steps
+    self.normalize_unicode(&mut string, &mut offsets);
+    self.stem_words(&mut string /*, &mut offsets */);
     if self.parameters.convert_to_lowercase {
-      content = content.to_lowercase();
+      string = string.to_lowercase();
     }
-    if self.parameters.normalize_white_spaces { // squash multiple spaces to a single one
-      for content_char in content.chars() {
-        if content_char.is_whitespace() {
-          if self.runtime.had_whitespace {
-            continue;
-          }
-          self.plaintext.push(' ');
-          self.runtime.had_whitespace = true;
-          if self.parameters.move_whitespaces_between_nodes && still_in_leading_whitespaces {
-            offset_start += 1;
-          }
-        } else {
-          self.plaintext.push(content_char);
-          self.runtime.had_whitespace = false;
-          still_in_leading_whitespaces = false;
-        }
+    self.normalize_whitespace(&mut string, &mut offsets);
+
+    // push results
+    self.runtime.chars.extend(string.chars());
+    if self.parameters.support_back_mapping {
+      assert_eq!(string.chars().count(), offsets.len());
+      for offset in offsets {
+        self.back_map.push((node.clone(), offset));
       }
-    } else {
-      self.plaintext.push_str(&content);
     }
 
     record_node_map!(self, node, offset_start);
     return;
   }
 
+  fn normalize_whitespace(&mut self, string : &mut String, offsets : &mut Vec<i32>) {
+    if !self.parameters.normalize_white_spaces { return; }
+    let mut new_string = String::new();
+    let mut new_offsets : Vec<i32> = Vec::new();
+
+    for (i, c) in string.chars().enumerate() {
+      if c.is_whitespace() {
+        if !self.runtime.had_whitespace {
+          self.runtime.had_whitespace = true;
+          new_string.push(' ');
+          if self.parameters.support_back_mapping {
+            new_offsets.push(offsets[i]);
+          }
+        }
+      } else {
+        new_string.push(c);
+        self.runtime.had_whitespace = false;
+        if self.parameters.support_back_mapping {
+          new_offsets.push(offsets[i]);
+        }
+      }
+    }
+
+    *string = new_string;
+    *offsets = new_offsets;
+  }
+
+  fn normalize_unicode(&self, string : &mut String, offsets : &mut Vec<i32>) {
+    if !self.parameters.normalize_unicode  { return; }
+    if !self.parameters.support_back_mapping {
+        *string = unidecode(&string);
+        return;
+    }
+
+    // the tricky part: unidecode can replace a character by multiple characters.
+    // We need to maintain the offsets for back mapping
+    let mut new_string = String::new();
+    let mut new_offsets : Vec<i32> = Vec::new();
+
+    for (i, co) in string.chars().enumerate() {
+        for cn in unidecode_char(co).chars() {
+            new_string.push(cn);
+            new_offsets.push(offsets[i]);
+        }
+      }
+
+    *string = new_string;
+    *offsets = new_offsets;
+  }
+
+  fn stem_words(&self, string : &mut String /*, offsets : &mut Vec<i32> */) {
+    // TODO: Support back-mapping (using e.g. something like min. edit distance to map offsets)
+    if self.parameters.support_back_mapping && (self.parameters.stem_words_full || self.parameters.stem_words_once) {
+      panic!("llamapun::dnm: word stemming does not support back-mapping yet");
+    }
+    if self.parameters.stem_words_full {
+      *string = rustmorpha::full_stem(&string);
+    } else if self.parameters.stem_words_once {
+      *string = rustmorpha::stem(&string);
+    }
+  }
+
+
   fn intermediate_node_create(&mut self, node: &Node) {
-    let offset_start = self.plaintext.len();
+    let offset_start = self.runtime.chars.len();
     let name: String = node.get_name();
     {
       // Start scope of self.parameters borrow, to allow mutable self borrow for recurse_node_create
@@ -160,34 +261,12 @@ impl DNM {
         match rule {
           Some(&SpecialTagsOption::Enter) => break,
           Some(&SpecialTagsOption::Normalize(ref token)) => {
-            if self.parameters.wrap_tokens {
-              if !self.runtime.had_whitespace || !self.parameters.normalize_white_spaces {
-                self.plaintext.push(' ');
-              }
-              self.plaintext.push_str(token);
-              self.plaintext.push(' ');
-              self.runtime.had_whitespace = true;
-            } else {
-              self.plaintext.push_str(token);
-              // tokens are considered non-whitespace
-              self.runtime.had_whitespace = false;
-            }
+            push_token!(self, token, node);
             record_node_map!(self, node, offset_start);
             return;
           }
-          Some(&SpecialTagsOption::FunctionNormalize(f)) => {
-            if self.parameters.wrap_tokens {
-              if !self.runtime.had_whitespace || !self.parameters.normalize_white_spaces {
-                self.plaintext.push(' ');
-              }
-              self.plaintext.push_str(&f(node));
-              self.plaintext.push(' ');
-              self.runtime.had_whitespace = true;
-            } else {
-              self.plaintext.push_str(&f(node));
-              // Return value of f is not considered a white space
-              self.runtime.had_whitespace = false;
-            }
+          Some(&SpecialTagsOption::FunctionNormalize(ref f)) => {
+            push_token!(self, &f(node), node);
             record_node_map!(self, node, offset_start);
             return;
           }

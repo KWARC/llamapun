@@ -1,0 +1,596 @@
+<?xml version="1.0"?>
+<pattern_file>
+    <meta>
+        <description>
+            An example pattern file, which can be used for a simple declaration spotter.
+            Declarations are statements like
+                "Let $x_1, x_2, \ldots, x_n \in M$ be integers"
+            We will have the following markers:
+                restriction
+                identifier
+                universal declaration
+                existential declaration
+            and a variety of tags for each marker type.
+        </description>
+    </meta>
+
+
+    <!--
+         POS rules
+     -->
+
+    <pos_rule name="determiner">
+        <pos tag="DT"/>
+    </pos_rule>
+
+
+    <!--
+         Word rules
+     -->
+
+    <word_rule name="let">
+        <word_or>
+            <word>let</word>   <!-- currently only case-sensitive matching is available -->
+            <word>Let</word>
+        </word_or>
+    </word_rule>
+
+    <word_rule name="for">
+        <word_or>
+            <word>for</word>   <!-- currently only case-sensitive matching is available -->
+            <word>For</word>
+        </word_or>
+    </word_rule>
+
+    <word_rule name="indefinite article">
+        <meta>
+            <description>
+                Matches an indefinite article. Only covers lower case.
+            </description>
+        </meta>
+        <word_pos>
+            <pos><pos_ref ref="determiner" /></pos>
+            <word_or>
+                <word>a</word>
+                <word>an</word>
+                <word>some</word>
+                <word>any</word>
+                <word>each</word>
+                <word>every</word>
+                <word>all</word>
+            </word_or>
+        </word_pos>
+    </word_rule>
+
+    <!--
+         MText rules (math symbols)
+     -->
+
+    <mtext_rule name="relation">
+        <meta>
+            <description>
+                Matches some relational symbols that can be used for restrictions in declarations.
+            </description>
+        </meta>
+        <mtext_or>
+            <mtext_lit str="∈"/>
+            <mtext_lit str="⊆"/>
+            <mtext_lit str="&lt;"/>
+            <mtext_lit str="&gt;"/>
+        </mtext_or>
+    </mtext_rule>
+
+    <mtext_rule name="ellipsis">
+        <mtext_lit str="…" />
+    </mtext_rule>
+
+    <mtext_rule name="comma">
+        <mtext_lit str="," />
+    </mtext_rule>
+
+    <mtext_rule name="identifier">
+        <mtext_not>
+            <mtext_ref ref="ellipsis" />   <!-- ellipsis is also wrapped in <mi> -->
+        </mtext_not>
+    </mtext_rule>
+
+    <!--
+         Math rules
+     -->
+
+    <math_rule name="identifier">
+        <math_or>
+            <math_node name="mi">
+                <mtext_ref ref="identifier" />  <!-- references mtext rule, although math rule has same name -->
+            </math_node>
+            <math_ref ref="indexed identifier" />
+        </math_or>
+    </math_rule>
+
+
+    <math_rule name="indexed identifier">
+        <math_or>
+            <math_node name="msub">
+                <math_children match_type="starts_with">
+                    <math_ref ref="identifier" />
+                </math_children>
+            </math_node>
+            <math_node name="msup">
+                <math_children match_type="starts_with">
+                    <math_ref ref="identifier" />
+                </math_children>
+            </math_node>
+            <math_node name="msubsup">
+                <math_children match_type="starts_with">
+                    <math_ref ref="identifier" />
+                </math_children>
+            </math_node>
+        </math_or>
+    </math_rule>
+
+
+    <math_rule name="single identifier marked">
+        <math_marker name="identifier">
+            <math_ref ref="identifier"/>
+        </math_marker>
+    </math_rule>
+
+
+    <math_rule name="single identifier restricted">
+        <meta>
+            <description>
+                Matches e.g. $x \in M$
+            </description>
+        </meta>
+        <math_marker name="restriction" tags="math,introducing_identifier">
+            <math_node name="mrow">
+                <math_children match_type="exact">
+                    <math_ref ref="single identifier marked" />
+                    <math_node name="mo">
+                        <mtext_ref ref="relation" />
+                    </math_node>
+                    <math_or>
+                        <math_node name="mrow" />
+                        <math_ref ref="identifier" />
+                    </math_or>
+                </math_children>
+            </math_node>
+        </math_marker>
+    </math_rule>
+
+    <math_rule name="comma">
+        <math_node name="mo">
+            <mtext_ref ref="comma" />
+        </math_node>
+    </math_rule>
+
+    <math_rule name="ellipsis">
+        <math_node name="mo">
+            <mtext_ref ref="ellipsis" />
+        </math_node>
+    </math_rule>
+
+
+    <math_rule name="identifier sequence">
+        <meta>
+            <description>
+                Matches and marks both elliptic and explicit sequences of identifiers.
+                Since the math rules currently don't support patterns like the Kleene start in regular expressions,
+                we need to hard-code different lengths of the sequences.
+
+                In the end, we will match sequences like $x, y, z$ or $x_1, \ldots, x_n$.
+                For elliptic sequences, we will have extended markup, as we are interested in both the range,
+                and the individual identifiers.
+                Since currently only nodes can be annotated, and not ranges of nodes,
+                this requires us to mark the first and the last identifiers of the sequence instead.
+                In the post processing, they can then be merged into a range and serialized.
+            </description>
+        </meta>
+
+        <math_or>
+            <!-- two identifiers -->
+            <math_node name="mrow">
+                <math_children match_type="exact">
+                    <math_ref ref="single identifier marked" />
+                    <math_ref ref="comma" />
+                    <math_ref ref="single identifier marked" />
+                </math_children>
+            </math_node>
+
+            <!-- three identifiers -->
+            <math_node name="mrow">
+                <math_children match_type="exact">
+                    <math_ref ref="single identifier marked" />
+                    <math_ref ref="comma" />
+                    <math_ref ref="single identifier marked" />
+                    <math_ref ref="comma" />
+                    <math_ref ref="single identifier marked" />
+                </math_children>
+            </math_node>
+
+            <!-- ellipses -->
+            <math_marker name="identifer" tags="elliptic_sequence">
+                <math_or>
+                    <!-- ellipsis _, ..., _ -->
+                    <math_node name="mrow">
+                        <math_children match_type="exact">
+                            <math_marker name="identifier" tags="elliptic_sequence_start">
+                                <math_ref ref="indexed identifier" />
+                            </math_marker>
+                            <math_ref ref="comma" />
+                            <math_ref ref="ellipsis" />
+                            <math_ref ref="comma" />
+                            <math_marker name="identifier" tags="elliptic_sequence_end">
+                                <math_ref ref="indexed identifier" />
+                            </math_marker>
+                        </math_children>
+                    </math_node>
+                    <!-- ellipsis _, _, ..., _ -->
+                    <math_node name="mrow">
+                        <math_children match_type="exact">
+                            <math_marker name="identifier" tags="elliptic_sequence_start">
+                                <math_ref ref="indexed identifier" />
+                            </math_marker>
+                            <math_ref ref="comma" />
+                            <math_marker name="identifier" tags="elliptic_sequence_start">
+                                <math_ref ref="indexed identifier" />
+                            </math_marker>
+                            <math_ref ref="comma" />
+                            <math_ref ref="ellipsis" />
+                            <math_ref ref="comma" />
+                            <math_marker name="identifier" tags="elliptic_sequence_end">
+                                <math_ref ref="indexed identifier" />
+                            </math_marker>
+                        </math_children>
+                    </math_node>
+                </math_or>
+            </math_marker>
+        </math_or>
+    </math_rule>
+
+    <math_rule name="multiple identifiers restricted">
+        <meta>
+            <description>
+                Matches e.g. $x_1, x_2, \ldots, x_n \in M$
+            </description>
+        </meta>
+        <math_marker name="restriction" tags="math,introducing_identifier">
+            <math_node name="mrow">
+                <math_children match_type="exact">
+                    <math_ref ref="identifier sequence" />
+                    <math_node name="mo">
+                        <mtext_ref ref="relation" />
+                    </math_node>
+                    <math_or>
+                        <math_node name="mrow" />
+                        <math_ref ref="identifier" />
+                    </math_or>
+                </math_children>
+            </math_node>
+        </math_marker>
+    </math_rule>
+
+
+    <!--
+         Sequence rules
+     -->
+
+    
+
+    <seq_rule name="text restriction">
+        <meta>
+            <description>
+                Matches a noun phrase starting with an indefinite article.
+            </description>
+        </meta>
+
+        <seq_marker name="restriction" tags="text,noun_phrase">
+            <phrase tag="NP">
+                <match_type>longest</match_type>
+                <starts_with_seq>
+                    <seq_word><word_ref ref="indefinite article"/></seq_word>
+                </starts_with_seq>
+            </phrase>
+        </seq_marker>
+    </seq_rule>
+
+
+    <seq_rule name="declaration pattern 1">
+        <meta>
+            <description>
+                Matches "let" declarations, such as
+                    "Let $M$ be a set of integers and $x \in M$"
+                    "Let $M$ be a set of integers and $N$ an arbitrary subset of $M$".
+
+                we use &lt;seq_or match_type="any"&gt; with a single argument to match the
+                argument only if it exists.
+            </description>
+        </meta>
+        <seq_seq>
+            <seq_word><word_ref ref="let" /></seq_word>
+            <seq_or match_type="first">
+                <seq_seq>
+                    <seq_word>
+                        <word_math>
+                            <math_or>
+                                <math_ref ref="single identifier marked" />
+                                <math_ref ref="single identifier restricted" />
+                                <math_ref ref="multiple identifiers restricted" />
+                                <math_ref ref="identifier sequence" />
+                            </math_or>
+                        </word_math>
+                    </seq_word>
+                    <seq_word><word>be</word></seq_word>
+                    <seq_ref ref="text restriction"/>
+                </seq_seq>
+                <seq_seq>
+                    <seq_word>
+                        <word_math>
+                            <math_or>
+                                <math_ref ref="single identifier restricted" />
+                                <math_ref ref="multiple identifiers restricted" />
+                            </math_or>
+                        </word_math>
+                    </seq_word>
+                </seq_seq>
+            </seq_or>
+            <seq_or match_type="any">  <!-- i.e., match it if possible, otherwise don't -->
+                <seq_seq>
+                    <seq_word><word>and</word></seq_word>
+                    <seq_or match_type="any"><seq_word><word_ref ref="let" /></seq_word></seq_or>
+                    <seq_or match_type="first">
+                        <seq_seq>
+                            <seq_word>
+                                <word_math>
+                                    <math_or>
+                                        <math_ref ref="single identifier marked" />
+                                        <math_ref ref="single identifier restricted" />
+                                        <math_ref ref="multiple identifiers restricted" />
+                                        <math_ref ref="identifier sequence" />
+                                    </math_or>
+                                </word_math>
+                            </seq_word>
+                            <seq_or match_type="any"><seq_word><word>be</word></seq_word></seq_or>
+                            <seq_ref ref="text restriction" />
+                        </seq_seq>
+                        <seq_seq>
+                            <seq_word>
+                                <word_math>
+                                    <math_or>
+                                        <math_ref ref="single identifier restricted" />
+                                        <math_ref ref="multiple identifiers restricted" />
+                                    </math_or>
+                                </word_math>
+                            </seq_word>
+                        </seq_seq>
+                    </seq_or>
+                </seq_seq>
+            </seq_or>
+        </seq_seq>
+    </seq_rule>
+
+
+    <seq_rule name="declaration pattern 2">
+        <meta>
+            <description>
+                Matches "for all" declarations, such as
+                    "for all $x \in Z$"
+                    "for every integer $k$".
+            </description>
+        </meta>
+
+        <seq_seq>
+            <seq_word><word_ref ref="for" /></seq_word>
+
+            <seq_or match_type="first">
+                <seq_marker name="restriction" tags="text,noun_phrase,apposition1">
+                    <phrase tag="NP">
+                        <match_type>shortest</match_type>
+                        <starts_with_seq containment="lessorequal">
+                            <!-- require at least two more words to avoid matching e.g.
+                                 every a < n -->
+                            <seq_seq>
+                                <seq_word><word_ref ref="indefinite article"/></seq_word>
+                                <seq_word><word_any/></seq_word>
+                                <seq_word><word_any/></seq_word>
+                            </seq_seq>
+                        </starts_with_seq>
+                        <ends_with_seq>
+                            <seq_word>
+                                <word_math>
+                                    <math_or>
+                                        <math_ref ref="single identifier marked" />
+                                        <math_ref ref="identifier sequence" />
+                                        <math_ref ref="single identifier restricted" />
+                                        <math_ref ref="multiple identifiers restricted" />
+                                    </math_or>
+                                </word_math>
+                            </seq_word>
+                        </ends_with_seq>
+                    </phrase>
+                </seq_marker>
+
+                <seq_seq>
+                    <seq_word><word_ref ref="indefinite article" /></seq_word>
+                    <seq_word>
+                        <word_math>
+                            <math_or>
+                                <math_ref ref="multiple identifiers restricted" />
+                                <math_ref ref="single identifier restricted" />
+
+                            </math_or>
+                        </word_math>
+                    </seq_word>
+                </seq_seq>
+            </seq_or>
+
+            <seq_or match_type="any">
+                <seq_seq>
+                    <seq_word><word>and</word></seq_word>
+                    <seq_or match_type="any"><seq_word><word_ref ref="indefinite article" /></seq_word></seq_or>
+                    <seq_word>
+                        <word_math>
+                            <math_or>
+                                <math_ref ref="multiple identifiers restricted" />
+                                <math_ref ref="single identifier restricted" />
+                            </math_or>
+                        </word_math>
+                    </seq_word>
+                </seq_seq>
+            </seq_or>
+        </seq_seq>
+    </seq_rule>
+
+    <seq_rule name="declaration pattern 3">
+        <meta>
+            <description>
+                Matches "where" declarations, such as
+                    "where $x$ is an integer"
+                    "where $x, y, z \in Z$".
+            </description>
+        </meta>
+
+        <seq_seq>
+            <seq_word><word>where</word></seq_word>
+
+            <seq_or match_type="first">
+                <seq_seq>
+                    <seq_word>
+                        <word_math>
+                            <math_or>
+                                <math_ref ref="single identifier marked" />
+                                <math_ref ref="single identifier restricted" />
+                            </math_or>
+                        </word_math>
+                    </seq_word>
+                    <seq_word><word>is</word></seq_word>
+                    <seq_ref ref="text restriction" />
+                </seq_seq>
+                <seq_word>
+                    <word_math>
+                        <math_or>
+                            <math_ref ref="single identifier restricted" />
+                            <math_ref ref="multiple identifiers restricted" />
+                        </math_or>
+                    </word_math>
+                </seq_seq>
+            </seq_or>
+
+            <seq_or match="any">
+                <seq_seq>
+                    <seq_word><word>and</word></seq_word>
+                    <seq_word>
+                        <word_math>
+                            <math_or>
+                                <math_ref ref="single identifier restricted" />
+                                <math_ref ref="multiple identifiers restricted" />
+                            </math_or>
+                        </word_math>
+                    </seq_word>
+                </seq_seq>
+            </seq_or>
+        </seq_seq>
+    </seq_rule>
+
+
+    <seq_rule name="declaration helper">
+        <seq_or match_type="first">
+            <seq_marker name="restriction" tags="text,noun_phrase,apposition2">
+                <phrase tag="NP">
+                    <match_type>shortest</match_type>
+                    <starts_with_seq>
+                        <!-- require at least two more words to avoid matching e.g.
+                                every a < n -->
+                        <seq_seq containment="lessorequal">
+                            <seq_word><word_ref ref="indefinite article"/></seq_word>
+                            <seq_word><word_any/></seq_word>
+                            <seq_word><word_any/></seq_word>
+                        </seq_seq>
+                    </starts_with_seq>
+                    <ends_with_seq>
+                        <seq_word>
+                            <word_math>
+                                <math_or>
+                                    <math_ref ref="single identifier marked" />
+                                    <math_ref ref="single identifier restricted" />
+                                </math_or>
+                            </word_math>
+                        </seq_word>
+                    </ends_with_seq>
+                </phrase>
+            </seq_marker>
+
+            <seq_seq>
+                <seq_or match_type="any"><seq_word><word_ref ref="indefinite article" /></seq_word></seq_or>
+                <seq_word>
+                    <word_math>
+                        <math_or>
+                            <math_ref ref="multiple identifiers restricted" />
+                            <math_ref ref="single identifier restricted" />
+
+                        </math_or>
+                    </word_math>
+                </seq_word>
+            </seq_seq>
+        </seq_or>
+    </seq_rule>
+
+
+    <seq_rule name="declaration pattern 4">
+        <meta>
+            <description>
+                Matches existential declarations, such as
+                    "where $x, y, z \in Z$".
+            </description>
+        </meta>
+
+        <seq_seq>
+            <seq_word>
+                <word_or>
+                    <word>There</word>
+                    <word>there</word>
+                </word_or>
+            </seq_word>
+
+            <seq_word>
+                <word_or>
+                    <word>is</word>
+                    <word>exists</word>
+                    <word>exist</word>
+                </word_or>
+            </seq_word>
+
+            <seq_ref ref="declaration helper" />
+
+            <seq_or match_type="any">
+                <seq_seq>
+                    <seq_word><word>and</word></seq_word>
+                    <seq_ref ref="declaration helper" />
+                </seq_seq>
+            </seq_or>
+        </seq_seq>
+    </seq_rule>
+
+
+    <seq_rule name="declaration">
+        <meta>
+            <description>
+                Matches an entire declaration phrase
+            </description>
+        </meta>
+
+        <seq_or match_type="first">
+            <seq_marker name="declaration" tags="universal">
+                <seq_or match_type="first">
+                    <seq_ref ref="declaration pattern 1" />
+                    <seq_ref ref="declaration pattern 2" />
+                    <seq_ref ref="declaration pattern 3" />
+                </seq_or>
+            </seq_marker>
+            <seq_marker name="declaration" tags="existential">
+                <seq_ref ref="declaration pattern 4" />
+            </seq_marker>
+        </seq_or>
+    </seq_rule>
+</pattern_file>
+

@@ -233,9 +233,10 @@ fn match_seq<'t>(pf : &PatternFile, rule : &SequencePattern, sentence : &Sentenc
         }
         &SequencePattern::Phrase(phrase, ref match_type, ref start_condition, ref end_condition) => {
             let mut phrase_ends = get_phrase_matches(phrase_tree, pos, phrase);
-            if match_type == &PhraseMatchType::Shortest {
-                phrase_ends.reverse();   // were sorted descendingly
+            if match_type == &PhraseMatchType::Longest {
+                phrase_ends.reverse();   // were sorted ascendingly
             }
+
 
             let mut matches : Vec<Match> = Vec::new();
 
@@ -257,8 +258,10 @@ fn match_seq<'t>(pf : &PatternFile, rule : &SequencePattern, sentence : &Sentenc
                         let &box ref rule = end_condition.as_ref().unwrap();
                         let m = match_seq(pf, rule, sentence, phrase_tree, range, end_start_pos);
                         if !m.matched {continue; }
+                        if m.end != *end_pos { continue; }
                         matched = true;
                         matches.extend_from_slice(&m._matches[..]);
+                        break;
                     }
                     if !matched { continue; }
                 }

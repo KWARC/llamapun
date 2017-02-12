@@ -650,7 +650,7 @@ impl WordPattern {
                             if pos_pattern.is_some() {
                                 return Err("Cannot have multiple 'pos' nodes in a 'word_pos' node".to_string());
                             }
-                            pos_pattern = Some(try!(PosPattern::load_from_node(cur, pctx)));
+                            pos_pattern = Some(try!(PosPattern::load_from_node(&try!(get_only_child(cur)), pctx)));
                         }
                         _ => {
                             if word_pattern.is_some() {
@@ -899,27 +899,22 @@ impl<'t> PCtx<'t> {
     }
 
     fn get_math_rule(&mut self, rule_name : &str) -> usize {
-        println!("Get math rule \"{}\"", rule_name);
         get_rule_position(&mut self.math_rules, &mut self.math_name_map, rule_name)
     }
 
     fn get_mtext_rule(&mut self, rule_name : &str) -> usize {
-        println!("Get mtext rule \"{}\"", rule_name);
         get_rule_position(&mut self.mtext_rules, &mut self.mtext_name_map, rule_name)
     }
     
     fn get_pos_rule(&mut self, rule_name : &str) -> usize {
-        println!("Get pos rule \"{}\"", rule_name);
         get_rule_position(&mut self.pos_rules, &mut self.pos_name_map, rule_name)
     }
 
     fn get_word_rule(&mut self, rule_name : &str) -> usize {
-        println!("Get word rule \"{}\"", rule_name);
         get_rule_position(&mut self.word_rules, &mut self.word_name_map, rule_name)
     }
 
     fn get_sequence_rule(&mut self, rule_name : &str) -> usize {
-        println!("Get seq rule \"{}\"", rule_name);
         get_rule_position(&mut self.seq_rules, &mut self.seq_name_map, rule_name)
     }
 

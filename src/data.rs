@@ -31,6 +31,8 @@ pub struct Corpus {
   pub senna: RefCell<Senna>,
   /// `Senna` parsing options
   pub senna_options: Cell<SennaParseOptions>,
+  /// Default setting for `DNM` generation
+  pub dnm_parameters : DNMParameters,
 }
 
 /// File-system iterator yielding individual documents
@@ -149,12 +151,22 @@ impl<'iter> Iterator for DocumentIterator<'iter> {
 impl Default for Corpus {
   fn default() -> Corpus {
     Corpus {
+<<<<<<< HEAD
       path: ".".to_string(),
       tokenizer: Tokenizer::default(),
       xml_parser: Parser::default(),
       html_parser: Parser::default_html(),
       senna: RefCell::new(Senna::new(SENNA_PATH.to_owned())),
       senna_options: Cell::new(SennaParseOptions::default()),
+=======
+      path : ".".to_string(),
+      tokenizer : Tokenizer::default(),
+      xml_parser :  Parser::default(),
+      html_parser : Parser::default_html(),
+      senna : RefCell::new(Senna::new(SENNA_PATH.to_owned())),
+      senna_options : Cell::new(SennaParseOptions::default()),
+      dnm_parameters : DNMParameters::llamapun_normalization(),
+>>>>>>> support namespaces in dnmrange serialization + minor improvements
     }
   }
 }
@@ -174,6 +186,12 @@ impl Corpus {
       walker: Box::new(WalkDir::new(self.path.clone()).into_iter()),
       corpus: self,
     }
+  }
+
+
+  /// Load a specific document in the corpus
+  pub fn load_doc(&self, path : String) -> Result<Document, XmlParseError> {
+    Document::new(path, self)
   }
 }
 
@@ -210,10 +228,14 @@ impl<'d> Document<'d> {
   /// Get an iterator over the sentences of the document
   pub fn sentence_iter(&mut self) -> SentenceIterator {
     if self.dnm.is_none() {
+<<<<<<< HEAD
       self.dnm = Some(DNM::new(
         self.dom.get_root_element(),
         DNMParameters::llamapun_normalization(),
       ));
+=======
+      self.dnm = Some(DNM::new(self.dom.get_root_element(), self.corpus.dnm_parameters.clone()));
+>>>>>>> support namespaces in dnmrange serialization + minor improvements
     }
     let tokenizer = &self.corpus.tokenizer;
     let sentences = tokenizer.sentences(self.dnm.as_ref().unwrap());

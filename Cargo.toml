@@ -1,7 +1,7 @@
 [package]
 name = "llamapun"
 version = "0.0.1"
-authors = ["Jan Frederik Schaefer <j.schaefer@jacobs-university.de>", "Deyan Ginev <d.ginev@jacobs-university.de>"]
+authors = ["Deyan Ginev <deyan.ginev@gmail.com>","Jan Frederik Schaefer <j.schaefer@jacobs-university.de>"]
 
 [lib]
 name = "llamapun"
@@ -18,7 +18,7 @@ libc = "0.1"
 regex = "0.1"
 time = "0.1"
 walkdir = "0.1"
-libxml = "0.0.7"
+libxml = "0.0.7481"
 gnuplot = "0.0.21"
 unidecode = "0.2"
 rust-crypto = "0.2"

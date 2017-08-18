@@ -123,7 +123,7 @@ pub struct Word<'w> {
 impl<'iter> Iterator for DocumentIterator<'iter> {
   type Item = Document<'iter>;
   fn next(&mut self) -> Option<Document<'iter>> {
-    let mut walker = &mut self.walker;
+    let walker = &mut self.walker;
     loop {
       let next_entry = walker.next();
       if next_entry.is_none() {

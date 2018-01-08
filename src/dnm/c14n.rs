@@ -5,7 +5,6 @@ use libxml::tree::Node;
 use libxml::tree::NodeType::{TextNode, ElementNode};
 use crypto::md5::Md5;
 use crypto::digest::Digest;
-use std::str;
 use std::sync::Mutex;
 use dnm::DNM;
 

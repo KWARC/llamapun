@@ -151,22 +151,13 @@ impl<'iter> Iterator for DocumentIterator<'iter> {
 impl Default for Corpus {
   fn default() -> Corpus {
     Corpus {
-<<<<<<< HEAD
       path: ".".to_string(),
       tokenizer: Tokenizer::default(),
       xml_parser: Parser::default(),
       html_parser: Parser::default_html(),
       senna: RefCell::new(Senna::new(SENNA_PATH.to_owned())),
       senna_options: Cell::new(SennaParseOptions::default()),
-=======
-      path : ".".to_string(),
-      tokenizer : Tokenizer::default(),
-      xml_parser :  Parser::default(),
-      html_parser : Parser::default_html(),
-      senna : RefCell::new(Senna::new(SENNA_PATH.to_owned())),
-      senna_options : Cell::new(SennaParseOptions::default()),
       dnm_parameters : DNMParameters::llamapun_normalization(),
->>>>>>> support namespaces in dnmrange serialization + minor improvements
     }
   }
 }
@@ -228,14 +219,10 @@ impl<'d> Document<'d> {
   /// Get an iterator over the sentences of the document
   pub fn sentence_iter(&mut self) -> SentenceIterator {
     if self.dnm.is_none() {
-<<<<<<< HEAD
       self.dnm = Some(DNM::new(
         self.dom.get_root_element(),
-        DNMParameters::llamapun_normalization(),
+        self.corpus.dnm_parameters.clone()
       ));
-=======
-      self.dnm = Some(DNM::new(self.dom.get_root_element(), self.corpus.dnm_parameters.clone()));
->>>>>>> support namespaces in dnmrange serialization + minor improvements
     }
     let tokenizer = &self.corpus.tokenizer;
     let sentences = tokenizer.sentences(self.dnm.as_ref().unwrap());

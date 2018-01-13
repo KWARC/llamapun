@@ -6,14 +6,14 @@ mod parameters;
 mod c14n;
 
 extern crate libc;
-extern crate unidecode;
 extern crate rustmorpha;
+extern crate unidecode;
 
 use std::collections::HashMap;
 use unidecode::{unidecode, unidecode_char};
 use libxml::tree::*;
 pub use dnm::range::DNMRange;
-pub use dnm::parameters::{SpecialTagsOption, RuntimeParseData, DNMParameters};
+pub use dnm::parameters::{DNMParameters, RuntimeParseData, SpecialTagsOption};
 
 /// The `DNM` is essentially a wrapper around the plain text representation
 /// of the document, which facilitates mapping plaintext pieces to the DOM.
@@ -32,18 +32,18 @@ pub struct DNM {
   /// A runtime object used for holding auxiliary state
   // TODO: Would love to make the runtime a `private` field,
   //       but it requires some refactoring and rethinking the DNM-creation API
-  pub runtime : RuntimeParseData,
+  pub runtime: RuntimeParseData,
   /// maps an offset to the corresponding node, and the offset in the node
   /// offset -1 means that the offset corresponds to the entire node
   /// this is e.g. used if a node is replaced by a token.
-  pub back_map : Vec<(Node, i32)>,
+  pub back_map: Vec<(Node, i32)>,
 }
 
 impl Default for DNM {
   fn default() -> DNM {
     DNM {
       parameters: DNMParameters::default(),
-      root_node: Node::mock(),
+      root_node: Node::null(),
       plaintext: String::new(),
       byte_offsets: Vec::new(),
       node_map: HashMap::new(),
@@ -120,10 +120,10 @@ impl DNM {
     // generate plaintext
     assert_eq!(dnm.plaintext.len(), 0);
     for c in &dnm.runtime.chars {
-        dnm.byte_offsets.push(dnm.plaintext.len());
-        dnm.plaintext.push(*c);
+      dnm.byte_offsets.push(dnm.plaintext.len());
+      dnm.plaintext.push(*c);
     }
-    dnm.byte_offsets.push(dnm.plaintext.len());   // to have the length of the last char as well
+    dnm.byte_offsets.push(dnm.plaintext.len()); // to have the length of the last char as well
 
     dnm
   }
@@ -131,13 +131,11 @@ impl DNM {
   /// Get the plaintext range of a node
   pub fn get_range_of_node(&self, node: &Node) -> Result<DNMRange, ()> {
     match self.node_map.get(&node.to_hashable()) {
-      Some(&(start, end)) => {
-        Ok(DNMRange {
-          start: start,
-          end: end,
-          dnm: self,
-        })
-      }
+      Some(&(start, end)) => Ok(DNMRange {
+        start: start,
+        end: end,
+        dnm: self,
+      }),
       None => Err(()),
     }
   }
@@ -154,9 +152,11 @@ impl DNM {
   fn text_node_create(&mut self, node: &Node) {
     let offset_start = self.runtime.chars.len();
     let mut string = node.get_content();
-    let mut offsets : Vec<i32> = if self.parameters.support_back_mapping {
-                                   (0i32..(string.chars().count() as i32)).collect()
-                                 } else { Vec::new() };
+    let mut offsets: Vec<i32> = if self.parameters.support_back_mapping {
+      (0i32..(string.chars().count() as i32)).collect()
+    } else {
+      Vec::new()
+    };
 
     // string processing steps
     self.normalize_unicode(&mut string, &mut offsets);
@@ -179,10 +179,12 @@ impl DNM {
     return;
   }
 
-  fn normalize_whitespace(&mut self, string : &mut String, offsets : &mut Vec<i32>) {
-    if !self.parameters.normalize_white_spaces { return; }
+  fn normalize_whitespace(&mut self, string: &mut String, offsets: &mut Vec<i32>) {
+    if !self.parameters.normalize_white_spaces {
+      return;
+    }
     let mut new_string = String::new();
-    let mut new_offsets : Vec<i32> = Vec::new();
+    let mut new_offsets: Vec<i32> = Vec::new();
 
     for (i, c) in string.chars().enumerate() {
       if c.is_whitespace() {
@@ -206,32 +208,36 @@ impl DNM {
     *offsets = new_offsets;
   }
 
-  fn normalize_unicode(&self, string : &mut String, offsets : &mut Vec<i32>) {
-    if !self.parameters.normalize_unicode  { return; }
+  fn normalize_unicode(&self, string: &mut String, offsets: &mut Vec<i32>) {
+    if !self.parameters.normalize_unicode {
+      return;
+    }
     if !self.parameters.support_back_mapping {
-        *string = unidecode(&string);
-        return;
+      *string = unidecode(&string);
+      return;
     }
 
     // the tricky part: unidecode can replace a character by multiple characters.
     // We need to maintain the offsets for back mapping
     let mut new_string = String::new();
-    let mut new_offsets : Vec<i32> = Vec::new();
+    let mut new_offsets: Vec<i32> = Vec::new();
 
     for (i, co) in string.chars().enumerate() {
-        for cn in unidecode_char(co).chars() {
-            new_string.push(cn);
-            new_offsets.push(offsets[i]);
-        }
+      for cn in unidecode_char(co).chars() {
+        new_string.push(cn);
+        new_offsets.push(offsets[i]);
       }
+    }
 
     *string = new_string;
     *offsets = new_offsets;
   }
 
-  fn stem_words(&self, string : &mut String /*, offsets : &mut Vec<i32> */) {
+  fn stem_words(&self, string: &mut String /*, offsets : &mut Vec<i32> */) {
     // TODO: Support back-mapping (using e.g. something like min. edit distance to map offsets)
-    if self.parameters.support_back_mapping && (self.parameters.stem_words_full || self.parameters.stem_words_once) {
+    if self.parameters.support_back_mapping
+      && (self.parameters.stem_words_full || self.parameters.stem_words_once)
+    {
       panic!("llamapun::dnm: word stemming does not support back-mapping yet");
     }
     if self.parameters.stem_words_full {
@@ -240,7 +246,6 @@ impl DNM {
       *string = rustmorpha::stem(&string);
     }
   }
-
 
   fn intermediate_node_create(&mut self, node: &Node) {
     let offset_start = self.runtime.chars.len();
@@ -278,7 +283,7 @@ impl DNM {
         }
       }
     } // End scope of self.parameters borrow, to allow mutable self borrow for recurse_node_create
-    // Recurse into children
+      // Recurse into children
     if let Some(child) = node.get_first_child() {
       self.recurse_node_create(&child);
       let mut child_node = child;

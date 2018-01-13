@@ -1,4 +1,4 @@
-// Copyright 2015-2016 KWARC research group. See the LICENSE
+// Copyright 2015-2018 KWARC research group. See the LICENSE
 // file at the top-level directory of this distribution.
 //
 extern crate llamapun;
@@ -19,11 +19,11 @@ pub fn main() {
   let _ = input_args.next(); // skip process name
   let corpus_path = match input_args.next() {
     Some(path) => path,
-    None => "tests/resources/".to_string()
+    None => "tests/resources/".to_string(),
   };
   let token_model_filepath = match input_args.next() {
     Some(path) => path,
-    None => "token_model.txt".to_string()
+    None => "token_model.txt".to_string(),
   };
 
   let mut document_count = 0;
@@ -35,7 +35,10 @@ pub fn main() {
   let token_model_file = match File::create(token_model_filepath) {
     Ok(fh) => fh,
     Err(e) => {
-      println!("Failed to open token model output file, aborting. Reason: {:?}", e);
+      println!(
+        "Failed to open token model output file, aborting. Reason: {:?}",
+        e
+      );
       return;
     }
   };
@@ -56,16 +59,22 @@ pub fn main() {
             if word_string == "mathformula" {
               formula_count += 1;
             } else if word_string == "citationelement" {
-              citation_count +=1;
+              citation_count += 1;
             } else {
               word_count += 1;
             }
             // print to the token model file
             if let Err(e) = token_writer.write(word_string.as_bytes()) {
-              println!("-- Failed to print to output buffer! Proceed with caution;\n{:?}",e);
+              println!(
+                "-- Failed to print to output buffer! Proceed with caution;\n{:?}",
+                e
+              );
             }
             if let Err(e) = token_writer.write(space) {
-              println!("-- Failed to print to output buffer! Proceed with caution;\n{:?}",e);
+              println!(
+                "-- Failed to print to output buffer! Proceed with caution;\n{:?}",
+                e
+              );
             }
           }
         }
@@ -78,7 +87,10 @@ pub fn main() {
   }
 
   if let Err(e) = token_writer.flush() {
-    println!("-- Failed to print to output buffer! Proceed with caution;\n{:?}",e);
+    println!(
+      "-- Failed to print to output buffer! Proceed with caution;\n{:?}",
+      e
+    );
   }
 
   let end = time::get_time();
@@ -91,19 +103,20 @@ pub fn main() {
   println!("{:?} words;", word_count);
   println!("{:?} formulas;", formula_count);
   println!("{:?} inline cites;", citation_count);
-
 }
 
-fn utf_truncate(input : &mut String, maxsize: usize) {
+fn utf_truncate(input: &mut String, maxsize: usize) {
   let mut utf_maxsize = input.len();
   if utf_maxsize >= maxsize {
-    { let mut char_iter = input.char_indices();
-    while utf_maxsize >= maxsize {
-      utf_maxsize = match char_iter.next_back() {
-        Some((index, _)) => index,
-        _ => 0
-      };
-    } } // Extra {} wrap to limit the immutable borrow of char_indices()
+    {
+      let mut char_iter = input.char_indices();
+      while utf_maxsize >= maxsize {
+        utf_maxsize = match char_iter.next_back() {
+          Some((index, _)) => index,
+          _ => 0,
+        };
+      }
+    } // Extra {} wrap to limit the immutable borrow of char_indices()
     input.truncate(utf_maxsize);
   }
 }

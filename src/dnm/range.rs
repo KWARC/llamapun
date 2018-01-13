@@ -162,9 +162,23 @@ impl<'dnmrange> DNMRange<'dnmrange> {
           let act = if is_end { get_next_sibling(root_node, node).unwrap_or(node.clone()) } else { node.clone() };
           let parent = act.get_parent().unwrap();
           let base = DNMRange::serialize_node(root_node, &parent, false /* don't take next */ );
-          return format!("{}/{}[{}]", base,
-                if act.is_text_node() { "text()".to_string() } else { act.get_name() },
-                get_node_number(&parent, &act, &| n : &Node | n.get_name() == act.get_name()).unwrap());
+          return format!("{}/{}[{}]",
+                         base,
+                         if act.is_text_node() {
+                           "text()".to_string()
+                         } else {
+                           if let Some(ns) = act.get_namespace() {
+                             let prefix = ns.get_prefix();
+                             if prefix == "" {  // default namespace without prefix
+                               format!("*[local-name() = '{}']", act.get_name())
+                             } else {
+                               format!("{}:{}", prefix, act.get_name())
+                             }
+                           } else {
+                             act.get_name()
+                           }
+                         },
+                         get_node_number(&parent, &act, &| n : &Node | n.get_name() == act.get_name()).unwrap());
         }
       },
       Some(x) => format!("//*[@id=\"{}\"]", x),

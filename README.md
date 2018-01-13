@@ -24,7 +24,8 @@ At its core, **llamapun** is a [Rust](http://rust-lang.org/) implementation that
    * Part-of-speech tagging (via [SENNA](http://ml.nec-labs.com/senna/)),
    * Named Entity recognition (via [SENNA](http://ml.nec-labs.com/senna/)),
    * Chunking and shallow parsing (via [SENNA](http://ml.nec-labs.com/senna/)),
-   * Extract token models for [GloVe](http://nlp.stanford.edu/projects/glove/)
+   * Extract token models for [GloVe](http://nlp.stanford.edu/projects/glove/),
+   * [Pattern-matching library](doc/pattern_matching.md) for rule-based extraction and/or bootstrapping,
    * [TODO] Language identification (via [libTextCat](http://software.wise-guys.nl/libtextcat/)),
    * N-gram footprints,
 

@@ -37,6 +37,7 @@ pub enum SpecialTagsOption {
 
 
 /// Parameters for the DNM generation
+#[derive(Clone)]
 pub struct DNMParameters {
   /// How to deal with special tags (e.g. `<math>` tags)
   pub special_tag_name_options: HashMap<String, SpecialTagsOption>,

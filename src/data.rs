@@ -175,11 +175,7 @@ impl Corpus {
   /// Get an iterator over the documents
   pub fn iter(&mut self) -> DocumentIterator {
     DocumentIterator {
-      walker: Box::new(
-        WalkDir::new(self.path.clone())
-          .sort_by(|a, b| a.file_name().cmp(b.file_name()))
-          .into_iter(),
-      ),
+      walker: Box::new(WalkDir::new(self.path.clone()).into_iter()),
       corpus: self,
     }
   }

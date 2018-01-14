@@ -1,8 +1,8 @@
 //! Data structures and Iterators for convenient high-level syntax
 use std::vec::IntoIter;
 use std::cell::{Cell, RefCell};
-use walkdir::{DirEntry, WalkDir, WalkDirIterator};
-use walkdir::Result as DirResult;
+use walkdir::WalkDir;
+use walkdir::IntoIter as WalkDirIterator;
 
 use dnm::{DNMParameters, DNMRange, DNM};
 use tokenizer::Tokenizer;
@@ -32,13 +32,13 @@ pub struct Corpus {
   /// `Senna` parsing options
   pub senna_options: Cell<SennaParseOptions>,
   /// Default setting for `DNM` generation
-  pub dnm_parameters : DNMParameters,
+  pub dnm_parameters: DNMParameters,
 }
 
 /// File-system iterator yielding individual documents
 pub struct DocumentIterator<'iter> {
   /// the directory walker
-  walker: Box<WalkDirIterator<Item = DirResult<DirEntry>>>,
+  walker: Box<WalkDirIterator>,
   /// reference to the parent corpus
   pub corpus: &'iter Corpus,
 }
@@ -121,7 +121,6 @@ pub struct Word<'w> {
   pub pos: POS,
 }
 
-// TODO: May be worth refactoring into several layers of iterators - directory, document, paragraph, sentence, etc.
 impl<'iter> Iterator for DocumentIterator<'iter> {
   type Item = Document<'iter>;
   fn next(&mut self) -> Option<Document<'iter>> {
@@ -130,7 +129,7 @@ impl<'iter> Iterator for DocumentIterator<'iter> {
       let next_entry = walker.next();
       if next_entry.is_none() {
         break;
-      } else if let Ok(entry) = next_entry.unwrap() {
+      } else if let Some(Ok(ref entry)) = next_entry {
         let file_name = entry.file_name().to_str().unwrap_or("").to_owned();
         if file_name.ends_with(".html") || file_name.ends_with(".xhtml") {
           let path = entry.path().to_str().unwrap_or("").to_owned();
@@ -142,6 +141,8 @@ impl<'iter> Iterator for DocumentIterator<'iter> {
             _ => None,
           };
         }
+      } else {
+        println!("-- Error while walking for entry: {:?}", next_entry)
       }
     }
     None
@@ -157,7 +158,7 @@ impl Default for Corpus {
       html_parser: Parser::default_html(),
       senna: RefCell::new(Senna::new(SENNA_PATH.to_owned())),
       senna_options: Cell::new(SennaParseOptions::default()),
-      dnm_parameters : DNMParameters::llamapun_normalization(),
+      dnm_parameters: DNMParameters::llamapun_normalization(),
     }
   }
 }
@@ -174,14 +175,17 @@ impl Corpus {
   /// Get an iterator over the documents
   pub fn iter(&mut self) -> DocumentIterator {
     DocumentIterator {
-      walker: Box::new(WalkDir::new(self.path.clone()).into_iter()),
+      walker: Box::new(
+        WalkDir::new(self.path.clone())
+          .sort_by(|a, b| a.file_name().cmp(b.file_name()))
+          .into_iter(),
+      ),
       corpus: self,
     }
   }
 
-
   /// Load a specific document in the corpus
-  pub fn load_doc(&self, path : String) -> Result<Document, XmlParseError> {
+  pub fn load_doc(&self, path: String) -> Result<Document, XmlParseError> {
     Document::new(path, self)
   }
 }
@@ -221,7 +225,7 @@ impl<'d> Document<'d> {
     if self.dnm.is_none() {
       self.dnm = Some(DNM::new(
         self.dom.get_root_element(),
-        self.corpus.dnm_parameters.clone()
+        self.corpus.dnm_parameters.clone(),
       ));
     }
     let tokenizer = &self.corpus.tokenizer;

@@ -44,6 +44,7 @@ pub fn main() {
   };
   let mut token_writer = BufWriter::with_capacity(10485760, token_model_file);
   let space = b" ";
+  let linebreak = b"\n";
 
   let mut corpus = Corpus::new(corpus_path);
   for mut document in corpus.iter() {
@@ -52,6 +53,7 @@ pub fn main() {
       paragraph_count += 1;
       for mut sentence in paragraph.iter() {
         sentence_count += 1;
+        let mut has_words = false;
         for word in sentence.simple_iter() {
           if !word.range.is_empty() {
             let mut word_string = word.range.get_plaintext().to_lowercase();
@@ -64,6 +66,7 @@ pub fn main() {
               word_count += 1;
             }
             // print to the token model file
+            has_words = true;
             if let Err(e) = token_writer.write(word_string.as_bytes()) {
               println!(
                 "-- Failed to print to output buffer! Proceed with caution;\n{:?}",
@@ -78,6 +81,13 @@ pub fn main() {
             }
           }
         }
+        if has_words {
+         if let Err(e) = token_writer.write(linebreak) {
+          println!(
+                  "-- Failed to print to output buffer! Proceed with caution;\n{:?}",
+                  e
+          );
+        }}
       }
     }
 

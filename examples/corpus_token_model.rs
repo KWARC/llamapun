@@ -3,11 +3,13 @@
 //
 extern crate llamapun;
 extern crate time;
+extern crate regex;
 
 use std::env;
 use std::io::prelude::*;
 use std::io::BufWriter;
 use std::fs::File;
+use regex::Regex;
 
 use llamapun::data::Corpus;
 
@@ -32,6 +34,9 @@ pub fn main() {
   let mut word_count = 0;
   let mut formula_count = 0;
   let mut citation_count = 0;
+  let mut num_count = 0;
+  let mut overflow_count = 0;
+
   let token_model_file = match File::create(token_model_filepath) {
     Ok(fh) => fh,
     Err(e) => {
@@ -43,8 +48,10 @@ pub fn main() {
     }
   };
   let mut token_writer = BufWriter::with_capacity(10485760, token_model_file);
-  let space = b" ";
-  let linebreak = b"\n";
+  let space = ' ';
+  let linebreak = '\n';
+  // Integers, floats, subfigure numbers
+  let is_numeric = Regex::new(r"^-?(?:\d+)(?:[a-k]|(?:\.\d+(?:[eE][+-]?\d+)?))?$").unwrap();
 
   let mut corpus = Corpus::new(corpus_path);
   for mut document in corpus.iter() {
@@ -52,42 +59,50 @@ pub fn main() {
     for mut paragraph in document.paragraph_iter() {
       paragraph_count += 1;
       for mut sentence in paragraph.iter() {
-        sentence_count += 1;
-        let mut has_words = false;
-        for word in sentence.simple_iter() {
+        let mut sentence_buffer = String::new();
+        let mut invalid_sentence = true;
+         'words: for word in sentence.simple_iter() {
           if !word.range.is_empty() {
             let mut word_string = word.range.get_plaintext().to_lowercase();
-            utf_truncate(&mut word_string, 50);
-            if word_string == "mathformula" {
+            if word_string.len() > 30 { 
+              // Using a more aggressive normalization, large words tend to be conversion errors with lost whitespace - drop the entire sentence when this occurs.
+              overflow_count += 1;
+              invalid_sentence = true;
+              break 'words;
+            }
+            let mut word_str : &str = &word_string;
+            // Note: the formula and citation counts are an approximate lower bound, as sometimes they are not cleanly tokenized, e.g.
+            // $k$-dimensional will be the word string "mathformula-dimensional"
+            if word_string.contains("mathformula") {
+              word_str = "mathformula";
               formula_count += 1;
-            } else if word_string == "citationelement" {
+            } else if word_string.contains("citationelement") {
+              word_str = "citationelement";
               citation_count += 1;
+            } else if is_numeric.is_match(&word_string) {
+              num_count += 1;
+              word_str = "NUM";
             } else {
               word_count += 1;
             }
-            // print to the token model file
-            has_words = true;
-            if let Err(e) = token_writer.write(word_string.as_bytes()) {
-              println!(
-                "-- Failed to print to output buffer! Proceed with caution;\n{:?}",
-                e
-              );
-            }
-            if let Err(e) = token_writer.write(space) {
-              println!(
-                "-- Failed to print to output buffer! Proceed with caution;\n{:?}",
-                e
-              );
-            }
+
+            invalid_sentence = false;
+            sentence_buffer.push_str(word_str);
+            sentence_buffer.push(space);
           }
         }
-        if has_words {
-         if let Err(e) = token_writer.write(linebreak) {
-          println!(
-                  "-- Failed to print to output buffer! Proceed with caution;\n{:?}",
-                  e
-          );
-        }}
+
+        // if valid sentence, print to the token model file
+        if !invalid_sentence {
+          sentence_count += 1;
+          sentence_buffer.push(linebreak);
+          if let Err(e) = token_writer.write(sentence_buffer.as_bytes()) {
+            println!(
+                    "-- Failed to print to output buffer! Proceed with caution;\n{:?}",
+                    e
+            );
+          }
+        }
       }
     }
 
@@ -110,23 +125,25 @@ pub fn main() {
   println!("{:?} documents;", document_count);
   println!("{:?} paragraphs;", paragraph_count);
   println!("{:?} sentences;", sentence_count);
+  println!("{:?} discarded sentences (long words)", overflow_count);
   println!("{:?} words;", word_count);
+  println!("{:?} numeric literals;", num_count);
   println!("{:?} formulas;", formula_count);
   println!("{:?} inline cites;", citation_count);
 }
 
-fn utf_truncate(input: &mut String, maxsize: usize) {
-  let mut utf_maxsize = input.len();
-  if utf_maxsize >= maxsize {
-    {
-      let mut char_iter = input.char_indices();
-      while utf_maxsize >= maxsize {
-        utf_maxsize = match char_iter.next_back() {
-          Some((index, _)) => index,
-          _ => 0,
-        };
-      }
-    } // Extra {} wrap to limit the immutable borrow of char_indices()
-    input.truncate(utf_maxsize);
-  }
-}
+// fn utf_truncate(input: &mut String, maxsize: usize) {
+//   let mut utf_maxsize = input.len();
+//   if utf_maxsize >= maxsize {
+//     {
+//       let mut char_iter = input.char_indices();
+//       while utf_maxsize >= maxsize {
+//         utf_maxsize = match char_iter.next_back() {
+//           Some((index, _)) => index,
+//           _ => 0,
+//         };
+//       }
+//     } // Extra {} wrap to limit the immutable borrow of char_indices()
+//     input.truncate(utf_maxsize);
+//   }
+// }

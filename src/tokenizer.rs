@@ -88,7 +88,7 @@ impl Tokenizer {
               // Also "a.m." and "p.m." shouldn't get split
               if ((lw_word.len() == 1) && (lw_word != "I")) ||
                   // Don't sentence-break colons followed by a formula
-                  ((sentence_char == ':') && (next_word_string == "MathFormula"))
+                  ((sentence_char == ':') && next_word_string.starts_with("MathFormula"))
                 || self.abbreviations.is_match(lw_word)
               {
                 left_window.push_back('.');
@@ -179,7 +179,7 @@ impl Tokenizer {
             // Get the next word
             let (next_word_string, next_word_length) = next_word_with_length(&mut text_iterator);
             // Sentence-break, UNLESS a "MathFormula" or a "lowercase word" follows, or a non-alpha char
-            if next_word_string.is_empty() || (next_word_string == "MathFormula")
+            if next_word_string.is_empty() || next_word_string.starts_with("MathFormula")
               || next_word_string.chars().next().unwrap().is_lowercase()
             {
               // We consumed the next word, add it to the left window
@@ -210,7 +210,7 @@ impl Tokenizer {
           // "MathFormula\nCapitalized" case is a sentence break (but never "MathFormula\nMathFormula")
           if other_char.is_uppercase() && other_char != 'M' {
             let lw_string: String = left_window.clone().into_iter().collect();
-            if lw_string == "MathFormula" {
+            if lw_string.starts_with("MathFormula") {
               // Sentence-break found, but exclude the current letter from the end:
               left_window = VecDeque::with_capacity(window_size);
               sentences.push(

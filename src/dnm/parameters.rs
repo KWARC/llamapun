@@ -10,17 +10,16 @@ pub struct RuntimeParseData {
   pub had_whitespace: bool,
   /// plaintext representation as vector of chars (to deal with UTF-8 mess)
   /// TODO: Use plaintext/byte_offsets directly instead
-  pub chars : Vec<char>,
+  pub chars: Vec<char>,
 }
 impl Default for RuntimeParseData {
   fn default() -> RuntimeParseData {
     RuntimeParseData {
       had_whitespace: true, // skip leading whitespace
-      chars : Vec::new(),
+      chars: Vec::new(),
     }
   }
 }
-
 
 /// Specifies how to deal with a certain tag
 #[derive(Clone)]
@@ -34,7 +33,6 @@ pub enum SpecialTagsOption {
   /// Skip tag
   Skip,
 }
-
 
 /// Parameters for the DNM generation
 #[derive(Clone)]
@@ -84,18 +82,26 @@ impl DNMParameters {
   /// Normalize in a reasonable way for our math documents
   pub fn llamapun_normalization() -> DNMParameters {
     let mut name_options = HashMap::new();
-    name_options.insert("math".to_string(),
-                        SpecialTagsOption::Normalize("MathFormula".to_string()));
-    name_options.insert("cite".to_string(),
-                        SpecialTagsOption::Normalize("CitationElement".to_string()));
+    name_options.insert(
+      "math".to_string(),
+      SpecialTagsOption::Normalize("MathFormula".to_string()),
+    );
+    name_options.insert(
+      "cite".to_string(),
+      SpecialTagsOption::Normalize("CitationElement".to_string()),
+    );
     name_options.insert("table".to_string(), SpecialTagsOption::Skip);
     name_options.insert("head".to_string(), SpecialTagsOption::Skip);
 
     let mut class_options = HashMap::new();
-    class_options.insert("ltx_equation".to_string(),
-                         SpecialTagsOption::Normalize("\nMathFormula\n".to_string()));
-    class_options.insert("ltx_equationgroup".to_string(),
-                         SpecialTagsOption::Normalize("\nMathFormula\n".to_string()));
+    class_options.insert(
+      "ltx_equation".to_string(),
+      SpecialTagsOption::Normalize("\nMathFormula\n".to_string()),
+    );
+    class_options.insert(
+      "ltx_equationgroup".to_string(),
+      SpecialTagsOption::Normalize("\nMathFormula\n".to_string()),
+    );
     class_options.insert("ltx_note_mark".to_string(), SpecialTagsOption::Skip);
     class_options.insert("ltx_note_outer".to_string(), SpecialTagsOption::Skip);
     class_options.insert("ltx_bibliography".to_string(), SpecialTagsOption::Skip);
@@ -114,16 +120,22 @@ impl DNMParameters {
   /// Doesn't check for every possible stupidity
   pub fn check(&self) {
     if self.stem_words_once && self.stem_words_full {
-      println_stderr!("llamapun::dnm: Parameter options stem_words_once\
-  and stem_words_full are both set");
+      println_stderr!(
+        "llamapun::dnm: Parameter options stem_words_once\
+         and stem_words_full are both set"
+      );
     }
     if (self.stem_words_once || self.stem_words_full) && self.convert_to_lowercase {
-      println_stderr!("llamapun::dnm: Parameter option convert_to_lowercase\
-  is redundant, because stemming converts to lowercase already");
+      println_stderr!(
+        "llamapun::dnm: Parameter option convert_to_lowercase\
+         is redundant, because stemming converts to lowercase already"
+      );
     }
     if (self.stem_words_once || self.stem_words_full) && self.support_back_mapping {
-      println_stderr!("llamapun::dnm: Parameter option support_back_mapping\
-  does not work in combination with word stemming yet");
+      println_stderr!(
+        "llamapun::dnm: Parameter option support_back_mapping\
+         does not work in combination with word stemming yet"
+      );
     }
   }
 }

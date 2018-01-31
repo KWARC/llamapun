@@ -84,7 +84,7 @@ fn main() {
   println!("--- Sentences total: {:?}",total_sentences);
   println!("--- Words total: {:?}",total_words);
   println!("--- Words distinct: {:?}",dictionary.count());
-  println!("");
+  println!();
 
   // As well as some basic Benchmarking info:
   let end_reports = PreciseTime::now();

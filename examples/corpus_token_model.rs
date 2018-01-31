@@ -13,6 +13,8 @@ use regex::Regex;
 
 use llamapun::data::Corpus;
 
+static BUFFER_CAPACITY : usize = 10_485_760;
+
 /// Given a `CorTeX` corpus of HTML5 documents, extract a token model as a single file
 pub fn main() {
   let start = time::get_time();
@@ -47,7 +49,7 @@ pub fn main() {
       return;
     }
   };
-  let mut token_writer = BufWriter::with_capacity(10485760, token_model_file);
+  let mut token_writer = BufWriter::with_capacity(BUFFER_CAPACITY, token_model_file);
   let space = ' ';
   let linebreak = '\n';
   // Integers, floats, subfigure numbers

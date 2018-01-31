@@ -155,7 +155,7 @@ impl<'dnmrange> DNMRange<'dnmrange> {
   /// is_end indicates whether the node indicates the end of the interval
   pub fn serialize_offset(root_node: &Node, node: &Node, offset: i32, is_end: bool) -> String {
     if offset < 0 {
-      DNMRange::serialize_node(root_node, &node, is_end)
+      DNMRange::serialize_node(root_node, node, is_end)
     } else {
       format!(
         "string-index({},{})",
@@ -178,11 +178,11 @@ impl<'dnmrange> DNMRange<'dnmrange> {
           return format!(
             "{}/text()[{}]",
             base,
-            get_node_number(&parent, &node, &|n: &Node| n.is_text_node()).unwrap()
+            get_node_number(&parent, node, &|n: &Node| n.is_text_node()).unwrap()
           );
         } else {
           let act = if is_end {
-            get_next_sibling(root_node, node).unwrap_or(node.clone())
+            get_next_sibling(root_node, node).unwrap_or_else(|| node.clone())
           } else {
             node.clone()
           };
@@ -193,18 +193,16 @@ impl<'dnmrange> DNMRange<'dnmrange> {
             base,
             if act.is_text_node() {
               "text()".to_string()
-            } else {
-              if let Some(ns) = act.get_namespace() {
-                let prefix = ns.get_prefix();
-                if prefix == "" {
-                  // default namespace without prefix
-                  format!("*[local-name() = '{}']", act.get_name())
-                } else {
-                  format!("{}:{}", prefix, act.get_name())
-                }
+            } else if let Some(ns) = act.get_namespace() {
+              let prefix = ns.get_prefix();
+              if prefix == "" {
+                // default namespace without prefix
+                format!("*[local-name() = '{}']", act.get_name())
               } else {
-                act.get_name()
+                format!("{}:{}", prefix, act.get_name())
               }
+            } else {
+              act.get_name()
             },
             get_node_number(&parent, &act, &|n: &Node| n.get_name() == act.get_name()).unwrap()
           );
@@ -229,25 +227,24 @@ impl<'dnmrange> DNMRange<'dnmrange> {
     assert_eq!(&(string[0..7]), "arange(");
     assert_eq!(&(string[string.len() - 1..string.len()]), ")");
 
-    let main_comma = 1
-      + string
-        .find("),")
-        .unwrap_or(string.find("],").expect(&format!(
-          "DNMRange::deserialize: Malformed string: \"{}\"",
-          string
-        )));
+    let main_comma = 1 + string.find("),").unwrap_or_else(|| {
+      string.find("],").expect(&format!(
+        "DNMRange::deserialize: Malformed string: \"{}\"",
+        string
+      ))
+    });
 
     let start_str = &string[7..main_comma];
     let end_str = &string[main_comma + 1..string.len() - 1];
 
-    let start_pos = DNMRange::xpointer_to_offset(&start_str, dnm, xpath_context);
-    let end_pos = DNMRange::xpointer_to_offset(&end_str, dnm, xpath_context);
+    let start_pos = DNMRange::xpointer_to_offset(start_str, dnm, xpath_context);
+    let end_pos = DNMRange::xpointer_to_offset(end_str, dnm, xpath_context);
 
-    return DNMRange {
+    DNMRange {
       dnm: dnm,
       start: start_pos,
       end: end_pos,
-    };
+    }
   }
 
   /// Gets the plaintext offset corresponding to an XPath/string-index'ed XPointer,
@@ -259,31 +256,29 @@ impl<'dnmrange> DNMRange<'dnmrange> {
         string
       ));
       let node_str = &string[13..comma];
-      let node_set = xpath_context.evaluate(&node_str).unwrap();
+      let node_set = xpath_context.evaluate(node_str).unwrap();
       assert_eq!(node_set.get_number_of_nodes(), 1);
       let node = node_set.get_nodes_as_vec()[0].clone();
       match dnm.get_range_of_node(&node) {
         Ok(range) => {
           let mut pos = range.start;
           let offset = &string[comma + 1..string.len() - 1].parse::<i32>().unwrap() - 1;
-          while pos < range.end && &dnm.back_map[pos].1 < &offset {
+          while pos < range.end && dnm.back_map[pos].1 < offset {
             pos += 1;
           }
-          return pos;
+          pos
         }
-        Err(()) => {
-          return get_position_of_lowest_parent(&node, dnm);
-        }
+        Err(()) => get_position_of_lowest_parent(&node, dnm),
       }
     } else {
       let node_str = string;
-      let node_set = xpath_context.evaluate(&node_str).expect(&format!(
+      let node_set = xpath_context.evaluate(node_str).expect(&format!(
         "DNMRange::deserialize: Malformed XPath: '{}'",
         &node_str
       ));
       assert_eq!(node_set.get_number_of_nodes(), 1);
       let node = node_set.get_nodes_as_vec()[0].clone();
-      return get_position_of_lowest_parent(&node, dnm);
+      get_position_of_lowest_parent(&node, dnm)
     }
   }
 }
@@ -337,5 +332,5 @@ fn get_node_number(parent: &Node, target: &Node, rule: &Fn(&Node) -> bool) -> Re
       }
     }
   }
-  return Ok(count);
+  Ok(count)
 }

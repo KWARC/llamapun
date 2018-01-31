@@ -106,7 +106,7 @@ macro_rules! push_whitespace(
 
 impl DNM {
   /// Creates a `DNM` for `root`
-  pub fn new(root: Node, parameters: DNMParameters) -> DNM {
+  pub fn new(root: &Node, parameters: DNMParameters) -> DNM {
     parameters.check();
     let mut dnm = DNM {
       parameters: parameters,
@@ -115,7 +115,7 @@ impl DNM {
     };
 
     // Depth-first traversal of the DOM extracting a plaintext representation and building a node<->text map.
-    dnm.recurse_node_create(&root);
+    dnm.recurse_node_create(root);
 
     // generate plaintext
     assert_eq!(dnm.plaintext.len(), 0);
@@ -213,7 +213,7 @@ impl DNM {
       return;
     }
     if !self.parameters.support_back_mapping {
-      *string = unidecode(&string);
+      *string = unidecode(string);
       return;
     }
 
@@ -241,9 +241,9 @@ impl DNM {
       panic!("llamapun::dnm: word stemming does not support back-mapping yet");
     }
     if self.parameters.stem_words_full {
-      *string = rustmorpha::full_stem(&string);
+      *string = rustmorpha::full_stem(string);
     } else if self.parameters.stem_words_once {
-      *string = rustmorpha::stem(&string);
+      *string = rustmorpha::stem(string);
     }
   }
 

@@ -2,7 +2,7 @@
 //!      The core purpose for canonicalization is linguistic comparison,
 //!      so the c14n module tries to strip away markup artefacts unrelated to the underlying content, such as xml:ids.
 use libxml::tree::Node;
-use libxml::tree::NodeType::{TextNode, ElementNode};
+use libxml::tree::NodeType::{ElementNode, TextNode};
 use crypto::md5::Md5;
 use crypto::digest::Digest;
 use std::sync::Mutex;
@@ -40,15 +40,15 @@ impl DNM {
     hasher.result_str()
   }
 
-  fn canonical_internal(&self, node: &Node, indent : Option<u32>, mut canonical_node : &mut String) {
+  fn canonical_internal(&self, node: &Node, indent: Option<u32>, mut canonical_node: &mut String) {
     // Bookkeep indents, if requested
     let indent_string = match indent {
       Some(level) => String::new() + "\n" + &(1..level).map(|_| " ").collect::<String>(),
-      None => String::new()
+      None => String::new(),
     };
     let next_indent_level = match indent {
       Some(level) => Some(level + 2),
-      None => None
+      None => None,
     };
 
     match node.get_type() {
@@ -62,7 +62,7 @@ impl DNM {
             // ignore empty nodes
           }
         }
-      },
+      }
       Some(ElementNode) => {
         // Skip artefact nodes
         let name: String = node.get_name();
@@ -71,7 +71,8 @@ impl DNM {
         }
 
         // Open the current node
-        if name != "semantics" { // ignore unwrappable nodes
+        if name != "semantics" {
+          // ignore unwrappable nodes
           canonical_node.push_str(&indent_string);
           canonical_node.push('<');
           canonical_node.push_str(&name);
@@ -103,15 +104,16 @@ impl DNM {
         }
 
         // Close the current node
-        if name != "semantics" { // ignore unwrappable nodes
+        if name != "semantics" {
+          // ignore unwrappable nodes
           canonical_node.push_str(&indent_string);
           canonical_node.push_str("</");
           canonical_node.push_str(&name);
           canonical_node.push_str(">");
         }
-      },
+      }
       _ => {
-        println!("-- Skipping node {:?}",  node.get_name());
+        println!("-- Skipping node {:?}", node.get_name());
       } // skip all other node types for now
     }
     return;

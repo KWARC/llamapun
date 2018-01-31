@@ -16,6 +16,7 @@ use llamapun::data::Corpus;
 
 static SPACE: &'static [u8] = b" ";
 static NEWLINE: &'static [u8] = b"\n";
+static BUFFER_CAPACITY : usize = 10_485_760;
 
 /// Given a `CorTeX` corpus of HTML5 documents, extract a node model as a single file
 pub fn main() {
@@ -46,7 +47,7 @@ pub fn main() {
       return;
     }
   };
-  let mut node_model_writer = BufWriter::with_capacity(10485760, node_model_file);
+  let mut node_model_writer = BufWriter::with_capacity(BUFFER_CAPACITY, node_model_file);
 
   let node_statistics_file = match File::create(node_statistics_filepath) {
     Ok(fh) => fh,
@@ -58,7 +59,7 @@ pub fn main() {
       return;
     }
   };
-  let mut node_statistics_writer = BufWriter::with_capacity(10485760, node_statistics_file);
+  let mut node_statistics_writer = BufWriter::with_capacity(BUFFER_CAPACITY, node_statistics_file);
 
   let mut total_counts = HashMap::new();
   let mut corpus = Corpus::new(corpus_path);

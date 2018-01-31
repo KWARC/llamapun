@@ -220,7 +220,7 @@ impl<'d> Document<'d> {
   pub fn sentence_iter(&mut self) -> SentenceIterator {
     if self.dnm.is_none() {
       self.dnm = Some(DNM::new(
-        self.dom.get_root_element(),
+        &self.dom.get_root_element(),
         self.corpus.dnm_parameters.clone(),
       ));
     }
@@ -240,7 +240,7 @@ impl<'iter> Iterator for ParagraphIterator<'iter> {
       None => None,
       Some(node) => {
         // Create a DNM for the current paragraph
-        let dnm = DNM::new(node, DNMParameters::llamapun_normalization());
+        let dnm = DNM::new(&node, DNMParameters::llamapun_normalization());
         Some(Paragraph {
           dnm: dnm,
           document: self.document,

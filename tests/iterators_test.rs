@@ -13,7 +13,7 @@ fn can_iterate_corpus() {
     for mut paragraph in document.paragraph_iter() {
       for mut sentence in paragraph.iter() {
         for word in sentence.simple_iter() {
-          word_count+=1;
+          word_count += 1;
           assert!(!word.range.is_empty());
           assert!(word.pos == POS::NOT_SET);
         }
@@ -25,7 +25,6 @@ fn can_iterate_corpus() {
   assert!(word_count > 8400);
 }
 
-
 #[test]
 fn can_load_document_directly() {
   let corpus = Corpus::new(".".to_string());
@@ -34,8 +33,8 @@ fn can_load_document_directly() {
   for mut paragraph in document.paragraph_iter() {
     for mut sentence in paragraph.iter() {
       for word in sentence.simple_iter() {
-        word_count+=1;
-        assert!(! word.range.is_empty());
+        word_count += 1;
+        assert!(!word.range.is_empty());
         assert!(word.pos == POS::NOT_SET);
       }
     }
@@ -51,8 +50,8 @@ fn can_iterate_sentences_directly() {
   let mut document = Document::new("tests/resources/0903.1000.html".to_string(), &corpus).unwrap();
   for mut sentence in document.sentence_iter() {
     for word in sentence.simple_iter() {
-      word_count+=1;
-      assert!(! word.range.is_empty());
+      word_count += 1;
+      assert!(!word.range.is_empty());
       assert!(word.pos == POS::NOT_SET);
     }
   }
@@ -71,7 +70,7 @@ fn can_senna_iterate_corpus() {
       for mut sentence in paragraph.iter() {
         for word in sentence.senna_iter() {
           word_count += 1;
-          assert!(! word.range.is_empty());
+          assert!(!word.range.is_empty());
           assert!(word.pos != POS::NOT_SET);
         }
       }
@@ -81,4 +80,3 @@ fn can_senna_iterate_corpus() {
   println!("Words iterated on: {:?}", word_count);
   assert!(word_count > 9700);
 }
-

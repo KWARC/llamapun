@@ -26,7 +26,8 @@ fn main() {
   // };
   let corpus = Corpus::new("tests/resources/".to_string());
   let arxivid = "0903.1000";
-  let mut document = Document::new("tests/resources/".to_string() + arxivid + ".html", &corpus).unwrap();
+  let mut document =
+    Document::new("tests/resources/".to_string() + arxivid + ".html", &corpus).unwrap();
   let end_parse = PreciseTime::now();
 
   // We will tokenize each logical paragraph, which are the textual logical units

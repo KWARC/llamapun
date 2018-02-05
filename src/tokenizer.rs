@@ -45,7 +45,9 @@ impl Tokenizer {
         '.' | ':' => {
           // Baseline condition - only split when we have a following uppercase letter
           // Get next non-space, non-quote character
-          while text_iterator.peek().unwrap_or(&'.').is_whitespace() || text_iterator.peek() == Some(&'\'') {
+          while text_iterator.peek().unwrap_or(&'.').is_whitespace()
+            || text_iterator.peek() == Some(&'\'')
+          {
             let space_char = text_iterator.next().unwrap();
             end += space_char.len_utf8();
           }
@@ -88,7 +90,8 @@ impl Tokenizer {
               // sentence, Also "a.m." and "p.m." shouldn't get split
               if ((lw_word.len() == 1) && (lw_word != "I")) ||
                   // Don't sentence-break colons followed by a formula
-                  ((sentence_char == ':') && next_word_string.starts_with("MathFormula")) || self.abbreviations.is_match(lw_word)
+                  ((sentence_char == ':') && next_word_string.starts_with("MathFormula"))
+                || self.abbreviations.is_match(lw_word)
               {
                 left_window.push_back('.');
                 if left_window.len() >= window_size {
@@ -179,7 +182,9 @@ impl Tokenizer {
             let (next_word_string, next_word_length) = next_word_with_length(&mut text_iterator);
             // Sentence-break, UNLESS a "MathFormula" or a "lowercase word" follows, or a
             // non-alpha char
-            if next_word_string.is_empty() || next_word_string.starts_with("MathFormula") || next_word_string.chars().next().unwrap().is_lowercase() {
+            if next_word_string.is_empty() || next_word_string.starts_with("MathFormula")
+              || next_word_string.chars().next().unwrap().is_lowercase()
+            {
               // We consumed the next word, add it to the left window
               for next_word_char in next_word_string.chars() {
                 left_window.push_back(next_word_char);
@@ -276,7 +281,10 @@ impl Tokenizer {
 fn is_bounded<'a>(left: Option<&'a char>, right: Option<&'a char>) -> bool {
   let pair = [left, right];
   match pair {
-    [Some(&'['), Some(&']')] | [Some(&'('), Some(&')')] | [Some(&'{'), Some(&'}')] | [Some(&'"'), Some(&'"')] => true,
+    [Some(&'['), Some(&']')]
+    | [Some(&'('), Some(&')')]
+    | [Some(&'{'), Some(&'}')]
+    | [Some(&'"'), Some(&'"')] => true,
     _ => false,
   }
 }

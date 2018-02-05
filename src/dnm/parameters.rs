@@ -110,7 +110,8 @@ impl DNMParameters {
     DNMParameters {
       special_tag_name_options: name_options,
       special_tag_class_options: class_options,
-      normalize_white_spaces: false, // Keeping it raw for tokenization best results, newlines are meaningful
+      normalize_white_spaces: false, /* Keeping it raw for tokenization best results, newlines
+                                      * are meaningful */
       wrap_tokens: false,
       normalize_unicode: true,
       ..Default::default()

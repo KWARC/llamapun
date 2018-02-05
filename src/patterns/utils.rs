@@ -15,7 +15,9 @@ pub fn get_simple_node_content(node: &Node, trim: bool) -> Result<String, String
   let child = node.get_first_child();
   if child.is_none() {
     Ok(String::new())
-  } else if !child.as_ref().unwrap().is_text_node() || child.as_ref().unwrap().get_next_sibling().is_some() {
+  } else if !child.as_ref().unwrap().is_text_node()
+    || child.as_ref().unwrap().get_next_sibling().is_some()
+  {
     Err(format!(
       "found unexpected nodes in node \"{}\"",
       node.get_name()
@@ -118,7 +120,12 @@ pub fn require_node_property(node: &Node, property: &str) -> Result<String, Stri
 }
 
 /// generates a specific error message if `property.is_some()`
-pub fn check_found_property_already(property: &Option<String>, node_name: &str, parent_name: &str) -> Result<(), String> {
+pub fn check_found_property_already(
+  property: &Option<String>,
+  node_name: &str,
+  parent_name: &str,
+) -> Result<(), String>
+{
   if property.is_some() {
     Err(format!(
       "found multiple \"{}\" nodes in \"{}\" node",

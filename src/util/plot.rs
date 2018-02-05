@@ -4,7 +4,14 @@ use gnuplot::*;
 use std::hash::Hash;
 
 /// A simple plot
-pub fn plot_simple<T: Clone + Eq + Hash + DataType>(map: &[(T, usize)], x_label: &str, y_label: &str, title: &str, pathname: &str) {
+pub fn plot_simple<T: Clone + Eq + Hash + DataType>(
+  map: &[(T, usize)],
+  x_label: &str,
+  y_label: &str,
+  title: &str,
+  pathname: &str,
+)
+{
   let keys: Vec<T> = map.into_iter().map(|entry| entry.0.clone()).collect();
   let log_values = map.into_iter().map(|entry| (entry.1 as f64).log2());
   let mut fg = Figure::new();

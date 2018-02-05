@@ -79,7 +79,8 @@ fn print_marker(marker: &MarkerEnum, alt_dnm: &DNM, xpath_context: &Context) {
       println!(
         "<h5>TextMarker</h5> \"{}\" \n <br /><br /><p>{}</p>",
         &get_pattern_marker_string(&text_marker.marker),
-        DNMRange::deserialize(&text_marker.range.serialize(), alt_dnm, xpath_context).get_plaintext()
+        DNMRange::deserialize(&text_marker.range.serialize(), alt_dnm, xpath_context)
+          .get_plaintext()
       );
     },
     MarkerEnum::Math(ref math_marker) => {
@@ -171,7 +172,8 @@ pub fn main() {
       println!("<hr />");
       println!(
         "<h4>Sentence</h4>\n<p>{}</p>",
-        DNMRange::deserialize(&sentence_2.range.serialize(), &alt_dnm, &xpath_context).get_plaintext()
+        DNMRange::deserialize(&sentence_2.range.serialize(), &alt_dnm, &xpath_context)
+          .get_plaintext()
       );
       for m in &matches {
         for m2 in &m.get_marker_list() {

@@ -237,7 +237,9 @@ impl DNM {
   fn stem_words(&self, string: &mut String /* , offsets : &mut Vec<i32> */) {
     // TODO: Support back-mapping (using e.g. something like min. edit distance to
     // map offsets)
-    if self.parameters.support_back_mapping && (self.parameters.stem_words_full || self.parameters.stem_words_once) {
+    if self.parameters.support_back_mapping
+      && (self.parameters.stem_words_full || self.parameters.stem_words_once)
+    {
       panic!("llamapun::dnm: word stemming does not support back-mapping yet");
     }
     if self.parameters.stem_words_full {

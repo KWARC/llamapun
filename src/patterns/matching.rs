@@ -165,7 +165,13 @@ fn get_phrase_matches(root: &PhraseTree, start_pos: usize, target: Phrase) -> Ve
  */
 
 /// returns the matches in a sentence
-pub fn match_sentence<'t>(pf: &PatternFile, sentence: &Sentence, range: &'t DNMRange, rule: &str) -> Result<Vec<Match<'t>>, String> {
+pub fn match_sentence<'t>(
+  pf: &PatternFile,
+  sentence: &Sentence,
+  range: &'t DNMRange,
+  rule: &str,
+) -> Result<Vec<Match<'t>>, String>
+{
   /* if !range.dnm.parameters.support_back_mapping {
        return Err("DNM of sentence does not support back mapping".to_string());
        } */
@@ -182,7 +188,8 @@ pub fn match_sentence<'t>(pf: &PatternFile, sentence: &Sentence, range: &'t DNMR
       .get_psgroot()
       .ok_or_else(|| "PSG required for pattern matching".to_string())
   );
-  let phrase_tree = try!(PhraseTree::from_psg(psg).map_err(|_| "Invalid PSG: Contains only leaf".to_string()));
+  let phrase_tree =
+    try!(PhraseTree::from_psg(psg).map_err(|_| "Invalid PSG: Contains only leaf".to_string()));
 
   let mut matches: Vec<Match<'t>> = Vec::new();
 
@@ -201,7 +208,15 @@ pub fn match_sentence<'t>(pf: &PatternFile, sentence: &Sentence, range: &'t DNMR
   Ok(matches)
 }
 
-fn match_seq<'t>(pf: &PatternFile, rule: &SequencePattern, sentence: &Sentence, phrase_tree: &PhraseTree, range: &'t DNMRange, pos: usize) -> InternalSeqMatch<'t> {
+fn match_seq<'t>(
+  pf: &PatternFile,
+  rule: &SequencePattern,
+  sentence: &Sentence,
+  phrase_tree: &PhraseTree,
+  range: &'t DNMRange,
+  pos: usize,
+) -> InternalSeqMatch<'t>
+{
   match *rule {
     SequencePattern::SeqRef(p) => match_seq(
       pf,
@@ -365,7 +380,13 @@ fn match_seq<'t>(pf: &PatternFile, rule: &SequencePattern, sentence: &Sentence, 
   }
 }
 
-fn match_word<'t>(pf: &PatternFile, rule: &WordPattern, word: &Word, range: &'t DNMRange) -> InternalWordMatch<'t> {
+fn match_word<'t>(
+  pf: &PatternFile,
+  rule: &WordPattern,
+  word: &Word,
+  range: &'t DNMRange,
+) -> InternalWordMatch<'t>
+{
   match *rule {
     WordPattern::WordRef(rule_pos) => match_word(pf, &pf.word_rules[rule_pos].pattern, word, range),
     WordPattern::WordOr(ref word_patterns) => {
@@ -525,7 +546,9 @@ fn match_math<'t>(pf: &PatternFile, rule: &MathPattern, node: &Node) -> Internal
         }
 
         let mut start_pos = 0usize;
-        if match_type == &MathChildrenMatchType::MatchesExactly && c_nodes.len() != child_rules.len() {
+        if match_type == &MathChildrenMatchType::MatchesExactly
+          && c_nodes.len() != child_rules.len()
+        {
           return InternalMathMatch::no_match();
         }
         if match_type == &MathChildrenMatchType::EndsWith {

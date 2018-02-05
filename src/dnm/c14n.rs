@@ -1,6 +1,7 @@
 //! The `dnm::c14n` submodule offers lightweight canonicalization for a DOM node.
 //!      The core purpose for canonicalization is linguistic comparison,
-//!      so the c14n module tries to strip away markup artefacts unrelated to the underlying content, such as xml:ids.
+//! so the c14n module tries to strip away markup artefacts unrelated to the underlying
+//! content, such as xml:ids.
 use libxml::tree::Node;
 use libxml::tree::NodeType::{ElementNode, TextNode};
 use crypto::md5::Md5;
@@ -13,9 +14,9 @@ lazy_static! {
 }
 
 impl DNM {
-  /// Our linguistic canonical form will only include 1) node name, 2) class attribute and 3) textual content
-  ///  - excludes certain experimental markup, such as all math annotation elements
-  ///  - excludes whitespace nodes and comment nodes
+  /// Our linguistic canonical form will only include 1) node name, 2) class attribute and 3)
+  /// textual content - excludes certain experimental markup, such as all math annotation
+  /// elements  - excludes whitespace nodes and comment nodes
   pub fn to_c14n_basic(&self) -> String { self.node_c14n_basic(&self.root_node) }
 
   /// Canonicalize a single node of choice

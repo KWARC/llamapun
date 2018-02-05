@@ -129,8 +129,13 @@ pub fn main() {
   }
 }
 
-fn dfs_record<W>(node: &Node, total_counts: &mut HashMap<String, u32>, node_model_writer: &mut BufWriter<W>)
-where W: std::io::Write {
+fn dfs_record<W>(
+  node: &Node,
+  total_counts: &mut HashMap<String, u32>,
+  node_model_writer: &mut BufWriter<W>,
+) where
+  W: std::io::Write,
+{
   if node.is_text_node() {
     return; // Skip text nodes.
   }

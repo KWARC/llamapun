@@ -137,8 +137,10 @@ impl<'iter> Iterator for DocumentIterator<'iter> {
           let doc_result = Document::new(path, self.corpus);
           return match doc_result {
             Ok(doc) => Some(doc),
-            // TODO: Currently encountering an unparseable file will terminate the entire corpus walk, which is too severe.
-            //       A more viable strategy would be to 1) retry creating the document once and 2) print an error message and continue the walk
+            // TODO: Currently encountering an unparseable file will terminate the entire corpus
+            // walk, which is too severe.
+            // A more viable strategy would be to 1) retry creating the document once and 2)
+            // print an error message and continue the walk
             _ => None,
           };
         }
@@ -182,7 +184,9 @@ impl Corpus {
   }
 
   /// Load a specific document in the corpus
-  pub fn load_doc(&self, path: String) -> Result<Document, XmlParseError> { Document::new(path, self) }
+  pub fn load_doc(&self, path: String) -> Result<Document, XmlParseError> {
+    Document::new(path, self)
+  }
 }
 
 impl<'d> Document<'d> {

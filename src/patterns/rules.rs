@@ -920,7 +920,12 @@ impl SequenceRule {
 
 /// gets the position (offset) for a rule. Allocates a new position, if rule doesn't have an offset
 /// yet
-fn get_rule_position<RuleT>(rules: &mut Vec<Option<RuleT>>, map: &mut HashMap<String, usize>, rule_name: &str) -> usize {
+fn get_rule_position<RuleT>(
+  rules: &mut Vec<Option<RuleT>>,
+  map: &mut HashMap<String, usize>,
+  rule_name: &str,
+) -> usize
+{
   {
     if let Some(position) = map.get(rule_name) {
       return *position;
@@ -950,15 +955,25 @@ impl<'t> PCtx<'t> {
     }
   }
 
-  fn get_math_rule(&mut self, rule_name: &str) -> usize { get_rule_position(&mut self.math_rules, &mut self.math_name_map, rule_name) }
+  fn get_math_rule(&mut self, rule_name: &str) -> usize {
+    get_rule_position(&mut self.math_rules, &mut self.math_name_map, rule_name)
+  }
 
-  fn get_mtext_rule(&mut self, rule_name: &str) -> usize { get_rule_position(&mut self.mtext_rules, &mut self.mtext_name_map, rule_name) }
+  fn get_mtext_rule(&mut self, rule_name: &str) -> usize {
+    get_rule_position(&mut self.mtext_rules, &mut self.mtext_name_map, rule_name)
+  }
 
-  fn get_pos_rule(&mut self, rule_name: &str) -> usize { get_rule_position(&mut self.pos_rules, &mut self.pos_name_map, rule_name) }
+  fn get_pos_rule(&mut self, rule_name: &str) -> usize {
+    get_rule_position(&mut self.pos_rules, &mut self.pos_name_map, rule_name)
+  }
 
-  fn get_word_rule(&mut self, rule_name: &str) -> usize { get_rule_position(&mut self.word_rules, &mut self.word_name_map, rule_name) }
+  fn get_word_rule(&mut self, rule_name: &str) -> usize {
+    get_rule_position(&mut self.word_rules, &mut self.word_name_map, rule_name)
+  }
 
-  fn get_sequence_rule(&mut self, rule_name: &str) -> usize { get_rule_position(&mut self.seq_rules, &mut self.seq_name_map, rule_name) }
+  fn get_sequence_rule(&mut self, rule_name: &str) -> usize {
+    get_rule_position(&mut self.seq_rules, &mut self.seq_name_map, rule_name)
+  }
 
   fn add_math_rule(&mut self, node: &Node) -> Result<(), String> {
     let rule = try!(MathRule::load_from_node(node, self));

@@ -20,9 +20,7 @@ impl Default for Dictionary {
 }
 impl Dictionary {
   /// create a new dictionary
-  pub fn new() -> Self {
-    Dictionary::default()
-  }
+  pub fn new() -> Self { Dictionary::default() }
   /// insert a new word into the dictionary (if it hasn't been inserted yet)
   pub fn insert(&mut self, word: String) {
     let map = &mut self.map;
@@ -39,9 +37,7 @@ impl Dictionary {
     as_vec
   }
   /// get the number of entries in the dictionary
-  pub fn count(&self) -> usize {
-    self.index
-  }
+  pub fn count(&self) -> usize { self.index }
 }
 
 /// Records the frequencies of single words
@@ -59,9 +55,7 @@ impl Default for Unigrams {
 
 impl Unigrams {
   /// Creates a new, empty Unigrams struct
-  pub fn new() -> Self {
-    Unigrams::default()
-  }
+  pub fn new() -> Self { Unigrams::default() }
   /// Get the word count
   pub fn get(&self, word: &str) -> usize {
     match self.map.get(word) {
@@ -81,7 +75,5 @@ impl Unigrams {
     as_vec
   }
   /// get the number of different words inserted
-  pub fn count(&self) -> usize {
-    self.map.len()
-  }
+  pub fn count(&self) -> usize { self.map.len() }
 }

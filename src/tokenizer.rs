@@ -45,9 +45,7 @@ impl Tokenizer {
         '.' | ':' => {
           // Baseline condition - only split when we have a following uppercase letter
           // Get next non-space, non-quote character
-          while text_iterator.peek().unwrap_or(&'.').is_whitespace()
-            || text_iterator.peek() == Some(&'\'')
-          {
+          while text_iterator.peek().unwrap_or(&'.').is_whitespace() || text_iterator.peek() == Some(&'\'') {
             let space_char = text_iterator.next().unwrap();
             end += space_char.len_utf8();
           }
@@ -56,7 +54,8 @@ impl Tokenizer {
           }
           // Uppercase next?
           if text_iterator.peek().unwrap().is_uppercase() {
-            // Ok, uppercase, but is it a stopword? If so, we must ALWAYS break the sentence:
+            // Ok, uppercase, but is it a stopword? If so, we must ALWAYS break the
+            // sentence:
             let (next_word_string, next_word_length) = next_word_with_length(&mut text_iterator);
             let next_word_lc = next_word_string.to_lowercase();
             // Always break the sentence when we see a stopword
@@ -76,7 +75,8 @@ impl Tokenizer {
             } else {
               // Regular word case.
               // Check for abbreviations:
-              // Longest abbreviation is 6 characters, but MathFormula is 11, so take window of window_size chars to the left (allow for a space before dot)
+              // Longest abbreviation is 6 characters, but MathFormula is 11, so take window
+              // of window_size chars to the left (allow for a space before dot)
               let lw_string: String = left_window.clone().into_iter().collect();
               let lw_str: &str = &lw_string;
               let lw_opt = lw_str.trim().split(|c: char| !c.is_alphabetic()).last();
@@ -84,12 +84,11 @@ impl Tokenizer {
                 None => lw_str,
                 Some(w) => w,
               };
-              // Don't consider single letters followed by a punctuation sign an end of a sentence,
-              // Also "a.m." and "p.m." shouldn't get split
+              // Don't consider single letters followed by a punctuation sign an end of a
+              // sentence, Also "a.m." and "p.m." shouldn't get split
               if ((lw_word.len() == 1) && (lw_word != "I")) ||
                   // Don't sentence-break colons followed by a formula
-                  ((sentence_char == ':') && next_word_string.starts_with("MathFormula"))
-                || self.abbreviations.is_match(lw_word)
+                  ((sentence_char == ':') && next_word_string.starts_with("MathFormula")) || self.abbreviations.is_match(lw_word)
               {
                 left_window.push_back('.');
                 if left_window.len() >= window_size {
@@ -135,17 +134,17 @@ impl Tokenizer {
                   }.trim(),
                 );
                 start = end;
-              }
+              },
               _ => {
                 // TODO: Maybe break on lowercase stopwords here? unclear...
                 left_window.push_back('.');
                 if left_window.len() >= window_size {
                   left_window.pop_front();
                 }
-              }
+              },
             }
           }
-        }
+        },
         '?' | '!' => {
           if !is_bounded(left_window.back(), text_iterator.peek()) {
             // Reset the left window
@@ -160,7 +159,7 @@ impl Tokenizer {
             );
             start = end;
           }
-        }
+        },
         // TODO:
         // Some('\u{2022}'),Some('*') => { // bullet point for itemize
         // Some('\u{220e}') => { // QED symbol
@@ -178,10 +177,9 @@ impl Tokenizer {
             }
             // Get the next word
             let (next_word_string, next_word_length) = next_word_with_length(&mut text_iterator);
-            // Sentence-break, UNLESS a "MathFormula" or a "lowercase word" follows, or a non-alpha char
-            if next_word_string.is_empty() || next_word_string.starts_with("MathFormula")
-              || next_word_string.chars().next().unwrap().is_lowercase()
-            {
+            // Sentence-break, UNLESS a "MathFormula" or a "lowercase word" follows, or a
+            // non-alpha char
+            if next_word_string.is_empty() || next_word_string.starts_with("MathFormula") || next_word_string.chars().next().unwrap().is_lowercase() {
               // We consumed the next word, add it to the left window
               for next_word_char in next_word_string.chars() {
                 left_window.push_back(next_word_char);
@@ -205,9 +203,10 @@ impl Tokenizer {
             // We consumed the next word, so make sure we reflect that in either case:
             end += next_word_length;
           }
-        }
+        },
         other_char => {
-          // "MathFormula\nCapitalized" case is a sentence break (but never "MathFormula\nMathFormula")
+          // "MathFormula\nCapitalized" case is a sentence break (but never
+          // "MathFormula\nMathFormula")
           if other_char.is_uppercase() && other_char != 'M' {
             let lw_string: String = left_window.clone().into_iter().collect();
             if lw_string.starts_with("MathFormula") {
@@ -228,7 +227,7 @@ impl Tokenizer {
           if left_window.len() >= window_size {
             left_window.pop_front();
           }
-        }
+        },
       }
     }
 
@@ -277,15 +276,13 @@ impl Tokenizer {
 fn is_bounded<'a>(left: Option<&'a char>, right: Option<&'a char>) -> bool {
   let pair = [left, right];
   match pair {
-    [Some(&'['), Some(&']')]
-    | [Some(&'('), Some(&')')]
-    | [Some(&'{'), Some(&'}')]
-    | [Some(&'"'), Some(&'"')] => true,
+    [Some(&'['), Some(&']')] | [Some(&'('), Some(&')')] | [Some(&'{'), Some(&'}')] | [Some(&'"'), Some(&'"')] => true,
     _ => false,
   }
 }
 
-/// Obtains the next word from the `Peekable<Chars>` iterator, where only alphabetic characters are accepted, and a max length of 20 is imposed
+/// Obtains the next word from the `Peekable<Chars>` iterator, where only
+/// alphabetic characters are accepted, and a max length of 20 is imposed
 fn next_word_with_length(text_iterator: &mut Peekable<Chars>) -> (String, usize) {
   let mut next_word_length = 0;
   let mut next_word: Vec<char> = Vec::new();

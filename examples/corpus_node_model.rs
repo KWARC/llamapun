@@ -16,9 +16,10 @@ use llamapun::data::Corpus;
 
 static SPACE: &'static [u8] = b" ";
 static NEWLINE: &'static [u8] = b"\n";
-static BUFFER_CAPACITY : usize = 10_485_760;
+static BUFFER_CAPACITY: usize = 10_485_760;
 
-/// Given a `CorTeX` corpus of HTML5 documents, extract a node model as a single file
+/// Given a `CorTeX` corpus of HTML5 documents, extract a node model as a
+/// single file
 pub fn main() {
   let start = time::get_time();
   // Read input arguments
@@ -45,7 +46,7 @@ pub fn main() {
         e
       );
       return;
-    }
+    },
   };
   let mut node_model_writer = BufWriter::with_capacity(BUFFER_CAPACITY, node_model_file);
 
@@ -57,7 +58,7 @@ pub fn main() {
         e
       );
       return;
-    }
+    },
   };
   let mut node_statistics_writer = BufWriter::with_capacity(BUFFER_CAPACITY, node_statistics_file);
 
@@ -128,13 +129,8 @@ pub fn main() {
   }
 }
 
-fn dfs_record<W>(
-  node: &Node,
-  total_counts: &mut HashMap<String, u32>,
-  node_model_writer: &mut BufWriter<W>,
-) where
-  W: std::io::Write,
-{
+fn dfs_record<W>(node: &Node, total_counts: &mut HashMap<String, u32>, node_model_writer: &mut BufWriter<W>)
+where W: std::io::Write {
   if node.is_text_node() {
     return; // Skip text nodes.
   }

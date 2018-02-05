@@ -1,4 +1,5 @@
-//! The `dnm::parameters` submodule provides data structures for customizing and configuring a DNM's construction and use
+//! The `dnm::parameters` submodule provides data structures for customizing
+//! and configuring a DNM's construction and use
 
 use std::collections::HashMap;
 use libxml::tree::*;

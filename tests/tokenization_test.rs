@@ -13,12 +13,13 @@ use regex::Regex;
 /// Test sentence tokenization of a simple document
 fn test_sentence_tokenization_simple() {
   let simple_text = "This note was written to clarify for myself and my colleagues certain properties \
-   of Bernstein approximations that are useful in investigating copulas. We derive some of the basic properties \
-   of the Bernstein approximation for functions of n variables and then show that the Bernstein approximation of \
-   a copula is again a copula. Unorthodox beginnings of sentences can also occur. Deciphering Eqn. 1 is sometimes. difficult Prof. Automation, isn't it? \
-   Our most significant result is a stochastic interpretation of the Bernstein \
-   approximation of a copula. This interpretation was communicated to us by J. H. B. Kemperman in [?] for \
-   2-copulas and we are not aware of its publication elsewhere.".to_string();
+                     of Bernstein approximations that are useful in investigating copulas. We derive some of the basic properties \
+                     of the Bernstein approximation for functions of n variables and then show that the Bernstein approximation of \
+                     a copula is again a copula. Unorthodox beginnings of sentences can also occur. Deciphering Eqn. 1 is sometimes. difficult Prof. Automation, isn't it? \
+                     Our most significant result is a stochastic interpretation of the Bernstein \
+                     approximation of a copula. This interpretation was communicated to us by J. H. B. Kemperman in [?] for \
+                     2-copulas and we are not aware of its publication elsewhere."
+    .to_string();
   let text_len = simple_text.len();
   let simple_dnm = DNM {
     plaintext: simple_text,
@@ -31,13 +32,14 @@ fn test_sentence_tokenization_simple() {
   let ranges: Vec<DNMRange> = simple_tokenizer.sentences(&simple_dnm);
   assert_eq!(ranges.len(), 6);
 
-  let sentences_expected : [&str; 6] = [
-  "This note was written to clarify for myself and my colleagues certain properties of Bernstein approximations that are useful in investigating copulas.",
-  "We derive some of the basic properties of the Bernstein approximation for functions of n variables and then show that the Bernstein approximation of a copula is again a copula.",
-  "Unorthodox beginnings of sentences can also occur.",
-  "Deciphering Eqn. 1 is sometimes. difficult Prof. Automation, isn't it?",
-  "Our most significant result is a stochastic interpretation of the Bernstein approximation of a copula.",
-  "This interpretation was communicated to us by J. H. B. Kemperman in [?] for 2-copulas and we are not aware of its publication elsewhere."];
+  let sentences_expected: [&str; 6] = [
+    "This note was written to clarify for myself and my colleagues certain properties of Bernstein approximations that are useful in investigating copulas.",
+    "We derive some of the basic properties of the Bernstein approximation for functions of n variables and then show that the Bernstein approximation of a copula is again a copula.",
+    "Unorthodox beginnings of sentences can also occur.",
+    "Deciphering Eqn. 1 is sometimes. difficult Prof. Automation, isn't it?",
+    "Our most significant result is a stochastic interpretation of the Bernstein approximation of a copula.",
+    "This interpretation was communicated to us by J. H. B. Kemperman in [?] for 2-copulas and we are not aware of its publication elsewhere.",
+  ];
   let r_iter = ranges.iter();
   let mut e_iter = sentences_expected.iter();
 
@@ -74,12 +76,13 @@ fn test_sentence_tokenization_arxmliv_html() {
 }
 
 /* ======================== */
-/*    Auxiliary functions:  */
+/* Auxiliary functions: */
 /* ======================== */
 fn test_each_paragraph<'a>(doc: &'a Document, expected: &[Vec<&'a str>]) {
   let multispace = Regex::new(r"\s+").unwrap();
   let tokenizer = Tokenizer::default();
-  // We will tokenize each logical paragraph, which are the textual logical units in an article
+  // We will tokenize each logical paragraph, which are the textual logical units
+  // in an article
   let xpath_context = Context::new(doc).unwrap();
   let para_xpath_result = xpath_context
     .evaluate("//*[contains(@class,'ltx_para')]")
@@ -106,7 +109,8 @@ fn test_each_paragraph<'a>(doc: &'a Document, expected: &[Vec<&'a str>]) {
         None => "".to_string(),
         Some(x) => x.to_string(),
       };
-      // Normalize multispace treatment, since different versions of libxml2 are a little flaky here.
+      // Normalize multispace treatment, since different versions of libxml2 are a
+      // little flaky here.
       let expected_text = multispace.replace_all(&expected_para_text, "_");
       let result_text = multispace.replace_all(range.get_plaintext(), "_");
       assert_eq!(result_text, expected_text);

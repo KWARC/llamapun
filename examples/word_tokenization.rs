@@ -1,12 +1,12 @@
-extern crate llamapun;
-extern crate libxml;
 extern crate libc;
+extern crate libxml;
+extern crate llamapun;
 extern crate time;
 
 use std::collections::HashMap;
 use time::PreciseTime;
-use llamapun::ngrams::{Dictionary,Unigrams};
-use llamapun::data::{Corpus,Document};
+use llamapun::ngrams::{Dictionary, Unigrams};
+use llamapun::data::{Corpus, Document};
 use llamapun::util::plot::*;
 
 fn main() {
@@ -26,10 +26,11 @@ fn main() {
   // };
   let corpus = Corpus::new("tests/resources/".to_string());
   let arxivid = "0903.1000";
-  let mut document = Document::new("tests/resources/".to_string()+arxivid+".html", &corpus).unwrap();
+  let mut document = Document::new("tests/resources/".to_string() + arxivid + ".html", &corpus).unwrap();
   let end_parse = PreciseTime::now();
 
-  // We will tokenize each logical paragraph, which are the textual logical units in an article
+  // We will tokenize each logical paragraph, which are the textual logical units
+  // in an article
   for mut paragraph in document.paragraph_iter() {
     total_paragraphs += 1;
     for mut sentence in paragraph.iter() {
@@ -51,46 +52,65 @@ fn main() {
     let frequency = unigrams.get(&entry.0);
     inorder_frequency.push((entry.1, frequency));
   }
-  plot_simple(&inorder_frequency,
+  plot_simple(
+    &inorder_frequency,
     "Word index, in order of document occurrence",
     "Frequency counts (log2)",
     "Word Frequencies",
-    "inorder_word_freq.png");
+    "inorder_word_freq.png",
+  );
 
   // Sorted gnuplot of frequency distribution:
   let mut frequency_distribution = HashMap::new();
   // Obtain the distribution from the raw frequency data
-  for (_,value) in inorder_frequency {
+  for (_, value) in inorder_frequency {
     let words_with_frequency = frequency_distribution.entry(value).or_insert(0);
     *words_with_frequency += 1;
   }
   // Perform sort
   let mut value_sorted_frequencies = Vec::new();
-  for (index,value) in frequency_distribution {
+  for (index, value) in frequency_distribution {
     value_sorted_frequencies.push((value, index)); // ( # Distinct words , Frequency )
   }
   value_sorted_frequencies.sort_by(|a, b| a.1.cmp(&b.1));
-  plot_simple(&value_sorted_frequencies,
+  plot_simple(
+    &value_sorted_frequencies,
     "Distinct words with this frequency",
     "Frequency (log2)",
     "Frequency Distribution",
-    "distribution_word_freq.png");
+    "distribution_word_freq.png",
+  );
 
   // Print out the final report:
   println!("--- Dictionary: \n{:?}\n", inorder_dictionary);
   println!("--- Frequencies: \n{:?}\n", unigrams.sort());
-  println!("--- Frequency distribution: \n{:?}\n", value_sorted_frequencies);
-  println!("--- Paragraphs total: {:?}",total_paragraphs);
-  println!("--- Sentences total: {:?}",total_sentences);
-  println!("--- Words total: {:?}",total_words);
-  println!("--- Words distinct: {:?}",dictionary.count());
+  println!(
+    "--- Frequency distribution: \n{:?}\n",
+    value_sorted_frequencies
+  );
+  println!("--- Paragraphs total: {:?}", total_paragraphs);
+  println!("--- Sentences total: {:?}", total_sentences);
+  println!("--- Words total: {:?}", total_words);
+  println!("--- Words distinct: {:?}", dictionary.count());
   println!();
 
   // As well as some basic Benchmarking info:
   let end_reports = PreciseTime::now();
   println!("--- Benchmark report:");
-  println!("    LibXML parse took {:?}ms",start_example.to(end_parse).num_milliseconds());
-  println!("    LLaMaPun word tokenization took {:?}ms",end_parse.to(end_example).num_milliseconds());
-  println!("    Finished report generation in {:?}ms",end_example.to(end_reports).num_milliseconds());
-  println!("    Total time: {:?}ms", start_example.to(end_reports).num_milliseconds());
+  println!(
+    "    LibXML parse took {:?}ms",
+    start_example.to(end_parse).num_milliseconds()
+  );
+  println!(
+    "    LLaMaPun word tokenization took {:?}ms",
+    end_parse.to(end_example).num_milliseconds()
+  );
+  println!(
+    "    Finished report generation in {:?}ms",
+    end_example.to(end_reports).num_milliseconds()
+  );
+  println!(
+    "    Total time: {:?}ms",
+    start_example.to(end_reports).num_milliseconds()
+  );
 }

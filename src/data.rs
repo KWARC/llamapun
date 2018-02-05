@@ -93,7 +93,8 @@ pub struct Sentence<'s> {
   pub senna_sentence: Option<SennaSentence<'s>>,
 }
 
-/// An iterator over the words of a sentence, where the words are only defined by their ranges
+/// An iterator over the words of a sentence, where the words are only defined
+/// by their ranges
 pub struct SimpleWordIterator<'iter> {
   /// The walker over the words
   walker: IntoIter<DNMRange<'iter>>,
@@ -181,9 +182,7 @@ impl Corpus {
   }
 
   /// Load a specific document in the corpus
-  pub fn load_doc(&self, path: String) -> Result<Document, XmlParseError> {
-    Document::new(path, self)
-  }
+  pub fn load_doc(&self, path: String) -> Result<Document, XmlParseError> { Document::new(path, self) }
 }
 
 impl<'d> Document<'d> {
@@ -245,7 +244,7 @@ impl<'iter> Iterator for ParagraphIterator<'iter> {
           dnm: dnm,
           document: self.document,
         })
-      }
+      },
     }
   }
 }
@@ -278,7 +277,7 @@ impl<'iter> Iterator for SentenceIterator<'iter> {
           };
           Some(sentence)
         }
-      }
+      },
     }
   }
 }

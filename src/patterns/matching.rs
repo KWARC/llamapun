@@ -116,14 +116,14 @@ impl PhraseTree {
                 start = Some(p);
               }
               end = p;
-            }
+            },
             Ok(t) => {
               if start.is_none() {
                 start = Some(t.start);
               }
               end = t.end;
               child_trees.push(t);
-            }
+            },
           }
         }
         Ok(PhraseTree {
@@ -132,7 +132,7 @@ impl PhraseTree {
           end: end,
           children: child_trees,
         })
-      }
+      },
     }
   }
 }
@@ -165,12 +165,7 @@ fn get_phrase_matches(root: &PhraseTree, start_pos: usize, target: Phrase) -> Ve
  */
 
 /// returns the matches in a sentence
-pub fn match_sentence<'t>(
-  pf: &PatternFile,
-  sentence: &Sentence,
-  range: &'t DNMRange,
-  rule: &str,
-) -> Result<Vec<Match<'t>>, String> {
+pub fn match_sentence<'t>(pf: &PatternFile, sentence: &Sentence, range: &'t DNMRange, rule: &str) -> Result<Vec<Match<'t>>, String> {
   /* if !range.dnm.parameters.support_back_mapping {
        return Err("DNM of sentence does not support back mapping".to_string());
        } */
@@ -187,8 +182,7 @@ pub fn match_sentence<'t>(
       .get_psgroot()
       .ok_or_else(|| "PSG required for pattern matching".to_string())
   );
-  let phrase_tree =
-    try!(PhraseTree::from_psg(psg).map_err(|_| "Invalid PSG: Contains only leaf".to_string()));
+  let phrase_tree = try!(PhraseTree::from_psg(psg).map_err(|_| "Invalid PSG: Contains only leaf".to_string()));
 
   let mut matches: Vec<Match<'t>> = Vec::new();
 
@@ -207,14 +201,7 @@ pub fn match_sentence<'t>(
   Ok(matches)
 }
 
-fn match_seq<'t>(
-  pf: &PatternFile,
-  rule: &SequencePattern,
-  sentence: &Sentence,
-  phrase_tree: &PhraseTree,
-  range: &'t DNMRange,
-  pos: usize,
-) -> InternalSeqMatch<'t> {
+fn match_seq<'t>(pf: &PatternFile, rule: &SequencePattern, sentence: &Sentence, phrase_tree: &PhraseTree, range: &'t DNMRange, pos: usize) -> InternalSeqMatch<'t> {
   match *rule {
     SequencePattern::SeqRef(p) => match_seq(
       pf,
@@ -238,7 +225,7 @@ fn match_seq<'t>(
         end: pos + 1,
         matched: true,
       }
-    }
+    },
     SequencePattern::SeqOfSeq(ref patterns) => {
       let mut matches: Vec<Match> = Vec::new();
       let mut cur_pos = pos;
@@ -256,7 +243,7 @@ fn match_seq<'t>(
         end: cur_pos,
         matched: true,
       }
-    }
+    },
     SequencePattern::Phrase(phrase, ref match_type, ref start_condition, ref end_condition) => {
       let mut phrase_ends = get_phrase_matches(phrase_tree, pos, phrase);
       if match_type == &PhraseMatchType::Longest {
@@ -308,7 +295,7 @@ fn match_seq<'t>(
 
       // no phrase match satisfied all conditions:
       InternalSeqMatch::no_match()
-    }
+    },
     SequencePattern::Marked(box ref pattern, ref marker) => {
       let m = match_seq(pf, pattern, sentence, phrase_tree, range, pos);
       if m.matched {
@@ -332,7 +319,7 @@ fn match_seq<'t>(
       } else {
         InternalSeqMatch::no_match()
       }
-    }
+    },
     SequencePattern::SeqOr(ref patterns, ref match_type) => {
       let mut matches: Vec<Match> = Vec::new();
       let mut matched = false;
@@ -348,19 +335,19 @@ fn match_seq<'t>(
                 longest = m.end;
               }
               break;
-            }
+            },
             SequenceMatchType::AtLeastOne | SequenceMatchType::Any => {
               if m.end > longest {
                 longest = m.end;
               }
               matches.extend_from_slice(&m._matches);
-            }
+            },
             SequenceMatchType::Longest => {
               if m.end > longest {
                 longest = m.end;
                 matches = m._matches;
               }
-            }
+            },
           }
         }
       }
@@ -374,16 +361,11 @@ fn match_seq<'t>(
           matched: true, // don't use `matched` (because SequenceMatchType::Any matches always)
         }
       }
-    }
+    },
   }
 }
 
-fn match_word<'t>(
-  pf: &PatternFile,
-  rule: &WordPattern,
-  word: &Word,
-  range: &'t DNMRange,
-) -> InternalWordMatch<'t> {
+fn match_word<'t>(pf: &PatternFile, rule: &WordPattern, word: &Word, range: &'t DNMRange) -> InternalWordMatch<'t> {
   match *rule {
     WordPattern::WordRef(rule_pos) => match_word(pf, &pf.word_rules[rule_pos].pattern, word, range),
     WordPattern::WordOr(ref word_patterns) => {
@@ -394,7 +376,7 @@ fn match_word<'t>(
         }
       }
       InternalWordMatch::no_match()
-    }
+    },
     WordPattern::Word(ref word_str) => {
       if word_str == word.get_string() {
         InternalWordMatch {
@@ -404,14 +386,14 @@ fn match_word<'t>(
       } else {
         InternalWordMatch::no_match()
       }
-    }
+    },
     WordPattern::WordPos(ref pos_pattern, box ref word_pattern) => {
       if match_pos(pf, pos_pattern, word.get_pos()) {
         match_word(pf, word_pattern, word, range)
       } else {
         InternalWordMatch::no_match()
       }
-    }
+    },
     WordPattern::MathWord(ref math_pattern) => {
       let node = range.dnm.back_map[range.start + word.get_offset_start()]
         .0
@@ -442,7 +424,7 @@ fn match_word<'t>(
       } else {
         InternalWordMatch::no_match()
       }
-    }
+    },
     WordPattern::AnyWord => InternalWordMatch {
       _matches: Vec::new(),
       matched: true,
@@ -454,7 +436,7 @@ fn match_word<'t>(
       } else {
         InternalWordMatch::no_match()
       }
-    }
+    },
     WordPattern::Marked(box ref p, ref marker) => {
       let m = match_word(pf, p, word, range);
       if m.matched {
@@ -473,7 +455,7 @@ fn match_word<'t>(
       } else {
         InternalWordMatch::no_match()
       }
-    }
+    },
   }
 }
 
@@ -502,7 +484,7 @@ fn match_math<'t>(pf: &PatternFile, rule: &MathPattern, node: &Node) -> Internal
       } else {
         InternalMathMatch::no_match()
       }
-    }
+    },
     MathPattern::MathOr(ref patterns) => {
       for pattern in patterns {
         let m = match_math(pf, pattern, node);
@@ -511,10 +493,10 @@ fn match_math<'t>(pf: &PatternFile, rule: &MathPattern, node: &Node) -> Internal
         }
       }
       InternalMathMatch::no_match()
-    }
+    },
     MathPattern::MathNode(ref name, ref mtext, ref children) => {
-      // Here we will use that each MathPattern matches exactly one node for optimization
-      // purposes
+      // Here we will use that each MathPattern matches exactly one node for
+      // optimization purposes
 
       if name.is_some() && name.as_ref().unwrap() != &node.get_name() {
         return InternalMathMatch::no_match();
@@ -543,9 +525,7 @@ fn match_math<'t>(pf: &PatternFile, rule: &MathPattern, node: &Node) -> Internal
         }
 
         let mut start_pos = 0usize;
-        if match_type == &MathChildrenMatchType::MatchesExactly
-          && c_nodes.len() != child_rules.len()
-        {
+        if match_type == &MathChildrenMatchType::MatchesExactly && c_nodes.len() != child_rules.len() {
           return InternalMathMatch::no_match();
         }
         if match_type == &MathChildrenMatchType::EndsWith {
@@ -586,7 +566,7 @@ fn match_math<'t>(pf: &PatternFile, rule: &MathPattern, node: &Node) -> Internal
         _matches: Vec::new(),
         matched: true,
       } // no child matches required
-    }
+    },
     MathPattern::MathDescendant(box ref pattern, ref match_type) => {
       let mut matches: Vec<Match> = Vec::new();
       let mut matched = false;
@@ -617,7 +597,7 @@ fn match_math<'t>(pf: &PatternFile, rule: &MathPattern, node: &Node) -> Internal
       } else {
         InternalMathMatch::no_match()
       }
-    }
+    },
   }
 }
 

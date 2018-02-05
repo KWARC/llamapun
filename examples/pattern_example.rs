@@ -41,12 +41,12 @@ fn math_node_to_string(node: &Node) -> String {
 fn math_node_to_string_actual(node: &Node, mut string: &mut String) {
   match node.get_name().as_ref() {
     "semantics" => math_node_to_string_children(node, &mut string),
-    "annotation" | "annotation-xml" => {}
+    "annotation" | "annotation-xml" => {},
     "text" => {
       if node.is_text_node() {
         string.push_str(&node.get_content());
       }
-    }
+    },
     default => {
       string.push('<');
       string.push_str(default);
@@ -56,7 +56,7 @@ fn math_node_to_string_actual(node: &Node, mut string: &mut String) {
       string.push('/');
       string.push_str(default);
       string.push('>');
-    }
+    },
   }
 }
 
@@ -79,17 +79,16 @@ fn print_marker(marker: &MarkerEnum, alt_dnm: &DNM, xpath_context: &Context) {
       println!(
         "<h5>TextMarker</h5> \"{}\" \n <br /><br /><p>{}</p>",
         &get_pattern_marker_string(&text_marker.marker),
-        DNMRange::deserialize(&text_marker.range.serialize(), alt_dnm, xpath_context)
-          .get_plaintext()
+        DNMRange::deserialize(&text_marker.range.serialize(), alt_dnm, xpath_context).get_plaintext()
       );
-    }
+    },
     MarkerEnum::Math(ref math_marker) => {
       println!(
         "<h5>MathMarker</h5> \"{}\"\n <br /><br /> <p>{}</p>",
         &get_pattern_marker_string(&math_marker.marker),
         &math_node_to_string(&math_marker.node)
       );
-    }
+    },
   }
 }
 
@@ -149,12 +148,15 @@ pub fn main() {
   let mut document = corpus
     .load_doc("tests/resources/1311.0066.xhtml".to_string())
     .unwrap();
-  // let mut document = corpus.load_doc("tests/resources/0903.1000.html".to_string()).unwrap();
+  // let mut document =
+  // corpus.load_doc("tests/resources/0903.1000.html".to_string()).unwrap();
 
   // get a more readable DNM for printing
   let alt_dnm = get_alternative_dnm(&document.dom.get_root_element());
-  println!("<?xml version=\"1.0\" encoding=\"utf-8\"?><html><head><meta http-equiv=\"Content-Type\" content=\"application/xhtml+xml; charset=UTF-8\"/></head>
-             <body>");
+  println!(
+    "<?xml version=\"1.0\" encoding=\"utf-8\"?><html><head><meta http-equiv=\"Content-Type\" content=\"application/xhtml+xml; charset=UTF-8\"/></head>
+             <body>"
+  );
 
   for mut sentence in document.sentence_iter() {
     let sentence_2 = sentence.senna_parse();
@@ -169,8 +171,7 @@ pub fn main() {
       println!("<hr />");
       println!(
         "<h4>Sentence</h4>\n<p>{}</p>",
-        DNMRange::deserialize(&sentence_2.range.serialize(), &alt_dnm, &xpath_context)
-          .get_plaintext()
+        DNMRange::deserialize(&sentence_2.range.serialize(), &alt_dnm, &xpath_context).get_plaintext()
       );
       for m in &matches {
         for m2 in &m.get_marker_list() {

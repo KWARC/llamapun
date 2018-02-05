@@ -114,7 +114,8 @@ impl DNM {
       ..DNM::default()
     };
 
-    // Depth-first traversal of the DOM extracting a plaintext representation and building a node<->text map.
+    // Depth-first traversal of the DOM extracting a plaintext representation and
+    // building a node<->text map.
     dnm.recurse_node_create(root);
 
     // generate plaintext
@@ -160,7 +161,7 @@ impl DNM {
 
     // string processing steps
     self.normalize_unicode(&mut string, &mut offsets);
-    self.stem_words(&mut string /*, &mut offsets */);
+    self.stem_words(&mut string /* , &mut offsets */);
     if self.parameters.convert_to_lowercase {
       string = string.to_lowercase();
     }
@@ -233,11 +234,10 @@ impl DNM {
     *offsets = new_offsets;
   }
 
-  fn stem_words(&self, string: &mut String /*, offsets : &mut Vec<i32> */) {
-    // TODO: Support back-mapping (using e.g. something like min. edit distance to map offsets)
-    if self.parameters.support_back_mapping
-      && (self.parameters.stem_words_full || self.parameters.stem_words_once)
-    {
+  fn stem_words(&self, string: &mut String /* , offsets : &mut Vec<i32> */) {
+    // TODO: Support back-mapping (using e.g. something like min. edit distance to
+    // map offsets)
+    if self.parameters.support_back_mapping && (self.parameters.stem_words_full || self.parameters.stem_words_once) {
       panic!("llamapun::dnm: word stemming does not support back-mapping yet");
     }
     if self.parameters.stem_words_full {
@@ -251,7 +251,8 @@ impl DNM {
     let offset_start = self.runtime.chars.len();
     let name: String = node.get_name();
     {
-      // Start scope of self.parameters borrow, to allow mutable self borrow for recurse_node_create
+      // Start scope of self.parameters borrow, to allow mutable self borrow for
+      // recurse_node_create
       let mut rules = Vec::new();
       // First class rules, as more specific
       for classname in node.get_class_names() {
@@ -269,21 +270,21 @@ impl DNM {
             push_token!(self, token, node);
             record_node_map!(self, node, offset_start);
             return;
-          }
+          },
           Some(&SpecialTagsOption::FunctionNormalize(ref f)) => {
             push_token!(self, &f(node), node);
             record_node_map!(self, node, offset_start);
             return;
-          }
+          },
           Some(&SpecialTagsOption::Skip) => {
             record_node_map!(self, node, offset_start);
             return;
-          }
+          },
           None => continue,
         }
       }
-    } // End scope of self.parameters borrow, to allow mutable self borrow for recurse_node_create
-      // Recurse into children
+    } // End scope of self.parameters borrow, to allow mutable self borrow for
+      // recurse_node_create Recurse into children
     if let Some(child) = node.get_first_child() {
       self.recurse_node_create(&child);
       let mut child_node = child;

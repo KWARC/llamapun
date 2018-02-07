@@ -1,8 +1,8 @@
-extern crate llamapun;
 extern crate libxml;
+extern crate llamapun;
 extern crate regex;
 
-use llamapun::dnm::{DNM, DNMParameters, DNMRange};
+use llamapun::dnm::{DNMParameters, DNMRange, DNM};
 use llamapun::tokenizer::*;
 use libxml::tree::*;
 use libxml::xpath::*;
@@ -13,30 +13,33 @@ use regex::Regex;
 /// Test sentence tokenization of a simple document
 fn test_sentence_tokenization_simple() {
   let simple_text = "This note was written to clarify for myself and my colleagues certain properties \
-   of Bernstein approximations that are useful in investigating copulas. We derive some of the basic properties \
-   of the Bernstein approximation for functions of n variables and then show that the Bernstein approximation of \
-   a copula is again a copula. Unorthodox beginnings of sentences can also occur. Deciphering Eqn. 1 is sometimes. difficult Prof. Automation, isn't it? \
-   Our most significant result is a stochastic interpretation of the Bernstein \
-   approximation of a copula. This interpretation was communicated to us by J. H. B. Kemperman in [?] for \
-   2-copulas and we are not aware of its publication elsewhere.".to_string();
+                     of Bernstein approximations that are useful in investigating copulas. We derive some of the basic properties \
+                     of the Bernstein approximation for functions of n variables and then show that the Bernstein approximation of \
+                     a copula is again a copula. Unorthodox beginnings of sentences can also occur. Deciphering Eqn. 1 is sometimes. difficult Prof. Automation, isn't it? \
+                     Our most significant result is a stochastic interpretation of the Bernstein \
+                     approximation of a copula. This interpretation was communicated to us by J. H. B. Kemperman in [?] for \
+                     2-copulas and we are not aware of its publication elsewhere."
+    .to_string();
   let text_len = simple_text.len();
   let simple_dnm = DNM {
-    plaintext : simple_text,
-    byte_offsets : (0usize..(text_len+1)).collect(),  // it's just ascii
-    parameters : DNMParameters::llamapun_normalization(),
-    ..DNM::default()};
+    plaintext: simple_text,
+    byte_offsets: (0usize..(text_len + 1)).collect(), // it's just ascii
+    parameters: DNMParameters::llamapun_normalization(),
+    ..DNM::default()
+  };
 
   let simple_tokenizer = Tokenizer::default();
-  let ranges : Vec<DNMRange> = simple_tokenizer.sentences(&simple_dnm);
+  let ranges: Vec<DNMRange> = simple_tokenizer.sentences(&simple_dnm);
   assert_eq!(ranges.len(), 6);
 
-  let sentences_expected : Vec<&str> = vec![
-  "This note was written to clarify for myself and my colleagues certain properties of Bernstein approximations that are useful in investigating copulas.",
-  "We derive some of the basic properties of the Bernstein approximation for functions of n variables and then show that the Bernstein approximation of a copula is again a copula.",
-  "Unorthodox beginnings of sentences can also occur.",
-  "Deciphering Eqn. 1 is sometimes. difficult Prof. Automation, isn't it?",
-  "Our most significant result is a stochastic interpretation of the Bernstein approximation of a copula.",
-  "This interpretation was communicated to us by J. H. B. Kemperman in [?] for 2-copulas and we are not aware of its publication elsewhere."];
+  let sentences_expected: [&str; 6] = [
+    "This note was written to clarify for myself and my colleagues certain properties of Bernstein approximations that are useful in investigating copulas.",
+    "We derive some of the basic properties of the Bernstein approximation for functions of n variables and then show that the Bernstein approximation of a copula is again a copula.",
+    "Unorthodox beginnings of sentences can also occur.",
+    "Deciphering Eqn. 1 is sometimes. difficult Prof. Automation, isn't it?",
+    "Our most significant result is a stochastic interpretation of the Bernstein approximation of a copula.",
+    "This interpretation was communicated to us by J. H. B. Kemperman in [?] for 2-copulas and we are not aware of its publication elsewhere.",
+  ];
   let r_iter = ranges.iter();
   let mut e_iter = sentences_expected.iter();
 
@@ -44,68 +47,72 @@ fn test_sentence_tokenization_simple() {
     let s1 = range.get_plaintext().trim().to_owned();
     let s2 = match e_iter.next() {
       None => "".to_string(),
-      Some(x) => x.to_string()
+      Some(x) => x.to_string(),
     };
     assert_eq!(s1, s2);
   }
-
 }
 
 #[test]
 /// Test sentence tokenization of an `arXMLiv` XHTML document
 fn test_sentence_tokenization_arxmliv_xhtml() {
-
   let expected = load_expected_xhtml();
   let parser = Parser::default();
-  let doc = parser.parse_file("tests/resources/1311.0066.xhtml").unwrap();
+  let doc = parser
+    .parse_file("tests/resources/1311.0066.xhtml")
+    .unwrap();
 
-  test_each_paragraph(&doc,expected);
+  test_each_paragraph(&doc, &expected);
 }
-
 
 #[test]
 /// Test sentence tokenization of an `arXMLiv` HTML document
 fn test_sentence_tokenization_arxmliv_html() {
-
   let expected = load_expected_html();
   let parser = Parser::default_html();
   let doc = parser.parse_file("tests/resources/0903.1000.html").unwrap();
 
-  test_each_paragraph(&doc,expected);
+  test_each_paragraph(&doc, &expected);
 }
 
 /* ======================== */
-/*    Auxiliary functions:  */
+/* Auxiliary functions: */
 /* ======================== */
-fn test_each_paragraph<'a>(doc: &'a Document, expected: Vec<Vec<&'a str>>) {
+fn test_each_paragraph<'a>(doc: &'a Document, expected: &[Vec<&'a str>]) {
   let multispace = Regex::new(r"\s+").unwrap();
   let tokenizer = Tokenizer::default();
-  // We will tokenize each logical paragraph, which are the textual logical units in an article
+  // We will tokenize each logical paragraph, which are the textual logical units
+  // in an article
   let xpath_context = Context::new(doc).unwrap();
-  let para_xpath_result = xpath_context.evaluate("//*[contains(@class,'ltx_para')]").unwrap();
+  let para_xpath_result = xpath_context
+    .evaluate("//*[contains(@class,'ltx_para')]")
+    .unwrap();
 
   let mut expected_iter = expected.iter();
   for para in para_xpath_result.get_nodes_as_vec() {
-    let dnm = DNM::new(para, DNMParameters::llamapun_normalization());
+    let dnm = DNM::new(&para, DNMParameters::llamapun_normalization());
 
     let paragraph_expected = expected_iter.next().unwrap();
     let expected_paragraph = multispace.replace_all(paragraph_expected[0], "_");
-    let result_paragraph  = multispace.replace_all(dnm.plaintext.trim(), "_");
+    let result_paragraph = multispace.replace_all(dnm.plaintext.trim(), "_");
     assert_eq!(result_paragraph, expected_paragraph);
     // println!("----\n{:?}\n----\n",doc.node_to_string(para));
     // println!("{:?}", dnm.plaintext.trim());
-    let ranges : Vec<DNMRange> = tokenizer.sentences(&dnm);
+    let ranges: Vec<DNMRange> = tokenizer.sentences(&dnm);
 
     let mut paragraph_expected_iter = paragraph_expected.iter();
-    if paragraph_expected.len() > 1 { paragraph_expected_iter.next(); }
+    if paragraph_expected.len() > 1 {
+      paragraph_expected_iter.next();
+    }
     for range in ranges {
       let expected_para_text = match paragraph_expected_iter.next() {
         None => "".to_string(),
-        Some(x) => x.to_string()
+        Some(x) => x.to_string(),
       };
-      // Normalize multispace treatment, since different versions of libxml2 are a little flaky here.
+      // Normalize multispace treatment, since different versions of libxml2 are a
+      // little flaky here.
       let expected_text = multispace.replace_all(&expected_para_text, "_");
-      let result_text  = multispace.replace_all(range.get_plaintext(), "_");
+      let result_text = multispace.replace_all(range.get_plaintext(), "_");
       assert_eq!(result_text, expected_text);
     }
   }

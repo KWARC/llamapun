@@ -1,6 +1,6 @@
 //! Tests for the DNM canonicalization module
-extern crate llamapun;
 extern crate libxml;
+extern crate llamapun;
 
 use std::collections::HashSet;
 use llamapun::dnm::*;
@@ -13,7 +13,7 @@ fn test_c14n_basic() {
   let doc = parser.parse_file("tests/resources/file01.xml").unwrap();
 
   let root = doc.get_root_element();
-  let dnm = DNM::new(root, DNMParameters::default());
+  let dnm = DNM::new(&root, DNMParameters::default());
   let c14n = dnm.to_c14n_basic();
   assert!(!c14n.is_empty());
 }
@@ -21,10 +21,12 @@ fn test_c14n_basic() {
 #[test]
 fn test_c14n_basic_full() {
   let parser = Parser::default();
-  let doc = parser.parse_file("tests/resources/1311.0066.xhtml").unwrap();
+  let doc = parser
+    .parse_file("tests/resources/1311.0066.xhtml")
+    .unwrap();
 
   let root = doc.get_root_element();
-  let dnm = DNM::new(root, DNMParameters::default());
+  let dnm = DNM::new(&root, DNMParameters::default());
   let c14n = dnm.to_c14n_basic();
   assert!(!c14n.is_empty());
 }
@@ -35,12 +37,12 @@ fn test_c14n_math_hash() {
   let doc = parser.parse_file("tests/resources/0903.1000.html").unwrap();
 
   let root = doc.get_root_element();
-  let dnm = DNM::new(root, DNMParameters::default());
+  let dnm = DNM::new(&root, DNMParameters::default());
 
   let xpath_context = Context::new(&doc).unwrap();
   let formulas = match xpath_context.evaluate("//*[contains(@class,'ltx_Math')]") {
-      Ok(xpath_result) => xpath_result.get_nodes_as_vec(),
-      _ => Vec::new()
+    Ok(xpath_result) => xpath_result.get_nodes_as_vec(),
+    _ => Vec::new(),
   };
 
   let mut formula_c14ns = HashSet::new();

@@ -1,6 +1,7 @@
 //! # The `LLaMaPUn` library in Rust
 //! Language and Mathematics Processing and Understanding
-//! Common data structures and algorithms for semi-structured NLP on math-rich documents.
+//! Common data structures and algorithms for semi-structured NLP on math-rich
+//! documents.
 
 #![feature(slice_patterns)]
 #![feature(type_ascription)]

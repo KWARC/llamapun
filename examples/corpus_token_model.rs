@@ -2,8 +2,8 @@
 // file at the top-level directory of this distribution.
 //
 extern crate llamapun;
-extern crate time;
 extern crate regex;
+extern crate time;
 
 use std::env;
 use std::io::prelude::*;
@@ -13,7 +13,10 @@ use regex::Regex;
 
 use llamapun::data::Corpus;
 
-/// Given a `CorTeX` corpus of HTML5 documents, extract a token model as a single file
+static BUFFER_CAPACITY: usize = 10_485_760;
+
+/// Given a `CorTeX` corpus of HTML5 documents, extract a token model as a
+/// single file
 pub fn main() {
   let start = time::get_time();
   // Read input arguments
@@ -45,9 +48,9 @@ pub fn main() {
         e
       );
       return;
-    }
+    },
   };
-  let mut token_writer = BufWriter::with_capacity(10485760, token_model_file);
+  let mut token_writer = BufWriter::with_capacity(BUFFER_CAPACITY, token_model_file);
   let space = ' ';
   let linebreak = '\n';
   // Integers, floats, subfigure numbers
@@ -61,18 +64,20 @@ pub fn main() {
       for mut sentence in paragraph.iter() {
         let mut sentence_buffer = String::new();
         let mut invalid_sentence = true;
-         'words: for word in sentence.simple_iter() {
+        'words: for word in sentence.simple_iter() {
           if !word.range.is_empty() {
             let mut word_string = word.range.get_plaintext().to_lowercase();
-            if word_string.len() > 30 { 
-              // Using a more aggressive normalization, large words tend to be conversion errors with lost whitespace - drop the entire sentence when this occurs.
+            if word_string.len() > 30 {
+              // Using a more aggressive normalization, large words tend to be conversion
+              // errors with lost whitespace - drop the entire sentence when this occurs.
               overflow_count += 1;
               invalid_sentence = true;
               break 'words;
             }
-            let mut word_str : &str = &word_string;
-            // Note: the formula and citation counts are an approximate lower bound, as sometimes they are not cleanly tokenized, e.g.
-            // $k$-dimensional will be the word string "mathformula-dimensional"
+            let mut word_str: &str = &word_string;
+            // Note: the formula and citation counts are an approximate lower bound, as
+            // sometimes they are not cleanly tokenized, e.g. $k$-dimensional
+            // will be the word string "mathformula-dimensional"
             if word_string.contains("mathformula") {
               word_str = "mathformula";
               formula_count += 1;
@@ -98,8 +103,8 @@ pub fn main() {
           sentence_buffer.push(linebreak);
           if let Err(e) = token_writer.write(sentence_buffer.as_bytes()) {
             println!(
-                    "-- Failed to print to output buffer! Proceed with caution;\n{:?}",
-                    e
+              "-- Failed to print to output buffer! Proceed with caution;\n{:?}",
+              e
             );
           }
         }

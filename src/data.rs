@@ -93,7 +93,8 @@ pub struct Sentence<'s> {
   pub senna_sentence: Option<SennaSentence<'s>>,
 }
 
-/// An iterator over the words of a sentence, where the words are only defined by their ranges
+/// An iterator over the words of a sentence, where the words are only defined
+/// by their ranges
 pub struct SimpleWordIterator<'iter> {
   /// The walker over the words
   walker: IntoIter<DNMRange<'iter>>,
@@ -136,8 +137,10 @@ impl<'iter> Iterator for DocumentIterator<'iter> {
           let doc_result = Document::new(path, self.corpus);
           return match doc_result {
             Ok(doc) => Some(doc),
-            // TODO: Currently encountering an unparseable file will terminate the entire corpus walk, which is too severe.
-            //       A more viable strategy would be to 1) retry creating the document once and 2) print an error message and continue the walk
+            // TODO: Currently encountering an unparseable file will terminate the entire corpus
+            // walk, which is too severe.
+            // A more viable strategy would be to 1) retry creating the document once and 2)
+            // print an error message and continue the walk
             _ => None,
           };
         }
@@ -220,7 +223,7 @@ impl<'d> Document<'d> {
   pub fn sentence_iter(&mut self) -> SentenceIterator {
     if self.dnm.is_none() {
       self.dnm = Some(DNM::new(
-        self.dom.get_root_element(),
+        &self.dom.get_root_element(),
         self.corpus.dnm_parameters.clone(),
       ));
     }
@@ -240,12 +243,12 @@ impl<'iter> Iterator for ParagraphIterator<'iter> {
       None => None,
       Some(node) => {
         // Create a DNM for the current paragraph
-        let dnm = DNM::new(node, DNMParameters::llamapun_normalization());
+        let dnm = DNM::new(&node, DNMParameters::llamapun_normalization());
         Some(Paragraph {
           dnm: dnm,
           document: self.document,
         })
-      }
+      },
     }
   }
 }
@@ -278,7 +281,7 @@ impl<'iter> Iterator for SentenceIterator<'iter> {
           };
           Some(sentence)
         }
-      }
+      },
     }
   }
 }

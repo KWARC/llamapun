@@ -7,8 +7,8 @@ use patterns::utils::*;
 
 use dnm::*;
 
-use senna::pos::POS;
 use senna::phrase::Phrase;
+use senna::pos::POS;
 use senna::sentence::*;
 
 /*
@@ -107,29 +107,30 @@ impl PhraseTree {
       PSGNode::Leaf(pos) => Err(pos),
       PSGNode::Parent(box ref content) => {
         let mut child_trees: Vec<PhraseTree> = Vec::new();
-        let mut start: Option<usize> = None;
+        let mut start_opt: Option<usize> = None;
         let mut end = 0;
         for child in content.get_children() {
           match PhraseTree::from_psg(child) {
             Err(p) => {
-              if start.is_none() {
-                start = Some(p);
+              if start_opt.is_none() {
+                start_opt = Some(p);
               }
               end = p;
             },
             Ok(t) => {
-              if start.is_none() {
-                start = Some(t.start);
+              if start_opt.is_none() {
+                start_opt = Some(t.start);
               }
               end = t.end;
               child_trees.push(t);
             },
           }
         }
+        let start = start_opt.unwrap_or_default();
         Ok(PhraseTree {
           phrase: content.get_label(),
-          start: start.unwrap(),
-          end: end,
+          start,
+          end,
           children: child_trees,
         })
       },
@@ -315,18 +316,16 @@ fn match_seq<'t>(
       let m = match_seq(pf, pattern, sentence, phrase_tree, range, pos);
       if m.matched {
         InternalSeqMatch {
-          _matches: vec![
-            Match {
-              marker: MarkerEnum::Text(TextMarker {
-                marker: marker.clone(),
-                range: range.get_subrange(
-                  sentence.get_words()[pos].get_offset_start(),
-                  sentence.get_words()[m.end - 1].get_offset_end(),
-                ),
-              }),
-              sub_matches: m._matches,
-            },
-          ],
+          _matches: vec![Match {
+            marker: MarkerEnum::Text(TextMarker {
+              marker: marker.clone(),
+              range: range.get_subrange(
+                sentence.get_words()[pos].get_offset_start(),
+                sentence.get_words()[m.end - 1].get_offset_end(),
+              ),
+            }),
+            sub_matches: m._matches,
+          }],
           // start : pos,
           end: m.end,
           matched: true,
@@ -462,15 +461,13 @@ fn match_word<'t>(
       let m = match_word(pf, p, word, range);
       if m.matched {
         InternalWordMatch {
-          _matches: vec![
-            Match {
-              marker: MarkerEnum::Text(TextMarker {
-                range: range.get_subrange(word.get_offset_start(), word.get_offset_end()),
-                marker: marker.clone(),
-              }),
-              sub_matches: m._matches,
-            },
-          ],
+          _matches: vec![Match {
+            marker: MarkerEnum::Text(TextMarker {
+              range: range.get_subrange(word.get_offset_start(), word.get_offset_end()),
+              marker: marker.clone(),
+            }),
+            sub_matches: m._matches,
+          }],
           matched: true,
         }
       } else {
@@ -491,15 +488,13 @@ fn match_math<'t>(pf: &PatternFile, rule: &MathPattern, node: &Node) -> Internal
       let m = match_math(pf, pattern, node);
       if m.matched {
         InternalMathMatch {
-          _matches: vec![
-            Match {
-              marker: MarkerEnum::Math(MathMarker {
-                node: node.clone(),
-                marker: marker.clone(),
-              }),
-              sub_matches: m._matches,
-            },
-          ],
+          _matches: vec![Match {
+            marker: MarkerEnum::Math(MathMarker {
+              node: node.clone(),
+              marker: marker.clone(),
+            }),
+            sub_matches: m._matches,
+          }],
           matched: true,
         }
       } else {

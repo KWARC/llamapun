@@ -79,7 +79,7 @@ pub fn fast_get_non_text_children(node: &Node) -> Vec<Node> {
 /// and text nodes containing only whitespaces
 pub fn get_only_child(node: &Node) -> Result<Node, String> {
   let children = try!(get_non_text_children(node));
-  if children.len() < 1 {
+  if children.is_empty() {
     Err(format!(
       "Expected child node in node \"{}\"",
       node.get_name()

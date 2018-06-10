@@ -1,19 +1,19 @@
 //! The `dnm` can be used for easier switching between the DOM
 //! (Document Object Model) representation and the plain text representation,
 //! which is needed for most NLP tools.
-mod range;
-mod parameters;
 mod c14n;
+mod parameters;
+mod range;
 
 extern crate libc;
 extern crate rustmorpha;
 extern crate unidecode;
 
+pub use dnm::parameters::{DNMParameters, RuntimeParseData, SpecialTagsOption};
+pub use dnm::range::DNMRange;
+use libxml::tree::*;
 use std::collections::HashMap;
 use unidecode::{unidecode, unidecode_char};
-use libxml::tree::*;
-pub use dnm::range::DNMRange;
-pub use dnm::parameters::{DNMParameters, RuntimeParseData, SpecialTagsOption};
 
 /// The `DNM` is essentially a wrapper around the plain text representation
 /// of the document, which facilitates mapping plaintext pieces to the DOM.
@@ -109,7 +109,7 @@ impl DNM {
   pub fn new(root: &Node, parameters: DNMParameters) -> DNM {
     parameters.check();
     let mut dnm = DNM {
-      parameters: parameters,
+      parameters,
       root_node: root.clone(),
       ..DNM::default()
     };
@@ -133,8 +133,8 @@ impl DNM {
   pub fn get_range_of_node(&self, node: &Node) -> Result<DNMRange, ()> {
     match self.node_map.get(&node.to_hashable()) {
       Some(&(start, end)) => Ok(DNMRange {
-        start: start,
-        end: end,
+        start,
+        end,
         dnm: self,
       }),
       None => Err(()),

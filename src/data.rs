@@ -1,20 +1,20 @@
 //! Data structures and Iterators for convenient high-level syntax
-use std::vec::IntoIter;
 use std::cell::{Cell, RefCell};
-use walkdir::WalkDir;
+use std::vec::IntoIter;
 use walkdir::IntoIter as WalkDirIterator;
+use walkdir::WalkDir;
 
 use dnm::{DNMParameters, DNMRange, DNM};
 use tokenizer::Tokenizer;
 
+use libxml::parser::{Parser, XmlParseError};
 use libxml::tree::Document as XmlDoc;
 use libxml::tree::Node;
 use libxml::xpath::Context;
-use libxml::parser::{Parser, XmlParseError};
 
-use senna::sennapath::SENNA_PATH;
-use senna::senna::{Senna, SennaParseOptions};
 use senna::pos::POS;
+use senna::senna::{Senna, SennaParseOptions};
+use senna::sennapath::SENNA_PATH;
 use senna::sentence::Sentence as SennaSentence;
 
 /// An iterable Corpus of HTML5 documents
@@ -191,17 +191,17 @@ impl Corpus {
 
 impl<'d> Document<'d> {
   /// Load a new document
-  pub fn new(filepath: String, owner: &'d Corpus) -> Result<Self, XmlParseError> {
+  pub fn new(filepath: String, corpus: &'d Corpus) -> Result<Self, XmlParseError> {
     let dom = if filepath.ends_with(".xhtml") {
-      try!(owner.xml_parser.parse_file(&filepath))
+      try!(corpus.xml_parser.parse_file(&filepath))
     } else {
-      try!(owner.html_parser.parse_file(&filepath))
+      try!(corpus.html_parser.parse_file(&filepath))
     };
 
     Ok(Document {
       path: filepath,
-      dom: dom,
-      corpus: owner,
+      dom,
+      corpus,
       dnm: None,
     })
   }
@@ -245,7 +245,7 @@ impl<'iter> Iterator for ParagraphIterator<'iter> {
         // Create a DNM for the current paragraph
         let dnm = DNM::new(&node, DNMParameters::llamapun_normalization());
         Some(Paragraph {
-          dnm: dnm,
+          dnm,
           document: self.document,
         })
       },
@@ -275,7 +275,7 @@ impl<'iter> Iterator for SentenceIterator<'iter> {
           self.next()
         } else {
           let sentence = Sentence {
-            range: range,
+            range,
             document: self.document,
             senna_sentence: None,
           };
@@ -325,7 +325,7 @@ impl<'iter> Iterator for SimpleWordIterator<'iter> {
     match self.walker.next() {
       None => None,
       Some(range) => Some(Word {
-        range: range,
+        range,
         sentence: self.sentence,
         pos: POS::NOT_SET,
       }),
@@ -349,7 +349,7 @@ impl<'iter> Iterator for SennaWordIterator<'iter> {
         .range
         .get_subrange_from_byte_offsets(senna_word.get_offset_start(), senna_word.get_offset_end());
       Some(Word {
-        range: range,
+        range,
         sentence: self.sentence,
         pos: senna_word.get_pos(),
       })

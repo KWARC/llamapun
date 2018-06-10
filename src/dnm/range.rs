@@ -236,14 +236,10 @@ impl<'dnmrange> DNMRange<'dnmrange> {
     let start_str = &string[7..main_comma];
     let end_str = &string[main_comma + 1..string.len() - 1];
 
-    let start_pos = DNMRange::xpointer_to_offset(start_str, dnm, xpath_context);
-    let end_pos = DNMRange::xpointer_to_offset(end_str, dnm, xpath_context);
+    let start = DNMRange::xpointer_to_offset(start_str, dnm, xpath_context);
+    let end = DNMRange::xpointer_to_offset(end_str, dnm, xpath_context);
 
-    DNMRange {
-      dnm: dnm,
-      start: start_pos,
-      end: end_pos,
-    }
+    DNMRange { dnm, start, end }
   }
 
   /// Gets the plaintext offset corresponding to an XPath/string-index'ed XPointer,

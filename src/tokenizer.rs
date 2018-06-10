@@ -1,11 +1,11 @@
 //! Provides functionality for tokenizing sentences and words
 use dnm::{DNMRange, DNM};
-use stopwords;
+use std::cmp;
 use std::collections::vec_deque::*;
 use std::collections::HashSet;
-use std::cmp;
 use std::iter::Peekable;
 use std::str::Chars;
+use stopwords;
 
 use regex::Regex;
 
@@ -65,13 +65,7 @@ impl Tokenizer {
               // Reset the left window
               left_window = VecDeque::with_capacity(window_size);
               // New sentence
-              sentences.push(
-                DNMRange {
-                  start: start,
-                  end: end,
-                  dnm: dnm,
-                }.trim(),
-              );
+              sentences.push(DNMRange { start, end, dnm }.trim());
               start = end;
               end += next_word_length;
             } else {
@@ -104,13 +98,7 @@ impl Tokenizer {
                 // Reset the left window
                 left_window = VecDeque::with_capacity(window_size);
                 // New sentence
-                sentences.push(
-                  DNMRange {
-                    start: start,
-                    end: end,
-                    dnm: dnm,
-                  }.trim(),
-                );
+                sentences.push(DNMRange { start, end, dnm }.trim());
                 start = end;
               }
               // We consumed the next word, so make sure we reflect that in either case:
@@ -129,13 +117,7 @@ impl Tokenizer {
                 // Reset the left window
                 left_window = VecDeque::with_capacity(window_size);
                 // New sentence
-                sentences.push(
-                  DNMRange {
-                    start: start,
-                    end: end,
-                    dnm: dnm,
-                  }.trim(),
-                );
+                sentences.push(DNMRange { start, end, dnm }.trim());
                 start = end;
               },
               _ => {
@@ -153,13 +135,7 @@ impl Tokenizer {
             // Reset the left window
             left_window = VecDeque::with_capacity(window_size);
             // New sentence
-            sentences.push(
-              DNMRange {
-                start: start,
-                end: end,
-                dnm: dnm,
-              }.trim(),
-            );
+            sentences.push(DNMRange { start, end, dnm }.trim());
             start = end;
           }
         },
@@ -182,7 +158,8 @@ impl Tokenizer {
             let (next_word_string, next_word_length) = next_word_with_length(&mut text_iterator);
             // Sentence-break, UNLESS a "MathFormula" or a "lowercase word" follows, or a
             // non-alpha char
-            if next_word_string.is_empty() || next_word_string.starts_with("MathFormula")
+            if next_word_string.is_empty()
+              || next_word_string.starts_with("MathFormula")
               || next_word_string.chars().next().unwrap().is_lowercase()
             {
               // We consumed the next word, add it to the left window
@@ -195,13 +172,7 @@ impl Tokenizer {
             } else {
               // Sentence-break found:
               left_window = VecDeque::with_capacity(window_size);
-              sentences.push(
-                DNMRange {
-                  start: start,
-                  end: end,
-                  dnm: dnm,
-                }.trim(),
-              );
+              sentences.push(DNMRange { start, end, dnm }.trim());
               start = end;
             }
 
@@ -219,9 +190,9 @@ impl Tokenizer {
               left_window = VecDeque::with_capacity(window_size);
               sentences.push(
                 DNMRange {
-                  start: start,
+                  start,
                   end: end - other_char.len_utf8(),
-                  dnm: dnm,
+                  dnm,
                 }.trim(),
               );
               start = end - other_char.len_utf8();
@@ -239,13 +210,7 @@ impl Tokenizer {
     end = cmp::min(end, text.chars().count());
     let last_left_window: String = left_window.into_iter().collect();
     if last_left_window.find(|c: char| c.is_alphabetic()).is_some() {
-      sentences.push(
-        DNMRange {
-          start: start,
-          end: end,
-          dnm: dnm,
-        }.trim(),
-      );
+      sentences.push(DNMRange { start, end, dnm }.trim());
     }
 
     // Filter out edge cases that return empty ranges

@@ -1,10 +1,10 @@
 //! The definitions of patterns and rules, and the code for loading them
 
-use libxml::tree::*;
 use libxml::parser::Parser;
+use libxml::tree::*;
 
-use senna::pos::POS;
 use senna::phrase::Phrase;
+use senna::pos::POS;
 
 use dnm::*;
 
@@ -35,10 +35,7 @@ impl PatternMarker {
       None => Vec::new(),
       Some(value) => value.split(',').map(|s| s.trim().to_string()).collect(),
     };
-    Ok(PatternMarker {
-      name: name,
-      tags: tags,
-    })
+    Ok(PatternMarker { name, tags })
   }
 }
 
@@ -312,17 +309,17 @@ impl MetaDescription {
       ));
     }
 
-    let mut summary: Option<String> = None;
+    let mut summary_opt: Option<String> = None;
 
     for cur in &try!(get_non_text_children(node)) {
       match cur.get_name().as_ref() {
         "description" => {
           try!(check_found_property_already(
-            &summary,
+            &summary_opt,
             "description",
             "meta"
           ));
-          summary = Some(try!(
+          summary_opt = Some(try!(
             get_simple_node_content(cur, true).map_err(|e| format!("error in meta node:\n{}", e))
           ));
         },
@@ -334,11 +331,8 @@ impl MetaDescription {
         },
       }
     }
-
-    Ok(MetaDescription {
-      name: name,
-      summary: summary.unwrap_or_default(),
-    })
+    let summary = summary_opt.unwrap_or_default();
+    Ok(MetaDescription { name, summary })
   }
 }
 
@@ -545,8 +539,7 @@ impl SequencePattern {
           match cur.get_name().as_ref() {
             "match_type" => {
               match_type = try!(PhraseMatchType::from_str(&try!(get_simple_node_content(
-                cur,
-                true
+                cur, true
               ))));
             },
             "starts_with_seq" => {
@@ -671,11 +664,11 @@ impl WordPattern {
           }
         }
 
-        if !word_pattern.is_some() {
+        if word_pattern.is_none() {
           return Err("'word_pos' node does not contain a word pattern".to_string());
         }
 
-        if !pos_pattern.is_some() {
+        if pos_pattern.is_none() {
           return Err("'word_pos' node does not contain a 'pos' node".to_string());
         }
 
@@ -780,10 +773,12 @@ fn load_rule<PatternT, RuleT>(
           ));
         }
         meta_opt = Some(try!(
-          MetaDescription::load_from_node(cur, name.clone()).map_err(|e| format!(
-            "error when loading meta node in word_rule \"{}\":\n{}",
-            &name, e
-          ))
+          MetaDescription::load_from_node(cur, name.clone()).map_err(|e| {
+            format!(
+              "error when loading meta node in word_rule \"{}\":\n{}",
+              &name, e
+            )
+          })
         ));
       },
       x => {
@@ -828,8 +823,8 @@ impl WordRule {
   /// creates a new rule from a pattern and a description
   fn generate_rule(pattern: WordPattern, description: MetaDescription) -> WordRule {
     WordRule {
-      description: description,
-      pattern: pattern,
+      description,
+      pattern,
     }
   }
 }
@@ -849,8 +844,8 @@ impl PosRule {
   /// creates a new rule from a pattern and a description
   fn generate_rule(pattern: PosPattern, description: MetaDescription) -> PosRule {
     PosRule {
-      description: description,
-      pattern: pattern,
+      description,
+      pattern,
     }
   }
 }
@@ -870,8 +865,8 @@ impl MathRule {
   /// creates a new rule from a pattern and a description
   fn generate_rule(pattern: MathPattern, description: MetaDescription) -> MathRule {
     MathRule {
-      description: description,
-      pattern: pattern,
+      description,
+      pattern,
     }
   }
 }
@@ -891,8 +886,8 @@ impl MTextRule {
   /// creates a new rule from a pattern and a description
   fn generate_rule(pattern: MTextPattern, description: MetaDescription) -> MTextRule {
     MTextRule {
-      description: description,
-      pattern: pattern,
+      description,
+      pattern,
     }
   }
 }
@@ -912,8 +907,8 @@ impl SequenceRule {
   /// creates a new rule from a pattern and a description
   fn generate_rule(pattern: SequencePattern, description: MetaDescription) -> SequenceRule {
     SequenceRule {
-      description: description,
-      pattern: pattern,
+      description,
+      pattern,
     }
   }
 }

@@ -6,8 +6,9 @@
 #![feature(slice_patterns)]
 #![feature(type_ascription)]
 #![feature(box_patterns)]
-#![deny(missing_docs, trivial_casts, trivial_numeric_casts, unused_import_braces,
-        unused_qualifications)]
+#![deny(
+  missing_docs, trivial_casts, trivial_numeric_casts, unused_import_braces, unused_qualifications
+)]
 
 extern crate crypto;
 extern crate gnuplot;
@@ -23,9 +24,10 @@ extern crate walkdir;
 
 #[macro_use]
 pub mod util;
-pub mod dnm;
+pub mod ams;
 pub mod data;
-pub mod stopwords;
-pub mod tokenizer;
+pub mod dnm;
 pub mod ngrams;
 pub mod patterns;
+pub mod stopwords;
+pub mod tokenizer;

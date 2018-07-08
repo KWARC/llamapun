@@ -57,6 +57,7 @@ pub fn main() -> Result<(), Error> {
     None => "ams_paragraphs".to_string(),
   };
 
+  let mut total_doc_count = 0;
   let mut document_count = 0;
   let mut paragraph_count = 0;
 
@@ -68,15 +69,16 @@ pub fn main() -> Result<(), Error> {
 
   let mut corpus = Corpus::new(corpus_path);
   for mut document in corpus.iter() {
+    total_doc_count += 1;
     // Only analyze if document contains AMS markup
     if !ams::has_markup(&document) {
       continue;
     }
-
     document_count += 1;
+
     for mut paragraph in document.paragraph_iter() {
       let mut paragraph_buffer = String::new();
-      let mut sentence_buffer = String::new();
+      let mut sentence_buffer;
       let mut invalid_paragraph = false;
       let para_parent = paragraph.dnm.root_node.get_parent().unwrap();
 
@@ -110,7 +112,7 @@ pub fn main() -> Result<(), Error> {
 
         if !sentence_buffer.is_empty() {
           paragraph_buffer.push_str(&sentence_buffer);
-          paragraph_buffer.push('\n');
+          paragraph_buffer.push(linebreak);
         }
       }
       // If paragraph was valid and contains text, record it
@@ -131,12 +133,13 @@ pub fn main() -> Result<(), Error> {
         fs::create_dir_all(&full_dir)?;
         paragraph_count += 1;
         let full_filename = num_file_path(&full_dir, paragraph_count);
-        save_para_to_file(&paragraph_buffer, &full_filename);
+        save_para_to_file(&paragraph_buffer, &full_filename)?;
       }
     }
 
-    if document_count % 1000 == 0 {
-      println!("-- processed documents: {:?}", document_count);
+    if total_doc_count % 1000 == 0 {
+      println!("-- processed documents: {:?}", total_doc_count);
+      println!("-- AMS documents: {:?}", document_count);
     }
   }
 

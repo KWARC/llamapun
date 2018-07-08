@@ -227,10 +227,9 @@ impl<'dnmrange> DNMRange<'dnmrange> {
     assert_eq!(&(string[string.len() - 1..string.len()]), ")");
 
     let main_comma = 1 + string.find("),").unwrap_or_else(|| {
-      string.find("],").expect(&format!(
-        "DNMRange::deserialize: Malformed string: \"{}\"",
-        string
-      ))
+      string
+        .find("],")
+        .unwrap_or_else(|| panic!("DNMRange::deserialize: Malformed string: \"{}\"", string))
     });
 
     let start_str = &string[7..main_comma];
@@ -246,10 +245,9 @@ impl<'dnmrange> DNMRange<'dnmrange> {
   /// again, does not cover everything!
   fn xpointer_to_offset(string: &str, dnm: &'dnmrange DNM, xpath_context: &Context) -> usize {
     if string.len() > 13 && &(string[0..13]) == "string-index(" {
-      let comma = string.find(',').expect(&format!(
-        "DNM::deserialize_part: Malformed string: \"{}\"",
-        string
-      ));
+      let comma = string
+        .find(',')
+        .unwrap_or_else(|| panic!("DNM::deserialize_part: Malformed string: \"{}\"", string));
       let node_str = &string[13..comma];
       let node_set = xpath_context.evaluate(node_str).unwrap();
       assert_eq!(node_set.get_number_of_nodes(), 1);
@@ -267,10 +265,9 @@ impl<'dnmrange> DNMRange<'dnmrange> {
       }
     } else {
       let node_str = string;
-      let node_set = xpath_context.evaluate(node_str).expect(&format!(
-        "DNMRange::deserialize: Malformed XPath: '{}'",
-        &node_str
-      ));
+      let node_set = xpath_context
+        .evaluate(node_str)
+        .unwrap_or_else(|_| panic!("DNMRange::deserialize: Malformed XPath: '{}'", &node_str));
       assert_eq!(node_set.get_number_of_nodes(), 1);
       let node = node_set.get_nodes_as_vec()[0].clone();
       get_position_of_lowest_parent(&node, dnm)

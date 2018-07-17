@@ -14,12 +14,14 @@ git = "https://github.com/jfschaefer/rust-morpha.git"
 git = "https://github.com/jfschaefer/rust-senna.git"
 version = "*"
 
+[dependencies.libxml]
+git = "https://github.com/KWARC/rust-libxml.git"
+
 [dependencies]
 libc = "0.2"
 regex = "0.2"
 time = "0.1"
 walkdir = "2"
-libxml = "0.1.2"
 gnuplot = "0.0.21"
 unidecode = "0.2"
 rust-crypto = "0.2"

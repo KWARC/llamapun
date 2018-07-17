@@ -5,11 +5,11 @@ extern crate libxml;
 extern crate llamapun;
 extern crate time;
 
+use std::collections::HashMap;
 use std::env;
+use std::fs::File;
 use std::io::prelude::*;
 use std::io::BufWriter;
-use std::fs::File;
-use std::collections::HashMap;
 
 use libxml::tree::Node;
 use llamapun::data::Corpus;
@@ -66,8 +66,9 @@ pub fn main() {
   let mut corpus = Corpus::new(corpus_path);
   for document in corpus.iter() {
     // Recursively descend the dom DFS and record to the token model
-    let root = document.dom.get_root_element();
-    dfs_record(&root, &mut total_counts, &mut node_model_writer);
+    if let Some(root) = document.dom.get_root_element() {
+      dfs_record(&root, &mut total_counts, &mut node_model_writer);
+    }
 
     // Increment document counter, bokkeep
     let document_count = total_counts

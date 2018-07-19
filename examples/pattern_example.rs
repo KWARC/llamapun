@@ -2,14 +2,14 @@ extern crate libxml;
 extern crate llamapun;
 extern crate senna;
 
-use llamapun::patterns::*;
-use llamapun::data::Corpus;
-use senna::senna::SennaParseOptions;
-use llamapun::dnm::*;
-use libxml::xpath::Context;
 use libxml::tree::*;
-use std::rc::Rc;
+use libxml::xpath::Context;
+use llamapun::data::Corpus;
+use llamapun::dnm::*;
+use llamapun::patterns::*;
+use senna::senna::SennaParseOptions;
 use std::collections::HashMap;
+use std::rc::Rc;
 
 /// turns a marker into a readable string representation
 fn get_pattern_marker_string(marker: &PatternMarker) -> String {
@@ -153,7 +153,7 @@ pub fn main() {
   // corpus.load_doc("tests/resources/0903.1000.html".to_string()).unwrap();
 
   // get a more readable DNM for printing
-  let alt_dnm = get_alternative_dnm(&document.dom.get_root_element());
+  let alt_dnm = get_alternative_dnm(&document.dom.get_root_element().unwrap());
   println!(
     "<?xml version=\"1.0\" encoding=\"utf-8\"?><html><head><meta http-equiv=\"Content-Type\" content=\"application/xhtml+xml; charset=UTF-8\"/></head>
              <body>"

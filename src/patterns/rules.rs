@@ -1092,8 +1092,10 @@ impl PatternFile {
     );
     // let root_node = try!(doc.get_root_element().map_err(|_| format!("\"{}\" has
     // no root node", file_name)));
-    let root_node = doc.get_root_element(); // try!(doc.get_root_element().map_err(|_| format!("\"{}\" has no root node",
-                                            // file_name)));
+    let root_node = match doc.get_root_element() {
+      Some(root) => root,
+      None => return Err("empty document".to_string()),
+    };
     let mut meta_opt: Option<MetaDescription> = None;
     let mut pctx = PCtx::new();
 

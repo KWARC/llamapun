@@ -2,17 +2,17 @@
 extern crate libxml;
 extern crate llamapun;
 
-use std::collections::HashSet;
-use llamapun::dnm::*;
 use libxml::parser::Parser;
 use libxml::xpath::Context;
+use llamapun::dnm::*;
+use std::collections::HashSet;
 
 #[test]
 fn test_c14n_basic() {
   let parser = Parser::default();
   let doc = parser.parse_file("tests/resources/file01.xml").unwrap();
 
-  let root = doc.get_root_element();
+  let root = doc.get_root_element().unwrap();
   let dnm = DNM::new(&root, DNMParameters::default());
   let c14n = dnm.to_c14n_basic();
   assert!(!c14n.is_empty());
@@ -25,7 +25,7 @@ fn test_c14n_basic_full() {
     .parse_file("tests/resources/1311.0066.xhtml")
     .unwrap();
 
-  let root = doc.get_root_element();
+  let root = doc.get_root_element().unwrap();
   let dnm = DNM::new(&root, DNMParameters::default());
   let c14n = dnm.to_c14n_basic();
   assert!(!c14n.is_empty());
@@ -36,7 +36,7 @@ fn test_c14n_math_hash() {
   let parser = Parser::default();
   let doc = parser.parse_file("tests/resources/0903.1000.html").unwrap();
 
-  let root = doc.get_root_element();
+  let root = doc.get_root_element().unwrap();
   let dnm = DNM::new(&root, DNMParameters::default());
 
   let xpath_context = Context::new(&doc).unwrap();

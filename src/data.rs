@@ -222,10 +222,9 @@ impl<'d> Document<'d> {
   /// Get an iterator over the sentences of the document
   pub fn sentence_iter(&mut self) -> SentenceIterator {
     if self.dnm.is_none() {
-      self.dnm = Some(DNM::new(
-        &self.dom.get_root_element(),
-        self.corpus.dnm_parameters.clone(),
-      ));
+      if let Some(root) = self.dom.get_root_element() {
+        self.dnm = Some(DNM::new(&root, self.corpus.dnm_parameters.clone()));
+      }
     }
     let tokenizer = &self.corpus.tokenizer;
     let sentences = tokenizer.sentences(self.dnm.as_ref().unwrap());

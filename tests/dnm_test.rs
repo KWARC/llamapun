@@ -4,9 +4,9 @@ extern crate libxml;
 extern crate llamapun;
 extern crate rustmorpha;
 
-use llamapun::dnm::*;
 use libxml::parser::Parser;
 use libxml::xpath::Context;
+use llamapun::dnm::*;
 use std::collections::HashMap;
 
 #[test]
@@ -20,7 +20,7 @@ fn test_plaintext_simple() {
     "a".to_string(),
     SpecialTagsOption::Normalize("[link]".to_string()),
   );
-  let root = doc.get_root_element();
+  let root = doc.get_root_element().unwrap();
   let dnm = DNM::new(
     &root,
     DNMParameters {
@@ -39,7 +39,7 @@ fn test_plaintext_simple() {
 fn test_non_normalized_unicode() {
   let parser = Parser::default();
   let doc = parser.parse_file("tests/resources/file05.xml").unwrap();
-  let root = doc.get_root_element();
+  let root = doc.get_root_element().unwrap();
   let dnm = DNM::new(
     &root,
     DNMParameters {
@@ -72,7 +72,7 @@ fn test_xml_node_to_plaintext() {
     "a".to_string(),
     SpecialTagsOption::Normalize("[link]".to_string()),
   );
-  let root = doc.get_root_element();
+  let root = doc.get_root_element().unwrap();
   let dnm = DNM::new(
     &root,
     DNMParameters {
@@ -80,7 +80,7 @@ fn test_xml_node_to_plaintext() {
       ..Default::default()
     },
   );
-  let mut node = doc.get_root_element();
+  let mut node = doc.get_root_element().unwrap();
   match node.get_first_child() {
     Some(n) => node = n,
     None => assert!(false), //DOM generation failed
@@ -128,7 +128,7 @@ fn test_xml_node_to_plaintext() {
 fn test_back_mapping_simple() {
   let parser = Parser::default();
   let doc = parser.parse_file("tests/resources/file01.xml").unwrap();
-  let root = doc.get_root_element();
+  let root = doc.get_root_element().unwrap();
   let mut options: HashMap<String, SpecialTagsOption> = HashMap::new();
   options.insert(
     "a".to_string(),
@@ -188,7 +188,7 @@ fn test_plaintext_normalized_class_names() {
     "normalized".to_string(),
     SpecialTagsOption::Normalize("[NORMALIZED]".to_string()),
   );
-  let root = doc.get_root_element();
+  let root = doc.get_root_element().unwrap();
   let dnm = DNM::new(
     &root,
     DNMParameters {
@@ -204,7 +204,7 @@ fn test_plaintext_normalized_class_names() {
 fn test_unicode_normalization() {
   let parser = Parser::default();
   let doc = parser.parse_file("tests/resources/file03.xml").unwrap();
-  let root = doc.get_root_element();
+  let root = doc.get_root_element().unwrap();
   let dnm = DNM::new(
     &root,
     DNMParameters {
@@ -212,7 +212,7 @@ fn test_unicode_normalization() {
       ..DNMParameters::default()
     },
   );
-  let node = doc.get_root_element();
+  let node = doc.get_root_element().unwrap();
   let dnmrange = dnm.get_range_of_node(&node).unwrap();
   assert_eq!(dnmrange.get_plaintext().trim(), "At houEUR...");
 }
@@ -221,7 +221,7 @@ fn test_unicode_normalization() {
 fn test_morpha_stemming() {
   let parser = Parser::default();
   let doc = parser.parse_file("tests/resources/file04.xml").unwrap();
-  let root = doc.get_root_element();
+  let root = doc.get_root_element().unwrap();
   let dnm = DNM::new(
     &root,
     DNMParameters {
@@ -230,7 +230,7 @@ fn test_morpha_stemming() {
       ..Default::default()
     },
   );
-  let node = doc.get_root_element();
+  let node = doc.get_root_element().unwrap();
   let dnmrange = dnm.get_range_of_node(&node).unwrap().trim();
 
   assert_eq!(

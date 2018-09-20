@@ -5,11 +5,11 @@ extern crate llamapun;
 extern crate regex;
 extern crate time;
 
+use regex::Regex;
 use std::env;
+use std::fs::File;
 use std::io::prelude::*;
 use std::io::BufWriter;
-use std::fs::File;
-use regex::Regex;
 
 use llamapun::data::Corpus;
 

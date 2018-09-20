@@ -1,6 +1,7 @@
 // Copyright 2015-2018 KWARC research group. See the LICENSE
 // file at the top-level directory of this distribution.
 //
+extern crate libxml;
 extern crate llamapun;
 extern crate regex;
 extern crate time;
@@ -11,6 +12,7 @@ use std::fs::File;
 use std::io::prelude::*;
 use std::io::BufWriter;
 
+use libxml::xpath::Context;
 use llamapun::data::Corpus;
 use llamapun::dnm;
 
@@ -61,6 +63,7 @@ pub fn main() {
   let mut corpus = Corpus::new(corpus_path);
   for mut document in corpus.iter() {
     document_count += 1;
+    let mut context = Context::new(&document.dom).unwrap();
     for mut paragraph in document.paragraph_iter() {
       paragraph_count += 1;
       for mut sentence in paragraph.iter() {
@@ -82,7 +85,7 @@ pub fn main() {
             // sometimes they are not cleanly tokenized, e.g. $k$-dimensional
             // will be the word string "mathformula-dimensional"
             if word_string.contains("mathformula") {
-              lexeme_str = dnm::node::lexematize_math(word.range.get_node());
+              lexeme_str = dnm::node::lexematize_math(word.range.get_node(), &mut context);
               word_str = &lexeme_str;
               formula_count += 1;
             } else if word_string.contains("citationelement") {

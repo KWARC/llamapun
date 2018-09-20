@@ -1,19 +1,23 @@
 // Copyright 2015-2018 KWARC research group. See the LICENSE
 // file at the top-level directory of this distribution.
 //
+extern crate libxml;
 extern crate llamapun;
 extern crate regex;
 extern crate time;
 
+use regex::Regex;
 use std::env;
+use std::fs::File;
 use std::io::prelude::*;
 use std::io::BufWriter;
-use std::fs::File;
-use regex::Regex;
 
+use libxml::xpath::Context;
 use llamapun::data::Corpus;
+use llamapun::dnm;
 
 static BUFFER_CAPACITY: usize = 10_485_760;
+static MAX_WORD_LENGTH: usize = 25;
 
 /// Given a `CorTeX` corpus of HTML5 documents, extract a token model as a
 /// single file
@@ -59,15 +63,23 @@ pub fn main() {
   let mut corpus = Corpus::new(corpus_path);
   for mut document in corpus.iter() {
     document_count += 1;
+    let mut context = Context::new(&document.dom).unwrap();
     for mut paragraph in document.paragraph_iter() {
       paragraph_count += 1;
       for mut sentence in paragraph.iter() {
         let mut sentence_buffer = String::new();
         let mut invalid_sentence = true;
         'words: for word in sentence.simple_iter() {
+          let lexeme_str: String;
           if !word.range.is_empty() {
-            let mut word_string = word.range.get_plaintext().to_lowercase();
-            if word_string.len() > 30 {
+            let mut word_string = word
+              .range
+              .get_plaintext()
+              .chars()
+              .filter(|c| c.is_alphanumeric()) // drop apostrophes, other noise?
+              .collect::<String>()
+              .to_lowercase();
+            if word_string.len() > MAX_WORD_LENGTH {
               // Using a more aggressive normalization, large words tend to be conversion
               // errors with lost whitespace - drop the entire sentence when this occurs.
               overflow_count += 1;
@@ -79,7 +91,8 @@ pub fn main() {
             // sometimes they are not cleanly tokenized, e.g. $k$-dimensional
             // will be the word string "mathformula-dimensional"
             if word_string.contains("mathformula") {
-              word_str = "mathformula";
+              lexeme_str = dnm::node::lexematize_math(word.range.get_node(), &mut context);
+              word_str = &lexeme_str;
               formula_count += 1;
             } else if word_string.contains("citationelement") {
               word_str = "citationelement";

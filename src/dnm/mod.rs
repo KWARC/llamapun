@@ -2,6 +2,8 @@
 //! (Document Object Model) representation and the plain text representation,
 //! which is needed for most NLP tools.
 mod c14n;
+/// Node auxiliaries for DNMs
+pub mod node;
 mod parameters;
 mod range;
 
@@ -56,11 +58,9 @@ impl Default for DNM {
 // A handy macro for idiomatic recording in the node_map
 #[macro_export]
 macro_rules! record_node_map(
-  ($dnm: expr, $node: expr, $offset_start: expr) => (
-  {
+  ($dnm: expr, $node: expr, $offset_start: expr) => {{
     $dnm.node_map.insert($node.to_hashable(), ($offset_start, $dnm.runtime.chars.len()));
-  }
-  )
+  }}
 );
 
 macro_rules! push_token(

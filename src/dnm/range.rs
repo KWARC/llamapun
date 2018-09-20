@@ -35,6 +35,9 @@ impl<'dnmrange> DNMRange<'dnmrange> {
   /// Get the plaintext without trailing white spaces
   pub fn get_plaintext_truncated(&self) -> &'dnmrange str { self.get_plaintext().trim_right() }
 
+  /// Get the first corresponding DOM node for this range
+  pub fn get_node(&self) -> &'dnmrange Node { &self.dnm.back_map[self.start].0 }
+
   /// Returns a `DNMRange` with the leading and trailing whitespaces removed
   pub fn trim(&self) -> DNMRange<'dnmrange> {
     let mut trimmed_start = self.start;

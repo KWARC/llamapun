@@ -55,7 +55,7 @@ pub struct Document<'d> {
   pub dnm: Option<DNM>,
 }
 
-/// An iterator of paragraphs of a `Document`
+/// An iterator over paragraphs of a `Document`. Ignores paragraphs containing `ltx_ERROR` markup
 pub struct ParagraphIterator<'iter> {
   /// A walker over paragraph nodes
   walker: IntoIter<Node>,
@@ -209,7 +209,9 @@ impl<'d> Document<'d> {
   /// Get an iterator over the paragraphs of the document
   pub fn paragraph_iter(&mut self) -> ParagraphIterator {
     let xpath_context = Context::new(&self.dom).unwrap();
-    let paras = match xpath_context.evaluate("//*[contains(@class,'ltx_para')]") {
+    let paras = match xpath_context.evaluate(
+      "//*[local-name()='div' and contains(@class,'ltx_para') and not(descendant::*[contains(@class,'ltx_ERROR')])]",
+    ) {
       Ok(found_payload) => found_payload.get_nodes_as_vec(),
       _ => Vec::new(),
     };

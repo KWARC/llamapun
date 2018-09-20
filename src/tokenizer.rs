@@ -222,13 +222,20 @@ impl Tokenizer {
 
   /// returns the words of a sentence using simple heuristics
   pub fn words<'a, 'b>(&'b self, sentence_range: &'a DNMRange<'b>) -> Vec<DNMRange> {
-    let text_iterator = sentence_range.get_plaintext().chars().peekable();
+    let mut text_iterator = sentence_range.get_plaintext().chars().peekable();
     let mut start = 0usize;
     let mut end = 0usize;
     let mut result: Vec<DNMRange> = Vec::new();
-    for c in text_iterator {
+    while let Some(c) = text_iterator.next() {
       end += c.len_utf8();
       if !c.is_alphanumeric() {
+        if c == '\'' || c == '’' {
+          if let Some(peeked) = text_iterator.peek() {
+            if peeked == &'s' {
+              continue;
+            }
+          }
+        }
         if start < end - c.len_utf8() {
           result.push(sentence_range.get_subrange(start, end - c.len_utf8()));
         }

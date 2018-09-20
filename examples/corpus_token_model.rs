@@ -72,7 +72,13 @@ pub fn main() {
         'words: for word in sentence.simple_iter() {
           let lexeme_str: String;
           if !word.range.is_empty() {
-            let mut word_string = word.range.get_plaintext().to_lowercase();
+            let mut word_string = word
+              .range
+              .get_plaintext()
+              .chars()
+              .filter(|c| c.is_alphanumeric()) // drop apostrophes, other noise?
+              .collect::<String>()
+              .to_lowercase();
             if word_string.len() > MAX_WORD_LENGTH {
               // Using a more aggressive normalization, large words tend to be conversion
               // errors with lost whitespace - drop the entire sentence when this occurs.

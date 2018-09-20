@@ -17,12 +17,21 @@ pub fn lexematize_math(node: &Node, context: &mut Context) -> String {
     .map(|anno| {
       anno
         .get_content()
-        .chars()
-        .map(|c| match c {
-          ':' | '-' => '_',
-          '\n' => ' ',
-          _ => c,
-        }).collect()
+        .split_whitespace()
+        .map(|anno_word| {
+          if anno_word.starts_with("NUM") {
+            String::from("NUM")
+          } else {
+            anno_word
+              .chars()
+              .map(|c| match c {
+                ':' | '-' => '_',
+                '\n' => ' ',
+                _ => c,
+              }).collect()
+          }
+        }).collect::<Vec<String>>()
+        .join(" ")
     }).collect::<Vec<String>>()
     .join(" ");
   if !lexemes.is_empty() {

@@ -55,8 +55,7 @@ pub struct Document<'d> {
   pub dnm: Option<DNM>,
 }
 
-/// An iterator over the paragraphs of a `Document`. Ignores paragraphs containing `ltx_ERROR`
-/// markup
+/// An iterator over paragraphs of a `Document`. Ignores paragraphs containing `ltx_ERROR` markup
 pub struct ParagraphIterator<'iter> {
   /// A walker over paragraph nodes
   walker: IntoIter<Node>,

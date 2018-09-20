@@ -18,8 +18,11 @@ pub fn lexematize_math(node: &Node, context: &mut Context) -> String {
       anno
         .get_content()
         .chars()
-        .map(|c| if c == ':' || c == '-' { '_' } else { c })
-        .collect()
+        .map(|c| match c {
+          ':' | '-' => '_',
+          '\n' => ' ',
+          _ => c,
+        }).collect()
     }).collect::<Vec<String>>()
     .join(" ");
   if !lexemes.is_empty() {

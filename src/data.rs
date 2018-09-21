@@ -210,7 +210,7 @@ impl<'d> Document<'d> {
   pub fn paragraph_iter(&mut self) -> ParagraphIterator {
     let xpath_context = Context::new(&self.dom).unwrap();
     let paras = match xpath_context.evaluate(
-      "//*[local-name()='div' and contains(@class,'ltx_para') and not(descendant::*[contains(@class,'ltx_ERROR')])]",
+      "//*[local-name()='div' and contains(@class,'ltx_para') and not(descendant::*[contains(@class,'ltx_ERROR')]) and not(preceding-sibling::*[contains(@class,'ltx_ERROR')])]",
     ) {
       Ok(found_payload) => found_payload.get_nodes_as_vec(),
       _ => Vec::new(),

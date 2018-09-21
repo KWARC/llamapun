@@ -26,6 +26,22 @@ impl Default for Tokenizer {
   }
 }
 
+fn wordlike_with_upper_next(peekable: &Peekable<Chars>) -> bool {
+  let mut new_iterator = peekable.clone();
+  let mut upper_found = false;
+  while let Some(c) = new_iterator.next() {
+    if c.is_alphabetic() {
+      if c.is_uppercase() {
+        upper_found = true;
+        break;
+      }
+    } else {
+      break;
+    }
+  }
+  upper_found
+}
+
 impl Tokenizer {
   /// gets the sentences from a dnm
   pub fn sentences<'a>(&self, dnm: &'a DNM) -> Vec<DNMRange<'a>> {
@@ -43,8 +59,8 @@ impl Tokenizer {
 
       match sentence_char {
         '.' | ':' => {
-          // Baseline condition - only split when we have a following uppercase letter
-          // Get next non-space, non-quote character
+          // Baseline condition - only split when we have a following word-ish string with an
+          // uppercase letter Get next non-space, non-quote character
           while text_iterator.peek().unwrap_or(&'.').is_whitespace()
             || text_iterator.peek() == Some(&'\'')
           {
@@ -55,7 +71,7 @@ impl Tokenizer {
             break;
           }
           // Uppercase next?
-          if text_iterator.peek().unwrap().is_uppercase() {
+          if wordlike_with_upper_next(&text_iterator) {
             // Ok, uppercase, but is it a stopword? If so, we must ALWAYS break the
             // sentence:
             let (next_word_string, next_word_length) = next_word_with_length(&mut text_iterator);

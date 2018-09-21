@@ -18,7 +18,8 @@ fn test_sentence_tokenization_simple() {
     a copula is again a copula. Unorthodox beginnings of sentences can also occur. Deciphering Eqn. 1 is sometimes. difficult Prof. Automation, isn't it? \
     Our most significant result is a stochastic interpretation of the Bernstein \
     approximation of a copula. This interpretation was communicated to us by J. H. B. Kemperman in [?] for \
-    2-copulas and we are not aware of its publication elsewhere. Consider Eqn. 1, in light of eqs. 2 and 3. Then it is clear that eq. 1 is indeed correct. "
+    2-copulas and we are not aware of its publication elsewhere. Consider Eqn. 1, in light of eqs. 2 and 3. Then it is clear that eq. 1 is indeed correct. \
+    In this paper, we propose to use the von Mises-Fisher (vMF) distribution rather than Gaussian for our latent variable. vMF places a distribution over the unit hypersphere governed by a mean parameter."
     .to_string();
   let text_len = simple_text.len();
   let simple_dnm = DNM {
@@ -30,9 +31,9 @@ fn test_sentence_tokenization_simple() {
 
   let simple_tokenizer = Tokenizer::default();
   let ranges: Vec<DNMRange> = simple_tokenizer.sentences(&simple_dnm);
-  assert_eq!(ranges.len(), 8);
+  assert_eq!(ranges.len(), 10);
 
-  let sentences_expected: [&str; 8] = [
+  let sentences_expected: [&str; 10] = [
     "This note was written to clarify for myself and my colleagues certain properties of Bernstein approximations that are useful in investigating copulas.",
     "We derive some of the basic properties of the Bernstein approximation for functions of n variables and then show that the Bernstein approximation of a copula is again a copula.",
     "Unorthodox beginnings of sentences can also occur.",
@@ -41,6 +42,8 @@ fn test_sentence_tokenization_simple() {
     "This interpretation was communicated to us by J. H. B. Kemperman in [?] for 2-copulas and we are not aware of its publication elsewhere.",
     "Consider Eqn. 1, in light of eqs. 2 and 3.",
     "Then it is clear that eq. 1 is indeed correct.",
+    "In this paper, we propose to use the von Mises-Fisher (vMF) distribution rather than Gaussian for our latent variable.",
+    "vMF places a distribution over the unit hypersphere governed by a mean parameter."
   ];
   let r_iter = ranges.iter();
   let mut e_iter = sentences_expected.iter();

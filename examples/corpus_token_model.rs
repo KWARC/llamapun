@@ -35,14 +35,14 @@ pub fn main() {
     None => "token_model.txt".to_string(),
   };
 
-  let mut document_count = 0;
-  let mut paragraph_count = 0;
-  let mut sentence_count = 0;
-  let mut word_count = 0;
-  let mut formula_count = 0;
-  let mut citation_count = 0;
-  let mut num_count = 0;
-  let mut overflow_count = 0;
+  let mut document_count: u64 = 0;
+  let mut paragraph_count: u64 = 0;
+  let mut sentence_count: u64 = 0;
+  let mut word_count: u64 = 0;
+  let mut formula_count: u64 = 0;
+  let mut citation_count: u64 = 0;
+  let mut num_count: u64 = 0;
+  let mut overflow_count: u64 = 0;
 
   let token_model_file = match File::create(token_model_filepath) {
     Ok(fh) => fh,

@@ -150,7 +150,7 @@ pub fn main() -> Result<(), Error> {
       }
     }
 
-    if total_doc_count % 1000 == 0 {
+    if document_count % 1000 == 0 {
       println!("-- processed documents: {:?}", total_doc_count);
       println!("-- AMS documents: {:?}", document_count);
     }

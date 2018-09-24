@@ -1,6 +1,6 @@
 [package]
 name = "llamapun"
-version = "0.1.0"
+version = "0.2.0"
 authors = ["Deyan Ginev <deyan.ginev@gmail.com>", "Jan Frederik Schaefer <j.schaefer@jacobs-university.de>"]
 
 [lib]

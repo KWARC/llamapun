@@ -1,6 +1,7 @@
 // Copyright 2015-2018 KWARC research group. See the LICENSE
 // file at the top-level directory of this distribution.
 //
+extern crate libxml;
 extern crate llamapun;
 extern crate regex;
 extern crate time;
@@ -13,14 +14,17 @@ use std::io::prelude::*;
 use std::io::BufWriter;
 use std::io::Error;
 
+use libxml::xpath::Context;
 use llamapun::ams;
 use llamapun::ams::AmsEnv;
 use llamapun::data::Corpus;
+use llamapun::dnm;
 
 static BUFFER_CAPACITY: usize = 10_485_760;
+static MAX_WORD_LENGTH: usize = 25;
 
 /// assume we are dealing with less than 100m items here
-pub fn num_file_path(directory: &str, index: usize) -> String {
+pub fn num_file_path(directory: &str, index: u64) -> String {
   let mut file_base = (100_000_000 + index).to_string();
   file_base.remove(0);
   directory.to_string() + "/" + &file_base + ".txt"
@@ -57,9 +61,9 @@ pub fn main() -> Result<(), Error> {
     None => "ams_paragraphs".to_string(),
   };
 
-  let mut total_doc_count = 0;
-  let mut document_count = 0;
-  let mut paragraph_count = 0;
+  let mut total_doc_count: u64 = 0;
+  let mut document_count: u64 = 0;
+  let mut paragraph_count: u64 = 0;
 
   let space = ' ';
   let linebreak = '\n';
@@ -75,6 +79,7 @@ pub fn main() -> Result<(), Error> {
       continue;
     }
     document_count += 1;
+    let mut context = Context::new(&document.dom).unwrap();
 
     for mut paragraph in document.paragraph_iter() {
       let mut paragraph_buffer = String::new();
@@ -85,9 +90,16 @@ pub fn main() -> Result<(), Error> {
       'sentences: for mut sentence in paragraph.iter() {
         sentence_buffer = String::new();
         for word in sentence.simple_iter() {
+          let lexeme_str: String;
           if !word.range.is_empty() {
-            let mut word_string = word.range.get_plaintext().to_lowercase();
-            if word_string.len() > 30 {
+            let mut word_string = word
+              .range
+              .get_plaintext()
+              .chars()
+              .filter(|c| c.is_alphanumeric()) // drop apostrophes, other noise?
+              .collect::<String>()
+              .to_lowercase();
+            if word_string.len() > MAX_WORD_LENGTH {
               // Using a more aggressive normalization, large words tend to be conversion
               // errors with lost whitespace - drop the entire paragraph when this occurs.
               overflow_count += 1;
@@ -99,7 +111,8 @@ pub fn main() -> Result<(), Error> {
             // sometimes they are not cleanly tokenized, e.g. $k$-dimensional
             // will be the word string "mathformula-dimensional"
             if word_string.contains("mathformula") {
-              word_str = "mathformula";
+              lexeme_str = dnm::node::lexematize_math(word.range.get_node(), &mut context);
+              word_str = &lexeme_str;
             } else if word_string.contains("citationelement") {
               word_str = "citationelement";
             } else if is_numeric.is_match(&word_string) {

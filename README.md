@@ -1,6 +1,6 @@
 The **llamapun** library hosts common _language and mathematics processing_ algorithms, used by the KWARC research group.
 
-[![Build Status](https://secure.travis-ci.org/KWARC/llamapun.png?branch=master)](http://travis-ci.org/KWARC/llamapun)
+[![Build Status](https://travis-ci.org/KWARC/llamapun.svg?branch=master)](https://travis-ci.org/KWARC/llamapun)
 [![API Documentation](https://img.shields.io/badge/docs-API-blue.svg)](http://kwarc.github.io/llamapun/llamapun/index.html)
 [![license](http://img.shields.io/badge/license-GPLv3-blue.svg)](https://raw.githubusercontent.com/KWARC/llamapun/master/LICENSE)
 ![version](https://img.shields.io/badge/version-0.2.0-orange.svg)

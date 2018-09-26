@@ -45,7 +45,7 @@ impl Default for DNM {
   fn default() -> DNM {
     DNM {
       parameters: DNMParameters::default(),
-      root_node: Node::mock(&Document::new().unwrap()),
+      root_node: Node::null(),
       plaintext: String::new(),
       byte_offsets: Vec::new(),
       node_map: HashMap::new(),

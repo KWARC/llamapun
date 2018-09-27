@@ -3,7 +3,7 @@ The **llamapun** library hosts common _language and mathematics processing_ algo
 [![Build Status](https://travis-ci.org/KWARC/llamapun.svg?branch=master)](https://travis-ci.org/KWARC/llamapun)
 [![API Documentation](https://img.shields.io/badge/docs-API-blue.svg)](http://kwarc.github.io/llamapun/llamapun/index.html)
 [![license](http://img.shields.io/badge/license-GPLv3-blue.svg)](https://raw.githubusercontent.com/KWARC/llamapun/master/LICENSE)
-![version](https://img.shields.io/badge/version-0.2.0-orange.svg)
+![version](https://img.shields.io/badge/version-0.2.1-orange.svg)
 ---
 At its core, **llamapun** is a [Rust](http://rust-lang.org/) implementation that aims at minimal footprint and optimal runtime, in order to safely scale to corpora of millions of documents and tens of billions ot tokens.
 
@@ -16,7 +16,7 @@ At its core, **llamapun** is a [Rust](http://rust-lang.org/) implementation that
    * Unicode normalization,
    * Stopwords - based on widely accepted lists, enhanced for STEM texts,
    * Semi-structured to plain text normalization (math, citations, tables, etc.),
-   * [TODO] Purification of text and math modality (e.g. move trailing dots left in math back into the sentence text),
+   * [TODO #3] Purification of text and math modality (e.g. move trailing dots left in math back into the sentence text),
    * Stemming - adaptation of the [Morpha](http://www.sussex.ac.uk/Users/johnca/morph.html) stemmer,
    * Tokenization - rule-based sentence segmentation, and [SENNA](http://ml.nec-labs.com/senna/) word tokenization
 
@@ -27,16 +27,20 @@ At its core, **llamapun** is a [Rust](http://rust-lang.org/) implementation that
    * Extract token models for [GloVe](http://nlp.stanford.edu/projects/glove/),
    * [Pattern-matching library](doc/pattern_matching.md) for rule-based extraction and/or bootstrapping,
    * [TODO] Language identification (via [libTextCat](http://software.wise-guys.nl/libtextcat/)),
-   * N-gram footprints,
+   * N-gram footprints
 
  * **Representation Toolkit**
    * Document Narrative Model (DNM) addition to the XML DOM
-   * [TODO] XPointer and string offset annotation support
+   * XPointer and string offset annotation support
    * [TOPORT] Shared Packed parse forests for mathematical formulas (aka "disjunctive logical forms")
 
  * **Programming API**
    * High-level iterators over the narrative elements of scientific documents
    * Zero-cost abstractions over the source data, as well as over linguistic annotations of various granularity.
+
+ * **Additional included Examples**
+   * math-aware corpus token models, via DNM plain text normalization
+   * math-aware AMS-labeled dataset generation
 
 ---
 
@@ -44,14 +48,14 @@ At its core, **llamapun** is a [Rust](http://rust-lang.org/) implementation that
 
 Run
 ```bash
-cargo build
+cargo test
 ```
 in the project directory. 
 
-In case of errors, it's recommended to switch to the nightly builds of rust (https://github.com/rust-lang-nursery/rustup.rs#working-with-nightly-rust), 
+It is recommended to use to the latest nightly builds of rust (https://github.com/rust-lang-nursery/rustup.rs#working-with-nightly-rust), 
 i.e. using rustup (www.rustup.rs) and keep it updated (run 'rustup update' on a regular basis).
 
-For problems with libxml, it helps to install its development headers (libxml2-dev is the package name for a Debian-based Linux).
+For problems with libxml, it helps to install its development headers (`libxml2-dev` is the package name for a Debian-based Linux).
 
 ---
 

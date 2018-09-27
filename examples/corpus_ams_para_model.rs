@@ -4,17 +4,19 @@
 extern crate libxml;
 extern crate llamapun;
 extern crate regex;
-extern crate time;
+extern crate tar;
 
 use regex::Regex;
 use std::env;
-use std::fs;
 use std::fs::File;
 use std::io::prelude::*;
 use std::io::BufWriter;
 use std::io::Error;
+use std::time::{SystemTime, UNIX_EPOCH};
 
+use tar::{Builder, Header};
 use libxml::xpath::Context;
+
 use llamapun::ams;
 use llamapun::ams::AmsEnv;
 use llamapun::data::Corpus;
@@ -45,10 +47,27 @@ pub fn save_para_to_file(data: &str, filename: &str) -> Result<(), Error> {
   Ok(())
 }
 
+/// This is a good place to discuss inodes. The expected number of paragraph files in arXiv 08.2018
+/// exceeds 50 million. Hence, one would expect a >1 TB ext4 drive, for the default inode allocation to suffice
+/// However, using a modern NVMe SSD for speed conflicts that requirement.
+/// Hence, solution -- write directly to a .tar file, and avoid the inode trouble.
+pub fn save_para_to_tar(builder: &mut Builder<File>, data:&str, filename: &str, stamp: u64) -> Result<(), Error> {
+  let bytes = data.as_bytes();
+  let mut header = Header::new_gnu();
+  header.set_size(bytes.len() as u64);
+  header.set_mode(0o644);
+  header.set_uid(0);
+  header.set_gid(0);
+  header.set_mtime(stamp);
+  header.set_cksum();
+  builder.append_data(&mut header, filename, bytes)
+}
+
 /// Given a `CorTeX` corpus of HTML5 documents, extract a token model as a
 /// single file
 pub fn main() -> Result<(), Error> {
-  let start = time::get_time();
+  let start = SystemTime::now();
+  let stamp = start.duration_since(UNIX_EPOCH).unwrap().as_secs();
   // Read input arguments
   let mut input_args = env::args();
   let _ = input_args.next(); // skip process name
@@ -56,9 +75,9 @@ pub fn main() -> Result<(), Error> {
     Some(path) => path,
     None => "tests/resources/".to_string(),
   };
-  let paragraph_model_directory = match input_args.next() {
+  let paragraph_model_file = match input_args.next() {
     Some(path) => path,
-    None => "ams_paragraphs".to_string(),
+    None => "ams_paragraphs.tar".to_string(),
   };
 
   let mut total_doc_count: u64 = 0;
@@ -71,6 +90,9 @@ pub fn main() -> Result<(), Error> {
   let is_numeric = Regex::new(r"^-?(?:\d+)(?:[a-k]|(?:\.\d+(?:[eE][+-]?\d+)?))?$").unwrap();
   let mut overflow_count = 0;
 
+  let file = File::create(paragraph_model_file).unwrap();
+  let mut builder = Builder::new(file);
+  
   let mut corpus = Corpus::new(corpus_path);
   for mut document in corpus.iter() {
     total_doc_count += 1;
@@ -142,22 +164,21 @@ pub fn main() -> Result<(), Error> {
           Some(env) => env.to_string(),
           None => String::from("other"),
         };
-        let full_dir = paragraph_model_directory.clone() + "/" + &ams_dir;
-        fs::create_dir_all(&full_dir)?;
         paragraph_count += 1;
-        let full_filename = num_file_path(&full_dir, paragraph_count);
-        save_para_to_file(&paragraph_buffer, &full_filename)?;
+        let paragraph_filename = num_file_path(&ams_dir, paragraph_count);
+        save_para_to_tar(&mut builder, &paragraph_buffer, &paragraph_filename, stamp)?;
       }
     }
 
     if document_count % 1000 == 0 {
       println!("-- processed documents: {:?}", total_doc_count);
       println!("-- AMS documents: {:?}", document_count);
+      println!("-- AMS paragraphs: {:?}", paragraph_count);
+      println!("--");
     }
   }
 
-  let end = time::get_time();
-  let duration_sec = (end - start).num_milliseconds() / 1000;
+  let duration_sec = SystemTime::now().duration_since(start).unwrap().as_secs();
   println!("---");
   println!(
     "AMS paragraph model finished in {:?}s, gathered: ",

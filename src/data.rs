@@ -206,15 +206,20 @@ impl<'d> Document<'d> {
     })
   }
 
-  /// Get an iterator over the paragraphs of the document
-  pub fn paragraph_iter(&mut self) -> ParagraphIterator {
-    let xpath_context = Context::new(&self.dom).unwrap();
-    let paras = match xpath_context.evaluate(
+  /// Obtain the problem-free logical paragraphs of a libxml `Document`
+  pub fn paragraph_nodes(doc: &XmlDoc) -> Vec<Node> {
+    let xpath_context = Context::new(doc).unwrap();
+    match xpath_context.evaluate(
       "//*[local-name()='div' and contains(@class,'ltx_para') and not(descendant::*[contains(@class,'ltx_ERROR')]) and not(preceding-sibling::*[contains(@class,'ltx_ERROR')])]",
     ) {
       Ok(found_payload) => found_payload.get_nodes_as_vec(),
       _ => Vec::new(),
-    };
+    }
+  }
+
+  /// Get an iterator over the paragraphs of the document
+  pub fn paragraph_iter(&mut self) -> ParagraphIterator {
+    let paras = Document::paragraph_nodes(&self.dom);
     ParagraphIterator {
       walker: paras.into_iter(),
       document: self,

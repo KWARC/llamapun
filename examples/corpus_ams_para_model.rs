@@ -14,8 +14,8 @@ use std::io::BufWriter;
 use std::io::Error;
 use std::time::{SystemTime, UNIX_EPOCH};
 
-use tar::{Builder, Header};
 use libxml::xpath::Context;
+use tar::{Builder, Header};
 
 use llamapun::ams;
 use llamapun::ams::AmsEnv;
@@ -48,10 +48,16 @@ pub fn save_para_to_file(data: &str, filename: &str) -> Result<(), Error> {
 }
 
 /// This is a good place to discuss inodes. The expected number of paragraph files in arXiv 08.2018
-/// exceeds 50 million. Hence, one would expect a >1 TB ext4 drive, for the default inode allocation to suffice
-/// However, using a modern NVMe SSD for speed conflicts that requirement.
+/// exceeds 50 million. Hence, one would expect a >1 TB ext4 drive, for the default inode
+/// allocation to suffice However, using a modern NVMe SSD for speed conflicts that requirement.
 /// Hence, solution -- write directly to a .tar file, and avoid the inode trouble.
-pub fn save_para_to_tar(builder: &mut Builder<File>, data:&str, filename: &str, stamp: u64) -> Result<(), Error> {
+pub fn save_para_to_tar(
+  builder: &mut Builder<File>,
+  data: &str,
+  filename: &str,
+  stamp: u64,
+) -> Result<(), Error>
+{
   let bytes = data.as_bytes();
   let mut header = Header::new_gnu();
   header.set_size(bytes.len() as u64);
@@ -92,7 +98,7 @@ pub fn main() -> Result<(), Error> {
 
   let file = File::create(paragraph_model_file).unwrap();
   let mut builder = Builder::new(file);
-  
+
   let mut corpus = Corpus::new(corpus_path);
   for mut document in corpus.iter() {
     total_doc_count += 1;
@@ -103,12 +109,21 @@ pub fn main() -> Result<(), Error> {
     document_count += 1;
     let mut context = Context::new(&document.dom).unwrap();
 
-    for mut paragraph in document.paragraph_iter() {
+    'paragraphs: for mut paragraph in document.paragraph_iter() {
       let mut paragraph_buffer = String::new();
       let mut sentence_buffer;
       let mut invalid_paragraph = false;
       let para_parent = paragraph.dnm.root_node.get_parent().unwrap();
-
+      let mut prev_opt = paragraph.dnm.root_node.get_prev_sibling();
+      let mut prev_name = String::new();
+      while let Some(prev_node) = prev_opt {
+        if prev_node.is_element_node() {
+          prev_name = prev_node.get_name();
+          break;
+        } else {
+          prev_opt = prev_node.get_prev_sibling();
+        }
+      }
       'sentences: for mut sentence in paragraph.iter() {
         sentence_buffer = String::new();
         for word in sentence.simple_iter() {
@@ -155,14 +170,23 @@ pub fn main() -> Result<(), Error> {
         // paragraph was valid, what is its label?
         let parent_class = para_parent.get_attribute("class").unwrap_or_default();
         let ams_class = ams::class_to_env(&parent_class);
-        // if Other markup, ignore the paragraph to avoid noise
+        // if Other markup (long tail ams env classes), ignore the paragraph to avoid
+        // pollution by mis-counting class A paras as class B (or Other)
         if ams_class == Some(AmsEnv::Other) {
-          continue;
+          continue 'paragraphs;
         }
+
         // if None, record as "other" in model
-        let ams_dir = match ams_class {
-          Some(env) => env.to_string(),
-          None => String::from("other"),
+        let ams_dir = if let Some(env) = ams_class {
+          // only record the First paragraph of a named class,
+          // i.e. previous sibling needs to be an h* element, if any
+          if prev_name.is_empty() || prev_name.starts_with('h') {
+            env.to_string()
+          } else {
+            continue 'paragraphs;
+          }
+        } else {
+          String::from("other")
         };
         paragraph_count += 1;
         let paragraph_filename = num_file_path(&ams_dir, paragraph_count);

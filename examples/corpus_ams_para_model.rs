@@ -18,7 +18,7 @@ use libxml::xpath::Context;
 use tar::{Builder, Header};
 
 use llamapun::ams;
-use llamapun::ams::AmsEnv;
+use llamapun::ams::{AmsEnv, StructuralEnv};
 use llamapun::data::Corpus;
 use llamapun::dnm;
 
@@ -116,14 +116,21 @@ pub fn main() -> Result<(), Error> {
       let para_parent = paragraph.dnm.root_node.get_parent().unwrap();
       let mut prev_opt = paragraph.dnm.root_node.get_prev_sibling();
       let mut prev_name = String::new();
+      // only record the First paragraph of a named class,
+      // i.e. previous sibling needs to be an h* element, if any
       while let Some(prev_node) = prev_opt {
         if prev_node.is_element_node() {
           prev_name = prev_node.get_name();
+          prev_opt = Some(prev_node);
           break;
         } else {
           prev_opt = prev_node.get_prev_sibling();
         }
       }
+      if !prev_name.is_empty() && !prev_name.starts_with('h') {
+        continue 'paragraphs;
+      }
+
       'sentences: for mut sentence in paragraph.iter() {
         sentence_buffer = String::new();
         for word in sentence.simple_iter() {
@@ -170,21 +177,19 @@ pub fn main() -> Result<(), Error> {
         // paragraph was valid, what is its label?
         let parent_class = para_parent.get_attribute("class").unwrap_or_default();
         let ams_class = ams::class_to_env(&parent_class);
-        // if Other markup (long tail ams env classes), ignore the paragraph to avoid
-        // pollution by mis-counting class A paras as class B (or Other)
-        if ams_class == Some(AmsEnv::Other) {
-          continue 'paragraphs;
-        }
 
-        // if None, record as "other" in model
         let ams_dir = if let Some(env) = ams_class {
-          // only record the First paragraph of a named class,
-          // i.e. previous sibling needs to be an h* element, if any
-          if prev_name.is_empty() || prev_name.starts_with('h') {
-            env.to_string()
-          } else {
+          if env == AmsEnv::Other {
+            // if Other markup (long tail ams env classes), ignore the paragraph to avoid
+            // pollution by mis-counting class A paras as class B (or Other)
             continue 'paragraphs;
+          } else {
+            env.to_string()
           }
+        } else if let Some(ref prev_node) = prev_opt {
+          // if None AMS markup found, check for structural markup, or record as "other" in model
+          let env: StructuralEnv = prev_node.get_content().into();
+          env.to_string()
         } else {
           String::from("other")
         };

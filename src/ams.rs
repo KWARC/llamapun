@@ -16,6 +16,84 @@ pub fn has_markup(doc: &Document) -> bool {
   }
 }
 
+/// Semantically fixed structural environments in scientific documents, to collect as
+/// counter-balance to the AMS markup
+pub enum StructuralEnv {
+  /// abstract lead-in
+  Abstract,
+  /// Introduction section
+  Introduction,
+  /// Related Work section
+  RelatedWork,
+  /// Method(s) section
+  Method,
+  /// Remark(.+) section
+  Remark,
+  /// Caption for a figure or table
+  Caption, // figcaption element, skip ltx_tag_figure span, auto-generated
+  /// Example(.+) section
+  Example,
+  /// Result(.+) section
+  Results,
+  /// Discussion(.+) section
+  Discussion,
+  /// Conclusion(.+) section
+  Conclusion,
+  /// Acknowledgement(s) section
+  Acknowledgement,
+  /// Anything else
+  Other,
+}
+
+impl From<String> for StructuralEnv {
+  fn from(s: String) -> StructuralEnv {
+    let s = s.to_lowercase();
+    if s.starts_with("abstract") {
+      StructuralEnv::Abstract
+    } else if s.starts_with("introduction") {
+      StructuralEnv::Introduction
+    } else if s.starts_with("related work") {
+      StructuralEnv::RelatedWork
+    } else if s.starts_with("method") {
+      StructuralEnv::Method
+    } else if s.starts_with("remark") {
+      StructuralEnv::Remark
+    } else if s.starts_with("example") {
+      StructuralEnv::Example
+    } else if s.starts_with("result") {
+      StructuralEnv::Results
+    } else if s.starts_with("discussion") {
+      StructuralEnv::Discussion
+    } else if s.starts_with("conclusion") {
+      StructuralEnv::Conclusion
+    } else if s.starts_with("acknowledgement") {
+      StructuralEnv::Acknowledgement
+    } else {
+      StructuralEnv::Other
+    }
+  }
+}
+
+impl fmt::Display for StructuralEnv {
+  fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+    let val = match self {
+      StructuralEnv::Abstract => "abstract",
+      StructuralEnv::Introduction => "introduction",
+      StructuralEnv::RelatedWork => "relatedwork",
+      StructuralEnv::Method => "method",
+      StructuralEnv::Remark => "remark",
+      StructuralEnv::Caption => "caption",
+      StructuralEnv::Example => "example",
+      StructuralEnv::Results => "results",
+      StructuralEnv::Discussion => "discussion",
+      StructuralEnv::Conclusion => "conclusion",
+      StructuralEnv::Acknowledgement => "acknowledgement",
+      StructuralEnv::Other => "other",
+    };
+    fmt.write_str(val)
+  }
+}
+
 /// Author-annotated \newthorem{} environments using the amsthm.sty mechanism
 /// which are then transported in the HTML representation as `ltx_theorem_<env>`
 ///
@@ -97,8 +175,7 @@ impl fmt::Display for AmsEnv {
       AmsEnv::Theorem => "theorem",
       AmsEnv::Other => "other",
     };
-    fmt.write_str(val)?;
-    Ok(())
+    fmt.write_str(val)
   }
 }
 

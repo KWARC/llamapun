@@ -34,7 +34,7 @@ pub enum StructuralEnv {
   /// Example(.+) section
   Example,
   /// Result(.+) section
-  Results,
+  Result,
   /// Discussion(.+) section
   Discussion,
   /// Conclusion(.+) section
@@ -61,7 +61,7 @@ impl From<String> for StructuralEnv {
     } else if s.starts_with("example") {
       StructuralEnv::Example
     } else if s.starts_with("result") {
-      StructuralEnv::Results
+      StructuralEnv::Result
     } else if s.starts_with("discussion") {
       StructuralEnv::Discussion
     } else if s.starts_with("conclusion") {
@@ -84,7 +84,7 @@ impl fmt::Display for StructuralEnv {
       StructuralEnv::Remark => "remark",
       StructuralEnv::Caption => "caption",
       StructuralEnv::Example => "example",
-      StructuralEnv::Results => "results",
+      StructuralEnv::Result => "result",
       StructuralEnv::Discussion => "discussion",
       StructuralEnv::Conclusion => "conclusion",
       StructuralEnv::Acknowledgement => "acknowledgement",

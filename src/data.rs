@@ -4,8 +4,8 @@ use std::vec::IntoIter;
 use walkdir::IntoIter as WalkDirIterator;
 use walkdir::WalkDir;
 
-use dnm::{DNMParameters, DNMRange, DNM};
-use tokenizer::Tokenizer;
+use crate::dnm::{DNMParameters, DNMRange, DNM};
+use crate::tokenizer::Tokenizer;
 
 use libxml::parser::{Parser, XmlParseError};
 use libxml::tree::Document as XmlDoc;
@@ -193,9 +193,9 @@ impl<'d> Document<'d> {
   /// Load a new document
   pub fn new(filepath: String, corpus: &'d Corpus) -> Result<Self, XmlParseError> {
     let dom = if filepath.ends_with(".xhtml") {
-      try!(corpus.xml_parser.parse_file(&filepath))
+      r#try!(corpus.xml_parser.parse_file(&filepath))
     } else {
-      try!(corpus.html_parser.parse_file(&filepath))
+      r#try!(corpus.html_parser.parse_file(&filepath))
     };
 
     Ok(Document {

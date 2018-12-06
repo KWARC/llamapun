@@ -11,8 +11,8 @@ extern crate libc;
 extern crate rustmorpha;
 extern crate unidecode;
 
-pub use dnm::parameters::{DNMParameters, RuntimeParseData, SpecialTagsOption};
-pub use dnm::range::DNMRange;
+pub use crate::dnm::parameters::{DNMParameters, RuntimeParseData, SpecialTagsOption};
+pub use crate::dnm::range::DNMRange;
 use libxml::tree::*;
 use std::collections::HashMap;
 use unidecode::{unidecode, unidecode_char};

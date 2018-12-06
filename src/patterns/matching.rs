@@ -2,10 +2,10 @@
 
 use libxml::tree::*;
 
-use patterns::rules::*;
-use patterns::utils::*;
+use crate::patterns::rules::*;
+use crate::patterns::utils::*;
 
-use dnm::*;
+use crate::dnm::*;
 
 use senna::phrase::Phrase;
 use senna::pos::POS;
@@ -177,20 +177,20 @@ pub fn match_sentence<'t>(
        return Err("DNM of sentence does not support back mapping".to_string());
        } */
 
-  let rule_pos = try!(
+  let rule_pos = r#try!(
     pf.sequence_rule_names
       .get(rule)
       .ok_or_else(|| format!("Could not find sequence rule \"{}\"", rule))
   );
   let actual_rule = &pf.sequence_rules[*rule_pos];
   let words = sentence.get_words();
-  let psg = try!(
+  let psg = r#try!(
     sentence
       .get_psgroot()
       .ok_or_else(|| "PSG required for pattern matching".to_string())
   );
   let phrase_tree =
-    try!(PhraseTree::from_psg(psg).map_err(|_| "Invalid PSG: Contains only leaf".to_string()));
+    r#try!(PhraseTree::from_psg(psg).map_err(|_| "Invalid PSG: Contains only leaf".to_string()));
 
   let mut matches: Vec<Match<'t>> = Vec::new();
 

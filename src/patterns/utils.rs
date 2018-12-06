@@ -78,7 +78,7 @@ pub fn fast_get_non_text_children(node: &Node) -> Vec<Node> {
 /// gets the non-text child of a node. Requires it to be the only child node apart from comments
 /// and text nodes containing only whitespaces
 pub fn get_only_child(node: &Node) -> Result<Node, String> {
-  let children = try!(get_non_text_children(node));
+  let children = r#try!(get_non_text_children(node));
   if children.is_empty() {
     Err(format!(
       "Expected child node in node \"{}\"",
@@ -97,7 +97,7 @@ pub fn get_only_child(node: &Node) -> Result<Node, String> {
 /// asserts that a node has no children (apart from comments and text nodes containing only
 /// whitespaces)
 pub fn assert_no_child(node: &Node) -> Result<(), String> {
-  if try!(get_non_text_children(node)).is_empty() {
+  if r#try!(get_non_text_children(node)).is_empty() {
     Ok(())
   } else {
     Err(format!(

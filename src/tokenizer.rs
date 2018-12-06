@@ -1,11 +1,11 @@
 //! Provides functionality for tokenizing sentences and words
-use dnm::{DNMRange, DNM};
+use crate::dnm::{DNMRange, DNM};
 use std::cmp;
 use std::collections::vec_deque::*;
 use std::collections::HashSet;
 use std::iter::Peekable;
 use std::str::Chars;
-use stopwords;
+use crate::stopwords;
 
 use regex::Regex;
 

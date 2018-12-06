@@ -1,7 +1,7 @@
 //! Representation, normalization and utilities for working with AMS markup in LaTeX-derived
 //! scientific documents
 
-use data::Document;
+use crate::data::Document;
 use libxml::xpath::Context;
 use regex::Regex;
 use std::fmt;

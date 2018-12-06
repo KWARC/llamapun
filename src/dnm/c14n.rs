@@ -7,7 +7,7 @@ use libxml::tree::NodeType::{ElementNode, TextNode};
 use crypto::md5::Md5;
 use crypto::digest::Digest;
 use std::sync::Mutex;
-use dnm::DNM;
+use crate::dnm::DNM;
 
 lazy_static! {
   static ref MD5_HASHER : Mutex<Md5> = Mutex::new(Md5::new());

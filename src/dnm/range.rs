@@ -1,7 +1,7 @@
 //! The `dnm::range` submodule provides data structures for indexing into a DNM
 //! object's plaintext
 
-use dnm::DNM;
+use crate::dnm::DNM;
 use libxml::tree::Node;
 use libxml::xpath::Context;
 

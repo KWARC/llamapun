@@ -193,9 +193,9 @@ impl<'d> Document<'d> {
   /// Load a new document
   pub fn new(filepath: String, corpus: &'d Corpus) -> Result<Self, XmlParseError> {
     let dom = if filepath.ends_with(".xhtml") {
-      r#try!(corpus.xml_parser.parse_file(&filepath))
+      corpus.xml_parser.parse_file(&filepath)?
     } else {
-      r#try!(corpus.html_parser.parse_file(&filepath))
+      corpus.html_parser.parse_file(&filepath)?
     };
 
     Ok(Document {

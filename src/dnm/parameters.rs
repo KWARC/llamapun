@@ -1,11 +1,12 @@
 //! The `dnm::parameters` submodule provides data structures for customizing
 //! and configuring a DNM's construction and use
 
-use std::collections::HashMap;
 use libxml::tree::*;
+use std::collections::HashMap;
 use std::rc::Rc;
 
 /// Some temporary data for the parser
+#[derive(Debug)]
 pub struct RuntimeParseData {
   /// plaintext is currently terminated by some whitespace
   pub had_whitespace: bool,
@@ -23,7 +24,7 @@ impl Default for RuntimeParseData {
 }
 
 /// Specifies how to deal with a certain tag
-#[derive(Clone)]
+#[derive(Debug, Clone)]
 pub enum SpecialTagsOption {
   /// Recurse into tag (default behaviour)
   Enter,
@@ -36,7 +37,7 @@ pub enum SpecialTagsOption {
 }
 
 /// Parameters for the DNM generation
-#[derive(Clone)]
+#[derive(Debug, Clone)]
 pub struct DNMParameters {
   /// How to deal with special tags (e.g. `<math>` tags)
   pub special_tag_name_options: HashMap<String, SpecialTagsOption>,
@@ -122,19 +123,19 @@ impl DNMParameters {
   /// Doesn't check for every possible stupidity
   pub fn check(&self) {
     if self.stem_words_once && self.stem_words_full {
-      println_stderr!(
+      dbg!(
         "llamapun::dnm: Parameter options stem_words_once\
          and stem_words_full are both set"
       );
     }
     if (self.stem_words_once || self.stem_words_full) && self.convert_to_lowercase {
-      println_stderr!(
+      dbg!(
         "llamapun::dnm: Parameter option convert_to_lowercase\
          is redundant, because stemming converts to lowercase already"
       );
     }
     if (self.stem_words_once || self.stem_words_full) && self.support_back_mapping {
-      println_stderr!(
+      dbg!(
         "llamapun::dnm: Parameter option support_back_mapping\
          does not work in combination with word stemming yet"
       );

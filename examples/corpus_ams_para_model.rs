@@ -136,7 +136,7 @@ pub fn main() -> Result<(), Error> {
         for word in sentence.simple_iter() {
           let lexeme_str: String;
           if !word.range.is_empty() {
-            let mut word_string = word
+            let word_string = word
               .range
               .get_plaintext()
               .chars()

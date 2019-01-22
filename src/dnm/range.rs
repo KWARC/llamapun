@@ -8,6 +8,7 @@ use libxml::xpath::Context;
 /// Very often we'll talk about substrings of the plaintext - words, sentences,
 /// etc. A `DNMRange` stores start and end point of such a substring and has
 /// a reference to the `DNM`.
+#[derive(Debug)]
 pub struct DNMRange<'dnmrange> {
   /// Offset of the beginning of the range
   pub start: usize,
@@ -33,7 +34,7 @@ impl<'dnmrange> DNMRange<'dnmrange> {
     &(self.dnm.plaintext)[self.dnm.byte_offsets[self.start]..self.dnm.byte_offsets[self.end]]
   }
   /// Get the plaintext without trailing white spaces
-  pub fn get_plaintext_truncated(&self) -> &'dnmrange str { self.get_plaintext().trim_right() }
+  pub fn get_plaintext_truncated(&self) -> &'dnmrange str { self.get_plaintext().trim_end() }
 
   /// Get the first corresponding DOM node for this range
   pub fn get_node(&self) -> &'dnmrange Node { &self.dnm.back_map[self.start].0 }
@@ -229,11 +230,12 @@ impl<'dnmrange> DNMRange<'dnmrange> {
     assert_eq!(&(string[0..7]), "arange(");
     assert_eq!(&(string[string.len() - 1..string.len()]), ")");
 
-    let main_comma = 1 + string.find("),").unwrap_or_else(|| {
-      string
-        .find("],")
-        .unwrap_or_else(|| panic!("DNMRange::deserialize: Malformed string: \"{}\"", string))
-    });
+    let main_comma = 1
+      + string.find("),").unwrap_or_else(|| {
+        string
+          .find("],")
+          .unwrap_or_else(|| panic!("DNMRange::deserialize: Malformed string: \"{}\"", string))
+      });
 
     let start_str = &string[7..main_comma];
     let end_str = &string[main_comma + 1..string.len() - 1];
@@ -297,9 +299,7 @@ fn get_next_sibling(root_node: &Node, node: &Node) -> Option<Node> {
   match node.get_next_sibling() {
     None => {
       if node == root_node {
-        println_stderr!(
-          "DNMRange::serialize: Warning: Can't annotate last node in document properly"
-        );
+        dbg!("DNMRange::serialize: Warning: Can't annotate last node in document properly");
         None
       } else {
         get_next_sibling(root_node, &node.get_parent().unwrap())

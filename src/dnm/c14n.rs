@@ -2,15 +2,18 @@
 //!      The core purpose for canonicalization is linguistic comparison,
 //! so the c14n module tries to strip away markup artefacts unrelated to the underlying
 //! content, such as xml:ids.
+use crate::dnm::DNM;
+use crypto::digest::Digest;
+use crypto::md5::Md5;
 use libxml::tree::Node;
 use libxml::tree::NodeType::{ElementNode, TextNode};
-use crypto::md5::Md5;
-use crypto::digest::Digest;
+use regex::Regex;
 use std::sync::Mutex;
-use crate::dnm::DNM;
 
 lazy_static! {
-  static ref MD5_HASHER : Mutex<Md5> = Mutex::new(Md5::new());
+  static ref MD5_HASHER: Mutex<Md5> = Mutex::new(Md5::new());
+  static ref MATH_LEXEMES_RE: Regex =
+    Regex::new(r"(?:(?:NUM|(?:(?:\S+_)+(?:\S+)))(\s|$))+").unwrap();
 }
 
 impl DNM {
@@ -115,4 +118,22 @@ impl DNM {
     }
     return;
   }
+}
+
+pub fn make_ascii_titlecase(s: &str) -> String {
+  let mut s: String = s.to_string();
+  if let Some(r) = s.get_mut(0..1) {
+    r.make_ascii_uppercase();
+  }
+  s
+}
+
+pub fn rebuild_normalized_text(text: &str) -> String {
+  text
+    .split('\n')
+    .filter(|line| !line.is_empty())
+    .map(|line| MATH_LEXEMES_RE.replace_all(line, "MathFormula "))
+    .map(|line| make_ascii_titlecase(&line))
+    .collect::<Vec<String>>()
+    .join(" . ")
 }

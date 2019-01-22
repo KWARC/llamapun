@@ -7,15 +7,14 @@ pub mod node;
 mod parameters;
 mod range;
 
-extern crate libc;
-extern crate rustmorpha;
-extern crate unidecode;
+use libxml::tree::*;
+use std::collections::HashMap;
+use std::error::Error;
+use std::fmt;
+use unidecode::{unidecode, unidecode_char};
 
 pub use crate::dnm::parameters::{DNMParameters, RuntimeParseData, SpecialTagsOption};
 pub use crate::dnm::range::DNMRange;
-use libxml::tree::*;
-use std::collections::HashMap;
-use unidecode::{unidecode, unidecode_char};
 
 /// The `DNM` is essentially a wrapper around the plain text representation
 /// of the document, which facilitates mapping plaintext pieces to the DOM.
@@ -55,7 +54,19 @@ impl Default for DNM {
   }
 }
 
-// A handy macro for idiomatic recording in the node_map
+impl fmt::Debug for DNM {
+  fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    write!(
+      // TODO: Do we want to/need to print more of the fields for debugging here?
+      f,
+      "DNM {{ parameters: {:?}, plaintext: {:?} }}",
+      self.parameters,
+      self.plaintext
+    )
+  }
+}
+
+/// A handy macro for idiomatic recording in the node_map
 #[macro_export]
 macro_rules! record_node_map(
   ($dnm: expr, $node: expr, $offset_start: expr) => {{
@@ -127,6 +138,40 @@ impl DNM {
     dnm.byte_offsets.push(dnm.plaintext.len()); // to have the length of the last char as well
 
     dnm
+  }
+
+  /// Use the DNM abstraction over a plaintext utterance, assuming it stands for a single paragraph
+  pub fn from_str(
+    text: &str,
+    params_opt: Option<DNMParameters>,
+  ) -> Result<(Document, Self), Box<Error>>
+  {
+    let params = params_opt.unwrap_or_default();
+    // Same as ::new(), but requires initializing a libxml Document with the text content
+    let mut doc = Document::new().unwrap();
+    let mut root = Node::new("html", None, &doc).unwrap();
+    doc.set_root_element(&root);
+    let mut body = Node::new("body", None, &doc).unwrap();
+    root.add_child(&mut body)?;
+    let mut para = Node::new("div", None, &doc).unwrap();
+    body.add_child(&mut para)?;
+    para.set_attribute("class", "ltx_para")?;
+    para.append_text(text)?;
+
+    // Now initialize a DNM as usual
+    let dnm = DNM::new(&root, params);
+    Ok((doc, dnm))
+  }
+
+  /// Rebuild a llamapun-generated tokenized plaintext into a DNM
+  /// quite specific to the AMS paragraph generation
+  pub fn from_ams_paragraph_str(
+    text: &str,
+    params: Option<DNMParameters>,
+  ) -> Result<(Document, Self), Box<Error>>
+  {
+    let rebuilt = c14n::rebuild_normalized_text(text);
+    DNM::from_str(&rebuilt, params)
   }
 
   /// Get the plaintext range of a node

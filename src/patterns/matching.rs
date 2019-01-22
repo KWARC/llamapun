@@ -174,23 +174,20 @@ pub fn match_sentence<'t>(
 ) -> Result<Vec<Match<'t>>, String>
 {
   /* if !range.dnm.parameters.support_back_mapping {
-       return Err("DNM of sentence does not support back mapping".to_string());
-       } */
+  return Err("DNM of sentence does not support back mapping".to_string());
+  } */
 
-  let rule_pos = r#try!(
-    pf.sequence_rule_names
-      .get(rule)
-      .ok_or_else(|| format!("Could not find sequence rule \"{}\"", rule))
-  );
+  let rule_pos = pf
+    .sequence_rule_names
+    .get(rule)
+    .ok_or_else(|| format!("Could not find sequence rule \"{}\"", rule))?;
   let actual_rule = &pf.sequence_rules[*rule_pos];
   let words = sentence.get_words();
-  let psg = r#try!(
-    sentence
-      .get_psgroot()
-      .ok_or_else(|| "PSG required for pattern matching".to_string())
-  );
+  let psg = sentence
+    .get_psgroot()
+    .ok_or_else(|| "PSG required for pattern matching".to_string())?;
   let phrase_tree =
-    r#try!(PhraseTree::from_psg(psg).map_err(|_| "Invalid PSG: Contains only leaf".to_string()));
+    PhraseTree::from_psg(psg).map_err(|_| "Invalid PSG: Contains only leaf".to_string())?;
 
   let mut matches: Vec<Match<'t>> = Vec::new();
 
@@ -622,7 +619,7 @@ fn match_math<'t>(pf: &PatternFile, rule: &MathPattern, node: &Node) -> Internal
 fn match_mtext(pf: &PatternFile, rule: &MTextPattern, string: &str) -> bool {
   match *rule {
     MTextPattern::AnyMText => true,
-    MTextPattern::MTextOr(ref ps) => ps.into_iter().any(|p| match_mtext(pf, p, string)),
+    MTextPattern::MTextOr(ref ps) => ps.iter().any(|p| match_mtext(pf, p, string)),
     MTextPattern::MTextLit(ref s) => s == string,
     MTextPattern::MTextNot(box ref p) => !match_mtext(pf, p, string),
     MTextPattern::MTextRef(o) => match_mtext(pf, &pf.mtext_rules[o].pattern, string),
@@ -633,7 +630,7 @@ fn match_pos(pf: &PatternFile, rule: &PosPattern, pos: POS) -> bool {
   match *rule {
     PosPattern::Pos(p) => p == pos,
     PosPattern::PosNot(box ref r) => !match_pos(pf, r, pos),
-    PosPattern::PosOr(ref ps) => ps.into_iter().any(|p| match_pos(pf, p, pos)),
+    PosPattern::PosOr(ref ps) => ps.iter().any(|p| match_pos(pf, p, pos)),
     PosPattern::PosRef(o) => match_pos(pf, &pf.pos_rules[o].pattern, pos),
   }
 }

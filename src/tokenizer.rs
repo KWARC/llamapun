@@ -1,11 +1,11 @@
 //! Provides functionality for tokenizing sentences and words
 use crate::dnm::{DNMRange, DNM};
+use crate::stopwords;
 use std::cmp;
 use std::collections::vec_deque::*;
 use std::collections::HashSet;
 use std::iter::Peekable;
 use std::str::Chars;
-use crate::stopwords;
 
 use regex::Regex;
 
@@ -27,9 +27,9 @@ impl Default for Tokenizer {
 }
 
 fn wordlike_with_upper_next(peekable: &Peekable<Chars>) -> bool {
-  let mut new_iterator = peekable.clone();
+  let new_iterator = peekable.clone();
   let mut upper_found = false;
-  while let Some(c) = new_iterator.next() {
+  for c in new_iterator {
     if c.is_alphabetic() {
       if c.is_uppercase() {
         upper_found = true;
@@ -209,7 +209,8 @@ impl Tokenizer {
                   start,
                   end: end - other_char.len_utf8(),
                   dnm,
-                }.trim(),
+                }
+                .trim(),
               );
               start = end - other_char.len_utf8();
             }

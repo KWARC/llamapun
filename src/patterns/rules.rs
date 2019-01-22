@@ -29,7 +29,7 @@ pub struct PatternMarker {
 impl PatternMarker {
   /// loads a `PatternMarker` from a node
   fn load_from_node(node: &Node) -> Result<PatternMarker, String> {
-    let name = r#try!(require_node_property(node, "name"));
+    let name = require_node_property(node, "name")?;
     let tags = match node.get_property("tags") {
       // TODO: Add regex: [a-zA-Z0-9_]+(,[a-zA-Z0-9_]+)*
       None => Vec::new(),
@@ -311,17 +311,14 @@ impl MetaDescription {
 
     let mut summary_opt: Option<String> = None;
 
-    for cur in &r#try!(get_non_text_children(node)) {
+    for cur in &get_non_text_children(node)? {
       match cur.get_name().as_ref() {
         "description" => {
-          r#try!(check_found_property_already(
-            &summary_opt,
-            "description",
-            "meta"
-          ));
-          summary_opt = Some(r#try!(
-            get_simple_node_content(cur, true).map_err(|e| format!("error in meta node:\n{}", e))
-          ));
+          check_found_property_already(&summary_opt, "description", "meta")?;
+          summary_opt = Some(
+            get_simple_node_content(cur, true)
+              .map_err(|e| format!("error in meta node:\n{}", e))?,
+          );
         },
         &_ => {
           return Err(format!(
@@ -433,25 +430,22 @@ impl MathPattern {
   fn load_from_node(node: &Node, pctx: &mut PCtx) -> Result<MathPattern, String> {
     match node.get_name().as_ref() {
       "math_any" => {
-        r#try!(assert_no_child(node));
+        assert_no_child(node)?;
         Ok(MathPattern::AnyMath)
       },
       "math_marker" => Ok(MathPattern::Marked(
-        Box::new(r#try!(MathPattern::load_from_node(
-          &r#try!(get_only_child(node)),
-          pctx
-        ))),
-        r#try!(PatternMarker::load_from_node(node)),
+        Box::new(MathPattern::load_from_node(&get_only_child(node)?, pctx)?),
+        PatternMarker::load_from_node(node)?,
       )),
       "math_ref" => {
-        r#try!(assert_no_child(node));
-        let ref_str = r#try!(require_node_property(node, "ref"));
+        assert_no_child(node)?;
+        let ref_str = require_node_property(node, "ref")?;
         Ok(MathPattern::MathRef(pctx.get_math_rule(&ref_str)))
       },
       "math_or" => {
         let mut options: Vec<MathPattern> = Vec::new();
-        for cur in &r#try!(get_non_text_children(node)) {
-          options.push(r#try!(MathPattern::load_from_node(cur, pctx)));
+        for cur in &get_non_text_children(node)? {
+          options.push(MathPattern::load_from_node(cur, pctx)?);
         }
         Ok(MathPattern::MathOr(options))
       },
@@ -459,18 +453,17 @@ impl MathPattern {
         let node_name: Option<String> = node.get_property("name");
         let mut mtextref: Option<usize> = None;
         let mut children: Option<(Vec<MathPattern>, MathChildrenMatchType)> = None;
-        for cur in &r#try!(get_non_text_children(node)) {
+        for cur in &get_non_text_children(node)? {
           match cur.get_name().as_ref() {
             "math_children" => {
               if children.is_some() {
                 return Err("\"math_node\" had multiple children \"math_children\"".to_string());
               }
-              let match_type = r#try!(MathChildrenMatchType::from_str(&r#try!(
-                require_node_property(cur, "match_type")
-              )));
+              let match_type =
+                MathChildrenMatchType::from_str(&require_node_property(cur, "match_type")?)?;
               let mut child_nodes: Vec<MathPattern> = Vec::new();
-              for cur_cur in &r#try!(get_non_text_children(cur)) {
-                child_nodes.push(r#try!(MathPattern::load_from_node(cur_cur, pctx)));
+              for cur_cur in &get_non_text_children(cur)? {
+                child_nodes.push(MathPattern::load_from_node(cur_cur, pctx)?);
               }
               if child_nodes.is_empty() {
                 return Err("\"math_children\" is emty".to_string()); // would cause problems later
@@ -481,8 +474,8 @@ impl MathPattern {
               if mtextref.is_some() {
                 return Err("\"math_node\" had multiple children \"mtext_ref\"".to_string());
               }
-              r#try!(assert_no_child(cur));
-              let ref_str = r#try!(require_node_property(cur, "ref"));
+              assert_no_child(cur)?;
+              let ref_str = require_node_property(cur, "ref")?;
               mtextref = Some(pctx.get_mtext_rule(&ref_str));
             },
             other => {
@@ -496,13 +489,9 @@ impl MathPattern {
         Ok(MathPattern::MathNode(node_name, mtextref, children))
       },
       "math_descendant" => {
-        let match_type = r#try!(MathDescendantMatchType::from_str(&r#try!(
-          require_node_property(node, "match_type")
-        )));
-        let child = Box::new(r#try!(MathPattern::load_from_node(
-          &r#try!(get_only_child(node)),
-          pctx
-        )));
+        let match_type =
+          MathDescendantMatchType::from_str(&require_node_property(node, "match_type")?)?;
+        let child = Box::new(MathPattern::load_from_node(&get_only_child(node)?, pctx)?);
         Ok(MathPattern::MathDescendant(child, match_type))
       },
       unknown => Err(format!("Expected math node, found \"{}\"", unknown)),
@@ -515,53 +504,52 @@ impl SequencePattern {
   fn load_from_node(node: &Node, pctx: &mut PCtx) -> Result<SequencePattern, String> {
     match node.get_name().as_ref() {
       "seq_ref" => {
-        r#try!(assert_no_child(node));
-        let ref_str = r#try!(require_node_property(node, "ref"));
+        assert_no_child(node)?;
+        let ref_str = require_node_property(node, "ref")?;
         Ok(SequencePattern::SeqRef(pctx.get_sequence_rule(&ref_str)))
       },
-      "seq_word" => Ok(SequencePattern::SeqFromWord(r#try!(
-        WordPattern::load_from_node(&r#try!(get_only_child(node)), pctx)
-      ))),
+      "seq_word" => Ok(SequencePattern::SeqFromWord(WordPattern::load_from_node(
+        &get_only_child(node)?,
+        pctx,
+      )?)),
       "seq_seq" => {
         let mut elements: Vec<SequencePattern> = Vec::new();
-        for cur in &r#try!(get_non_text_children(node)) {
-          elements.push(r#try!(SequencePattern::load_from_node(cur, pctx)));
+        for cur in &get_non_text_children(node)? {
+          elements.push(SequencePattern::load_from_node(cur, pctx)?);
         }
         Ok(SequencePattern::SeqOfSeq(elements))
       },
       "phrase" => {
-        let tag_str: &str = &r#try!(require_node_property(node, "tag"));
+        let tag_str: &str = &require_node_property(node, "tag")?;
         let mut match_type: PhraseMatchType = PhraseMatchType::Longest; // TODO: Is this a good default?
         let mut start: Option<(Box<SequencePattern>, SequenceContainment)> = None;
         let mut end: Option<Box<SequencePattern>> = None;
 
-        for cur in &r#try!(get_non_text_children(node)) {
+        for cur in &get_non_text_children(node)? {
           match cur.get_name().as_ref() {
             "match_type" => {
-              match_type = r#try!(PhraseMatchType::from_str(&r#try!(get_simple_node_content(
-                cur, true
-              ))));
+              match_type = PhraseMatchType::from_str(&get_simple_node_content(cur, true)?)?;
             },
             "starts_with_seq" => {
               if start.is_some() {
                 return Err("Cannot have multipe start_with_seq nodes in a phrase node".to_string());
               }
               start = Some((
-                Box::new(r#try!(SequencePattern::load_from_node(
-                  &r#try!(get_only_child(cur)),
-                  pctx
-                ))),
-                r#try!(SequenceContainment::from_node(cur)),
+                Box::new(SequencePattern::load_from_node(
+                  &get_only_child(cur)?,
+                  pctx,
+                )?),
+                SequenceContainment::from_node(cur)?,
               ));
             },
             "ends_with_seq" => {
               if end.is_some() {
                 return Err("Cannot have multipe end_with_seq nodes in a phrase node".to_string());
               }
-              end = Some(Box::new(r#try!(SequencePattern::load_from_node(
-                &r#try!(get_only_child(cur)),
-                pctx
-              ))));
+              end = Some(Box::new(SequencePattern::load_from_node(
+                &get_only_child(cur)?,
+                pctx,
+              )?));
             },
             unknown => {
               return Err(format!("Unexpected node \"{}\" in phrase node", unknown));
@@ -580,11 +568,11 @@ impl SequencePattern {
         ))
       },
       "seq_marker" => Ok(SequencePattern::Marked(
-        Box::new(r#try!(SequencePattern::load_from_node(
-          &r#try!(get_only_child(node)),
-          pctx
-        ))),
-        r#try!(PatternMarker::load_from_node(node)),
+        Box::new(SequencePattern::load_from_node(
+          &get_only_child(node)?,
+          pctx,
+        )?),
+        PatternMarker::load_from_node(node)?,
       )),
       "seq_or" => {
         let match_type = match node.get_property("match_type") {
@@ -598,8 +586,8 @@ impl SequencePattern {
           },
         };
         let mut elements: Vec<SequencePattern> = Vec::new();
-        for cur in &r#try!(get_non_text_children(node)) {
-          elements.push(r#try!(SequencePattern::load_from_node(cur, pctx)));
+        for cur in &get_non_text_children(node)? {
+          elements.push(SequencePattern::load_from_node(cur, pctx)?);
         }
         Ok(SequencePattern::SeqOr(elements, match_type))
       },
@@ -613,53 +601,48 @@ impl WordPattern {
   fn load_from_node(node: &Node, pctx: &mut PCtx) -> Result<WordPattern, String> {
     match node.get_name().as_ref() {
       "word_ref" => {
-        r#try!(assert_no_child(node));
-        let ref_str = r#try!(require_node_property(node, "ref"));
+        assert_no_child(node)?;
+        let ref_str = require_node_property(node, "ref")?;
         Ok(WordPattern::WordRef(pctx.get_word_rule(&ref_str)))
       },
       "word_or" => {
         let mut options: Vec<WordPattern> = Vec::new();
-        for cur in &r#try!(get_non_text_children(node)) {
-          options.push(r#try!(WordPattern::load_from_node(cur, pctx)));
+        for cur in &get_non_text_children(node)? {
+          options.push(WordPattern::load_from_node(cur, pctx)?);
         }
         Ok(WordPattern::WordOr(options))
       },
-      "word" => Ok(WordPattern::Word(r#try!(get_simple_node_content(node, true)))),
-      "word_math" => Ok(WordPattern::MathWord(r#try!(MathPattern::load_from_node(
-        &r#try!(get_only_child(node)),
-        pctx
-      )))),
+      "word" => Ok(WordPattern::Word(get_simple_node_content(node, true)?)),
+      "word_math" => Ok(WordPattern::MathWord(MathPattern::load_from_node(
+        &get_only_child(node)?,
+        pctx,
+      )?)),
       "word_any" => Ok(WordPattern::AnyWord),
-      "word_not" => Ok(WordPattern::WordNot(Box::new(r#try!(
-        WordPattern::load_from_node(&r#try!(get_only_child(node)), pctx)
-      )))),
+      "word_not" => Ok(WordPattern::WordNot(Box::new(WordPattern::load_from_node(
+        &get_only_child(node)?,
+        pctx,
+      )?))),
       "word_marker" => Ok(WordPattern::Marked(
-        Box::new(r#try!(WordPattern::load_from_node(
-          &r#try!(get_only_child(node)),
-          pctx
-        ))),
-        r#try!(PatternMarker::load_from_node(node)),
+        Box::new(WordPattern::load_from_node(&get_only_child(node)?, pctx)?),
+        PatternMarker::load_from_node(node)?,
       )),
       "word_pos" => {
         let mut word_pattern = None;
         let mut pos_pattern = None;
 
-        for cur in &r#try!(get_non_text_children(node)) {
+        for cur in &get_non_text_children(node)? {
           match cur.get_name().as_ref() {
             "pos" => {
               if pos_pattern.is_some() {
                 return Err("Cannot have multiple 'pos' nodes in a 'word_pos' node".to_string());
               }
-              pos_pattern = Some(r#try!(PosPattern::load_from_node(
-                &r#try!(get_only_child(cur)),
-                pctx
-              )));
+              pos_pattern = Some(PosPattern::load_from_node(&get_only_child(cur)?, pctx)?);
             },
             _ => {
               if word_pattern.is_some() {
                 return Err("Cannot have multiple word pattern in a 'word_pos' node".to_string());
               }
-              word_pattern = Some(r#try!(WordPattern::load_from_node(cur, pctx)));
+              word_pattern = Some(WordPattern::load_from_node(cur, pctx)?);
             },
           }
         }
@@ -687,25 +670,26 @@ impl PosPattern {
   fn load_from_node(node: &Node, pctx: &mut PCtx) -> Result<PosPattern, String> {
     match node.get_name().as_ref() {
       "pos" => {
-        r#try!(assert_no_child(node));
-        let pos_str: &str = &r#try!(require_node_property(node, "tag"));
+        assert_no_child(node)?;
+        let pos_str: &str = &require_node_property(node, "tag")?;
         match pctx.pos_map.get(pos_str) {
           None => Err(format!("unknown POS tag \"{}\"", pos_str)),
           Some(pos) => Ok(PosPattern::Pos(*pos)),
         }
       },
-      "pos_not" => Ok(PosPattern::PosNot(Box::new(r#try!(
-        PosPattern::load_from_node(&r#try!(get_only_child(node)), pctx)
-      )))),
+      "pos_not" => Ok(PosPattern::PosNot(Box::new(PosPattern::load_from_node(
+        &get_only_child(node)?,
+        pctx,
+      )?))),
       "pos_ref" => {
-        r#try!(assert_no_child(node));
-        let ref_str = r#try!(require_node_property(node, "ref"));
+        assert_no_child(node)?;
+        let ref_str = require_node_property(node, "ref")?;
         Ok(PosPattern::PosRef(pctx.get_pos_rule(&ref_str)))
       },
       "pos_or" => {
         let mut options: Vec<PosPattern> = Vec::new();
-        for cur in &r#try!(get_non_text_children(node)) {
-          options.push(r#try!(PosPattern::load_from_node(cur, pctx)));
+        for cur in &get_non_text_children(node)? {
+          options.push(PosPattern::load_from_node(cur, pctx)?);
         }
         Ok(PosPattern::PosOr(options))
       },
@@ -719,27 +703,27 @@ impl MTextPattern {
   fn load_from_node(node: &Node, pctx: &mut PCtx) -> Result<MTextPattern, String> {
     match node.get_name().as_ref() {
       "mtext_any" => {
-        r#try!(assert_no_child(node));
+        assert_no_child(node)?;
         Ok(MTextPattern::AnyMText)
       },
       "mtext_or" => {
         let mut options: Vec<MTextPattern> = Vec::new();
-        for cur in &r#try!(get_non_text_children(node)) {
-          options.push(r#try!(MTextPattern::load_from_node(cur, pctx)));
+        for cur in &get_non_text_children(node)? {
+          options.push(MTextPattern::load_from_node(cur, pctx)?);
         }
         Ok(MTextPattern::MTextOr(options))
       },
       "mtext_lit" => {
-        r#try!(assert_no_child(node));
-        let lit = r#try!(require_node_property(node, "str"));
+        assert_no_child(node)?;
+        let lit = require_node_property(node, "str")?;
         Ok(MTextPattern::MTextLit(lit))
       },
-      "mtext_not" => Ok(MTextPattern::MTextNot(Box::new(r#try!(
-        MTextPattern::load_from_node(&r#try!(get_only_child(node)), pctx)
-      )))),
+      "mtext_not" => Ok(MTextPattern::MTextNot(Box::new(
+        MTextPattern::load_from_node(&get_only_child(node)?, pctx)?,
+      ))),
       "mtext_ref" => {
-        r#try!(assert_no_child(node));
-        let ref_str = r#try!(require_node_property(node, "ref"));
+        assert_no_child(node)?;
+        let ref_str = require_node_property(node, "ref")?;
         Ok(MTextPattern::MTextRef(pctx.get_mtext_rule(&ref_str)))
       },
       unknown => Err(format!("Expected mtext node, found \"{}\"", unknown)),
@@ -760,10 +744,10 @@ fn load_rule<PatternT, RuleT>(
   rule_gen: fn(PatternT, MetaDescription) -> RuleT,
 ) -> Result<RuleT, String>
 {
-  let name = r#try!(require_node_property(node, "name"));
+  let name = require_node_property(node, "name")?;
   let mut rule_opt: Option<PatternT> = None;
   let mut meta_opt: Option<MetaDescription> = None;
-  for cur in &r#try!(get_non_text_children(node)) {
+  for cur in &get_non_text_children(node)? {
     match cur.get_name().as_ref() {
       "meta" => {
         if meta_opt.is_some() {
@@ -772,14 +756,14 @@ fn load_rule<PatternT, RuleT>(
             rule_type, &name
           ));
         }
-        meta_opt = Some(r#try!(
+        meta_opt = Some(
           MetaDescription::load_from_node(cur, name.clone()).map_err(|e| {
             format!(
               "error when loading meta node in word_rule \"{}\":\n{}",
               &name, e
             )
-          })
-        ));
+          })?,
+        );
       },
       x => {
         if rule_opt.is_some() {
@@ -788,10 +772,12 @@ fn load_rule<PatternT, RuleT>(
             x, rule_type, &name
           ));
         }
-        rule_opt = Some(r#try!(load_f(cur, pctx).map_err(|e| format!(
-          "error when loading content node in {} \"{}\":\n{}",
-          rule_type, &name, e
-        ))));
+        rule_opt = Some(load_f(cur, pctx).map_err(|e| {
+          format!(
+            "error when loading content node in {} \"{}\":\n{}",
+            rule_type, &name, e
+          )
+        })?);
       },
     }
   }
@@ -811,13 +797,13 @@ fn load_rule<PatternT, RuleT>(
 impl WordRule {
   /// loads a `WordRule` from a node
   fn load_from_node(node: &Node, pctx: &mut PCtx) -> Result<WordRule, String> {
-    Ok(r#try!(load_rule(
+    load_rule(
       WordPattern::load_from_node,
       node,
       pctx,
       "word_rule",
-      WordRule::generate_rule
-    )))
+      WordRule::generate_rule,
+    )
   }
 
   /// creates a new rule from a pattern and a description
@@ -832,13 +818,13 @@ impl WordRule {
 impl PosRule {
   /// loads a `PosRule` from a node
   fn load_from_node(node: &Node, pctx: &mut PCtx) -> Result<PosRule, String> {
-    Ok(r#try!(load_rule(
+    load_rule(
       PosPattern::load_from_node,
       node,
       pctx,
       "pos_rule",
-      PosRule::generate_rule
-    )))
+      PosRule::generate_rule,
+    )
   }
 
   /// creates a new rule from a pattern and a description
@@ -853,13 +839,13 @@ impl PosRule {
 impl MathRule {
   /// loads a `MathRule` from a node
   fn load_from_node(node: &Node, pctx: &mut PCtx) -> Result<MathRule, String> {
-    Ok(r#try!(load_rule(
+    load_rule(
       MathPattern::load_from_node,
       node,
       pctx,
       "math_rule",
-      MathRule::generate_rule
-    )))
+      MathRule::generate_rule,
+    )
   }
 
   /// creates a new rule from a pattern and a description
@@ -874,13 +860,13 @@ impl MathRule {
 impl MTextRule {
   /// loads a `MTextRule` from a node
   fn load_from_node(node: &Node, pctx: &mut PCtx) -> Result<MTextRule, String> {
-    Ok(r#try!(load_rule(
+    load_rule(
       MTextPattern::load_from_node,
       node,
       pctx,
       "mtext_rule",
-      MTextRule::generate_rule
-    )))
+      MTextRule::generate_rule,
+    )
   }
 
   /// creates a new rule from a pattern and a description
@@ -895,13 +881,13 @@ impl MTextRule {
 impl SequenceRule {
   /// loads a `SequenceRule` from a node
   fn load_from_node(node: &Node, pctx: &mut PCtx) -> Result<SequenceRule, String> {
-    Ok(r#try!(load_rule(
+    load_rule(
       SequencePattern::load_from_node,
       node,
       pctx,
       "seq_rule",
-      SequenceRule::generate_rule
-    )))
+      SequenceRule::generate_rule,
+    )
   }
 
   /// creates a new rule from a pattern and a description
@@ -971,7 +957,7 @@ impl<'t> PCtx<'t> {
   }
 
   fn add_math_rule(&mut self, node: &Node) -> Result<(), String> {
-    let rule = r#try!(MathRule::load_from_node(node, self));
+    let rule = MathRule::load_from_node(node, self)?;
     let pos = self.get_math_rule(&rule.description.name);
     if self.math_rules[pos].is_some() {
       return Err(format!(
@@ -984,7 +970,7 @@ impl<'t> PCtx<'t> {
   }
 
   fn add_mtext_rule(&mut self, node: &Node) -> Result<(), String> {
-    let rule = r#try!(MTextRule::load_from_node(node, self));
+    let rule = MTextRule::load_from_node(node, self)?;
     let pos = self.get_mtext_rule(&rule.description.name);
     if self.mtext_rules[pos].is_some() {
       return Err(format!(
@@ -997,7 +983,7 @@ impl<'t> PCtx<'t> {
   }
 
   fn add_word_rule(&mut self, node: &Node) -> Result<(), String> {
-    let rule = r#try!(WordRule::load_from_node(node, self));
+    let rule = WordRule::load_from_node(node, self)?;
     let pos = self.get_word_rule(&rule.description.name);
     if self.word_rules[pos].is_some() {
       return Err(format!(
@@ -1010,7 +996,7 @@ impl<'t> PCtx<'t> {
   }
 
   fn add_pos_rule(&mut self, node: &Node) -> Result<(), String> {
-    let rule = r#try!(PosRule::load_from_node(node, self));
+    let rule = PosRule::load_from_node(node, self)?;
     let pos = self.get_pos_rule(&rule.description.name);
     if self.pos_rules[pos].is_some() {
       return Err(format!(
@@ -1023,7 +1009,7 @@ impl<'t> PCtx<'t> {
   }
 
   fn add_sequence_rule(&mut self, node: &Node) -> Result<(), String> {
-    let rule = r#try!(SequenceRule::load_from_node(node, self));
+    let rule = SequenceRule::load_from_node(node, self)?;
     let pos = self.get_sequence_rule(&rule.description.name);
     if self.seq_rules[pos].is_some() {
       return Err(format!(
@@ -1085,11 +1071,9 @@ impl PatternFile {
   /// loads a pattern file
   pub fn load(file_name: &str) -> Result<PatternFile, String> {
     let parser = Parser::default();
-    let doc = r#try!(
-      parser
-        .parse_file(file_name)
-        .map_err(|_| format!("Failed to obtain DOM from \"{}\"", file_name))
-    );
+    let doc = parser
+      .parse_file(file_name)
+      .map_err(|_| format!("Failed to obtain DOM from \"{}\"", file_name))?;
     // let root_node = try!(doc.get_root_element().map_err(|_| format!("\"{}\" has
     // no root node", file_name)));
     let root_node = match doc.get_root_element() {
@@ -1101,30 +1085,29 @@ impl PatternFile {
 
     let err_map = |e| format!("error when loading pattern file \"{}\":\n{}", file_name, e);
 
-    for cur in &r#try!(get_non_text_children(&root_node)) {
+    for cur in &get_non_text_children(&root_node)? {
       match cur.get_name().as_ref() {
         "meta" => {
           if meta_opt.is_some() {
             return Err("pattern_file has multiple meta nodes".to_string()).map_err(&err_map);
           }
-          meta_opt = Some(r#try!(
-            MetaDescription::load_from_node(cur, file_name.to_string()).map_err(&err_map)
-          ));
+          meta_opt =
+            Some(MetaDescription::load_from_node(cur, file_name.to_string()).map_err(&err_map)?);
         },
         "pos_rule" => {
-          r#try!(pctx.add_pos_rule(cur).map_err(&err_map));
+          pctx.add_pos_rule(cur).map_err(&err_map)?;
         },
         "math_rule" => {
-          r#try!(pctx.add_math_rule(cur).map_err(&err_map));
+          pctx.add_math_rule(cur).map_err(&err_map)?;
         },
         "mtext_rule" => {
-          r#try!(pctx.add_mtext_rule(cur).map_err(&err_map));
+          pctx.add_mtext_rule(cur).map_err(&err_map)?;
         },
         "word_rule" => {
-          r#try!(pctx.add_word_rule(cur).map_err(&err_map));
+          pctx.add_word_rule(cur).map_err(&err_map)?;
         },
         "seq_rule" => {
-          r#try!(pctx.add_sequence_rule(cur).map_err(&err_map));
+          pctx.add_sequence_rule(cur).map_err(&err_map)?;
         },
         x => {
           return Err(format!("Unexpected node \"{}\" in pattern_file", x)).map_err(&err_map);
@@ -1138,7 +1121,7 @@ impl PatternFile {
       });
     }
 
-    r#try!(pctx.verify().map_err(&err_map));
+    pctx.verify().map_err(&err_map)?;
 
     Ok(PatternFile {
       description: meta_opt.unwrap(),

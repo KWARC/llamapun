@@ -226,6 +226,23 @@ impl<'d> Document<'d> {
     }
   }
 
+
+  /// Obtain the MathML <math> nodes of a libxml `Document`
+  pub fn get_math_nodes(&self) -> Vec<Node> {
+    Document::math_nodes(&self.dom)
+  }
+
+  /// Associated function for `get_math_nodes`
+  fn math_nodes(doc: &XmlDoc) -> Vec<Node> {
+    let xpath_context = Context::new(doc).unwrap();
+    match xpath_context.evaluate(
+      "//*[local-name()='math']",
+    ) {
+      Ok(found_payload) => found_payload.get_nodes_as_vec(),
+      _ => Vec::new(),
+    }
+  }
+
   /// Get an iterator over the sentences of the document
   pub fn sentence_iter(&mut self) -> SentenceIterator {
     if self.dnm.is_none() {

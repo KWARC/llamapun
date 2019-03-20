@@ -1,6 +1,9 @@
 // Copyright 2015-2018 KWARC research group. See the LICENSE
 // file at the top-level directory of this distribution.
 //
+
+//! Given a `CorTeX` corpus of HTML5 documents, extract a node model as a single file
+
 extern crate libxml;
 extern crate llamapun;
 extern crate time;
@@ -9,7 +12,7 @@ use std::collections::HashMap;
 use std::env;
 use std::fs::File;
 use std::io::prelude::*;
-use std::io::BufWriter;
+use std::io::{Error, BufWriter};
 
 use libxml::tree::Node;
 use llamapun::data::Corpus;
@@ -18,9 +21,8 @@ static SPACE: &'static [u8] = b" ";
 static NEWLINE: &'static [u8] = b"\n";
 static BUFFER_CAPACITY: usize = 10_485_760;
 
-/// Given a `CorTeX` corpus of HTML5 documents, extract a node model as a
-/// single file
-pub fn main() {
+
+pub fn main() -> Result<(), Error> {
   let start = time::get_time();
   // Read input arguments
   let mut input_args = env::args();
@@ -38,28 +40,10 @@ pub fn main() {
     None => "node_statistics.txt".to_string(),
   };
 
-  let node_model_file = match File::create(node_model_filepath) {
-    Ok(fh) => fh,
-    Err(e) => {
-      println!(
-        "Failed to open node model output file, aborting. Reason: {:?}",
-        e
-      );
-      return;
-    },
-  };
+  let node_model_file = File::create(node_model_filepath)?;
   let mut node_model_writer = BufWriter::with_capacity(BUFFER_CAPACITY, node_model_file);
 
-  let node_statistics_file = match File::create(node_statistics_filepath) {
-    Ok(fh) => fh,
-    Err(e) => {
-      println!(
-        "Failed to open node statistics output file, aborting. Reason: {:?}",
-        e
-      );
-      return;
-    },
-  };
+  let node_statistics_file = File::create(node_statistics_filepath)?;
   let mut node_statistics_writer = BufWriter::with_capacity(BUFFER_CAPACITY, node_statistics_file);
 
   let mut total_counts = HashMap::new();
@@ -67,7 +51,7 @@ pub fn main() {
   for document in corpus.iter() {
     // Recursively descend the dom DFS and record to the token model
     if let Some(root) = document.dom.get_root_element() {
-      dfs_record(&root, &mut total_counts, &mut node_model_writer);
+      dfs_record(&root, &mut total_counts, &mut node_model_writer)?;
     }
 
     // Increment document counter, bokkeep
@@ -80,12 +64,7 @@ pub fn main() {
     }
   }
 
-  if let Err(e) = node_model_writer.flush() {
-    println!(
-      "-- Failed to print to model output buffer! Proceed with caution;\n{:?}",
-      e
-    );
-  }
+  node_model_writer.flush()?;
 
   let end = time::get_time();
   let duration_sec = (end - start).num_milliseconds() / 1000;
@@ -96,49 +75,24 @@ pub fn main() {
   total_counts_vec.sort_by(|a, b| b.1.cmp(a.1));
 
   for (key, val) in total_counts_vec {
-    if let Err(e) = node_statistics_writer.write(key.as_bytes()) {
-      println!(
-        "-- Failed to print to statistics output buffer! Proceed with caution;\n{:?}",
-        e
-      );
-    }
-    if let Err(e) = node_statistics_writer.write(SPACE) {
-      println!(
-        "-- Failed to print to statistics output buffer! Proceed with caution;\n{:?}",
-        e
-      );
-    }
-    if let Err(e) = node_statistics_writer.write(val.to_string().as_bytes()) {
-      println!(
-        "-- Failed to print to statistics output buffer! Proceed with caution;\n{:?}",
-        e
-      );
-    }
-    if let Err(e) = node_statistics_writer.write(NEWLINE) {
-      println!(
-        "-- Failed to print to statistics output buffer! Proceed with caution;\n{:?}",
-        e
-      );
-    }
+    node_statistics_writer.write(key.as_bytes())?;
+    node_statistics_writer.write(SPACE)?;
+    node_statistics_writer.write(val.to_string().as_bytes())?;
+    node_statistics_writer.write(NEWLINE)?;
   }
   // Close the writer
-  if let Err(e) = node_statistics_writer.flush() {
-    println!(
-      "-- Failed to print to statistics output buffer! Proceed with caution;\n{:?}",
-      e
-    );
-  }
+  node_statistics_writer.flush()
 }
 
 fn dfs_record<W>(
   node: &Node,
   total_counts: &mut HashMap<String, u32>,
   node_model_writer: &mut BufWriter<W>,
-) where
-  W: std::io::Write,
+) -> Result<(), Error>
+  where W: std::io::Write,
 {
   if node.is_text_node() {
-    return; // Skip text nodes.
+    return Ok(()); // Skip text nodes.
   }
 
   let node_name = node.get_name();
@@ -159,29 +113,20 @@ fn dfs_record<W>(
     *node_count += 1;
   }
   // Write the model_token of the current node into the buffer
-  if let Err(e) = node_model_writer.write(model_token.as_bytes()) {
-    println!(
-      "-- Failed to print to model output buffer! Proceed with caution;\n{:?}",
-      e
-    );
-  }
-  if let Err(e) = node_model_writer.write(SPACE) {
-    println!(
-      "-- Failed to print to model output buffer! Proceed with caution;\n{:?}",
-      e
-    );
-  }
+  node_model_writer.write(model_token.as_bytes())?;
+  node_model_writer.write(SPACE)?;
 
   // Recurse into all children (DFS), except for math and tables
   if (node_name != "math") && (node_name != "table") {
     if let Some(child) = node.get_first_child() {
-      dfs_record(&child, total_counts, node_model_writer);
+      dfs_record(&child, total_counts, node_model_writer)?;
       let mut child_node = child;
 
       while let Some(child) = child_node.get_next_sibling() {
-        dfs_record(&child, total_counts, node_model_writer);
+        dfs_record(&child, total_counts, node_model_writer)?;
         child_node = child;
       }
     }
   }
+  Ok(())
 }

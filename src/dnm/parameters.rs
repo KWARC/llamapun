@@ -2,6 +2,7 @@
 //! and configuring a DNM's construction and use
 
 use libxml::tree::*;
+use std::fmt;
 use std::collections::HashMap;
 use std::rc::Rc;
 
@@ -24,7 +25,7 @@ impl Default for RuntimeParseData {
 }
 
 /// Specifies how to deal with a certain tag
-#[derive(Debug, Clone)]
+#[derive(Clone)]
 pub enum SpecialTagsOption {
   /// Recurse into tag (default behaviour)
   Enter,
@@ -34,6 +35,20 @@ pub enum SpecialTagsOption {
   FunctionNormalize(Rc<fn(&Node) -> String>),
   /// Skip tag
   Skip,
+}
+
+impl fmt::Debug for SpecialTagsOption {
+  fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    use SpecialTagsOption::*;
+    write!(f,"SpecialTagsOption {{")?;
+    match self {
+      Enter => write!(f, "Enter")?,
+      Skip => write!(f, "Skip")?,
+      Normalize(v) => write!(f, "Normalize({})", v)?,
+      FunctionNormalize(_) => write!(f, "FunctionNormalize")?
+    };
+    write!(f,"}}")
+  }
 }
 
 /// Parameters for the DNM generation

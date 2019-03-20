@@ -103,7 +103,7 @@ fn dfs_record(node: &Node, catalog: &mut HashMap<String, u64>)
     }
   }
 
-  // Recurse into all children (DFS), except for math and tables
+  // Recurse into all children (DFS)
   if let Some(child) = node.get_first_child() {
     dfs_record(&child, catalog);
     let mut child_node = child;

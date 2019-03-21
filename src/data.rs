@@ -33,6 +33,9 @@ pub struct Corpus {
   pub senna_options: Cell<SennaParseOptions>,
   /// Default setting for `DNM` generation
   pub dnm_parameters: DNMParameters,
+  /// Extension of corpus files (for specially tailored resources such as DLMF's .html5)
+  /// defaults to selecting .html AND .xhtml files
+  pub extension : Option<String>
 }
 
 /// File-system iterator yielding individual documents
@@ -132,7 +135,12 @@ impl<'iter> Iterator for DocumentIterator<'iter> {
         break;
       } else if let Some(Ok(ref entry)) = next_entry {
         let file_name = entry.file_name().to_str().unwrap_or("").to_owned();
-        if file_name.ends_with(".html") || file_name.ends_with(".xhtml") {
+        let selected = if let Some(ref extension) = self.corpus.extension {
+          file_name.ends_with(extension)
+        } else {
+          file_name.ends_with(".html") || file_name.ends_with(".xhtml")
+        };
+        if selected {
           let path = entry.path().to_str().unwrap_or("").to_owned();
           let doc_result = Document::new(path, self.corpus);
           return match doc_result {
@@ -155,6 +163,7 @@ impl<'iter> Iterator for DocumentIterator<'iter> {
 impl Default for Corpus {
   fn default() -> Corpus {
     Corpus {
+      extension: None,
       path: ".".to_string(),
       tokenizer: Tokenizer::default(),
       xml_parser: Parser::default(),

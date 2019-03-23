@@ -6,27 +6,26 @@
 //! as per https://github.com/mathml-refresh/mathml/issues/55#issuecomment-474768228
 //!
 //! example use for arXMLiv:
-//!    `cargo run --release --example corpus_mathml_stats /data/datasets/dataset-arXMLiv-08-2018 arxmliv_mathml_statistics.txt`
-//! example use for DLMF:
-//!    `cargo run --release --example corpus_mathml_stats /var/local/dlmf dlmf_mathml_statistics.txt .html5`
+//!    `cargo run --release --example corpus_mathml_stats /data/datasets/dataset-arXMLiv-08-2018
+//! arxmliv_mathml_statistics.csv` example use for DLMF:
+//!    `cargo run --release --example corpus_mathml_stats /var/local/dlmf dlmf_mathml_statistics.csv
+//! .html5`
+#![allow(clippy::unused_io_amount)]
 
 extern crate libxml;
 extern crate llamapun;
 extern crate time;
 
-use std::collections::{HashSet, HashMap};
+use std::collections::{HashMap, HashSet};
 use std::env;
 use std::fs::File;
 use std::io::prelude::*;
-use std::io::{Error, BufWriter};
+use std::io::{BufWriter, Error};
 
 use libxml::tree::Node;
 use llamapun::data::Corpus;
 
-static TAB: &'static [u8] = b"\t";
-static NEWLINE: &'static [u8] = b"\n";
 static BUFFER_CAPACITY: usize = 10_485_760;
-
 
 pub fn main() -> Result<(), Error> {
   let start = time::get_time();
@@ -45,7 +44,6 @@ pub fn main() -> Result<(), Error> {
   let extension_filter = input_args.next();
 
   let node_statistics_file = File::create(node_statistics_filepath)?;
-  let mut node_statistics_writer = BufWriter::with_capacity(BUFFER_CAPACITY, node_statistics_file);
 
   let mut catalog = HashMap::new();
   let mut corpus = Corpus::new(corpus_path);
@@ -76,9 +74,7 @@ pub fn main() -> Result<(), Error> {
     }
 
     // Increment document counter, bokkeep
-    let document_count = catalog
-      .entry("document_count".to_string())
-      .or_insert(0);
+    let document_count = catalog.entry("document_count".to_string()).or_insert(0);
     *document_count += 1;
     if *document_count % 1000 == 0 {
       println!("-- processed documents: {:?}", document_count);
@@ -93,18 +89,20 @@ pub fn main() -> Result<(), Error> {
   let mut catalog_vec: Vec<(&String, &u64)> = catalog.iter().collect();
   catalog_vec.sort_by(|a, b| b.1.cmp(a.1));
 
+  let mut node_statistics_writer = BufWriter::with_capacity(BUFFER_CAPACITY, node_statistics_file);
+  node_statistics_writer.write(b"name@attr[value], frequency\n")?;
+
   for (key, val) in catalog_vec {
     node_statistics_writer.write(key.as_bytes())?;
-    node_statistics_writer.write(TAB)?;
+    node_statistics_writer.write(b", ")?;
     node_statistics_writer.write(val.to_string().as_bytes())?;
-    node_statistics_writer.write(NEWLINE)?;
+    node_statistics_writer.write(b"\n")?;
   }
   // Close the writer
   node_statistics_writer.flush()
 }
 
-fn dfs_record(node: &Node, open_ended: &HashSet<&str>, catalog: &mut HashMap<String, u64>)
-{
+fn dfs_record(node: &Node, open_ended: &HashSet<&str>, catalog: &mut HashMap<String, u64>) {
   if node.is_text_node() {
     return; // Skip text nodes.
   }
@@ -116,7 +114,7 @@ fn dfs_record(node: &Node, open_ended: &HashSet<&str>, catalog: &mut HashMap<Str
 
   for (attr, val) in node.get_attributes().into_iter() {
     // Increment frequency for attr name
-    let node_attr_key = format!("{}@{}",node_name, attr);
+    let node_attr_key = format!("{}@{}", node_name, attr);
     let node_attr_count = catalog.entry(node_attr_key.clone()).or_insert(0);
     *node_attr_count += 1;
 

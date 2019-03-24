@@ -1,4 +1,4 @@
-// Copyright 2015-2018 KWARC research group. See the LICENSE
+// Copyright 2015-2019 KWARC research group. See the LICENSE
 // file at the top-level directory of this distribution.
 //
 
@@ -10,6 +10,11 @@
 //! arxmliv_mathml_statistics.csv` example use for DLMF:
 //!    `cargo run --release --example corpus_mathml_stats /var/local/dlmf dlmf_mathml_statistics.csv
 //! .html5`
+//!
+//! This script extracts the raw data from a "blind" descent over each `<math>` element, and may
+//! require additional cutoffs and post-processing over uncurated corpora.
+//! You can find an example of post-processing done for the data of arXMLiv here:
+//! https://gist.github.com/dginev/e50a632d31be05bb87d64cc1800f6fd4#file-apply_cutoffs-pl
 #![allow(clippy::unused_io_amount)]
 
 extern crate libxml;
@@ -38,7 +43,7 @@ pub fn main() -> Result<(), Error> {
   };
   let node_statistics_filepath = match input_args.next() {
     Some(path) => path,
-    None => "statistics_mathml.txt".to_string(),
+    None => "corpus_statistics_mathml.csv".to_string(),
   };
 
   let extension_filter = input_args.next();

@@ -35,7 +35,7 @@ pub struct Corpus {
   pub dnm_parameters: DNMParameters,
   /// Extension of corpus files (for specially tailored resources such as DLMF's .html5)
   /// defaults to selecting .html AND .xhtml files
-  pub extension : Option<String>
+  pub extension: Option<String>,
 }
 
 /// File-system iterator yielding individual documents
@@ -235,18 +235,23 @@ impl<'d> Document<'d> {
     }
   }
 
-
   /// Obtain the MathML <math> nodes of a libxml `Document`
-  pub fn get_math_nodes(&self) -> Vec<Node> {
-    Document::math_nodes(&self.dom)
-  }
+  pub fn get_math_nodes(&self) -> Vec<Node> { Document::math_nodes(&self.dom) }
 
   /// Associated function for `get_math_nodes`
   fn math_nodes(doc: &XmlDoc) -> Vec<Node> {
     let xpath_context = Context::new(doc).unwrap();
-    match xpath_context.evaluate(
-      "//*[local-name()='math']",
-    ) {
+    match xpath_context.evaluate("//*[local-name()='math']") {
+      Ok(found_payload) => found_payload.get_nodes_as_vec(),
+      _ => Vec::new(),
+    }
+  }
+  /// Obtain the <span[class=ltx_ref]> nodes of a libxml `Document`
+  pub fn get_ref_nodes(&self) -> Vec<Node> { Document::ref_nodes(&self.dom) }
+  /// Associated function for `get_ref_nodes`
+  fn ref_nodes(doc: &XmlDoc) -> Vec<Node> {
+    let xpath_context = Context::new(doc).unwrap();
+    match xpath_context.evaluate("//*[(local-name()='span' or local-name()='a') and (contains(@class,'ltx_ref ') or @class='ltx_ref')]") {
       Ok(found_payload) => found_payload.get_nodes_as_vec(),
       _ => Vec::new(),
     }

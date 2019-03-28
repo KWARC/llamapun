@@ -5,7 +5,7 @@
 //! Given a `CorTeX` corpus of HTML5 documents,
 //! extract a frequency report over words preceding a latex \ref macro (or equivalent)
 //! such as "Section \ref{sec:intro}"
-//! by looking at the created span[ltx_ref] elements.
+//! by looking at the created span.ltx_ref or a.ltx_ref elements.
 
 use std::collections::{HashMap};
 use std::env;
@@ -39,7 +39,6 @@ pub fn main() -> Result<(), Error> {
   let mut corpus = Corpus::new(corpus_path);
 
   for document in corpus.iter() {
-    // Recursively descend through the math nodes and increment the frequencies of occurrence
     for ref_node in document.get_ref_nodes() {
       if let Some(previous) = ref_node.get_prev_sibling() {
         if previous.get_type() == Some(NodeType::TextNode) {

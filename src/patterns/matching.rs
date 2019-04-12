@@ -105,7 +105,7 @@ impl PhraseTree {
   fn from_psg(root: &PSGNode) -> Result<PhraseTree, usize> {
     match *root {
       PSGNode::Leaf(pos) => Err(pos),
-      PSGNode::Parent(box ref content) => {
+      PSGNode::Parent(ref content) => {
         let mut child_trees: Vec<PhraseTree> = Vec::new();
         let mut start_opt: Option<usize> = None;
         let mut end = 0;
@@ -269,7 +269,7 @@ fn match_seq<'t>(
         matches.clear();
         if start_condition.is_some() {
           // check start_condition
-          let &(box ref rule, ref containment) = start_condition.as_ref().unwrap();
+          let &(ref rule, ref containment) = start_condition.as_ref().unwrap();
           let m = match_seq(pf, rule, sentence, phrase_tree, range, pos);
           if !m.matched {
             continue;
@@ -282,7 +282,7 @@ fn match_seq<'t>(
         if end_condition.is_some() {
           let mut matched = false;
           for end_start_pos in pos..*end_pos {
-            let &box ref rule = end_condition.as_ref().unwrap();
+            let &ref rule = end_condition.as_ref().unwrap();
             let m = match_seq(pf, rule, sentence, phrase_tree, range, end_start_pos);
             if !m.matched {
               continue;
@@ -309,7 +309,7 @@ fn match_seq<'t>(
       // no phrase match satisfied all conditions:
       InternalSeqMatch::no_match()
     },
-    SequencePattern::Marked(box ref pattern, ref marker) => {
+    SequencePattern::Marked(ref pattern, ref marker) => {
       let m = match_seq(pf, pattern, sentence, phrase_tree, range, pos);
       if m.matched {
         InternalSeqMatch {
@@ -404,7 +404,7 @@ fn match_word<'t>(
         InternalWordMatch::no_match()
       }
     },
-    WordPattern::WordPos(ref pos_pattern, box ref word_pattern) => {
+    WordPattern::WordPos(ref pos_pattern, ref word_pattern) => {
       if match_pos(pf, pos_pattern, word.get_pos()) {
         match_word(pf, word_pattern, word, range)
       } else {
@@ -446,7 +446,7 @@ fn match_word<'t>(
       _matches: Vec::new(),
       matched: true,
     },
-    WordPattern::WordNot(box ref p) => {
+    WordPattern::WordNot(ref p) => {
       let m = match_word(pf, p, word, range);
       if m.matched {
         m
@@ -454,7 +454,7 @@ fn match_word<'t>(
         InternalWordMatch::no_match()
       }
     },
-    WordPattern::Marked(box ref p, ref marker) => {
+    WordPattern::Marked(ref p, ref marker) => {
       let m = match_word(pf, p, word, range);
       if m.matched {
         InternalWordMatch {
@@ -481,7 +481,7 @@ fn match_math<'t>(pf: &PatternFile, rule: &MathPattern, node: &Node) -> Internal
       matched: true,
     },
     MathPattern::MathRef(o) => match_math(pf, &pf.math_rules[o].pattern, node),
-    MathPattern::Marked(box ref pattern, ref marker) => {
+    MathPattern::Marked(ref pattern, ref marker) => {
       let m = match_math(pf, pattern, node);
       if m.matched {
         InternalMathMatch {
@@ -582,7 +582,7 @@ fn match_math<'t>(pf: &PatternFile, rule: &MathPattern, node: &Node) -> Internal
         matched: true,
       } // no child matches required
     },
-    MathPattern::MathDescendant(box ref pattern, ref match_type) => {
+    MathPattern::MathDescendant(ref pattern, ref match_type) => {
       let mut matches: Vec<Match> = Vec::new();
       let mut matched = false;
       let m = match_math(pf, pattern, node);
@@ -621,7 +621,7 @@ fn match_mtext(pf: &PatternFile, rule: &MTextPattern, string: &str) -> bool {
     MTextPattern::AnyMText => true,
     MTextPattern::MTextOr(ref ps) => ps.iter().any(|p| match_mtext(pf, p, string)),
     MTextPattern::MTextLit(ref s) => s == string,
-    MTextPattern::MTextNot(box ref p) => !match_mtext(pf, p, string),
+    MTextPattern::MTextNot(ref p) => !match_mtext(pf, p, string),
     MTextPattern::MTextRef(o) => match_mtext(pf, &pf.mtext_rules[o].pattern, string),
   }
 }
@@ -629,7 +629,7 @@ fn match_mtext(pf: &PatternFile, rule: &MTextPattern, string: &str) -> bool {
 fn match_pos(pf: &PatternFile, rule: &PosPattern, pos: POS) -> bool {
   match *rule {
     PosPattern::Pos(p) => p == pos,
-    PosPattern::PosNot(box ref r) => !match_pos(pf, r, pos),
+    PosPattern::PosNot(ref r) => !match_pos(pf, r, pos),
     PosPattern::PosOr(ref ps) => ps.iter().any(|p| match_pos(pf, p, pos)),
     PosPattern::PosRef(o) => match_pos(pf, &pf.pos_rules[o].pattern, pos),
   }

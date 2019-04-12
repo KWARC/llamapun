@@ -3,9 +3,11 @@ The **llamapun** library hosts common _language and mathematics processing_ algo
 [![Build Status](https://travis-ci.org/KWARC/llamapun.svg?branch=master)](https://travis-ci.org/KWARC/llamapun)
 [![API Documentation](https://img.shields.io/badge/docs-API-blue.svg)](http://kwarc.github.io/llamapun/llamapun/index.html)
 [![license](http://img.shields.io/badge/license-GPLv3-blue.svg)](https://raw.githubusercontent.com/KWARC/llamapun/master/LICENSE)
-![version](https://img.shields.io/badge/version-0.2.2-orange.svg)
+![version](https://img.shields.io/badge/version-0.2.3-orange.svg)
 ---
 At its core, **llamapun** is a [Rust](http://rust-lang.org/) implementation that aims at minimal footprint and optimal runtime, in order to safely scale to corpora of millions of documents and tens of billions ot tokens.
+
+Requires **stable** rust, starting from `rustc 1.34.0 (91856ed52 2019-04-10)`.
 
 ### Features
 
@@ -38,24 +40,11 @@ At its core, **llamapun** is a [Rust](http://rust-lang.org/) implementation that
    * High-level iterators over the narrative elements of scientific documents
    * Zero-cost abstractions over the source data, as well as over linguistic annotations of various granularity.
 
- * **Additional included Examples**
+ * **Additional included examples**
    * math-aware corpus token models, via DNM plain text normalization
    * math-aware AMS-labeled dataset generation
-
----
-
-**Getting started**
-
-Run
-```bash
-cargo test
-```
-in the project directory. 
-
-It is recommended to use to the latest nightly builds of rust (https://github.com/rust-lang-nursery/rustup.rs#working-with-nightly-rust), 
-i.e. using rustup (www.rustup.rs) and keep it updated (run 'rustup update' on a regular basis).
-
-For problems with libxml, it helps to install its development headers (`libxml2-dev` is the package name for a Debian-based Linux).
+   * "node footprint" statistics for corpora, e.g. [informing the MathML4 effort](https://github.com/mathml-refresh/mathml/issues/55#issuecomment-475916070)
+   * track sibling words to inline references in scientific articles, [informing LaTeXML development](https://github.com/brucemiller/LaTeXML/issues/1043#issuecomment-478249149)
 
 ---
 

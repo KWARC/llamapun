@@ -16,14 +16,13 @@ use std::io::{BufWriter, Error};
 use std::thread;
 
 use libxml::tree::NodeType;
-use llamapun::parallel_data::{Corpus, Document};
+use llamapun::parallel_data::Corpus;
 
 static BUFFER_CAPACITY: usize = 10_485_760;
 
 pub fn main() -> Result<(), Error> {
   let start = time::get_time();
   // Read input arguments
-  let mut document_count = 0;
   let mut input_args = env::args();
   let _ = input_args.next(); // skip process name
   let corpus_path = match input_args.next() {
@@ -40,32 +39,42 @@ pub fn main() -> Result<(), Error> {
   let mut corpus = Corpus::new(corpus_path);
 
   let catalog = corpus.catalog_with_parallel_walk(|document| {
-    let mut catalog = HashMap::new();
     println!(
       "Thread: {:?}, doc: {:?}",
       thread::current().name(),
       document.path
     );
-    for ref_node in document.get_ref_nodes() {
-      if let Some(previous) = ref_node.get_prev_sibling() {
-        if previous.get_type() == Some(NodeType::TextNode) {
-          let content_raw = previous.get_content();
-          let mut pre_word_vec = Vec::new();
-          for c in content_raw.trim_end().chars().rev() {
-            if c.is_whitespace() || !c.is_alphanumeric() {
-              break;
+    document
+      .get_ref_nodes()
+      .into_par_iter()
+      .map(|ref_node| {
+        let mut catalog = HashMap::new();
+        if let Some(previous) = ref_node.get_prev_sibling() {
+          if previous.get_type() == Some(NodeType::TextNode) {
+            let content_raw = previous.get_content();
+            let mut pre_word_vec = Vec::new();
+            for c in content_raw.trim_end().chars().rev() {
+              if c.is_whitespace() || !c.is_alphanumeric() {
+                break;
+              }
+              pre_word_vec.push(c.to_lowercase().to_string());
             }
-            pre_word_vec.push(c.to_lowercase().to_string());
-          }
-          let pre_word: String = pre_word_vec.into_iter().rev().collect();
-          if !pre_word.is_empty() {
-            let entry = catalog.entry(pre_word).or_insert(0);
-            *entry += 1;
+            let pre_word: String = pre_word_vec.into_iter().rev().collect();
+            if !pre_word.is_empty() {
+              let entry = catalog.entry(pre_word).or_insert(0);
+              *entry += 1;
+            }
           }
         }
-      }
-    }
-    catalog
+        catalog
+      })
+      .reduce(HashMap::new, |mut map1, map2| {
+        for (k, v) in map2 {
+          let entry = map1.entry(k).or_insert(0);
+          *entry += v;
+        }
+        map1
+      })
   });
 
   let end = time::get_time();

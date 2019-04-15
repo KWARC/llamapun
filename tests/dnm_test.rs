@@ -20,9 +20,9 @@ fn test_plaintext_simple() {
     "a".to_string(),
     SpecialTagsOption::Normalize("[link]".to_string()),
   );
-  let root = doc.get_root_element().unwrap();
+  let root = doc.get_root_readonly().unwrap();
   let dnm = DNM::new(
-    &root,
+    root,
     DNMParameters {
       special_tag_name_options: options,
       normalize_white_spaces: true,
@@ -39,15 +39,15 @@ fn test_plaintext_simple() {
 fn test_non_normalized_unicode() {
   let parser = Parser::default();
   let doc = parser.parse_file("tests/resources/file05.xml").unwrap();
-  let root = doc.get_root_element().unwrap();
+  let root = doc.get_root_readonly().unwrap();
   let dnm = DNM::new(
-    &root,
+    root,
     DNMParameters {
       normalize_unicode: false,
       ..DNMParameters::default()
     },
   );
-  let entire_range = dnm.get_range_of_node(&root).unwrap();
+  let entire_range = dnm.get_range_of_node(root).unwrap();
   let trimmed = entire_range.trim();
   let unicode = trimmed.get_subrange(0, 7);
   assert_eq!(unicode.get_plaintext(), "Unicöde");
@@ -72,15 +72,15 @@ fn test_xml_node_to_plaintext() {
     "a".to_string(),
     SpecialTagsOption::Normalize("[link]".to_string()),
   );
-  let root = doc.get_root_element().unwrap();
+  let root = doc.get_root_readonly().unwrap();
   let dnm = DNM::new(
-    &root,
+    root,
     DNMParameters {
       special_tag_name_options: options,
       ..Default::default()
     },
   );
-  let mut node = doc.get_root_element().unwrap();
+  let mut node = doc.get_root_readonly().unwrap();
   match node.get_first_child() {
     Some(n) => node = n,
     None => assert!(false), //DOM generation failed
@@ -100,7 +100,7 @@ fn test_xml_node_to_plaintext() {
   }
   //Node content should have been processed
   assert_eq!(
-    dnm.get_range_of_node(&node).unwrap().get_plaintext(),
+    dnm.get_range_of_node(node).unwrap().get_plaintext(),
     "Title"
   );
   while node.get_name() != "h2" {
@@ -110,7 +110,7 @@ fn test_xml_node_to_plaintext() {
     }
   }
   //node was skipped in dnm generation
-  assert_eq!(dnm.get_range_of_node(&node).unwrap().get_plaintext(), "");
+  assert_eq!(dnm.get_range_of_node(node).unwrap().get_plaintext(), "");
   while node.get_name() != "a" {
     match node.get_next_sibling() {
       Some(n) => node = n,
@@ -119,7 +119,7 @@ fn test_xml_node_to_plaintext() {
   }
   //node content should have been replaced by "[link]"
   assert_eq!(
-    dnm.get_range_of_node(&node).unwrap().get_plaintext().trim(),
+    dnm.get_range_of_node(node).unwrap().get_plaintext().trim(),
     "[link]"
   );
 }
@@ -128,14 +128,14 @@ fn test_xml_node_to_plaintext() {
 fn test_back_mapping_simple() {
   let parser = Parser::default();
   let doc = parser.parse_file("tests/resources/file01.xml").unwrap();
-  let root = doc.get_root_element().unwrap();
+  let root = doc.get_root_readonly().unwrap();
   let mut options: HashMap<String, SpecialTagsOption> = HashMap::new();
   options.insert(
     "a".to_string(),
     SpecialTagsOption::Normalize("[link]".to_string()),
   );
   let dnm = DNM::new(
-    &root,
+    root,
     DNMParameters {
       special_tag_name_options: options,
       normalize_white_spaces: true,
@@ -188,9 +188,9 @@ fn test_plaintext_normalized_class_names() {
     "normalized".to_string(),
     SpecialTagsOption::Normalize("[NORMALIZED]".to_string()),
   );
-  let root = doc.get_root_element().unwrap();
+  let root = doc.get_root_readonly().unwrap();
   let dnm = DNM::new(
-    &root,
+    root,
     DNMParameters {
       special_tag_class_options: options,
       normalize_white_spaces: true,
@@ -204,16 +204,16 @@ fn test_plaintext_normalized_class_names() {
 fn test_unicode_normalization() {
   let parser = Parser::default();
   let doc = parser.parse_file("tests/resources/file03.xml").unwrap();
-  let root = doc.get_root_element().unwrap();
+  let root = doc.get_root_readonly().unwrap();
   let dnm = DNM::new(
-    &root,
+    root,
     DNMParameters {
       normalize_unicode: true,
       ..DNMParameters::default()
     },
   );
-  let node = doc.get_root_element().unwrap();
-  let dnmrange = dnm.get_range_of_node(&node).unwrap();
+  let node = doc.get_root_readonly().unwrap();
+  let dnmrange = dnm.get_range_of_node(node).unwrap();
   assert_eq!(dnmrange.get_plaintext().trim(), "At houEUR...");
 }
 
@@ -221,17 +221,17 @@ fn test_unicode_normalization() {
 fn test_morpha_stemming() {
   let parser = Parser::default();
   let doc = parser.parse_file("tests/resources/file04.xml").unwrap();
-  let root = doc.get_root_element().unwrap();
+  let root = doc.get_root_readonly().unwrap();
   let dnm = DNM::new(
-    &root,
+    root,
     DNMParameters {
       stem_words_once: true,
       support_back_mapping: false,
       ..Default::default()
     },
   );
-  let node = doc.get_root_element().unwrap();
-  let dnmrange = dnm.get_range_of_node(&node).unwrap().trim();
+  let node = doc.get_root_readonly().unwrap();
+  let dnmrange = dnm.get_range_of_node(node).unwrap().trim();
 
   assert_eq!(
     dnmrange.get_plaintext().trim(),

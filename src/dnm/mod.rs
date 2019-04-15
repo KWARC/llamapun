@@ -7,6 +7,7 @@ pub mod node;
 mod parameters;
 mod range;
 
+use libxml::readonly::RoNode;
 use libxml::tree::*;
 use std::collections::HashMap;
 use std::error::Error;
@@ -27,7 +28,7 @@ pub struct DNM {
   /// The options for generation
   pub parameters: DNMParameters,
   /// The root node of the underlying xml tree
-  pub root_node: Node,
+  pub root_node: RoNode,
   /// Maps nodes to plaintext offsets
   pub node_map: HashMap<usize, (usize, usize)>,
   /// A runtime object used for holding auxiliary state
@@ -37,14 +38,13 @@ pub struct DNM {
   /// maps an offset to the corresponding node, and the offset in the node
   /// offset -1 means that the offset corresponds to the entire node
   /// this is e.g. used if a node is replaced by a token.
-  pub back_map: Vec<(Node, i32)>,
+  pub back_map: Vec<(RoNode, i32)>,
 }
-
 impl Default for DNM {
   fn default() -> DNM {
     DNM {
       parameters: DNMParameters::default(),
-      root_node: Node::null(),
+      root_node: RoNode::null(),
       plaintext: String::new(),
       byte_offsets: Vec::new(),
       node_map: HashMap::new(),
@@ -86,7 +86,7 @@ macro_rules! push_token(
     } else {
       for c in $token.chars() {
         $dnm.runtime.chars.push(c);
-        $dnm.back_map.push(($node.clone(), -1));
+        $dnm.back_map.push(($node, -1));
       }
     }
     $dnm.runtime.had_whitespace = false;
@@ -117,17 +117,21 @@ macro_rules! push_whitespace(
 
 impl DNM {
   /// Creates a `DNM` for `root`
-  pub fn new(root: &Node, parameters: DNMParameters) -> DNM {
+  pub fn new(root_node: RoNode, parameters: DNMParameters) -> DNM {
     parameters.check();
     let mut dnm = DNM {
       parameters,
-      root_node: root.clone(),
-      ..DNM::default()
+      root_node,
+      back_map: Vec::new(),
+      byte_offsets: Vec::new(),
+      node_map: HashMap::new(),
+      plaintext: String::new(),
+      runtime: RuntimeParseData::default(),
     };
 
     // Depth-first traversal of the DOM extracting a plaintext representation and
     // building a node<->text map.
-    dnm.recurse_node_create(root);
+    dnm.recurse_node_create(root_node);
 
     // generate plaintext
     assert_eq!(dnm.plaintext.len(), 0);
@@ -144,8 +148,7 @@ impl DNM {
   pub fn from_str(
     text: &str,
     params_opt: Option<DNMParameters>,
-  ) -> Result<(Document, Self), Box<Error>>
-  {
+  ) -> Result<(Document, Self), Box<Error>> {
     let params = params_opt.unwrap_or_default();
     // Same as ::new(), but requires initializing a libxml Document with the text content
     let mut doc = Document::new().unwrap();
@@ -159,7 +162,12 @@ impl DNM {
     para.append_text(text)?;
 
     // Now initialize a DNM as usual
-    let dnm = DNM::new(&root, params);
+    let dnm = DNM::new(
+      doc
+        .get_root_readonly()
+        .expect("read only root node should always be found."),
+      params,
+    );
     Ok((doc, dnm))
   }
 
@@ -168,14 +176,13 @@ impl DNM {
   pub fn from_ams_paragraph_str(
     text: &str,
     params: Option<DNMParameters>,
-  ) -> Result<(Document, Self), Box<Error>>
-  {
+  ) -> Result<(Document, Self), Box<Error>> {
     let rebuilt = c14n::rebuild_normalized_text(text);
     DNM::from_str(&rebuilt, params)
   }
 
   /// Get the plaintext range of a node
-  pub fn get_range_of_node(&self, node: &Node) -> Result<DNMRange, ()> {
+  pub fn get_range_of_node(&self, node: RoNode) -> Result<DNMRange, ()> {
     match self.node_map.get(&node.to_hashable()) {
       Some(&(start, end)) => Ok(DNMRange {
         start,
@@ -187,7 +194,7 @@ impl DNM {
   }
 
   /// The heart of the dnm generation...
-  fn recurse_node_create(&mut self, node: &Node) {
+  fn recurse_node_create(&mut self, node: RoNode) {
     if node.is_text_node() {
       self.text_node_create(node)
     } else {
@@ -195,7 +202,7 @@ impl DNM {
     }
   }
 
-  fn text_node_create(&mut self, node: &Node) {
+  fn text_node_create(&mut self, node: RoNode) {
     let offset_start = self.runtime.chars.len();
     let mut string = node.get_content();
     let mut offsets: Vec<i32> = if self.parameters.support_back_mapping {
@@ -294,7 +301,7 @@ impl DNM {
     }
   }
 
-  fn intermediate_node_create(&mut self, node: &Node) {
+  fn intermediate_node_create(&mut self, node: RoNode) {
     let offset_start = self.runtime.chars.len();
     let name: String = node.get_name();
     {
@@ -317,26 +324,26 @@ impl DNM {
             push_token!(self, token, node);
             record_node_map!(self, node, offset_start);
             return;
-          },
+          }
           Some(&SpecialTagsOption::FunctionNormalize(ref f)) => {
             push_token!(self, &f(node), node);
             record_node_map!(self, node, offset_start);
             return;
-          },
+          }
           Some(&SpecialTagsOption::Skip) => {
             record_node_map!(self, node, offset_start);
             return;
-          },
+          }
           None => continue,
         }
       }
     } // End scope of self.parameters borrow, to allow mutable self borrow for
       // recurse_node_create Recurse into children
     if let Some(child) = node.get_first_child() {
-      self.recurse_node_create(&child);
+      self.recurse_node_create(child);
       let mut child_node = child;
       while let Some(child) = child_node.get_next_sibling() {
-        self.recurse_node_create(&child);
+        self.recurse_node_create(child);
         child_node = child;
       }
     }

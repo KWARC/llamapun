@@ -7,14 +7,16 @@
 //! such as "Section \ref{sec:intro}"
 //! by looking at the created span.ltx_ref or a.ltx_ref elements.
 
-use std::collections::{HashMap};
+use rayon::prelude::*;
+use std::collections::HashMap;
 use std::env;
 use std::fs::File;
 use std::io::prelude::*;
 use std::io::{BufWriter, Error};
+use std::thread;
 
 use libxml::tree::NodeType;
-use llamapun::data::Corpus;
+use llamapun::parallel_data::{Corpus, Document};
 
 static BUFFER_CAPACITY: usize = 10_485_760;
 
@@ -35,10 +37,15 @@ pub fn main() -> Result<(), Error> {
 
   let node_statistics_file = File::create(node_statistics_filepath)?;
 
-  let mut catalog = HashMap::new();
   let mut corpus = Corpus::new(corpus_path);
 
-  for document in corpus.iter() {
+  let catalog = corpus.catalog_with_parallel_walk(|document| {
+    let mut catalog = HashMap::new();
+    println!(
+      "Thread: {:?}, doc: {:?}",
+      thread::current().name(),
+      document.path
+    );
     for ref_node in document.get_ref_nodes() {
       if let Some(previous) = ref_node.get_prev_sibling() {
         if previous.get_type() == Some(NodeType::TextNode) {
@@ -50,21 +57,16 @@ pub fn main() -> Result<(), Error> {
             }
             pre_word_vec.push(c.to_lowercase().to_string());
           }
-          let pre_word : String = pre_word_vec.into_iter().rev().collect();
+          let pre_word: String = pre_word_vec.into_iter().rev().collect();
           if !pre_word.is_empty() {
             let entry = catalog.entry(pre_word).or_insert(0);
-            *entry+=1;
+            *entry += 1;
           }
         }
       }
     }
-
-    // Increment document counter, bokkeep
-    document_count += 1;
-    if document_count % 1000 == 0 {
-      println!("-- processed documents: {:?}", document_count);
-    }
-  }
+    catalog
+  });
 
   let end = time::get_time();
   let duration_sec = (end - start).num_milliseconds() / 1000;

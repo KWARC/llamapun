@@ -29,6 +29,7 @@ pub mod ams;
 pub mod data;
 pub mod dnm;
 pub mod ngrams;
+pub mod parallel_data;
 pub mod patterns;
 pub mod stopwords;
 pub mod tokenizer;

@@ -2,7 +2,7 @@
 //! object's plaintext
 
 use crate::dnm::DNM;
-use libxml::tree::Node;
+use libxml::readonly::RoNode;
 use libxml::xpath::Context;
 
 /// Very often we'll talk about substrings of the plaintext - words, sentences,
@@ -34,10 +34,14 @@ impl<'dnmrange> DNMRange<'dnmrange> {
     &(self.dnm.plaintext)[self.dnm.byte_offsets[self.start]..self.dnm.byte_offsets[self.end]]
   }
   /// Get the plaintext without trailing white spaces
-  pub fn get_plaintext_truncated(&self) -> &'dnmrange str { self.get_plaintext().trim_end() }
+  pub fn get_plaintext_truncated(&self) -> &'dnmrange str {
+    self.get_plaintext().trim_end()
+  }
 
   /// Get the first corresponding DOM node for this range
-  pub fn get_node(&self) -> &'dnmrange Node { &self.dnm.back_map[self.start].0 }
+  pub fn get_node(&self) -> RoNode {
+    self.dnm.back_map[self.start].0
+  }
 
   /// Returns a `DNMRange` with the leading and trailing whitespaces removed
   pub fn trim(&self) -> DNMRange<'dnmrange> {
@@ -88,8 +92,7 @@ impl<'dnmrange> DNMRange<'dnmrange> {
     &self,
     rel_start: usize,
     rel_end: usize,
-  ) -> DNMRange<'dnmrange>
-  {
+  ) -> DNMRange<'dnmrange> {
     DNMRange {
       start: self.byte_offset_bisection(
         self.dnm.byte_offsets[self.start] + rel_start,
@@ -110,8 +113,7 @@ impl<'dnmrange> DNMRange<'dnmrange> {
     target_byte: usize,
     lower_char: usize,
     upper_char: usize,
-  ) -> usize
-  {
+  ) -> usize {
     if lower_char == upper_char {
       return lower_char;
     } else if upper_char == lower_char + 1 {
@@ -131,7 +133,9 @@ impl<'dnmrange> DNMRange<'dnmrange> {
   }
 
   /// checks whether the range is empty
-  pub fn is_empty(&self) -> bool { self.start == self.end }
+  pub fn is_empty(&self) -> bool {
+    self.start == self.end
+  }
 
   /*
    * SERIALIZATION CODE
@@ -142,20 +146,22 @@ impl<'dnmrange> DNMRange<'dnmrange> {
     if !self.dnm.parameters.support_back_mapping {
       panic!("DNMRange::serialize: DNM did not generate the back_map");
     }
-    let (ref node1, offset1) = self.dnm.back_map[self.start];
-    let (ref node2, offset2) = self.dnm.back_map[self.end];
+    let (node1, offset1) = self.dnm.back_map[self.start];
+    let (node2, offset2) = self.dnm.back_map[self.end];
     DNMRange::create_arange(
-      &DNMRange::serialize_offset(&self.dnm.root_node, node1, offset1, false),
-      &DNMRange::serialize_offset(&self.dnm.root_node, node2, offset2, true),
+      &DNMRange::serialize_offset(self.dnm.root_node, node1, offset1, false),
+      &DNMRange::serialize_offset(self.dnm.root_node, node2, offset2, true),
     )
   }
 
   /// creates an arange from to xpointers
-  pub fn create_arange(from: &str, to: &str) -> String { format!("arange({},{})", from, to) }
+  pub fn create_arange(from: &str, to: &str) -> String {
+    format!("arange({},{})", from, to)
+  }
 
   /// Serializes a node and an offset into an xpointer
   /// is_end indicates whether the node indicates the end of the interval
-  pub fn serialize_offset(root_node: &Node, node: &Node, offset: i32, is_end: bool) -> String {
+  pub fn serialize_offset(root_node: RoNode, node: RoNode, offset: i32, is_end: bool) -> String {
     if offset < 0 {
       DNMRange::serialize_node(root_node, node, is_end)
     } else {
@@ -168,7 +174,7 @@ impl<'dnmrange> DNMRange<'dnmrange> {
   }
 
   /// serializes a node into an xpath expression
-  pub fn serialize_node(root_node: &Node, node: &Node, is_end: bool) -> String {
+  pub fn serialize_node(root_node: RoNode, node: RoNode, is_end: bool) -> String {
     match node.get_property("id") {
       None => {
         if node == root_node {
@@ -176,11 +182,11 @@ impl<'dnmrange> DNMRange<'dnmrange> {
         }
         if node.is_text_node() {
           let parent = node.get_parent().unwrap();
-          let base = DNMRange::serialize_node(root_node, &parent, false /* don't take next */);
+          let base = DNMRange::serialize_node(root_node, parent, false /* don't take next */);
           return format!(
             "{}/text()[{}]",
             base,
-            get_node_number(&parent, node, &|n: &Node| n.is_text_node()).unwrap()
+            get_node_number(parent, node, &|n: RoNode| n.is_text_node()).unwrap()
           );
         } else {
           let act = if is_end {
@@ -189,7 +195,7 @@ impl<'dnmrange> DNMRange<'dnmrange> {
             node.clone()
           };
           let parent = act.get_parent().unwrap();
-          let base = DNMRange::serialize_node(root_node, &parent, false /* don't take next */);
+          let base = DNMRange::serialize_node(root_node, parent, false /* don't take next */);
           return format!(
             "{}/{}[{}]",
             base,
@@ -206,10 +212,10 @@ impl<'dnmrange> DNMRange<'dnmrange> {
             } else {
               act.get_name()
             },
-            get_node_number(&parent, &act, &|n: &Node| n.get_name() == act.get_name()).unwrap()
+            get_node_number(parent, act, &|n: RoNode| n.get_name() == act.get_name()).unwrap()
           );
         }
-      },
+      }
       Some(x) => format!("//*[@id=\"{}\"]", x),
     }
   }
@@ -225,8 +231,7 @@ impl<'dnmrange> DNMRange<'dnmrange> {
     string: &str,
     dnm: &'dnmrange DNM,
     xpath_context: &Context,
-  ) -> DNMRange<'dnmrange>
-  {
+  ) -> DNMRange<'dnmrange> {
     assert_eq!(&(string[0..7]), "arange(");
     assert_eq!(&(string[string.len() - 1..string.len()]), ")");
 
@@ -256,8 +261,8 @@ impl<'dnmrange> DNMRange<'dnmrange> {
       let node_str = &string[13..comma];
       let node_set = xpath_context.evaluate(node_str).unwrap();
       assert_eq!(node_set.get_number_of_nodes(), 1);
-      let node = node_set.get_nodes_as_vec()[0].clone();
-      match dnm.get_range_of_node(&node) {
+      let node = node_set.get_readonly_nodes_as_vec()[0].clone();
+      match dnm.get_range_of_node(node) {
         Ok(range) => {
           let mut pos = range.start;
           let offset = &string[comma + 1..string.len() - 1].parse::<i32>().unwrap() - 1;
@@ -265,8 +270,8 @@ impl<'dnmrange> DNMRange<'dnmrange> {
             pos += 1;
           }
           pos
-        },
-        Err(()) => get_position_of_lowest_parent(&node, dnm),
+        }
+        Err(()) => get_position_of_lowest_parent(node, dnm),
       }
     } else {
       let node_str = string;
@@ -274,8 +279,8 @@ impl<'dnmrange> DNMRange<'dnmrange> {
         .evaluate(node_str)
         .unwrap_or_else(|_| panic!("DNMRange::deserialize: Malformed XPath: '{}'", &node_str));
       assert_eq!(node_set.get_number_of_nodes(), 1);
-      let node = node_set.get_nodes_as_vec()[0].clone();
-      get_position_of_lowest_parent(&node, dnm)
+      let node = node_set.get_readonly_nodes_as_vec()[0].clone();
+      get_position_of_lowest_parent(node, dnm)
     }
   }
 }
@@ -286,47 +291,47 @@ impl<'dnmrange> DNMRange<'dnmrange> {
 
 /// Helper function: Gets the start offset of the lowest parent recorded in the
 /// DNM
-fn get_position_of_lowest_parent(node: &Node, dnm: &DNM) -> usize {
+fn get_position_of_lowest_parent(node: RoNode, dnm: &DNM) -> usize {
   match dnm.get_range_of_node(node) {
     Ok(range) => range.start,
-    Err(()) => get_position_of_lowest_parent(&(node.get_parent().unwrap()), dnm),
+    Err(()) => get_position_of_lowest_parent(node.get_parent().unwrap(), dnm),
   }
 }
 
 /// Helper function: Returns the next sibling of a node if it exists
 /// (goes up in the tree if required)
-fn get_next_sibling(root_node: &Node, node: &Node) -> Option<Node> {
+fn get_next_sibling(root_node: RoNode, node: RoNode) -> Option<RoNode> {
   match node.get_next_sibling() {
     None => {
       if node == root_node {
         dbg!("DNMRange::serialize: Warning: Can't annotate last node in document properly");
         None
       } else {
-        get_next_sibling(root_node, &node.get_parent().unwrap())
+        get_next_sibling(root_node, node.get_parent().unwrap())
       }
-    },
+    }
     Some(n) => Some(n),
   }
 }
 
 /// Helper function: Returns the number of a node (the how many-th sibling of
 /// its kind it is)
-fn get_node_number(parent: &Node, target: &Node, rule: &Fn(&Node) -> bool) -> Result<i32, ()> {
+fn get_node_number(parent: RoNode, target: RoNode, rule: &Fn(RoNode) -> bool) -> Result<i32, ()> {
   let mut cur = parent
     .get_first_child()
     .expect("can't get child number - node has no children");
   let mut count = 1i32;
-  while cur != *target {
-    if rule(&cur) {
+  while cur != target {
+    if rule(cur) {
       count += 1;
     }
     match cur.get_next_sibling() {
       None => {
         return Err(());
-      },
+      }
       Some(n) => {
         cur = n;
-      },
+      }
     }
   }
   Ok(count)

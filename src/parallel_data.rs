@@ -1,23 +1,21 @@
-//! Data structures and Iterators for convenient high-level syntax
-use std::cell::{Cell, RefCell};
+//! Data structures and Iterators for rayon-enabled parallel processing
+//! including parallel I/O in walking a corpus
+//! as well as DOM primitives that allow parallel iterators on XPath results, etc
+use jwalk::WalkDir as ParWalkDir;
+use rayon::iter::ParallelBridge;
+use rayon::iter::ParallelIterator;
+use std::collections::HashMap;
 use std::vec::IntoIter;
-use walkdir::IntoIter as WalkDirIterator;
-use walkdir::WalkDir;
-
-use crate::dnm::{DNMParameters, DNMRange, DNM};
-use crate::tokenizer::Tokenizer;
 
 use libxml::parser::{Parser, XmlParseError};
 use libxml::readonly::RoNode;
 use libxml::tree::Document as XmlDoc;
 use libxml::xpath::Context;
 
-use senna::pos::POS;
-use senna::senna::{Senna, SennaParseOptions};
-use senna::sennapath::SENNA_PATH;
-use senna::sentence::Sentence as SennaSentence;
+use crate::dnm::{DNMParameters, DNMRange, DNM};
+use crate::tokenizer::Tokenizer;
 
-/// An iterable Corpus of HTML5 documents
+/// A parallel iterable Corpus of HTML5 documents
 pub struct Corpus {
   /// root directory
   pub path: String,
@@ -27,10 +25,6 @@ pub struct Corpus {
   pub html_parser: Parser,
   /// `DNM`-aware sentence and word tokenizer
   pub tokenizer: Tokenizer,
-  /// `Senna` object for shallow language analysis
-  pub senna: RefCell<Senna>,
-  /// `Senna` parsing options
-  pub senna_options: Cell<SennaParseOptions>,
   /// Default setting for `DNM` generation
   pub dnm_parameters: DNMParameters,
   /// Extension of corpus files (for specially tailored resources such as DLMF's .html5)
@@ -38,15 +32,7 @@ pub struct Corpus {
   pub extension: Option<String>,
 }
 
-/// File-system iterator yielding individual documents
-pub struct DocumentIterator<'iter> {
-  /// the directory walker
-  walker: Box<WalkDirIterator>,
-  /// reference to the parent corpus
-  pub corpus: &'iter Corpus,
-}
-
-/// One of our math documents.
+/// One of our math documents, thread-friendly
 pub struct Document<'d> {
   /// The DOM of the document
   pub dom: XmlDoc,
@@ -90,10 +76,6 @@ pub struct Sentence<'s> {
   // pub paragraph : &'s Paragraph<'s>
   /// The document containing this sentence
   pub document: &'s Document<'s>,
-  /// If it exists, also the senna version of the sentence,
-  /// which can contain additional information such as
-  /// POS tags and syntactic parse trees
-  pub senna_sentence: Option<SennaSentence<'s>>,
 }
 
 /// An iterator over the words of a sentence, where the words are only defined
@@ -105,59 +87,12 @@ pub struct SimpleWordIterator<'iter> {
   pub sentence: &'iter Sentence<'iter>,
 }
 
-/// An iterator over the words of a sentence, where the words
-/// (and potentially additional information) are obtained using senna
-pub struct SennaWordIterator<'iter> {
-  // walker : IntoIter<SennaWord<'iter>>,
-  /// position of the next word
-  pos: usize,
-  /// The sentence we are iterating over
-  pub sentence: &'iter Sentence<'iter>,
-}
-
-/// A word with a POS tag
+/// A word with a DNM range and a reference to its owner parent
 pub struct Word<'w> {
   /// The range of the word
   pub range: DNMRange<'w>, // &'w str, // should we use the DNMRange instead???
   /// The sentence containing this word
   pub sentence: &'w Sentence<'w>,
-  /// The part-of-speech tag of the word (or POS::NOT_SET)
-  pub pos: POS,
-}
-
-impl<'iter> Iterator for DocumentIterator<'iter> {
-  type Item = Document<'iter>;
-  fn next(&mut self) -> Option<Document<'iter>> {
-    let walker = &mut self.walker;
-    loop {
-      let next_entry = walker.next();
-      if next_entry.is_none() {
-        break;
-      } else if let Some(Ok(ref entry)) = next_entry {
-        let file_name = entry.file_name().to_str().unwrap_or("").to_owned();
-        let selected = if let Some(ref extension) = self.corpus.extension {
-          file_name.ends_with(extension)
-        } else {
-          file_name.ends_with(".html") || file_name.ends_with(".xhtml")
-        };
-        if selected {
-          let path = entry.path().to_str().unwrap_or("").to_owned();
-          let doc_result = Document::new(path, self.corpus);
-          return match doc_result {
-            Ok(doc) => Some(doc),
-            // TODO: Currently encountering an unparseable file will terminate the entire corpus
-            // walk, which is too severe.
-            // A more viable strategy would be to 1) retry creating the document once and 2)
-            // print an error message and continue the walk
-            _ => None,
-          };
-        }
-      } else {
-        println!("-- Error while walking for entry: {:?}", next_entry)
-      }
-    }
-    None
-  }
 }
 
 impl Default for Corpus {
@@ -168,15 +103,13 @@ impl Default for Corpus {
       tokenizer: Tokenizer::default(),
       xml_parser: Parser::default(),
       html_parser: Parser::default_html(),
-      senna: RefCell::new(Senna::new(SENNA_PATH.to_owned())),
-      senna_options: Cell::new(SennaParseOptions::default()),
       dnm_parameters: DNMParameters::llamapun_normalization(),
     }
   }
 }
 
 impl Corpus {
-  /// Create a new corpus with the base directory `dirpath`
+  /// Create a new parallel-processing corpus with the base directory `dirpath`
   pub fn new(dirpath: String) -> Self {
     Corpus {
       path: dirpath,
@@ -184,17 +117,53 @@ impl Corpus {
     }
   }
 
-  /// Get an iterator over the documents
-  pub fn iter(&mut self) -> DocumentIterator {
-    DocumentIterator {
-      walker: Box::new(WalkDir::new(self.path.clone()).into_iter()),
-      corpus: self,
-    }
-  }
-
-  /// Load a specific document in the corpus
-  pub fn load_doc(&self, path: String) -> Result<Document, XmlParseError> {
-    Document::new(path, self)
+  /// Get a parallel iterator over the documents
+  pub fn catalog_with_parallel_walk<F>(&mut self, closure: F) -> HashMap<String, u64>
+  where
+    F: Fn(Document) -> HashMap<String, u64> + Send + Sync,
+  {
+    ParWalkDir::new(self.path.clone())
+      .num_threads(dbg!(rayon::current_num_threads()))
+      .skip_hidden(true)
+      .sort(false)
+      .into_iter()
+      .filter_map(|each| {
+        if let Ok(entry) = each {
+          let file_name = entry.file_name.to_str().unwrap_or("");
+          let selected = if let Some(ref extension) = self.extension {
+            file_name.ends_with(extension)
+          } else {
+            file_name.ends_with(".html") || file_name.ends_with(".xhtml")
+          };
+          if selected {
+            let path = entry.path().to_str().unwrap_or("").to_owned();
+            if path.is_empty() {
+              None
+            } else {
+              Some(path)
+            }
+          } else {
+            None
+          }
+        } else {
+          None
+        }
+      })
+      .par_bridge()
+      .map(|path| {
+        let document = Document::new(path, &self).unwrap();
+        closure(document)
+      })
+      .reduce(
+        || HashMap::new(),
+        |mut map1, map2| {
+          for (k, v) in map2 {
+            let entry = map1.entry(k).or_insert(0);
+            *entry += v;
+          }
+          map1
+        },
+      )
   }
 }
 
@@ -318,7 +287,6 @@ impl<'iter> Iterator for SentenceIterator<'iter> {
           let sentence = Sentence {
             range,
             document: self.document,
-            senna_sentence: None,
           };
           Some(sentence)
         }
@@ -337,27 +305,6 @@ impl<'s> Sentence<'s> {
       sentence: self,
     }
   }
-
-  /// Get an iterator over the words using Senna
-  pub fn senna_iter(&'s mut self) -> SennaWordIterator<'s> {
-    SennaWordIterator {
-      pos: 0usize,
-      sentence: if self.senna_sentence.is_none() {
-        self.senna_parse()
-      } else {
-        self
-      },
-    }
-  }
-
-  /// Parses the sentence using Senna. The parse options are set in the `Corpus`
-  pub fn senna_parse(&'s mut self) -> &Self {
-    self.senna_sentence = Some(self.document.corpus.senna.borrow_mut().parse(
-      (&self.range).get_plaintext(),
-      self.document.corpus.senna_options.get(),
-    ));
-    self
-  }
 }
 
 impl<'iter> Iterator for SimpleWordIterator<'iter> {
@@ -368,34 +315,7 @@ impl<'iter> Iterator for SimpleWordIterator<'iter> {
       Some(range) => Some(Word {
         range,
         sentence: self.sentence,
-        pos: POS::NOT_SET,
       }),
-    }
-  }
-}
-
-impl<'iter> Iterator for SennaWordIterator<'iter> {
-  type Item = Word<'iter>;
-  fn next(&mut self) -> Option<Word<'iter>> {
-    // match self.walker.next() {
-    let pos = self.pos;
-    self.pos += 1;
-    let sent = &self.sentence;
-    let sen_sent_wrapped = &sent.senna_sentence;
-    let sen_sent = sen_sent_wrapped.as_ref().unwrap();
-    if pos < sen_sent.get_words().len() {
-      let senna_word = &sen_sent.get_words()[pos];
-      let range = self
-        .sentence
-        .range
-        .get_subrange_from_byte_offsets(senna_word.get_offset_start(), senna_word.get_offset_end());
-      Some(Word {
-        range,
-        sentence: self.sentence,
-        pos: senna_word.get_pos(),
-      })
-    } else {
-      None
     }
   }
 }

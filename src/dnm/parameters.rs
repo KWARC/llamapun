@@ -1,10 +1,10 @@
 //! The `dnm::parameters` submodule provides data structures for customizing
 //! and configuring a DNM's construction and use
 
-use libxml::tree::*;
-use std::fmt;
+use libxml::readonly::RoNode;
 use std::collections::HashMap;
-use std::rc::Rc;
+use std::fmt;
+use std::sync::Arc;
 
 /// Some temporary data for the parser
 #[derive(Debug)]
@@ -32,7 +32,7 @@ pub enum SpecialTagsOption {
   /// Normalize tag, replacing it by some token
   Normalize(String),
   /// Normalize tag, obtain replacement string by function call
-  FunctionNormalize(Rc<fn(&Node) -> String>),
+  FunctionNormalize(Arc<fn(RoNode) -> String>),
   /// Skip tag
   Skip,
 }
@@ -40,14 +40,14 @@ pub enum SpecialTagsOption {
 impl fmt::Debug for SpecialTagsOption {
   fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
     use SpecialTagsOption::*;
-    write!(f,"SpecialTagsOption {{")?;
+    write!(f, "SpecialTagsOption {{")?;
     match self {
       Enter => write!(f, "Enter")?,
       Skip => write!(f, "Skip")?,
       Normalize(v) => write!(f, "Normalize({})", v)?,
-      FunctionNormalize(_) => write!(f, "FunctionNormalize")?
+      FunctionNormalize(_) => write!(f, "FunctionNormalize")?,
     };
-    write!(f,"}}")
+    write!(f, "}}")
   }
 }
 

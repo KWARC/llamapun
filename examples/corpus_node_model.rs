@@ -12,7 +12,7 @@ use std::collections::HashMap;
 use std::env;
 use std::fs::File;
 use std::io::prelude::*;
-use std::io::{Error, BufWriter};
+use std::io::{BufWriter, Error};
 
 use libxml::tree::Node;
 use llamapun::data::Corpus;
@@ -20,7 +20,6 @@ use llamapun::data::Corpus;
 static SPACE: &'static [u8] = b" ";
 static NEWLINE: &'static [u8] = b"\n";
 static BUFFER_CAPACITY: usize = 10_485_760;
-
 
 pub fn main() -> Result<(), Error> {
   let start = time::get_time();
@@ -75,10 +74,10 @@ pub fn main() -> Result<(), Error> {
   total_counts_vec.sort_by(|a, b| b.1.cmp(a.1));
 
   for (key, val) in total_counts_vec {
-    node_statistics_writer.write(key.as_bytes())?;
-    node_statistics_writer.write(SPACE)?;
-    node_statistics_writer.write(val.to_string().as_bytes())?;
-    node_statistics_writer.write(NEWLINE)?;
+    node_statistics_writer.write_all(key.as_bytes())?;
+    node_statistics_writer.write_all(SPACE)?;
+    node_statistics_writer.write_all(val.to_string().as_bytes())?;
+    node_statistics_writer.write_all(NEWLINE)?;
   }
   // Close the writer
   node_statistics_writer.flush()
@@ -89,7 +88,8 @@ fn dfs_record<W>(
   total_counts: &mut HashMap<String, u32>,
   node_model_writer: &mut BufWriter<W>,
 ) -> Result<(), Error>
-  where W: std::io::Write,
+where
+  W: std::io::Write,
 {
   if node.is_text_node() {
     return Ok(()); // Skip text nodes.
@@ -113,8 +113,8 @@ fn dfs_record<W>(
     *node_count += 1;
   }
   // Write the model_token of the current node into the buffer
-  node_model_writer.write(model_token.as_bytes())?;
-  node_model_writer.write(SPACE)?;
+  node_model_writer.write_all(model_token.as_bytes())?;
+  node_model_writer.write_all(SPACE)?;
 
   // Recurse into all children (DFS), except for math and tables
   if (node_name != "math") && (node_name != "table") {

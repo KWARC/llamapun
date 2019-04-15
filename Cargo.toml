@@ -24,7 +24,7 @@ gnuplot = "0.0.21"
 unidecode = "0.2"
 rust-crypto = "0.2"
 lazy_static = "0.1"
-libxml = {version = "0.2.11", path = "../rust-libxml"}
+libxml = "0.2.11"
 tar = "0.4"
 rayon = "1.0"
 jwalk = "0.3"

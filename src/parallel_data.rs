@@ -123,7 +123,7 @@ impl Corpus {
     F: Fn(Document) -> HashMap<String, u64> + Send + Sync,
   {
     ParWalkDir::new(self.path.clone())
-      .num_threads(dbg!(rayon::current_num_threads()))
+      .num_threads(rayon::current_num_threads())
       .skip_hidden(true)
       .sort(false)
       .into_iter()

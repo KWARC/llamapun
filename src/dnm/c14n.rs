@@ -5,7 +5,7 @@
 use crate::dnm::DNM;
 use crypto::digest::Digest;
 use crypto::md5::Md5;
-use libxml::tree::Node;
+use libxml::readonly::RoNode;
 use libxml::tree::NodeType::{ElementNode, TextNode};
 use regex::Regex;
 use std::sync::Mutex;
@@ -20,27 +20,31 @@ impl DNM {
   /// Our linguistic canonical form will only include 1) node name, 2) class attribute and 3)
   /// textual content - excludes certain experimental markup, such as all math annotation
   /// elements  - excludes whitespace nodes and comment nodes
-  pub fn to_c14n_basic(&self) -> String { self.node_c14n_basic(&self.root_node) }
+  pub fn to_c14n_basic(&self) -> String {
+    self.node_c14n_basic(self.root_node)
+  }
 
   /// Canonicalize a single node of choice
-  pub fn node_c14n_basic(&self, node: &Node) -> String {
+  pub fn node_c14n_basic(&self, node: RoNode) -> String {
     let mut canonical_node = String::new();
     self.canonical_internal(node, None, &mut canonical_node);
     canonical_node
   }
 
   /// Obtain an MD5 hash from the canonical string of the entire DOM
-  pub fn to_hash_basic(&self) -> String { self.node_hash_basic(&self.root_node) }
+  pub fn to_hash_basic(&self) -> String {
+    self.node_hash_basic(self.root_node)
+  }
 
   /// Obtain an MD5 hash from the canonical string of a Node
-  pub fn node_hash_basic(&self, node: &Node) -> String {
+  pub fn node_hash_basic(&self, node: RoNode) -> String {
     let mut hasher = MD5_HASHER.lock().unwrap();
     hasher.reset();
     hasher.input_str(&self.node_c14n_basic(node));
     hasher.result_str()
   }
 
-  fn canonical_internal(&self, node: &Node, indent: Option<u32>, mut canonical_node: &mut String) {
+  fn canonical_internal(&self, node: RoNode, indent: Option<u32>, mut canonical_node: &mut String) {
     // Bookkeep indents, if requested
     let indent_string = match indent {
       Some(level) => String::new() + "\n" + &(1..level).map(|_| " ").collect::<String>(),
@@ -62,7 +66,7 @@ impl DNM {
             // ignore empty nodes
           }
         }
-      },
+      }
       Some(ElementNode) => {
         // Skip artefact nodes
         let name: String = node.get_name();
@@ -94,11 +98,11 @@ impl DNM {
 
         // Recurse into children
         if let Some(child) = node.get_first_child() {
-          self.canonical_internal(&child, next_indent_level, &mut canonical_node);
+          self.canonical_internal(child, next_indent_level, &mut canonical_node);
           let mut child_node = child;
 
           while let Some(child) = child_node.get_next_sibling() {
-            self.canonical_internal(&child, next_indent_level, &mut canonical_node);
+            self.canonical_internal(child, next_indent_level, &mut canonical_node);
             child_node = child;
           }
         }
@@ -111,10 +115,10 @@ impl DNM {
           canonical_node.push_str(&name);
           canonical_node.push_str(">");
         }
-      },
+      }
       _ => {
         println!("-- Skipping node {:?}", node.get_name());
-      }, // skip all other node types for now
+      } // skip all other node types for now
     }
     return;
   }

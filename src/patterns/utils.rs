@@ -1,5 +1,6 @@
 //! Some utility functions. Mostly helper functions for dealing with the XML
 
+use libxml::readonly::RoNode;
 use libxml::tree::*;
 
 /*
@@ -7,11 +8,13 @@ use libxml::tree::*;
  */
 
 /// checks whether a node is a comment node
-pub fn is_comment_node(node: &Node) -> bool { node.get_type().unwrap() == NodeType::CommentNode }
+pub fn is_comment_node(node: RoNode) -> bool {
+  node.get_type().unwrap() == NodeType::CommentNode
+}
 
 /// gets the text content of a node. Requires that only child of the node is a
 /// text node
-pub fn get_simple_node_content(node: &Node, trim: bool) -> Result<String, String> {
+pub fn get_simple_node_content(node: RoNode, trim: bool) -> Result<String, String> {
   let child = node.get_first_child();
   if child.is_none() {
     Ok(String::new())
@@ -33,9 +36,9 @@ pub fn get_simple_node_content(node: &Node, trim: bool) -> Result<String, String
 
 /// Returns a vector of the children, skipping text and comment nodes.
 /// Requires that the text nodes in between contain only whitespaces.
-pub fn get_non_text_children(node: &Node) -> Result<Vec<Node>, String> {
+pub fn get_non_text_children(node: RoNode) -> Result<Vec<RoNode>, String> {
   let mut cur = node.get_first_child();
-  let mut children: Vec<Node> = Vec::new();
+  let mut children: Vec<RoNode> = Vec::new();
 
   loop {
     if cur.is_none() {
@@ -52,23 +55,23 @@ pub fn get_non_text_children(node: &Node) -> Result<Vec<Node>, String> {
           cur_.get_content().trim()
         ));
       }
-    } else if !is_comment_node(&cur_) {
-      children.push(cur_.clone());
+    } else if !is_comment_node(cur_) {
+      children.push(cur_);
     }
     cur = cur_.get_next_sibling();
   }
 }
 
 /// Returns a vector of the children, skipping comments and text nodes
-pub fn fast_get_non_text_children(node: &Node) -> Vec<Node> {
+pub fn fast_get_non_text_children(node: RoNode) -> Vec<RoNode> {
   let mut cur = node.get_first_child();
-  let mut children: Vec<Node> = Vec::new();
+  let mut children: Vec<RoNode> = Vec::new();
   loop {
     if cur.is_none() {
       return children;
     }
     let cur_ = cur.unwrap();
-    if !cur_.is_text_node() && !is_comment_node(&cur_) {
+    if !cur_.is_text_node() && !is_comment_node(cur_) {
       children.push(cur_.clone());
     }
     cur = cur_.get_next_sibling();
@@ -77,7 +80,7 @@ pub fn fast_get_non_text_children(node: &Node) -> Vec<Node> {
 
 /// gets the non-text child of a node. Requires it to be the only child node apart from comments
 /// and text nodes containing only whitespaces
-pub fn get_only_child(node: &Node) -> Result<Node, String> {
+pub fn get_only_child(node: RoNode) -> Result<RoNode, String> {
   let children = get_non_text_children(node)?;
   if children.is_empty() {
     Err(format!(
@@ -90,13 +93,13 @@ pub fn get_only_child(node: &Node) -> Result<Node, String> {
       node.get_name()
     ))
   } else {
-    Ok(children[0].clone())
+    Ok(children[0])
   }
 }
 
 /// asserts that a node has no children (apart from comments and text nodes containing only
 /// whitespaces)
-pub fn assert_no_child(node: &Node) -> Result<(), String> {
+pub fn assert_no_child(node: RoNode) -> Result<(), String> {
   if get_non_text_children(node)?.is_empty() {
     Ok(())
   } else {
@@ -108,7 +111,7 @@ pub fn assert_no_child(node: &Node) -> Result<(), String> {
 }
 
 /// Gets a property from a node (or an `Err`, if it doesn't have the property)
-pub fn require_node_property(node: &Node, property: &str) -> Result<String, String> {
+pub fn require_node_property(node: RoNode, property: &str) -> Result<String, String> {
   match node.get_property(property) {
     None => Err(format!(
       "\"{}\" node misses \"{}\" property",
@@ -124,8 +127,7 @@ pub fn check_found_property_already(
   property: &Option<String>,
   node_name: &str,
   parent_name: &str,
-) -> Result<(), String>
-{
+) -> Result<(), String> {
   if property.is_some() {
     Err(format!(
       "found multiple \"{}\" nodes in \"{}\" node",

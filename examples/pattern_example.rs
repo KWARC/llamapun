@@ -2,14 +2,14 @@ extern crate libxml;
 extern crate llamapun;
 extern crate senna;
 
-use libxml::tree::*;
+use libxml::readonly::RoNode;
 use libxml::xpath::Context;
 use llamapun::data::Corpus;
 use llamapun::dnm::*;
 use llamapun::patterns::*;
 use senna::senna::SennaParseOptions;
 use std::collections::HashMap;
-use std::rc::Rc;
+use std::sync::Arc;
 
 /// turns a marker into a readable string representation
 fn get_pattern_marker_string(marker: &PatternMarker) -> String {
@@ -31,22 +31,22 @@ fn get_pattern_marker_string(marker: &PatternMarker) -> String {
 }
 
 /// turns a math node into a readable string representation
-fn math_node_to_string(node: &Node) -> String {
+fn math_node_to_string(node: RoNode) -> String {
   let mut s = String::new();
   math_node_to_string_actual(node, &mut s);
   s
 }
 
 /// helper function
-fn math_node_to_string_actual(node: &Node, mut string: &mut String) {
+fn math_node_to_string_actual(node: RoNode, mut string: &mut String) {
   match node.get_name().as_ref() {
     "semantics" => math_node_to_string_children(node, &mut string),
-    "annotation" | "annotation-xml" => {},
+    "annotation" | "annotation-xml" => {}
     "text" => {
       if node.is_text_node() {
         string.push_str(&node.get_content());
       }
-    },
+    }
     default => {
       string.push('<');
       string.push_str(default);
@@ -56,18 +56,18 @@ fn math_node_to_string_actual(node: &Node, mut string: &mut String) {
       string.push('/');
       string.push_str(default);
       string.push('>');
-    },
+    }
   }
 }
 
 /// helper function
-fn math_node_to_string_children(node: &Node, mut string: &mut String) {
+fn math_node_to_string_children(node: RoNode, mut string: &mut String) {
   let mut cur = node.get_first_child();
   loop {
     if cur.is_none() {
       break;
     }
-    math_node_to_string_actual(cur.as_ref().unwrap(), &mut string);
+    math_node_to_string_actual(cur.unwrap(), &mut string);
     cur = cur.unwrap().get_next_sibling();
   }
 }
@@ -82,23 +82,23 @@ fn print_marker(marker: &MarkerEnum, alt_dnm: &DNM, xpath_context: &Context) {
         DNMRange::deserialize(&text_marker.range.serialize(), alt_dnm, xpath_context)
           .get_plaintext()
       );
-    },
+    }
     MarkerEnum::Math(ref math_marker) => {
       println!(
         "<h5>MathMarker</h5> \"{}\"\n <br /><br /> <p>{}</p>",
         &get_pattern_marker_string(&math_marker.marker),
-        &math_node_to_string(&math_marker.node)
+        &math_node_to_string(math_marker.node)
       );
-    },
+    }
   }
 }
 
 /// gets a DNM that is more readable for printing
-fn get_alternative_dnm(root: &Node) -> DNM {
+fn get_alternative_dnm(root: RoNode) -> DNM {
   let mut name_options = HashMap::new();
   name_options.insert(
     "math".to_string(),
-    SpecialTagsOption::FunctionNormalize(Rc::new(math_node_to_string)),
+    SpecialTagsOption::FunctionNormalize(Arc::new(math_node_to_string)),
   );
   name_options.insert(
     "cite".to_string(),
@@ -110,11 +110,11 @@ fn get_alternative_dnm(root: &Node) -> DNM {
   let mut class_options = HashMap::new();
   class_options.insert(
     "ltx_equation".to_string(),
-    SpecialTagsOption::FunctionNormalize(Rc::new(math_node_to_string)),
+    SpecialTagsOption::FunctionNormalize(Arc::new(math_node_to_string)),
   );
   class_options.insert(
     "ltx_equationgroup".to_string(),
-    SpecialTagsOption::FunctionNormalize(Rc::new(math_node_to_string)),
+    SpecialTagsOption::FunctionNormalize(Arc::new(math_node_to_string)),
   );
   class_options.insert("ltx_note_mark".to_string(), SpecialTagsOption::Skip);
   class_options.insert("ltx_note_outer".to_string(), SpecialTagsOption::Skip);
@@ -153,7 +153,7 @@ pub fn main() {
   // corpus.load_doc("tests/resources/0903.1000.html".to_string()).unwrap();
 
   // get a more readable DNM for printing
-  let alt_dnm = get_alternative_dnm(&document.dom.get_root_element().unwrap());
+  let alt_dnm = get_alternative_dnm(document.dom.get_root_readonly().unwrap());
   println!(
     "<?xml version=\"1.0\" encoding=\"utf-8\"?><html><head><meta http-equiv=\"Content-Type\" content=\"application/xhtml+xml; charset=UTF-8\"/></head>
              <body>"
@@ -166,7 +166,8 @@ pub fn main() {
       sentence_2.senna_sentence.as_ref().unwrap(),
       &sentence_2.range,
       "declaration",
-    ).unwrap();
+    )
+    .unwrap();
     if !matches.is_empty() {
       let xpath_context = Context::new(&sentence_2.document.dom).unwrap();
       println!("<hr />");

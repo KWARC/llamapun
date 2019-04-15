@@ -27,7 +27,7 @@ use std::fs::File;
 use std::io::prelude::*;
 use std::io::{BufWriter, Error};
 
-use libxml::tree::Node;
+use libxml::readonly::RoNode;
 use llamapun::data::Corpus;
 
 static BUFFER_CAPACITY: usize = 10_485_760;
@@ -75,7 +75,7 @@ pub fn main() -> Result<(), Error> {
   for document in corpus.iter() {
     // Recursively descend through the math nodes and increment the frequencies of occurrence
     for math in document.get_math_nodes() {
-      dfs_record(&math, &open_ended, &mut catalog);
+      dfs_record(math, &open_ended, &mut catalog);
     }
 
     // Increment document counter, bokkeep
@@ -107,7 +107,7 @@ pub fn main() -> Result<(), Error> {
   node_statistics_writer.flush()
 }
 
-fn dfs_record(node: &Node, open_ended: &HashSet<&str>, catalog: &mut HashMap<String, u64>) {
+fn dfs_record(node: RoNode, open_ended: &HashSet<&str>, catalog: &mut HashMap<String, u64>) {
   if node.is_text_node() {
     return; // Skip text nodes.
   }
@@ -136,11 +136,11 @@ fn dfs_record(node: &Node, open_ended: &HashSet<&str>, catalog: &mut HashMap<Str
 
   // Recurse into all children (DFS)
   if let Some(child) = node.get_first_child() {
-    dfs_record(&child, open_ended, catalog);
+    dfs_record(child, open_ended, catalog);
     let mut child_node = child;
 
     while let Some(child) = child_node.get_next_sibling() {
-      dfs_record(&child, open_ended, catalog);
+      dfs_record(child, open_ended, catalog);
       child_node = child;
     }
   }

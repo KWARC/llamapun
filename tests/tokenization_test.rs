@@ -1,13 +1,10 @@
-extern crate libxml;
-extern crate llamapun;
-extern crate regex;
-
 use libxml::parser::Parser;
 use libxml::tree::*;
 use libxml::xpath::*;
 use llamapun::dnm::{DNMParameters, DNMRange, DNM};
 use llamapun::tokenizer::*;
 use regex::Regex;
+use std::collections::HashMap;
 
 #[test]
 /// Test sentence tokenization of a simple document
@@ -94,8 +91,8 @@ fn test_each_paragraph<'a>(doc: &'a Document, expected: &[Vec<&'a str>]) {
     .unwrap();
 
   let mut expected_iter = expected.iter();
-  for para in para_xpath_result.get_nodes_as_vec() {
-    let dnm = DNM::new(&para, DNMParameters::llamapun_normalization());
+  for para in para_xpath_result.get_readonly_nodes_as_vec() {
+    let dnm = DNM::new(para, DNMParameters::llamapun_normalization());
 
     let paragraph_expected = expected_iter.next().unwrap();
     let expected_paragraph = multispace.replace_all(paragraph_expected[0], "_");

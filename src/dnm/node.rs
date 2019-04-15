@@ -1,16 +1,18 @@
-use libxml::tree::Node;
+use libxml::readonly::RoNode;
 use libxml::xpath::Context;
 
 /// Map math nodes to their lexemes
-pub fn lexematize_math(node: &Node, context: &mut Context) -> String {
+pub fn lexematize_math(node: RoNode, context: &mut Context) -> String {
   // We are going to descend down an assumed equation/formula/eqnarray, grabbing any x-llamapun
   // encoded lexemes we can find
 
   let annotations = context
-    .findnodes(
+    .node_evaluate_readonly(
       ".//*[local-name()='annotation' and @encoding='application/x-llamapun']",
-      Some(node),
-    ).unwrap();
+      node,
+    )
+    .unwrap()
+    .get_readonly_nodes_as_vec();
 
   let lexemes: String = annotations
     .iter()
@@ -28,11 +30,14 @@ pub fn lexematize_math(node: &Node, context: &mut Context) -> String {
                 ':' | '-' => '_',
                 '\n' => ' ',
                 _ => c,
-              }).collect()
+              })
+              .collect()
           }
-        }).collect::<Vec<String>>()
+        })
+        .collect::<Vec<String>>()
         .join(" ")
-    }).collect::<Vec<String>>()
+    })
+    .collect::<Vec<String>>()
     .join(" ");
   if !lexemes.is_empty() {
     lexemes

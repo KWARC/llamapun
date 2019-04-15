@@ -277,11 +277,10 @@ fn match_seq<'t>(
           }
           matches.extend_from_slice(&m._matches[..]);
         }
-        if end_condition.is_some() {
+        if let Some(rule) = end_condition {
           let mut matched = false;
           for end_start_pos in pos..*end_pos {
-            let &ref rule = end_condition.as_ref().unwrap();
-            let m = match_seq(pf, rule, sentence, phrase_tree, range, end_start_pos);
+            let m = match_seq(pf, &rule, sentence, phrase_tree, range, end_start_pos);
             if !m.matched {
               continue;
             }
@@ -409,9 +408,7 @@ fn match_word<'t>(
       }
     }
     WordPattern::MathWord(ref math_pattern) => {
-      let node = range.dnm.back_map[range.start + word.get_offset_start()]
-        .0
-        .clone();
+      let node = range.dnm.back_map[range.start + word.get_offset_start()].0;
       if node.get_name() != "math" {
         return InternalWordMatch::no_match();
       }

@@ -72,7 +72,7 @@ pub fn fast_get_non_text_children(node: RoNode) -> Vec<RoNode> {
     }
     let cur_ = cur.unwrap();
     if !cur_.is_text_node() && !is_comment_node(cur_) {
-      children.push(cur_.clone());
+      children.push(cur_);
     }
     cur = cur_.get_next_sibling();
   }

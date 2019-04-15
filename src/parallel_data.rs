@@ -154,16 +154,13 @@ impl Corpus {
         let document = Document::new(path, &self).unwrap();
         closure(document)
       })
-      .reduce(
-        || HashMap::new(),
-        |mut map1, map2| {
-          for (k, v) in map2 {
-            let entry = map1.entry(k).or_insert(0);
-            *entry += v;
-          }
-          map1
-        },
-      )
+      .reduce(HashMap::new, |mut map1, map2| {
+        for (k, v) in map2 {
+          let entry = map1.entry(k).or_insert(0);
+          *entry += v;
+        }
+        map1
+      })
   }
 }
 

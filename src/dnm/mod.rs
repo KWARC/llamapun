@@ -224,7 +224,7 @@ impl DNM {
     if self.parameters.support_back_mapping {
       assert_eq!(string.chars().count(), offsets.len());
       for offset in offsets {
-        self.back_map.push((node.clone(), offset));
+        self.back_map.push((node, offset));
       }
     }
 

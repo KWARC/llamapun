@@ -190,9 +190,9 @@ impl<'dnmrange> DNMRange<'dnmrange> {
           );
         } else {
           let act = if is_end {
-            get_next_sibling(root_node, node).unwrap_or_else(|| node.clone())
+            get_next_sibling(root_node, node).unwrap_or(node)
           } else {
-            node.clone()
+            node
           };
           let parent = act.get_parent().unwrap();
           let base = DNMRange::serialize_node(root_node, parent, false /* don't take next */);
@@ -261,7 +261,7 @@ impl<'dnmrange> DNMRange<'dnmrange> {
       let node_str = &string[13..comma];
       let node_set = xpath_context.evaluate(node_str).unwrap();
       assert_eq!(node_set.get_number_of_nodes(), 1);
-      let node = node_set.get_readonly_nodes_as_vec()[0].clone();
+      let node = node_set.get_readonly_nodes_as_vec()[0];
       match dnm.get_range_of_node(node) {
         Ok(range) => {
           let mut pos = range.start;
@@ -279,7 +279,7 @@ impl<'dnmrange> DNMRange<'dnmrange> {
         .evaluate(node_str)
         .unwrap_or_else(|_| panic!("DNMRange::deserialize: Malformed XPath: '{}'", &node_str));
       assert_eq!(node_set.get_number_of_nodes(), 1);
-      let node = node_set.get_readonly_nodes_as_vec()[0].clone();
+      let node = node_set.get_readonly_nodes_as_vec()[0];
       get_position_of_lowest_parent(node, dnm)
     }
   }

@@ -86,13 +86,13 @@ pub fn main() -> Result<(), Error> {
   catalog_vec.sort_by(|a, b| b.1.cmp(a.1));
 
   let mut node_statistics_writer = BufWriter::with_capacity(BUFFER_CAPACITY, node_statistics_file);
-  node_statistics_writer.write(b"word, frequency\n")?;
+  node_statistics_writer.write_all(b"word, frequency\n")?;
 
   for (key, val) in catalog_vec {
-    node_statistics_writer.write(key.as_bytes())?;
-    node_statistics_writer.write(b", ")?;
-    node_statistics_writer.write(val.to_string().as_bytes())?;
-    node_statistics_writer.write(b"\n")?;
+    node_statistics_writer.write_all(key.as_bytes())?;
+    node_statistics_writer.write_all(b", ")?;
+    node_statistics_writer.write_all(val.to_string().as_bytes())?;
+    node_statistics_writer.write_all(b"\n")?;
   }
   // Close the writer
   node_statistics_writer.flush()

@@ -17,18 +17,16 @@
 //! https://gist.github.com/dginev/e50a632d31be05bb87d64cc1800f6fd4#file-apply_cutoffs-pl
 #![allow(clippy::unused_io_amount)]
 
-extern crate libxml;
-extern crate llamapun;
-extern crate time;
-
+use rayon::prelude::*;
 use std::collections::{HashMap, HashSet};
 use std::env;
 use std::fs::File;
 use std::io::prelude::*;
 use std::io::{BufWriter, Error};
+use std::thread;
 
 use libxml::readonly::RoNode;
-use llamapun::data::Corpus;
+use llamapun::parallel_data::Corpus;
 
 static BUFFER_CAPACITY: usize = 10_485_760;
 
@@ -50,7 +48,6 @@ pub fn main() -> Result<(), Error> {
 
   let node_statistics_file = File::create(node_statistics_filepath)?;
 
-  let mut catalog = HashMap::new();
   let mut corpus = Corpus::new(corpus_path);
   corpus.extension = extension_filter;
 
@@ -72,19 +69,30 @@ pub fn main() -> Result<(), Error> {
   // open_ended.insert("maxsize");
   // open_ended.insert("voffset");
 
-  for document in corpus.iter() {
-    // Recursively descend through the math nodes and increment the frequencies of occurrence
-    for math in document.get_math_nodes() {
-      dfs_record(math, &open_ended, &mut catalog);
-    }
+  let catalog = corpus.catalog_with_parallel_walk(|document| {
+    println!(
+      "Thread: {:?}, doc: {:?}",
+      thread::current().name(),
+      document.path
+    );
 
-    // Increment document counter, bokkeep
-    let document_count = catalog.entry("document_count".to_string()).or_insert(0);
-    *document_count += 1;
-    if *document_count % 1000 == 0 {
-      println!("-- processed documents: {:?}", document_count);
-    }
-  }
+    // Recursively descend through the math nodes and increment the frequencies of occurrence
+    document
+      .get_math_nodes()
+      .into_par_iter()
+      .map(|math| {
+        let mut catalog = HashMap::new();
+        dfs_record(math, &open_ended, &mut catalog);
+        catalog
+      })
+      .reduce(HashMap::new, |mut map1, map2| {
+        for (k, v) in map2 {
+          let entry = map1.entry(k).or_insert(0);
+          *entry += v;
+        }
+        map1
+      })
+  });
 
   let end = time::get_time();
   let duration_sec = (end - start).num_milliseconds() / 1000;

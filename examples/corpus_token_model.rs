@@ -1,20 +1,17 @@
 // Copyright 2015-2018 KWARC research group. See the LICENSE
 // file at the top-level directory of this distribution.
 //
-extern crate libxml;
-extern crate llamapun;
-extern crate regex;
-extern crate time;
-
 use regex::Regex;
+use std::collections::HashMap;
 use std::env;
 use std::fs::File;
 use std::io::prelude::*;
 use std::io::BufWriter;
+use std::sync::{Arc, Mutex};
 
 use libxml::xpath::Context;
-use llamapun::data::Corpus;
 use llamapun::dnm;
+use llamapun::parallel_data::Corpus;
 
 static BUFFER_CAPACITY: usize = 10_485_760;
 static MAX_WORD_LENGTH: usize = 25;
@@ -35,15 +32,6 @@ pub fn main() {
     None => "token_model.txt".to_string(),
   };
 
-  let mut document_count: u64 = 0;
-  let mut paragraph_count: u64 = 0;
-  let mut sentence_count: u64 = 0;
-  let mut word_count: u64 = 0;
-  let mut formula_count: u64 = 0;
-  let mut citation_count: u64 = 0;
-  let mut num_count: u64 = 0;
-  let mut overflow_count: u64 = 0;
-
   let token_model_file = match File::create(token_model_filepath) {
     Ok(fh) => fh,
     Err(e) => {
@@ -52,17 +40,30 @@ pub fn main() {
         e
       );
       return;
-    },
+    }
   };
-  let mut token_writer = BufWriter::with_capacity(BUFFER_CAPACITY, token_model_file);
+  let token_writer = Arc::new(Mutex::new(BufWriter::with_capacity(
+    BUFFER_CAPACITY,
+    token_model_file,
+  )));
   let space = ' ';
   let linebreak = '\n';
   // Integers, floats, subfigure numbers
   let is_numeric = Regex::new(r"^-?(?:\d+)(?:[a-k]|(?:\.\d+(?:[eE][+-]?\d+)?))?$").unwrap();
 
   let mut corpus = Corpus::new(corpus_path);
-  for mut document in corpus.iter() {
-    document_count += 1;
+  let corpus_counts = corpus.catalog_with_parallel_walk(|document| {
+    let (
+      mut sentence_count,
+      mut paragraph_count,
+      mut word_count,
+      mut overflow_count,
+      mut formula_count,
+      mut citation_count,
+      mut num_count,
+    ) = (0, 0, 0, 0, 0, 0, 0);
+    let mut thread_buffer = String::new();
+
     let mut context = Context::new(&document.dom).unwrap();
     for mut paragraph in document.paragraph_iter() {
       paragraph_count += 1;
@@ -113,55 +114,67 @@ pub fn main() {
         // if valid sentence, print to the token model file
         if !invalid_sentence {
           sentence_count += 1;
-          sentence_buffer.push(linebreak);
-          if let Err(e) = token_writer.write(sentence_buffer.as_bytes()) {
-            println!(
-              "-- Failed to print to output buffer! Proceed with caution;\n{:?}",
-              e
-            );
-          }
+          thread_buffer.push(linebreak);
+          thread_buffer.push_str(&sentence_buffer);
         }
       }
     }
 
-    if document_count % 1000 == 0 {
-      println!("-- processed documents: {:?}", document_count);
-    }
-  }
+    token_writer
+      .lock()
+      .unwrap()
+      .write_all(thread_buffer.as_bytes())
+      .expect("thread writing to token model buffer should always succeed.");
 
-  if let Err(e) = token_writer.flush() {
-    println!(
-      "-- Failed to print to output buffer! Proceed with caution;\n{:?}",
-      e
-    );
-  }
+    let mut thread_counts = HashMap::new();
+    thread_counts.insert(String::from("document_count"), 1);
+    thread_counts.insert(String::from("sentence_count"), sentence_count);
+    thread_counts.insert(String::from("paragraph_count"), paragraph_count);
+    thread_counts.insert(String::from("word_count"), word_count);
+    thread_counts.insert(String::from("overflow_count"), overflow_count);
+    thread_counts.insert(String::from("formula_count"), formula_count);
+    thread_counts.insert(String::from("citation_count"), citation_count);
+    thread_counts.insert(String::from("num_count"), num_count);
+    thread_counts
+  });
+
+  token_writer
+    .lock()
+    .unwrap()
+    .flush()
+    .expect("token writer failed to flush, data is likely incomplete.");
 
   let end = time::get_time();
   let duration_sec = (end - start).num_milliseconds() / 1000;
   println!("---");
   println!("Token model finished in {:?}s, gathered: ", duration_sec);
-  println!("{:?} documents;", document_count);
-  println!("{:?} paragraphs;", paragraph_count);
-  println!("{:?} sentences;", sentence_count);
-  println!("{:?} discarded sentences (long words)", overflow_count);
-  println!("{:?} words;", word_count);
-  println!("{:?} numeric literals;", num_count);
-  println!("{:?} formulas;", formula_count);
-  println!("{:?} inline cites;", citation_count);
+  println!(
+    "{:?} documents;",
+    corpus_counts.get("document_count").unwrap_or(&0)
+  );
+  println!(
+    "{:?} paragraphs;",
+    corpus_counts.get("paragraph_count").unwrap_or(&0)
+  );
+  println!(
+    "{:?} sentences;",
+    corpus_counts.get("sentence_count").unwrap_or(&0)
+  );
+  println!(
+    "{:?} discarded sentences (long words)",
+    corpus_counts.get("overflow_count").unwrap_or(&0)
+  );
+  println!("{:?} words;", corpus_counts.get("word_count").unwrap_or(&0));
+  println!(
+    "{:?} numeric literals;",
+    corpus_counts.get("num_count").unwrap_or(&0)
+  );
+  println!(
+    "{:?} formulas;",
+    corpus_counts.get("formula_count").unwrap_or(&0)
+  );
+  println!(
+    "{:?} inline cites;",
+    corpus_counts.get("citation_count").unwrap_or(&0)
+  );
 }
-
-// fn utf_truncate(input: &mut String, maxsize: usize) {
-//   let mut utf_maxsize = input.len();
-//   if utf_maxsize >= maxsize {
-//     {
-//       let mut char_iter = input.char_indices();
-//       while utf_maxsize >= maxsize {
-//         utf_maxsize = match char_iter.next_back() {
-//           Some((index, _)) => index,
-//           _ => 0,
-//         };
-//       }
-//     } // Extra {} wrap to limit the immutable borrow of char_indices()
-//     input.truncate(utf_maxsize);
-//   }
-// }

@@ -4,7 +4,6 @@ use libxml::xpath::*;
 use llamapun::dnm::{DNMParameters, DNMRange, DNM};
 use llamapun::tokenizer::*;
 use regex::Regex;
-use std::collections::HashMap;
 
 #[test]
 /// Test sentence tokenization of a simple document

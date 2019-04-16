@@ -137,21 +137,25 @@ impl Corpus {
           };
           if selected {
             let path = entry.path().to_str().unwrap_or("").to_owned();
-            if path.is_empty() {
-              None
-            } else {
-              Some(path)
+            if !path.is_empty() {
+              return Some(path);
             }
-          } else {
-            None
           }
-        } else {
-          None
         }
+        // all other cases
+        None
       })
+      .enumerate()
       .par_bridge()
-      .map(|path| {
+      .map(|each| {
+        let (index, path) = each;
         let document = Document::new(path, &self).unwrap();
+        if index % 1000 == 0 {
+          println!(
+            "-- catalog_with_parallel_walk processing document {:?}",
+            1 + index
+          );
+        }
         closure(document)
       })
       .reduce(HashMap::new, |mut map1, map2| {
@@ -182,7 +186,12 @@ impl<'d> Document<'d> {
   }
 
   /// Obtain the problem-free logical paragraphs of a libxml `Document`
-  pub fn paragraph_nodes(doc: &XmlDoc) -> Vec<RoNode> {
+    pub fn get_paragraph_nodes(&self) -> Vec<RoNode> {
+    Document::paragraph_nodes(&self.dom)
+  }
+
+  /// Associated function for `get_paragraph_nodes`
+  fn paragraph_nodes(doc: &XmlDoc) -> Vec<RoNode> {
     let xpath_context = Context::new(doc).unwrap();
     match xpath_context.evaluate(
       "//*[local-name()='div' and contains(@class,'ltx_para') and not(descendant::*[contains(@class,'ltx_ERROR')]) and not(preceding-sibling::*[contains(@class,'ltx_ERROR')])]",
@@ -193,7 +202,7 @@ impl<'d> Document<'d> {
   }
 
   /// Get an iterator over the paragraphs of the document
-  pub fn paragraph_iter(&mut self) -> ParagraphIterator {
+  pub fn paragraph_iter(&self) -> ParagraphIterator {
     let paras = Document::paragraph_nodes(&self.dom);
     ParagraphIterator {
       walker: paras.into_iter(),

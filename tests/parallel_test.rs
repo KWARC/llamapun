@@ -1,9 +1,9 @@
+use llamapun::parallel_data::Corpus;
 use std::collections::HashMap;
-use llamapun::parallel_data::{Corpus};
 
 #[test]
 fn can_iterate_corpus() {
-  let mut corpus = Corpus::new("tests".to_string());
+  let corpus = Corpus::new("tests".to_string());
   let catalog = corpus.catalog_with_parallel_walk(|document| {
     let mut thread_count = HashMap::new();
     thread_count.insert(String::from("doc_count"), 1);

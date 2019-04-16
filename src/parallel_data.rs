@@ -118,7 +118,7 @@ impl Corpus {
   }
 
   /// Get a parallel iterator over the documents
-  pub fn catalog_with_parallel_walk<F>(&mut self, closure: F) -> HashMap<String, u64>
+  pub fn catalog_with_parallel_walk<F>(&self, closure: F) -> HashMap<String, u64>
   where
     F: Fn(Document) -> HashMap<String, u64> + Send + Sync,
   {

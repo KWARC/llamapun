@@ -36,7 +36,7 @@ pub fn main() -> Result<(), Error> {
 
   let node_statistics_file = File::create(node_statistics_filepath)?;
 
-  let mut corpus = Corpus::new(corpus_path);
+  let corpus = Corpus::new(corpus_path);
 
   let catalog = corpus.catalog_with_parallel_walk(|document| {
     println!(

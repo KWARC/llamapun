@@ -51,7 +51,7 @@ pub fn main() {
   // Integers, floats, subfigure numbers
   let is_numeric = Regex::new(r"^-?(?:\d+)(?:[a-k]|(?:\.\d+(?:[eE][+-]?\d+)?))?$").unwrap();
 
-  let mut corpus = Corpus::new(corpus_path);
+  let corpus = Corpus::new(corpus_path);
   let corpus_counts = corpus.catalog_with_parallel_walk(|document| {
     let (
       mut sentence_count,

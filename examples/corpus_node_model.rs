@@ -41,7 +41,7 @@ pub fn main() -> Result<(), Error> {
     node_model_file,
   )));
 
-  let mut corpus = Corpus::new(corpus_path);
+  let corpus = Corpus::new(corpus_path);
   let total_counts = corpus.catalog_with_parallel_walk(|document| {
     // Recursively descend the dom DFS and record to the token model
     let mut total_counts = HashMap::new();

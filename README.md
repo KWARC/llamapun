@@ -39,6 +39,7 @@ Requires **stable** rust, starting from `rustc 1.34.0 (91856ed52 2019-04-10)`.
  * **Programming API**
    * High-level iterators over the narrative elements of scientific documents
    * Zero-cost abstractions over the source data, as well as over linguistic annotations of various granularity.
+   * High-throughput parallel processing via `rayon`, since [0.3.0](https://github.com/KWARC/llamapun/releases/tag/0.3.0).
 
  * **Additional included examples**
    * math-aware corpus token models, via DNM plain text normalization

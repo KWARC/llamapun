@@ -87,9 +87,9 @@ pub fn main() -> Result<(), Error> {
 
   let corpus = Corpus::new(corpus_path);
   let catalog = corpus.catalog_with_parallel_walk(|document| {
-    let thread_builder = tar_builder.clone();
     let mut paragraph_count: u64 = 0;
     let mut overflow_count = 0;
+    let mut thread_data = Vec::new();
     let mut thread_counts = HashMap::new();
     thread_counts.insert(String::from("total_document_count"), 1);
     // Only analyze if document contains AMS markup
@@ -184,13 +184,17 @@ pub fn main() -> Result<(), Error> {
           String::from("other")
         };
         paragraph_count += 1;
-        thread_builder
-          .lock()
-          .unwrap()
-          .save(&paragraph_buffer, &ams_dir)
-          .expect("Tar builder should always succeed.")
+        thread_data.push((paragraph_buffer, ams_dir));
       }
     }
+
+    let mut builder_lock = tar_builder.lock().unwrap();
+    for (paragraph_buffer, ams_dir) in thread_data.into_iter() {
+      builder_lock
+        .save(&paragraph_buffer, &ams_dir)
+        .expect("Tar builder should always succeed.")
+    }
+
     thread_counts.insert(String::from("paragraph_count"), paragraph_count);
     thread_counts.insert(String::from("overflow_count"), overflow_count);
     thread_counts
@@ -217,3 +221,34 @@ pub fn main() -> Result<(), Error> {
   );
   Ok(())
 }
+
+// Locking notes:
+// I.Running a mutex lock on every paragraph write yields:
+// ---
+// AMS paragraph model finished in 272s, gathered:
+// 12330 documents;
+// 249880 paragraphs;
+// 250 discarded paragraphs (long words)
+//
+// real	4m32.821s
+// user	90m37.348s
+// sys	1m14.862s
+//
+// II.Running a mutex lock once per document thread
+//    (for in-order numbering of a document's paragraphs)
+// ---
+// AMS paragraph model finished in 267s, gathered:
+// 12330 documents;
+// 249880 paragraphs;
+// 250 discarded paragraphs (long words)
+//
+// real	4m29.651s
+// user	93m17.793s
+// sys	1m12.189s
+// ---
+// I wasn't sure what was causing more overhead:
+//   - lock rotation (more locks when locking on each paragraph),
+//   - resource starvation (waiting for a document lock to become available, if writing all paragraphs was slow)
+// Turns out the difference is minor enough to select for the better application effect:
+// Locking once per document allows a guarantee that adjacent paragraphs will have adjacent IDs when saved to the tar,
+// which allows to do some helpful data munging later on in paragraph exploration mode.

@@ -1,17 +1,13 @@
 // Copyright 2015-2018 KWARC research group. See the LICENSE
 // file at the top-level directory of this distribution.
 //
-extern crate libxml;
-extern crate llamapun;
-extern crate regex;
-extern crate tar;
 
 use regex::Regex;
+use std::collections::HashMap;
 use std::env;
 use std::fs::File;
-use std::io::prelude::*;
-use std::io::BufWriter;
 use std::io::Error;
+use std::sync::{Arc, Mutex};
 use std::time::{SystemTime, UNIX_EPOCH};
 
 use libxml::xpath::Context;
@@ -19,10 +15,9 @@ use tar::{Builder, Header};
 
 use llamapun::ams;
 use llamapun::ams::{AmsEnv, StructuralEnv};
-use llamapun::data::Corpus;
 use llamapun::dnm;
+use llamapun::parallel_data::Corpus;
 
-static BUFFER_CAPACITY: usize = 10_485_760;
 static MAX_WORD_LENGTH: usize = 25;
 
 /// assume we are dealing with less than 100m items here
@@ -32,41 +27,33 @@ pub fn num_file_path(directory: &str, index: u64) -> String {
   directory.to_string() + "/" + &file_base + ".txt"
 }
 
-pub fn save_para_to_file(data: &str, filename: &str) -> Result<(), Error> {
-  let para_file = match File::create(filename) {
-    Ok(fh) => fh,
-    Err(e) => return Err(e),
-  };
-  let mut para_writer = BufWriter::with_capacity(BUFFER_CAPACITY, para_file);
-  if let Err(e) = para_writer.write(data.as_bytes()) {
-    println!("Failed to print to BufWriter! Reason: {:?}", e);
-  }
-  if let Err(e) = para_writer.flush() {
-    println!("Failed to print to BufWriter! Reason: {:?}", e);
-  }
-  Ok(())
+struct TarBuilder {
+  builder: Builder<File>,
+  count: u64,
+  stamp: u64,
 }
 
-/// This is a good place to discuss inodes. The expected number of paragraph files in arXiv 08.2018
-/// exceeds 50 million. Hence, one would expect a >1 TB ext4 drive, for the default inode
-/// allocation to suffice However, using a modern NVMe SSD for speed conflicts that requirement.
-/// Hence, solution -- write directly to a .tar file, and avoid the inode trouble.
-pub fn save_para_to_tar(
-  builder: &mut Builder<File>,
-  data: &str,
-  filename: &str,
-  stamp: u64,
-) -> Result<(), Error>
-{
-  let bytes = data.as_bytes();
-  let mut header = Header::new_gnu();
-  header.set_size(bytes.len() as u64);
-  header.set_mode(0o644);
-  header.set_uid(0);
-  header.set_gid(0);
-  header.set_mtime(stamp);
-  header.set_cksum();
-  builder.append_data(&mut header, filename, bytes)
+impl TarBuilder {
+  /// This is a good place to discuss inodes. The expected number of paragraph files in arXiv 08.2018
+  /// exceeds 50 million. Hence, one would expect a >1 TB ext4 drive, for the default inode
+  /// allocation to suffice However, using a modern NVMe SSD for speed conflicts that requirement.
+  /// Hence, solution -- write directly to a .tar file, and avoid the inode trouble.
+  pub fn save(&mut self, data: &str, in_tar_directory: &str) -> Result<(), Error> {
+    self.count += 1;
+    let paragraph_filename = num_file_path(in_tar_directory, self.count);
+
+    let bytes = data.as_bytes();
+    let mut header = Header::new_gnu();
+    header.set_size(bytes.len() as u64);
+    header.set_mode(0o644);
+    header.set_uid(0);
+    header.set_gid(0);
+    header.set_mtime(self.stamp);
+    header.set_cksum();
+    self
+      .builder
+      .append_data(&mut header, paragraph_filename, bytes)
+  }
 }
 
 /// Given a `CorTeX` corpus of HTML5 documents, extract a token model as a
@@ -86,27 +73,30 @@ pub fn main() -> Result<(), Error> {
     None => "ams_paragraphs.tar".to_string(),
   };
 
-  let mut total_doc_count: u64 = 0;
-  let mut document_count: u64 = 0;
-  let mut paragraph_count: u64 = 0;
-
   let space = ' ';
   let linebreak = '\n';
   // Integers, floats, subfigure numbers
   let is_numeric = Regex::new(r"^-?(?:\d+)(?:[a-k]|(?:\.\d+(?:[eE][+-]?\d+)?))?$").unwrap();
-  let mut overflow_count = 0;
 
   let file = File::create(paragraph_model_file).unwrap();
-  let mut builder = Builder::new(file);
+  let tar_builder = Arc::new(Mutex::new(TarBuilder {
+    count: 0,
+    stamp,
+    builder: Builder::new(file),
+  }));
 
-  let mut corpus = Corpus::new(corpus_path);
-  for mut document in corpus.iter() {
-    total_doc_count += 1;
+  let corpus = Corpus::new(corpus_path);
+  let catalog = corpus.catalog_with_parallel_walk(|document| {
+    let thread_builder = tar_builder.clone();
+    let mut paragraph_count: u64 = 0;
+    let mut overflow_count = 0;
+    let mut thread_counts = HashMap::new();
+    thread_counts.insert(String::from("total_document_count"), 1);
     // Only analyze if document contains AMS markup
-    if !ams::has_markup(&document) {
-      continue;
+    if !ams::has_markup_xmldoc(&document.dom) {
+      return thread_counts;
     }
-    document_count += 1;
+    thread_counts.insert(String::from("ams_document_count"), 1);
     let mut context = Context::new(&document.dom).unwrap();
 
     'paragraphs: for mut paragraph in document.paragraph_iter() {
@@ -194,18 +184,17 @@ pub fn main() -> Result<(), Error> {
           String::from("other")
         };
         paragraph_count += 1;
-        let paragraph_filename = num_file_path(&ams_dir, paragraph_count);
-        save_para_to_tar(&mut builder, &paragraph_buffer, &paragraph_filename, stamp)?;
+        thread_builder
+          .lock()
+          .unwrap()
+          .save(&paragraph_buffer, &ams_dir)
+          .expect("Tar builder should always succeed.")
       }
     }
-
-    if document_count % 1000 == 0 {
-      println!("-- processed documents: {:?}", total_doc_count);
-      println!("-- AMS documents: {:?}", document_count);
-      println!("-- AMS paragraphs: {:?}", paragraph_count);
-      println!("--");
-    }
-  }
+    thread_counts.insert(String::from("paragraph_count"), paragraph_count);
+    thread_counts.insert(String::from("overflow_count"), overflow_count);
+    thread_counts
+  });
 
   let duration_sec = SystemTime::now().duration_since(start).unwrap().as_secs();
   println!("---");
@@ -213,8 +202,18 @@ pub fn main() -> Result<(), Error> {
     "AMS paragraph model finished in {:?}s, gathered: ",
     duration_sec
   );
-  println!("{:?} documents;", document_count);
-  println!("{:?} paragraphs;", paragraph_count);
-  println!("{:?} discarded paragraphs (long words)", overflow_count);
+
+  println!(
+    "{:?} documents;",
+    catalog.get("ams_document_count").unwrap_or(&0)
+  );
+  println!(
+    "{:?} paragraphs;",
+    catalog.get("paragraph_count").unwrap_or(&0)
+  );
+  println!(
+    "{:?} discarded paragraphs (long words)",
+    catalog.get("overflow_count").unwrap_or(&0)
+  );
   Ok(())
 }

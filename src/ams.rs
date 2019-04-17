@@ -2,14 +2,20 @@
 //! scientific documents
 
 use crate::data::Document;
+use libxml::tree::Document as XmlDoc;
 use libxml::xpath::Context;
 use regex::Regex;
 use std::fmt;
 
 /// Checks a llamapun `Document` for 'ltx_theorem' AMS markup
 pub fn has_markup(doc: &Document) -> bool {
+  has_markup_xmldoc(&doc.dom)
+}
+
+/// Checks a libxml document for `ltx_theorem` AMS markup
+pub fn has_markup_xmldoc(dom: &XmlDoc) -> bool {
   // TODO: Can this be done faster? We need to fetch and drop a bunch of nodes here as it is...
-  let xpath_context = Context::new(&doc.dom).unwrap();
+  let xpath_context = Context::new(dom).unwrap();
   match xpath_context.evaluate("//div[contains(@class,'ltx_theorem')]") {
     Ok(found_payload) => !found_payload.get_nodes_as_vec().is_empty(),
     _ => false,
@@ -656,7 +662,7 @@ pub fn normalize_env(env: &str) -> AmsEnv {
     | "rrexampleraw" | "runex" | "runningexample" | "sexample" | "subexample" | "texample"
     | "textofexample" | "theexample" | "theoremnl" | "varexample" | "xexample" | "xmpl" => {
       AmsEnv::Example
-    },
+    }
     "algrule"
     | "arule"
     | "branchrule"

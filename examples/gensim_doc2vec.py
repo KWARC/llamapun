@@ -8,16 +8,19 @@
 
 import os
 import numpy
+import re
+import sys
+
 from gensim.models.doc2vec import Doc2Vec, TaggedDocument
 from gensim.test.utils import get_tmpfile
 # llamapun-loading code
 from ctypes import cdll, c_char_p
-from sys import platform
 
-if platform == 'darwin':
+
+if sys.platform == 'darwin':
     prefix = 'lib'
     ext = 'dylib'
-elif platform == 'win32':
+elif sys.platform == 'win32':
     prefix = ''
     ext = 'dll'
 else:
@@ -43,6 +46,8 @@ class LlamapunTokenizedDocumentIterator(object):
 
     def __iter__(self):
         for idx, path in enumerate(self.path_list):
+            if idx % 10000 == 0:
+                print("tokenizing document %d of corpus" % idx)
             tokenized = tokenize_path(path.encode('utf-8'))
             words = tokenized.decode('utf-8').split()
             yield TaggedDocument(words,
@@ -76,22 +81,37 @@ def docs2vec(paths, labels):
 ### main execution loop ###
 
 
-# Set file path
-datasetPath = "tests/resources"
+# Set corpus path
+corpus_path = "tests/resources"
+argcount = len(sys.argv[1:])
+if argcount > 0:
+    corpus_path = sys.argv[1]
+
 # Collect documents, and their labels
 paths = []
 labels = []
 
 # Fetch content and labels of documents
-for directory, subdirList, fileList in os.walk(datasetPath):
+for directory, subdirList, fileList in os.walk(corpus_path):
     for filename in fileList:
         if filename.endswith(".html"):
             # store text data of document
             paths.append(directory + "/" + filename)
-            # store label of document (just the name here, it's an example)
-            labels.append(filename)
+            label = filename
+            m = re.match("^([a-z][^\d]+)", filename)
+            if m:
+                # old arxiv id, grab everything until first digit
+                label = m[0]
+            else:
+                m = re.match("^([^.])+", filename)
+                if m:
+                    # new arxiv, category is all before first dot (but is temporal, not topical)
+                    # only for example purposes
+                    label = m[0]
+            labels.append(label)
 
 # Build Doc2Vec text model
+print("starting docs2vec on %d total paths" % len(paths))
 model, vectors = docs2vec(paths, labels)
 
 model.save("my_llamapun_powered_doc2vec_model")

@@ -1,8 +1,6 @@
 // Copyright 2015-2018 KWARC research group. See the LICENSE
 // file at the top-level directory of this distribution.
 //
-
-use regex::Regex;
 use std::collections::HashMap;
 use std::env;
 use std::fs::File;
@@ -15,10 +13,8 @@ use tar::{Builder, Header};
 
 use llamapun::ams;
 use llamapun::ams::{AmsEnv, StructuralEnv};
-use llamapun::dnm;
 use llamapun::parallel_data::Corpus;
-
-static MAX_WORD_LENGTH: usize = 25;
+use llamapun::util::data_helpers;
 
 /// assume we are dealing with less than 100m items here
 pub fn num_file_path(directory: &str, index: u64) -> String {
@@ -75,8 +71,6 @@ pub fn main() -> Result<(), Error> {
 
   let space = ' ';
   let linebreak = '\n';
-  // Integers, floats, subfigure numbers
-  let is_numeric = Regex::new(r"^-?(?:\d+)(?:[a-k]|(?:\.\d+(?:[eE][+-]?\d+)?))?$").unwrap();
 
   let file = File::create(paragraph_model_file).unwrap();
   let tar_builder = Arc::new(Mutex::new(TarBuilder {
@@ -124,35 +118,17 @@ pub fn main() -> Result<(), Error> {
       'sentences: for mut sentence in paragraph.iter() {
         sentence_buffer = String::new();
         for word in sentence.simple_iter() {
-          let lexeme_str: String;
           if !word.range.is_empty() {
-            let word_string = word
-              .range
-              .get_plaintext()
-              .chars()
-              .filter(|c| c.is_alphanumeric()) // drop apostrophes, other noise?
-              .collect::<String>()
-              .to_lowercase();
-            if word_string.len() > MAX_WORD_LENGTH {
-              // Using a more aggressive normalization, large words tend to be conversion
-              // errors with lost whitespace - drop the entire paragraph when this occurs.
-              overflow_count += 1;
-              invalid_paragraph = true;
-              break 'sentences;
-            }
-            let mut word_str: &str = &word_string;
-            // Note: the formula and citation counts are an approximate lower bound, as
-            // sometimes they are not cleanly tokenized, e.g. $k$-dimensional
-            // will be the word string "mathformula-dimensional"
-            if word_string.contains("mathformula") {
-              lexeme_str = dnm::node::lexematize_math(word.range.get_node(), &mut context);
-              word_str = &lexeme_str;
-            } else if word_string.contains("citationelement") {
-              word_str = "citationelement";
-            } else if is_numeric.is_match(&word_string) {
-              word_str = "NUM";
-            }
-            sentence_buffer.push_str(word_str);
+            let word_string =
+              match data_helpers::ams_normalize_word_range(&word.range, &mut context) {
+                Ok(w) => w,
+                Err(_) => {
+                  overflow_count += 1;
+                  invalid_paragraph = true;
+                  break 'sentences;
+                }
+              };
+            sentence_buffer.push_str(&word_string);
             sentence_buffer.push(space);
           }
         }

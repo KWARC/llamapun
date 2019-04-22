@@ -4,7 +4,7 @@
 # 2. Install gensim
 #    pip install gensim
 # And then execute this Python example from the top directory as:
-#    python examples/vec2doc.py
+#    python3 examples/gensim_doc2vec.py
 
 from ctypes import cdll, c_char_p
 import os
@@ -93,7 +93,8 @@ def docs2vec(paths, labels):
 
     # Train Doc2Vec model
     print("training model")
-    model.train(documents=iterator, epochs=10)
+    model.train(documents=iterator, epochs=10,
+                total_examples=model.corpus_count)
     model.alpha -= 0.002
     model.min_alpha = model.alpha
     model.total_examples = model.corpus_count

@@ -141,10 +141,6 @@ print("starting docs2vec on %d total paths" % len(paths))
 model = docs2vec(paths, labels)
 model.save("my_llamapun_powered_doc2vec_model")
 
-# Generate Doc2Vec vectors
-for label in labels:
-    numpy.savetxt("doc2vec_"+labels+"_vector.txt", model.docvecs[label])
-
 # -- scratch --
 # With caching the tokenized documents in RAM:
 # 64 GB are exhausted after 79,000 cached documents (as word-tokenized paragraphs)
@@ -160,3 +156,7 @@ for label in labels:
 # With caching, capped at 50,000 documents
 # training takes multi-threading with a stable 2900% load (32 threads provided, threadripper 1950x)
 #
+# Time:
+# real	198m40.172s
+# user	1289m17.262s
+# sys	9m26.623s

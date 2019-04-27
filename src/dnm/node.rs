@@ -23,6 +23,12 @@ pub fn lexematize_math(node: RoNode, context: &mut Context) -> String {
         .map(|anno_word| {
           if anno_word.starts_with("NUM") {
             String::from("NUM")
+          } else if anno_word.starts_with("ARRAY") {
+            String::from("ARRAY")
+          } else if anno_word.starts_with("ATOM") {
+            String::from("ATOM")
+          } else if anno_word.starts_with("SUPERSCRIPTOP") {
+            String::from("SUPERSCRIPTOP")
           } else {
             anno_word
               .chars()

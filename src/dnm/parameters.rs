@@ -107,8 +107,10 @@ impl DNMParameters {
       "cite".to_string(),
       SpecialTagsOption::Normalize("CitationElement".to_string()),
     );
+    name_options.insert("img".to_string(), SpecialTagsOption::Skip);
     name_options.insert("table".to_string(), SpecialTagsOption::Skip);
     name_options.insert("head".to_string(), SpecialTagsOption::Skip);
+    name_options.insert("footer".to_string(), SpecialTagsOption::Skip);
 
     let mut class_options = HashMap::new();
     class_options.insert(
@@ -119,6 +121,9 @@ impl DNMParameters {
       "ltx_equationgroup".to_string(),
       SpecialTagsOption::Normalize("\nMathFormula\n".to_string()),
     );
+    class_options.insert("ltx_ref".to_string(), SpecialTagsOption::Normalize("REF".to_string()));
+    class_options.insert("ltx_authors".to_string(), SpecialTagsOption::Skip);
+    class_options.insert("ltx_TOC".to_string(), SpecialTagsOption::Skip);
     class_options.insert("ltx_note_mark".to_string(), SpecialTagsOption::Skip);
     class_options.insert("ltx_note_outer".to_string(), SpecialTagsOption::Skip);
     class_options.insert("ltx_bibliography".to_string(), SpecialTagsOption::Skip);

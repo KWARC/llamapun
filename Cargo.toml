@@ -1,6 +1,6 @@
 [package]
 name = "llamapun"
-version = "0.3.0"
+version = "0.3.1"
 edition = "2018"
 authors = ["Deyan Ginev <deyan.ginev@gmail.com>", "Jan Frederik Schaefer <j.schaefer@jacobs-university.de>"]
 
@@ -28,3 +28,6 @@ libxml = "0.2.11"
 tar = "0.4"
 rayon = "1.0"
 jwalk = "0.3"
+
+[dev-dependencies]
+serde_json = "1.0"

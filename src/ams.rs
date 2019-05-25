@@ -108,46 +108,96 @@ impl fmt::Display for StructuralEnv {
 pub enum AmsEnv {
   /// typically co-author support for a proof/paper (also "thanks")
   Acknowledgement,
-  /// usually defines a computer science algorithm
+  /// usually defines a computer science algorithm (also "heuristic"; arXiv data is bad quality, would not recommend using)
   Algorithm,
-  /// assumption/axiom/assertion/prior
+  /// To be analyzed (?)
+  Answer,
+  /// To be analyzed (?)
+  Affirmation,
+  /// assumption/axiom/assertion/prior -- should they be included in propositions? Are they separable?
   Assumption,
-  /// usually an actual Figure or Table captions realized via AMS - strange, hopefully rare
+  /// To be analyzed (?)
+  Bound,
+  /// usually an actual Figure or Table captions realized via AMS (strange data, would not recommend using)
   Caption,
   /// A case in a multi-step proof / description / exposition
   Case,
+  /// To be analyzed (?)
+  Claim,
+  /// To be analyzed (?)
+  Comment,
+  /// To be analyzed (?)
+  Conclusion,
   /// Potentially a constraint on a proof
   Condition,
-  /// An unproven statement/theorem
+  /// An unproven statement/theorem (includes "conjecture", "ansatz", "guess", "hypothesis")
   Conjecture,
-  /// A trivial to prove consequence of a prior proof (also "hypothesis","ansatz")
+  /// To be analyzed (?)
+  Constraint,
+  /// To be analyzed (?)
+  Convention,
+  /// A direct-to-derive consequence of a prior proposition
   Corollary,
+  /// To be analyzed (?)
+  Criterion,
   /// Unlike notations, introduces new conceptual mathematical objects
   Definition,
-  /// Demonstration of a definition, notation etc
+  /// To be analyzed (?)
+  Demonstration,
+  /// To be analyzed (?)
+  Discussion,
+  /// Demonstration of a definition, notation etc (also "experiment")
   Example,
-  /// To be analyzed
+  /// To be analyzed (?)
+  Experiment,
+  /// To be analyzed (?)
+  Expansion,
+  /// To be analyzed (?)
+  Expectation,
+  /// To be analyzed (?)
+  Explanation,
+  /// To be analyzed (?)
   Fact,
+  /// To be analyzed (?)
+  Hint,
+  /// To be analyzed (?)
+  Issue,
+  /// To be analyzed (?)
+  Keywords,
   /// A smaller sub-theorem to a main theorem
   Lemma,
   /// Introduces a new syntactic rule, usually for convenience / brevity
   Notation,
-  /// A named paragraph, without a clear standalone function (also "term", "convention")
+  /// To be analyzed (?)
+  Note,
+  /// To be analyzed (?)
+  Notice,
+  /// To be analyzed (?)
+  Observation,
+  /// A named paragraph, without a clear standalone function
   Paragraph,
-  /// A task to be solved (sometimes with solution following)
+  /// To be analyzed (?)
+  Principle,
+  /// A task to be solved (sometimes with solution following), includes "Exercise"
   Problem,
-  /// Proves a prior theorem/lemma, etc
+  /// Proves a prior theorem/lemma, etc (also "demonstration", "solution")
   Proof,
   /// A provably true/false statement. Is this a synonym to theorem in arXiv?
   Proposition,
-  /// (sometimes) initial goal of inquiry
+  /// (sometimes) initial goal of inquiry (also "puzzle", "query")
   Question,
-  /// A comment that is an aside to the main line of reasoning.
+  /// A comment that is an aside to the main line of reasoning. (also "observation", "hint", "comment")
   Remark,
-  /// Summarizes the achieved deliverables of a document's derivations
+  /// Summarizes paper's experimental deliverables
   Result,
+  /// To be analyzed (?)
+  Rule,
+  /// To be analyzed (?)
+  Solution,
   /// A part of a proof, or demonstration/layout
   Step,
+  /// To be analyzed (?)
+  Summary,
   /// A main proposition to be proven in the document
   Theorem,
   /// Anything else that was marked up with AMS, but doesn't fit this scheme
@@ -156,30 +206,56 @@ pub enum AmsEnv {
 
 impl fmt::Display for AmsEnv {
   fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+    use AmsEnv::*;
     let val = match self {
-      AmsEnv::Acknowledgement => "acknowledgement",
-      AmsEnv::Algorithm => "algorithm",
-      AmsEnv::Assumption => "assumption",
-      AmsEnv::Caption => "caption",
-      AmsEnv::Case => "case",
-      AmsEnv::Condition => "condition",
-      AmsEnv::Conjecture => "conjecture",
-      AmsEnv::Corollary => "corollary",
-      AmsEnv::Definition => "definition",
-      AmsEnv::Example => "example",
-      AmsEnv::Fact => "fact",
-      AmsEnv::Lemma => "lemma",
-      AmsEnv::Notation => "notation",
-      AmsEnv::Paragraph => "paragraph",
-      AmsEnv::Problem => "problem",
-      AmsEnv::Proof => "proof",
-      AmsEnv::Proposition => "proposition",
-      AmsEnv::Question => "question",
-      AmsEnv::Remark => "remark",
-      AmsEnv::Result => "result",
-      AmsEnv::Step => "step",
-      AmsEnv::Theorem => "theorem",
-      AmsEnv::Other => "other",
+      Acknowledgement => "acknowledgement",
+      Affirmation => "affirmation",
+      Algorithm => "algorithm",
+      Answer => "answer",
+      Assumption => "assumption",
+      Bound => "bound",
+      Caption => "caption",
+      Case => "case",
+      Claim => "claim",
+      Comment => "comment",
+      Conclusion => "conclusion",
+      Condition => "condition",
+      Conjecture => "conjecture",
+      Constraint => "constraint",
+      Convention => "convention",
+      Corollary => "corollary",
+      Criterion => "criterion",
+      Definition => "definition",
+      Demonstration => "demonstration",
+      Discussion => "discussion",
+      Example => "example",
+      Expansion => "expansion",
+      Expectation => "expectation",
+      Experiment => "experiment",
+      Explanation => "explanation",
+      Fact => "fact",
+      Hint => "hint",
+      Issue => "issue",
+      Keywords => "keywords",
+      Lemma => "lemma",
+      Notation => "notation",
+      Note => "note",
+      Notice => "notice",
+      Observation => "observation",
+      Other => "other",
+      Paragraph => "paragraph",
+      Principle => "principle",
+      Problem => "problem",
+      Proof => "proof",
+      Proposition => "proposition",
+      Question => "question",
+      Remark => "remark",
+      Result => "result",
+      Rule => "rule",
+      Solution => "solution",
+      Step => "step",
+      Summary => "summary",
+      Theorem => "theorem",
     };
     fmt.write_str(val)
   }
@@ -216,6 +292,7 @@ pub fn normalize_env(env: &str) -> AmsEnv {
     "ack" | "ackn" | "ackno" | "acknow" | "acknowledge" | "acknowledgement"
     | "acknowledgements" | "acknowledgment" | "acknowledgments" | "acknowlegement" | "acks"
     | "thanks" => AmsEnv::Acknowledgement,
+    "affirmation" => AmsEnv::Affirmation,
     "algm" | "alg" | "algo" | "algo1" | "algor" | "algor0" | "algorithm" | "algorithm1"
     | "algorithm2" | "algorithmdef" | "algorithme" | "algorithms" | "algoritmo"
     | "inneralgorithm" | "algx" | "heu" | "heur" | "heuristic" | "heuristics" | "myalgo"
@@ -229,6 +306,8 @@ pub fn normalize_env(env: &str) -> AmsEnv {
     | "ass1"
     | "asse"
     | "asser"
+    | "assert"
+    | "assertion"
     | "asslab"
     | "assm"
     | "assn"
@@ -278,6 +357,7 @@ pub fn normalize_env(env: &str) -> AmsEnv {
     | "myassump"
     | "myassumption"
     | "nnassumption"
+    | "notationassumption"
     | "notationassumptions"
     | "number"
     | "postulate"
@@ -289,11 +369,22 @@ pub fn normalize_env(env: &str) -> AmsEnv {
     | "simplifyingassumption"
     | "standingassumption"
     | "subsubaxiom" => AmsEnv::Assumption,
+    "bound" => AmsEnv::Bound,
     "diag" | "fig" | "figcaption" | "figm" | "fignum" | "figure" | "figuretext" | "tab"
     | "tabel" | "tabl" | "tabla" | "table" | "tldiag" => AmsEnv::Caption,
     "case" | "case1" | "case2" | "case3" | "caseone" | "casestudy" | "casetwo"
     | "innercustomcase" | "mycase" | "scase" | "sscase" | "subcase" | "subcase2" | "subsubcase"
     | "subsubsubcase" | "tcase" => AmsEnv::Case,
+    "aclaim" | "alphaclaim" | "boldclaim" | "cclaim" | "cdellsclaim" | "cdtopiclaim" | "cla" | "clai"
+    | "claim" | "claim1" | "claim2" | "claim3" | "claim4" | "claim5" | "claima" | "claimapp"
+    | "claimb" | "claimc" | "claimenv" | "claimfoo" | "claimi" | "claimlncs" | "claimm" | "claimn"
+    | "claimnn" | "claimno" | "claimnr" | "claimnum" | "claimone" | "claimprop3" | "claimq"
+    | "claims" | "claimstar" | "claimsub" | "claimx" | "clm" | "defclaim" | "innercustomclaim"
+    | "internalclaim" | "itclaim" | "jmclaim" | "lblclaim" | "mainclaim" | "mclaim" | "megaclaim"
+    | "misclaim" | "myclaim" |  "nclaim" |  "newclaim" |  "numberedclaim" |  "numclaim" |  "ourclaim"
+    | "pclaim" | "prclaim" | "preclaim" | "procclaim" | "proclaim" | "proclaimmydef"
+    | "quasiclaim" | "sclaim" | "proclaimmypreuve" | "subclai" | "subclaim" | "tclaim" | "tittoclaim"
+    | "uclaim" | "varclaim" | "xclaim" => AmsEnv::Claim,
     "clcriterion" | "cnd" | "cond" | "condi" | "condition" | "conditiona" | "conditionb"
     | "conditionc" | "conditions" | "condn" | "conds" | "crit" | "criteria" | "innercondition"
     | "lcon" | "mycond" | "ncond" | "ocond" | "xcondition" => AmsEnv::Condition,
@@ -308,6 +399,7 @@ pub fn normalize_env(env: &str) -> AmsEnv {
     | "introconjecture" | "itconjecture" | "mainconj" | "mainconjecture" | "mconj" | "myconj"
     | "myconjecture" | "ourconjecture" | "precon" | "preconj" | "rconjecture" | "sconj"
     | "sconjecture" | "subconj" => AmsEnv::Conjecture,
+    "conv" | "conve" | "conventie" | "convention" | "conventionfoo" | "conventionn" | "conventions" => AmsEnv::Convention,
     "acorollary" | "apulause" | "bcorollary" | "bigcorollary" | "ccor" | "ccoro" | "ccorollary"
     | "cl" | "cllry" | "cnv" | "co" | "col" | "coll" | "collary" | "collolary" | "collorary"
     | "coly" | "comq" | "coor" | "cor" | "cor0" | "cor1" | "cor2" | "cor3" | "cor4" | "cor5"
@@ -335,6 +427,7 @@ pub fn normalize_env(env: &str) -> AmsEnv {
     | "rmkk" | "scor" | "scorol" | "scorollary" | "subcorollary" | "supos" | "tcor"
     | "tcorollary" | "tem" | "theorex" | "thmcorollary" | "uncorollary" | "wn" | "xcor"
     | "xcorollary" => AmsEnv::Corollary,
+    "criterion" => AmsEnv::Criterion,
     "1def"
     | "adefi"
     | "adefinition"
@@ -638,6 +731,8 @@ pub fn normalize_env(env: &str) -> AmsEnv {
     | "xdefinition"
     | "xdefn"
     | "xtdef" => AmsEnv::Definition,
+    "demonstration" => AmsEnv::Demonstration,
+    "disc" | "discussion" | "notationanddiscussion" => AmsEnv::Discussion,
     "appexample" | "backtheorem" | "baseexample" | "beispiel" | "bexample" | "bigexample"
     | "bp" | "bsp" | "bsp1" | "bspe" | "cexample" | "cexpl" | "conda" | "counterexample"
     | "csexample" | "dexample" | "e1" | "eexam" | "eexample" | "eexemples" | "eg" | "ejem"
@@ -652,7 +747,7 @@ pub fn normalize_env(env: &str) -> AmsEnv {
     | "exampleth" | "examplex" | "examplit" | "examps" | "exams" | "exas" | "exaxxx" | "exe"
     | "exe1" | "exem" | "exem2" | "exemp" | "exempl" | "exemple" | "exemplo" | "exex" | "exm"
     | "exmatmul" | "exmp" | "exmp3" | "exmpl" | "exmple" | "exmples" | "exmps" | "exp"
-    | "expansion" | "expe" | "expectation" | "experiment" | "expl" | "expl2" | "explanation"
+    | "expe" | "expl" | "expl2"
     | "exple" | "explo" | "expls" | "expltemap" | "exz" | "fexample" | "hexample" | "iexample"
     | "innercontexample" | "innerexample" | "introexample" | "itexample" | "mainex"
     | "mainexample" | "mexample" | "miex" | "minorexmp" | "myexam" | "myexample"
@@ -660,9 +755,13 @@ pub fn normalize_env(env: &str) -> AmsEnv {
     | "nonexample" | "numberedexample" | "numexample" | "nxmpl" | "orexample" | "plcexample"
     | "preex" | "preexample" | "preexamples" | "prexample" | "proexample" | "rexample"
     | "rrexampleraw" | "runex" | "runningexample" | "sexample" | "subexample" | "texample"
-    | "textofexample" | "theexample" | "theoremnl" | "varexample" | "xexample" | "xmpl" => {
-      AmsEnv::Example
-    }
+    | "textofexample" | "theexample" | "theoremnl" | "varexample" | "xexample" | "xmpl" =>
+      AmsEnv::Example,
+    "experiment" => AmsEnv::Experiment,
+    "explanation" => AmsEnv::Explanation,
+    "expansion" => AmsEnv::Expansion,
+    "expectation" => AmsEnv::Expectation,
+    "principle" => AmsEnv::Principle,
     "algrule"
     | "arule"
     | "branchrule"
@@ -670,9 +769,34 @@ pub fn normalize_env(env: &str) -> AmsEnv {
     | "brule"
     | "coordinates"
     | "crule"
-    | "definitionandfact"
     | "drule"
-    | "edgerule"
+    | "grule"
+    | "intruler"
+    | "intrules"
+    | "kernelrule"
+    | "krule"
+    | "mrule"
+    | "myrule"
+    | "polyrule"
+    | "pruningrule"
+    | "qrule"
+    | "redrule"
+    | "redrulebgvd"
+    | "reducerule"
+    | "reductionrule"
+    | "rerule"
+    | "rle"
+    | "rrule"
+    | "rul"
+    | "rule"
+    | "rule0"
+    | "rules"
+    | "rull"
+    | "syntaxrule"
+    | "trule"
+    | "validrule"
+    | "edgerule" => AmsEnv::Rule,
+    | "definitionandfact"
     | "fac"
     | "fact"
     | "fact2"
@@ -685,47 +809,23 @@ pub fn normalize_env(env: &str) -> AmsEnv {
     | "factsub"
     | "factt"
     | "fakt"
+    | "factfoo"
     | "faktum"
     | "fct"
     | "ffact"
-    | "grule"
     | "hfakt"
-    | "intruler"
-    | "intrules"
-    | "kernelrule"
-    | "krule"
-    | "mrule"
     | "myfact"
-    | "myrule"
     | "nfact"
-    | "nsfactor"
     | "ourfact"
-    | "polyrule"
-    | "principle"
     | "profact"
-    | "pruningrule"
-    | "qrule"
-    | "redrule"
-    | "redrulebgvd"
-    | "reducerule"
-    | "reductionrule"
-    | "rerule"
-    | "rle"
     | "romanfact"
-    | "rrule"
-    | "rul"
-    | "rule"
-    | "rule0"
-    | "rules"
-    | "rull"
     | "sfact"
     | "stylizedfact"
-    | "subfact"
-    | "syntaxrule"
-    | "trule"
-    | "validrule" => AmsEnv::Fact,
+    | "subfact" => AmsEnv::Fact,
+    "issue" => AmsEnv::Issue,
+    "keywords" => AmsEnv::Keywords,
     "alemma" | "aplemma" | "appendixlemma" | "applemma" | "approximationlemma" | "appxlem"
-    | "appxlemma" | "aslemma" | "assumptions" | "bigclm" | "blemma" | "criterion" | "defilemma"
+    | "appxlemma" | "aslemma" | "assumptions" | "bigclm" | "blemma" | "defilemma"
     | "definitionlemma" | "deflemma" | "defnlem" | "dlemma" | "elem" | "elemme" | "envlem"
     | "exampletheoremenv" | "fiebiglemma" | "flemma" | "frmlemmasup" | "glemma"
     | "innercustomlem" | "innercustomlemma" | "intlemnp" | "itlemma" | "keylem" | "keylemma"
@@ -744,33 +844,23 @@ pub fn normalize_env(env: &str) -> AmsEnv {
     | "lemmaux" | "lemmax" | "lemme" | "lemme1" | "lemme2" | "lemming" | "lemmino" | "lemmm"
     | "lemmma" | "lemms" | "lemmx" | "lemmy" | "lemo" | "lemqed" | "lems" | "lemsec"
     | "letterlemma" | "lkadlemma" | "ll" | "llemma" | "lm" | "lma" | "lmb" | "lmm" | "lmm1"
-    | "lmm2" | "lmma" | "lmmno" | "lms" | "locallemma" | "mainlem" | "mlem" | "mlemma"
+    | "lmm2" | "lmma" | "lmmno" | "lms" | "locallemma" | "mainlem" | "mainlemma" | "mlem" | "mlemma"
     | "monlem" | "mydlem3" | "mylem" | "mylemm" | "mylemma" | "mylm" | "mylma" | "mylmm"
     | "newlemma" | "nlemma" | "nnlemma" | "nolem" | "nonolemma" | "nonumberlemma"
     | "nonumlemma" | "ntlemma" | "oldlemma" | "ourlemma" | "palemma" | "plemma" | "prealphlem"
-    | "prelem" | "prelemm" | "prelemma" | "prolemma" | "quasilemma" | "quot" | "remark4"
+    | "prelem" | "prelemm" | "prelemma" | "prolemma" | "quasilemma" | "quot"
     | "replemma" | "rmlemma" | "rmlemmaplain" | "seclemma" | "slemma" | "slemme" | "souslemme"
     | "starex" | "steplemma" | "sub" | "sublem" | "sublema" | "sublemm" | "sublemma" | "sublm"
     | "subsublemma" | "suplemma" | "technicallemma" | "textoflemma" | "theirlemma" | "thmlemma"
     | "tlemma" | "twistinglemma" | "unnumberedlemma" | "xlem" | "xlemm" | "xlemma"
     | "zamechanie" => AmsEnv::Lemma,
-    "bound"
-    | "bsubnotation"
-    | "config"
-    | "conv"
-    | "conve"
-    | "conventie"
-    | "convention"
-    | "conventionfoo"
-    | "conventionn"
-    | "conventions"
-    | "defbemerkung"
-    | "definite"
+    // | "config" ??
+    // | "defbemerkung" ??
+    // | "definite" ??
+    // | "df" ??
+    "bsubnotation"
     | "definitionnotation"
-    | "df"
-    | "keywords"
     | "localnotation"
-    | "mainlemma"
     | "name"
     | "naming"
     | "nb"
@@ -784,7 +874,6 @@ pub fn normalize_env(env: &str) -> AmsEnv {
     | "notation"
     | "notation0"
     | "notationa"
-    | "notationanddiscussion"
     | "notationandreminder"
     | "notationdefinition"
     | "notationn"
@@ -799,7 +888,6 @@ pub fn normalize_env(env: &str) -> AmsEnv {
     | "prenotation"
     | "prerem"
     | "protobody"
-    | "question"
     | "remarkaux"
     | "remnotation"
     | "setting"
@@ -826,13 +914,13 @@ pub fn normalize_env(env: &str) -> AmsEnv {
     | "sect"
     | "subparag"
     | "subsec" => AmsEnv::Paragraph,
-    "bwexerc"
-    | "classproblem"
+    "classproblem"
     | "condb"
     | "coreproblem"
     | "corollaryin"
     | "cproblem"
     | "eioproblem"
+    | "bwexerc"
     | "exc"
     | "exer"
     | "exercice"
@@ -898,62 +986,22 @@ pub fn normalize_env(env: &str) -> AmsEnv {
     | "xca"
     | "xopen" => AmsEnv::Problem,
     "afirmativa" | "beweis" | "claimproof" | "clproof" | "cproof" | "cproofa" | "cproofb"
-    | "demonstration" | "eproof" | "lemproof" | "mproof" | "myproo" | "myproof" | "namedproof"
+    | "eproof" | "lemproof" | "mproof" | "myproo" | "myproof" | "namedproof"
     | "notationinproof" | "oldproof" | "pf" | "pprf" | "preproof" | "preprooff" | "prf"
     | "proof" | "proof0" | "proof1" | "proof2" | "proof3" | "proof4" | "proof5" | "proofa"
     | "proofaux" | "proofcase" | "proofclaim" | "prooff" | "prooffact" | "proofhead"
     | "proofidea" | "prooflem" | "proofn" | "proofof" | "proofoftheorem" | "proofpart"
     | "proofprop" | "proofsketch" | "proofth" | "prooftheorem" | "proofthm" | "proofx"
-    | "sketchofproof" | "solution" | "solutions" | "theoremproof" | "xproof" => AmsEnv::Proof,
+    | "sketchofproof" | "theoremproof" | "xproof" => AmsEnv::Proof,
     "5proposition"
-    | "a4"
-    | "a5"
-    | "aclaim"
-    | "affirmation"
-    | "alphaclaim"
+    // | "a4"
+    // | "a5"
     | "approp"
     | "appxprop"
     | "aprop"
     | "aproposition"
-    | "assert"
-    | "assertion"
-    | "boldclaim"
     | "bproposition"
-    | "cclaim"
-    | "cdellsclaim"
-    | "cdtopiclaim"
-    | "cla"
-    | "clai"
-    | "claim"
-    | "claim1"
-    | "claim2"
-    | "claim3"
-    | "claim4"
-    | "claim5"
-    | "claima"
-    | "claimapp"
-    | "claimb"
-    | "claimc"
-    | "claimenv"
-    | "claimfoo"
-    | "claimi"
-    | "claimlncs"
-    | "claimm"
-    | "claimn"
-    | "claimnn"
-    | "claimno"
-    | "claimnr"
-    | "claimnum"
-    | "claimone"
-    | "claimprop3"
-    | "claimq"
-    | "claims"
-    | "claimstar"
-    | "claimsub"
-    | "claimx"
-    | "clm"
     | "dclprop"
-    | "defclaim"
     | "definitionproposition"
     | "defiprop"
     | "defnprop"
@@ -970,49 +1018,39 @@ pub fn normalize_env(env: &str) -> AmsEnv {
     | "fsprop"
     | "gproposition"
     | "gstatement"
+    | "statement"
+    | "stmt"
+    | "subprop"
     | "hprop"
     | "hproposition"
     | "hyllprop"
-    | "innercustomclaim"
     | "innercustomprop"
     | "innercustomproposition"
-    | "internalclaim"
     | "introprop"
     | "introproposition"
     | "iprop"
     | "iproposition"
-    | "issue"
-    | "itclaim"
     | "itproposition"
-    | "jmclaim"
     | "kmprop"
     | "kspproposition"
-    | "l3"
-    | "lblclaim"
+    // | "l3"
     | "lprop"
     | "lproposition"
-    | "mainclaim"
     | "mainprop"
     | "mainproposition"
     | "maprop"
     | "mathproposition"
-    | "mclaim"
     | "mdprop"
-    | "megaclaim"
-    | "misclaim"
     | "mpro"
     | "mprop"
     | "mproposition"
     | "msproposition"
-    | "myclaim"
     | "myprop"
     | "mypropd"
-    | "myproperty"
     | "myproposition"
     | "myprp"
+    | "myproperty"
     | "namedprop"
-    | "nclaim"
-    | "newclaim"
     | "newprop"
     | "newproposition"
     | "nnprop"
@@ -1020,14 +1058,10 @@ pub fn normalize_env(env: &str) -> AmsEnv {
     | "nonumberproposition"
     | "nprop"
     | "nproposition"
-    | "num"
-    | "numberedclaim"
-    | "numclaim"
+    // | "num" ?
     | "numprop"
-    | "ourclaim"
     | "ourproposition"
     | "p"
-    | "pclaim"
     | "pn"
     | "pp"
     | "ppn"
@@ -1038,8 +1072,6 @@ pub fn normalize_env(env: &str) -> AmsEnv {
     | "pr1"
     | "pr4"
     | "pr5"
-    | "prclaim"
-    | "preclaim"
     | "pred"
     | "predl"
     | "prepos"
@@ -1052,10 +1084,6 @@ pub fn normalize_env(env: &str) -> AmsEnv {
     | "pro3"
     | "pro4"
     | "pro5"
-    | "procclaim"
-    | "proclaim"
-    | "proclaimmydef"
-    | "proclaimmypreuve"
     | "prop"
     | "prop0"
     | "prop1"
@@ -1184,122 +1212,52 @@ pub fn normalize_env(env: &str) -> AmsEnv {
     | "prpsubf"
     | "prpt"
     | "prrop"
-    | "quasiclaim"
-    | "refine"
     | "refprop"
-    | "restatement"
     | "sat"
     | "sbprop"
-    | "sclaim"
     | "secprop"
     | "sectionprop"
     | "spprop"
     | "spropo"
     | "sproposition"
+    | "refine"
+    | "restatement"
     | "state"
     | "statem"
     | "statement1"
     | "statm"
     | "statment"
     | "stprop"
-    | "strengths"
+    // | "strengths"
     | "stw"
-    | "subclai"
-    | "subclaim"
     | "subproperty"
     | "subproposition"
     | "subprops"
     | "supproposition"
     | "surprop"
-    | "tclaim"
     | "tempprop"
     | "thp"
     | "thprop"
-    | "tittoclaim"
     | "tprop"
-    | "uclaim"
-    | "varclaim"
     | "varprop"
-    | "weaknesses"
+    // | "weaknesses"
     | "wproposition"
-    | "xclaim"
     | "xprop"
     | "xproposition" => AmsEnv::Proposition,
     "boldquestion" | "emquestion" | "innerquestion" | "introquestion" | "mainquestion"
     | "myquest" | "myquestion" | "op" | "openquestion" | "prequestion" | "puzzle" | "q" | "qn"
     | "qst" | "qstn" | "qtn" | "qu" | "que" | "que1" | "query" | "ques" | "quesb" | "quess"
-    | "quest" | "quest0" | "question0" | "question1" | "question2" | "question3"
+    | "quest" | "quest0" | "question" | "question0" | "question1" | "question2" | "question3"
     | "questionapp" | "questionb" | "questioni" | "questionintro" | "questions" | "queststar"
-    | "remarques" | "remarquesubsect" | "researchquestion" | "rquestion" | "subquestion"
-    | "varquestion" | "vopros" => AmsEnv::Question,
-    "a3remark"
-    | "advice"
-    | "aremark"
-    | "auxremark"
-    | "baseremark"
-    | "bem"
-    | "bemerkung"
-    | "bigremark"
-    | "bremark"
-    | "bremarknote"
-    | "brmk"
-    | "bsubremarknote"
-    | "comment"
-    | "commentary"
-    | "comments"
-    | "context"
-    | "definitionandremark"
-    | "definitionremark"
-    | "defremark"
-    | "deno"
-    | "disc"
-    | "discussion"
-    | "dummyrem"
-    | "emrem"
-    | "emremark"
-    | "eremark"
-    | "factfoo"
-    | "hint"
-    | "introremark"
-    | "iremark"
-    | "itremark"
-    | "kmremark"
-    | "lnote"
+    | "researchquestion" | "rquestion" | "subquestion" | "varquestion" | "vopros" => AmsEnv::Question,
+    // Extracted from original big parent Remark category:
+    "mycomment"| "comment" | "commentary" | "comments" => AmsEnv::Comment,
+    "note" | "lnote" | "mynote" => AmsEnv::Note,
+    "notice" => AmsEnv::Notice,
+    "hint" => AmsEnv::Hint,
     | "localobservation"
-    | "localremark"
-    | "mcc"
-    | "miniremark"
-    | "mirem"
-    | "mrem"
-    | "mremark"
-    | "mycomment"
-    | "mynote"
     | "myobservation"
     | "myoss"
-    | "myrek"
-    | "myrem"
-    | "myrema"
-    | "myremark"
-    | "myremarks"
-    | "myrems"
-    | "myrm"
-    | "myrmk"
-    | "newremark"
-    | "nnremark"
-    | "nota"
-    | "notationandremark"
-    | "notationassumption"
-    | "note"
-    | "notice"
-    | "nremark"
-    | "nrmk"
-    | "nrmks"
-    | "nrmrk"
-    | "ntremark"
-    | "numberedremark"
-    | "numremark"
-    | "numrk"
-    | "numrmk"
     | "ob"
     | "obs"
     | "observ"
@@ -1317,15 +1275,68 @@ pub fn normalize_env(env: &str) -> AmsEnv {
     | "osserv"
     | "osserva"
     | "osservazione"
-    | "para"
+    | "preobserv" => AmsEnv::Observation,
+    "summary" => AmsEnv::Summary,
+    "a3remark"
+    // | "advice" ???
+    | "aremark"
+    | "auxremark"
+    | "baseremark"
+    | "bem"
+    | "bemerkung"
+    | "bigremark"
+    | "bremark"
+    | "bremarknote"
+    | "brmk"
+    | "bsubremarknote"
+    // | "context" ???
+    // | "definitionandremark" ??? (between classes)
+    | "definitionremark"
+    | "defremark"
+    | "deno"
+    | "dummyrem"
+    | "emrem"
+    | "emremark"
+    | "eremark"
+    | "introremark"
+    | "iremark"
+    | "itremark"
+    | "kmremark"
+    | "localremark"
+    | "mcc"
+    | "miniremark"
+    | "mirem"
+    | "mrem"
+    | "mremark"
+    | "myrek"
+    | "myrem"
+    | "myrema"
+    | "myremark"
+    | "myremarks"
+    | "myrems"
+    | "myrm"
+    | "myrmk"
+    | "newremark"
+    | "nnremark"
+    // | "nota" ???
+    // | "notationandremark" ??? (between classes)
+    | "nremark"
+    | "nrmk"
+    | "nrmks"
+    | "nrmrk"
+    | "ntremark"
+    | "numberedremark"
+    | "numremark"
+    | "numrk"
+    | "numrmk"
+    // | "para" ???
+    // "point" => AmsEnv::Point,
     | "plainremarks"
-    | "point"
-    | "preobserv"
     | "preremark"
     | "preremark2"
     | "proremark"
     | "protoremark"
-    | "punto"
+    // | "punto"
     | "r"
     | "re"
     | "reem"
@@ -1343,6 +1354,7 @@ pub fn normalize_env(env: &str) -> AmsEnv {
     | "remark1"
     | "remark2"
     | "remark3"
+    | "remark4"
     | "remark5"
     | "remark6"
     | "remarka"
@@ -1385,8 +1397,7 @@ pub fn normalize_env(env: &str) -> AmsEnv {
     | "remarkunnumbered"
     | "remarkwr"
     | "remarkx"
-    | "remarq"
-    | "remarque"
+    | "remarq" | "remarque" | "remarques" | "remarquesubsect"
     | "remarque2"
     | "rembold"
     | "reme"
@@ -1421,18 +1432,14 @@ pub fn normalize_env(env: &str) -> AmsEnv {
     | "rqe1"
     | "rque"
     | "rremark"
-    | "say"
+    // | "say" ???
     | "sideremark"
     | "sidermk"
-    | "sit"
+    // | "sit" ???
     | "smallremark"
     | "sremark"
     | "srmk"
-    | "statement"
-    | "stmt"
-    | "subprop"
     | "subremark"
-    | "summary"
     | "thremark"
     | "topology"
     | "torsionremark"
@@ -1448,11 +1455,12 @@ pub fn normalize_env(env: &str) -> AmsEnv {
     | "xremark"
     | "xrmk"
     | "zero" => AmsEnv::Remark,
-    "answer" | "conclude" | "conclusion" | "conclusions" | "final" | "mainresult" | "mdresult"
-    | "numres" | "priorresults" | "res" | "resu" | "resul" | "result" | "resultat" | "results"
-    | "resump" => AmsEnv::Result,
-    "art" | "astep" | "chunk" | "cons" | "constr" | "constraint" | "constraints"
-    | "constrinternal" | "construct" | "construction" | "constructions" | "cstep" | "emf"
+    "answer" => AmsEnv::Answer,
+    "conclude" | "conclusion" | "conclusions" => AmsEnv::Conclusion,
+    "final" | "mainresult" | "mdresult" | "numres" | "priorresults" | "res" | "resu" | "resul" | "result" | "resultat" | "results" | "resump" => AmsEnv::Result,
+    "solution" | "solutions" => AmsEnv::Solution,
+    "cons" | "constr" | "constraint" | "constraints" | "constrinternal" => AmsEnv::Constraint,
+    "art" | "astep" | "chunk" | "construct" | "construction" | "constructions" | "cstep" | "emf"
     | "nothing" | "ournothing" | "pstep" | "reduction" | "require" | "stage" | "step" | "step1"
     | "step2" | "step3" | "step4" | "step5" | "stepa" | "stepb" | "stepmain" | "stepn"
     | "stepnamed" | "stepnn" | "stepp" | "stepwise" | "substep" | "ttt" => AmsEnv::Step,

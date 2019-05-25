@@ -8,19 +8,29 @@ use std::io::Error;
 use std::sync::{Arc, Mutex};
 use std::time::{SystemTime, UNIX_EPOCH};
 
+
+use crypto::digest::Digest;
+use crypto::sha2::Sha256;
 use libxml::xpath::Context;
-use tar::{Builder, Header};
 
 use llamapun::ams;
 use llamapun::ams::{AmsEnv, StructuralEnv};
 use llamapun::parallel_data::Corpus;
 use llamapun::util::data_helpers;
+use tar::{Builder, Header};
 
 /// assume we are dealing with less than 100m items here
 pub fn num_file_path(directory: &str, index: u64) -> String {
   let mut file_base = (100_000_000 + index).to_string();
   file_base.remove(0);
   directory.to_string() + "/" + &file_base + ".txt"
+}
+/// give a sha256 hash, assemble a filename based on it
+pub fn hash_file_path(directory: &str, content: &str) -> String {
+  let mut hasher = Sha256::new();
+  hasher.input_str(&content);
+  let hash = hasher.result_str();
+  directory.to_string() + "/" + &hash + ".txt"
 }
 
 struct TarBuilder {
@@ -34,10 +44,9 @@ impl TarBuilder {
   /// exceeds 50 million. Hence, one would expect a >1 TB ext4 drive, for the default inode
   /// allocation to suffice However, using a modern NVMe SSD for speed conflicts that requirement.
   /// Hence, solution -- write directly to a .tar file, and avoid the inode trouble.
-  pub fn save(&mut self, data: &str, in_tar_directory: &str) -> Result<(), Error> {
+  pub fn save(&mut self, data: &str, paragraph_filename: &str) -> Result<(), Error> {
     self.count += 1;
-    let paragraph_filename = num_file_path(in_tar_directory, self.count);
-
+    // let paragraph_filename = num_file_path(in_tar_directory, self.count);
     let bytes = data.as_bytes();
     let mut header = Header::new_gnu();
     header.set_size(bytes.len() as u64);
@@ -168,14 +177,15 @@ pub fn main() -> Result<(), Error> {
           continue 'paragraphs;
         };
         paragraph_count += 1;
-        thread_data.push((paragraph_buffer, ams_dir));
+        // precompute sha inside the thread, to do more in parallel
+        let paragraph_filename = hash_file_path(&ams_dir, &paragraph_buffer);
+        thread_data.push((paragraph_buffer, paragraph_filename));
       }
     }
-
     let mut builder_lock = tar_builder.lock().unwrap();
-    for (paragraph_buffer, ams_dir) in thread_data.into_iter() {
+    for (paragraph_buffer, paragraph_filename) in thread_data.into_iter() {
       builder_lock
-        .save(&paragraph_buffer, &ams_dir)
+        .save(&paragraph_buffer, &paragraph_filename)
         .expect("Tar builder should always succeed.")
     }
 

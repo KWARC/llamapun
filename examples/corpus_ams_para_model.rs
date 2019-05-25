@@ -10,6 +10,7 @@ use std::time::{SystemTime, UNIX_EPOCH};
 
 use libxml::xpath::Context;
 use tar::{Builder, Header};
+use whatlang::{detect, Lang, Script};
 
 use llamapun::ams;
 use llamapun::ams::{AmsEnv, StructuralEnv};
@@ -114,7 +115,22 @@ pub fn main() -> Result<(), Error> {
       if !prev_name.is_empty() && !prev_name.starts_with('h') {
         continue 'paragraphs;
       }
-
+      // Before we go into tokenization, ensure this is an English sentence on the math-normalized plain text.
+      let detectable_with_spaces = paragraph.dnm.plaintext.replace("MathFormula", "");
+      let detectable = detectable_with_spaces.trim();
+      if let Some(info) = detect(&detectable) {
+        if info.script() != Script::Latin || (info.lang() != Lang::Eng && info.confidence() > 0.93)
+        {
+          println!("\nSkipping Para: {}", &detectable.replace("\n", ""));
+          println!(
+            "Script: {:?}; Lang: {:?}; Confidence: {:?}",
+            info.script(),
+            info.lang(),
+            info.confidence()
+          );
+          continue 'paragraphs;
+        }
+      }
       'sentences: for mut sentence in paragraph.iter() {
         sentence_buffer = String::new();
         for word in sentence.simple_iter() {
@@ -155,7 +171,8 @@ pub fn main() -> Result<(), Error> {
         } else if let Some(ref prev_node) = prev_opt {
           // if None AMS markup found, check for structural markup
           let env: StructuralEnv = prev_node.get_content().into();
-          if env == StructuralEnv::Other { // if Other markup, ignore
+          if env == StructuralEnv::Other {
+            // if Other markup, ignore
             continue 'paragraphs;
           }
           env.to_string()

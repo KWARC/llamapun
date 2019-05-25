@@ -153,11 +153,15 @@ pub fn main() -> Result<(), Error> {
             env.to_string()
           }
         } else if let Some(ref prev_node) = prev_opt {
-          // if None AMS markup found, check for structural markup, or record as "other" in model
+          // if None AMS markup found, check for structural markup
           let env: StructuralEnv = prev_node.get_content().into();
+          if env == StructuralEnv::Other { // if Other markup, ignore
+            continue 'paragraphs;
+          }
           env.to_string()
         } else {
-          String::from("other")
+          // if no markup at all, ignore the paragraph, as we don't have reliable classification information
+          continue 'paragraphs;
         };
         paragraph_count += 1;
         thread_data.push((paragraph_buffer, ams_dir));

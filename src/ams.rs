@@ -24,6 +24,7 @@ pub fn has_markup_xmldoc(dom: &XmlDoc) -> bool {
 
 /// Semantically fixed structural environments in scientific documents, to collect as
 /// counter-balance to the AMS markup
+#[derive(Copy, Clone, Debug, PartialEq)]
 pub enum StructuralEnv {
   /// abstract lead-in
   Abstract,
@@ -104,7 +105,7 @@ impl fmt::Display for StructuralEnv {
 /// which are then transported in the HTML representation as `ltx_theorem_<env>`
 ///
 /// We shortlist 23 of the >20,000 variety of values present in the arXiv corpus
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Copy, Clone, Debug, PartialEq)]
 pub enum AmsEnv {
   /// typically co-author support for a proof/paper (also "thanks")
   Acknowledgement,
@@ -180,13 +181,13 @@ pub enum AmsEnv {
   Principle,
   /// A task to be solved (sometimes with solution following), includes "Exercise"
   Problem,
-  /// Proves a prior theorem/lemma, etc (also "demonstration", "solution")
+  /// Proves a prior theorem/lemma
   Proof,
   /// A provably true/false statement. Is this a synonym to theorem in arXiv?
   Proposition,
   /// (sometimes) initial goal of inquiry (also "puzzle", "query")
   Question,
-  /// A comment that is an aside to the main line of reasoning. (also "observation", "hint", "comment")
+  /// A comment that is an aside to the main line of reasoning
   Remark,
   /// Summarizes paper's experimental deliverables
   Result,

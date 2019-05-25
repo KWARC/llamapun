@@ -10,7 +10,6 @@ use std::time::{SystemTime, UNIX_EPOCH};
 
 use libxml::xpath::Context;
 use tar::{Builder, Header};
-use whatlang::{detect, Lang, Script};
 
 use llamapun::ams;
 use llamapun::ams::{AmsEnv, StructuralEnv};
@@ -116,20 +115,8 @@ pub fn main() -> Result<(), Error> {
         continue 'paragraphs;
       }
       // Before we go into tokenization, ensure this is an English sentence on the math-normalized plain text.
-      let detectable_with_spaces = paragraph.dnm.plaintext.replace("MathFormula", "");
-      let detectable = detectable_with_spaces.trim();
-      if let Some(info) = detect(&detectable) {
-        if info.script() != Script::Latin || (info.lang() != Lang::Eng && info.confidence() > 0.93)
-        {
-          println!("\nSkipping Para: {}", &detectable.replace("\n", ""));
-          println!(
-            "Script: {:?}; Lang: {:?}; Confidence: {:?}",
-            info.script(),
-            info.lang(),
-            info.confidence()
-          );
-          continue 'paragraphs;
-        }
+      if data_helpers::invalid_for_english_latin(&paragraph.dnm) {
+        continue 'paragraphs;
       }
       'sentences: for mut sentence in paragraph.iter() {
         sentence_buffer = String::new();

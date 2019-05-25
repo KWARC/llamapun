@@ -5,6 +5,7 @@
 use lazy_static::lazy_static;
 use libxml::xpath::Context;
 use regex::Regex;
+use whatlang::{detect, Lang, Script};
 
 use crate::dnm;
 use crate::dnm::DNMRange;
@@ -48,4 +49,27 @@ pub fn ams_normalize_word_range(range: &DNMRange, mut context: &mut Context) -> 
   }
 
   Ok(word_string)
+}
+
+/// Check if the given DNM contains valid English+Latin content
+pub fn invalid_for_english_latin(dnm: &dnm::DNM) -> bool {
+  let detectable_with_spaces = dnm.plaintext.replace("MathFormula", "");
+  let detectable = detectable_with_spaces.trim();
+  if let Some(info) = detect(&detectable) {
+    if info.script() != Script::Latin || (info.lang() != Lang::Eng && info.confidence() > 0.93)
+    {
+      println!("\nSkipping Para: {}", &detectable.replace("\n", ""));
+      println!(
+        "Script: {:?}; Lang: {:?}; Confidence: {:?}",
+        info.script(),
+        info.lang(),
+        info.confidence()
+      );
+      true
+    } else {
+      false
+    }
+  } else {
+    false
+  }
 }

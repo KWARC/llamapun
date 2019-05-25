@@ -7,6 +7,7 @@ use std::fs::File;
 use std::io::Error;
 use std::sync::{Arc, Mutex};
 use std::time::{SystemTime, UNIX_EPOCH};
+use std::collections::HashSet;
 
 
 use crypto::digest::Digest;
@@ -37,6 +38,7 @@ struct TarBuilder {
   builder: Builder<File>,
   count: u64,
   stamp: u64,
+  names: HashSet<String>,
 }
 
 impl TarBuilder {
@@ -45,6 +47,12 @@ impl TarBuilder {
   /// allocation to suffice However, using a modern NVMe SSD for speed conflicts that requirement.
   /// Hence, solution -- write directly to a .tar file, and avoid the inode trouble.
   pub fn save(&mut self, data: &str, paragraph_filename: &str) -> Result<(), Error> {
+    // if we see the same hash/name twice, ignore all following cases
+    if self.names.contains(paragraph_filename) {
+      return Ok(());
+    } else {
+      self.names.insert(paragraph_filename.to_string());
+    }
     self.count += 1;
     // let paragraph_filename = num_file_path(in_tar_directory, self.count);
     let bytes = data.as_bytes();
@@ -86,6 +94,7 @@ pub fn main() -> Result<(), Error> {
     count: 0,
     stamp,
     builder: Builder::new(file),
+    names: HashSet::new()
   }));
 
   let corpus = Corpus::new(corpus_path);
@@ -157,7 +166,11 @@ pub fn main() -> Result<(), Error> {
         let ams_class = ams::class_to_env(&parent_class);
 
         let ams_dir = if let Some(env) = ams_class {
-          if env == AmsEnv::Other {
+          if env == AmsEnv::Other // Other and other-like entities that are too noisy to include
+            || env == AmsEnv::Caption
+            || env == AmsEnv::Algorithm
+            || env == AmsEnv::Paragraph
+          {
             // if Other markup (long tail ams env classes), ignore the paragraph to avoid
             // pollution by mis-counting class A paras as class B (or Other)
             continue 'paragraphs;
@@ -194,6 +207,12 @@ pub fn main() -> Result<(), Error> {
     thread_counts
   });
 
+  let mut builder_lock = tar_builder.lock().unwrap();
+  builder_lock
+    .builder
+    .finish()
+    .expect("Tar builder should always succeed.");
+
   let duration_sec = SystemTime::now().duration_since(start).unwrap().as_secs();
   println!("---");
   println!(
@@ -213,6 +232,7 @@ pub fn main() -> Result<(), Error> {
     "{:?} discarded paragraphs (long words)",
     catalog.get("overflow_count").unwrap_or(&0)
   );
+  println!("{:?} paragraphs written to .tar destination (discarded duplicate names)",builder_lock.count);
   Ok(())
 }
 

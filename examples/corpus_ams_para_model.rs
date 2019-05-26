@@ -1,13 +1,13 @@
 // Copyright 2015-2018 KWARC research group. See the LICENSE
 // file at the top-level directory of this distribution.
 //
-use std::collections::HashMap;
+use std::collections::{HashMap,HashSet};
+
+use std::io::Error;
 use std::env;
 use std::fs::File;
-use std::io::Error;
 use std::sync::{Arc, Mutex};
 use std::time::{SystemTime, UNIX_EPOCH};
-use std::collections::HashSet;
 
 
 use crypto::digest::Digest;
@@ -94,7 +94,7 @@ pub fn main() -> Result<(), Error> {
     count: 0,
     stamp,
     builder: Builder::new(file),
-    names: HashSet::new()
+    names: HashSet::new(),
   }));
 
   let corpus = Corpus::new(corpus_path);
@@ -104,14 +104,17 @@ pub fn main() -> Result<(), Error> {
     let mut thread_data = Vec::new();
     let mut thread_counts = HashMap::new();
     thread_counts.insert(String::from("total_document_count"), 1);
-    // Only analyze if document contains AMS markup
-    if !ams::has_markup_xmldoc(&document.dom) {
-      return thread_counts;
+    // Count if document contains AMS markup
+    let has_ams_markup = ams::has_markup_xmldoc(&document.dom);
+    if has_ams_markup {
+      thread_counts.insert(String::from("ams_document_count"), 1);
+    } else {
+      thread_counts.insert(String::from("ams_document_count"), 0);
     }
-    thread_counts.insert(String::from("ams_document_count"), 1);
+
     let mut context = Context::new(&document.dom).unwrap();
 
-    'paragraphs: for mut paragraph in document.paragraph_iter() {
+    'paragraphs: for mut paragraph in document.extended_paragraph_iter() {
       let mut paragraph_buffer = String::new();
       let mut sentence_buffer;
       let mut invalid_paragraph = false;
@@ -163,9 +166,13 @@ pub fn main() -> Result<(), Error> {
       if !invalid_paragraph && !paragraph_buffer.is_empty() {
         // paragraph was valid, what is its label?
         let parent_class = para_parent.get_attribute("class").unwrap_or_default();
-        let ams_class = ams::class_to_env(&parent_class);
+        let ams_class = if has_ams_markup {
+          ams::class_to_env(&parent_class)
+        } else {
+          None
+        };
 
-        let ams_dir = if let Some(env) = ams_class {
+        let class_directory = if let Some(env) = ams_class {
           if env == AmsEnv::Other // Other and other-like entities that are too noisy to include
             || env == AmsEnv::Caption
             || env == AmsEnv::Algorithm
@@ -191,7 +198,7 @@ pub fn main() -> Result<(), Error> {
         };
         paragraph_count += 1;
         // precompute sha inside the thread, to do more in parallel
-        let paragraph_filename = hash_file_path(&ams_dir, &paragraph_buffer);
+        let paragraph_filename = hash_file_path(&class_directory, &paragraph_buffer);
         thread_data.push((paragraph_buffer, paragraph_filename));
       }
     }
@@ -232,7 +239,10 @@ pub fn main() -> Result<(), Error> {
     "{:?} discarded paragraphs (long words)",
     catalog.get("overflow_count").unwrap_or(&0)
   );
-  println!("{:?} paragraphs written to .tar destination (discarded duplicate names)",builder_lock.count);
+  println!(
+    "{:?} paragraphs written to .tar destination (discarded duplicate names)",
+    builder_lock.count
+  );
   Ok(())
 }
 

@@ -1,23 +1,22 @@
 // Copyright 2015-2018 KWARC research group. See the LICENSE
 // file at the top-level directory of this distribution.
 //
-use std::collections::{HashMap,HashSet};
-
-use std::io::Error;
+use std::collections::{HashMap, HashSet};
 use std::env;
 use std::fs::File;
+use std::io::Error;
 use std::sync::{Arc, Mutex};
 use std::time::{SystemTime, UNIX_EPOCH};
 
-
 use crypto::digest::Digest;
 use crypto::sha2::Sha256;
-use libxml::xpath::Context;
 
+use libxml::xpath::Context;
 use llamapun::ams;
 use llamapun::ams::{AmsEnv, StructuralEnv};
 use llamapun::parallel_data::Corpus;
 use llamapun::util::data_helpers;
+
 use tar::{Builder, Header};
 
 /// assume we are dealing with less than 100m items here
@@ -214,21 +213,12 @@ pub fn main() -> Result<(), Error> {
     thread_counts
   });
 
-  let mut builder_lock = tar_builder.lock().unwrap();
-  builder_lock
-    .builder
-    .finish()
-    .expect("Tar builder should always succeed.");
-
-  let duration_sec = SystemTime::now().duration_since(start).unwrap().as_secs();
-  println!("---");
   println!(
-    "AMS paragraph model finished in {:?}s, gathered: ",
-    duration_sec
+    "{:?} Total traversed documents;",
+    catalog.get("total_document_count").unwrap_or(&0)
   );
-
   println!(
-    "{:?} documents;",
+    "{:?} AMS marked up documents;",
     catalog.get("ams_document_count").unwrap_or(&0)
   );
   println!(
@@ -239,10 +229,20 @@ pub fn main() -> Result<(), Error> {
     "{:?} discarded paragraphs (long words)",
     catalog.get("overflow_count").unwrap_or(&0)
   );
+  let mut builder_lock = tar_builder.lock().unwrap();
   println!(
-    "{:?} paragraphs written to .tar destination (discarded duplicate names)",
+    "{:?} paragraphs written to .tar destination (discarded duplicate SHA256-based filenames)",
     builder_lock.count
   );
+  builder_lock
+    .builder
+    .finish()
+    .expect("Tar builder should always succeed.");
+
+  let duration_sec = SystemTime::now().duration_since(start).unwrap().as_secs();
+  println!("---");
+  println!("AMS paragraph model finished in {:?}s.", duration_sec);
+
   Ok(())
 }
 

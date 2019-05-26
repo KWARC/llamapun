@@ -28,53 +28,61 @@ pub fn has_markup_xmldoc(dom: &XmlDoc) -> bool {
 pub enum StructuralEnv {
   /// abstract lead-in
   Abstract,
-  /// Introduction section
+  /// Acknowledgement(.+) section
+  Acknowledgement,
+  /// Conclusion(.+) section
+  Conclusion,
+  /// Discussion(.+) section
+  Discussion,
+  /// Example(.+) section
+  Example,
+  /// Exercise(.+) section
+  Exercise,
+  /// Introduction(.+) section
   Introduction,
-  /// Related Work section
+  /// Keywords metadata from paper frontmatter
+  Keywords,
+  /// Related Work/Literature Review(.+) section
   RelatedWork,
   /// Method(s) section
   Method,
-  /// Remark(.+) section
-  Remark,
-  /// Caption for a figure or table
-  Caption, // figcaption element, skip ltx_tag_figure span, auto-generated
-  /// Example(.+) section
-  Example,
-  /// Result(.+) section
+  /// Overview(.+) sections
+  Overview,
+  /// Result(s) section
   Result,
-  /// Discussion(.+) section
-  Discussion,
-  /// Conclusion(.+) section
-  Conclusion,
-  /// Acknowledgement(s) section
-  Acknowledgement,
   /// Anything else
   Other,
 }
 
 impl From<String> for StructuralEnv {
   fn from(s: String) -> StructuralEnv {
-    let s = s.to_lowercase();
+    let s : String = s.chars().filter(char::is_ascii_alphabetic).collect::<String>().to_lowercase();
     if s.starts_with("abstract") {
       StructuralEnv::Abstract
-    } else if s.starts_with("introduction") {
-      StructuralEnv::Introduction
-    } else if s.starts_with("related work") {
-      StructuralEnv::RelatedWork
-    } else if s.starts_with("method") {
-      StructuralEnv::Method
-    } else if s.starts_with("remark") {
-      StructuralEnv::Remark
-    } else if s.starts_with("example") {
-      StructuralEnv::Example
-    } else if s.starts_with("result") {
-      StructuralEnv::Result
-    } else if s.starts_with("discussion") {
-      StructuralEnv::Discussion
-    } else if s.starts_with("conclusion") {
-      StructuralEnv::Conclusion
     } else if s.starts_with("acknowledgement") {
       StructuralEnv::Acknowledgement
+    } else if s.starts_with("conclusion") {
+      StructuralEnv::Conclusion
+    } else if s.starts_with("discussion") {
+      StructuralEnv::Discussion
+    } else if s.starts_with("example") {
+      StructuralEnv::Example
+    } else if s.starts_with("exercise") {
+      StructuralEnv::Exercise
+    } else if s.starts_with("introduction") {
+      StructuralEnv::Introduction
+    } else if s.starts_with("keywords") {
+      StructuralEnv::Keywords
+    } else if s.starts_with("literature review") {
+      StructuralEnv::RelatedWork
+    } else if s.starts_with("method") || s.ends_with("methods") {
+      StructuralEnv::Method
+    } else if s.starts_with("overview") {
+      StructuralEnv::Overview
+    } else if s.starts_with("related work") {
+      StructuralEnv::RelatedWork
+    } else if s.starts_with("result") || s.ends_with("results") {
+      StructuralEnv::Result
     } else {
       StructuralEnv::Other
     }
@@ -85,16 +93,17 @@ impl fmt::Display for StructuralEnv {
   fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
     let val = match self {
       StructuralEnv::Abstract => "abstract",
+      StructuralEnv::Acknowledgement => "acknowledgement",
+      StructuralEnv::Conclusion => "conclusion",
+      StructuralEnv::Discussion => "discussion",
+      StructuralEnv::Example => "example",
+      StructuralEnv::Exercise => "exercise",
       StructuralEnv::Introduction => "introduction",
+      StructuralEnv::Keywords => "keywords",
       StructuralEnv::RelatedWork => "relatedwork",
       StructuralEnv::Method => "method",
-      StructuralEnv::Remark => "remark",
-      StructuralEnv::Caption => "caption",
-      StructuralEnv::Example => "example",
+      StructuralEnv::Overview => "overview",
       StructuralEnv::Result => "result",
-      StructuralEnv::Discussion => "discussion",
-      StructuralEnv::Conclusion => "conclusion",
-      StructuralEnv::Acknowledgement => "acknowledgement",
       StructuralEnv::Other => "other",
     };
     fmt.write_str(val)

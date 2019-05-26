@@ -186,7 +186,7 @@ impl<'d> Document<'d> {
   }
 
   /// Obtain the problem-free logical paragraphs of a libxml `Document`
-    pub fn get_paragraph_nodes(&self) -> Vec<RoNode> {
+  pub fn get_paragraph_nodes(&self) -> Vec<RoNode> {
     Document::paragraph_nodes(&self.dom)
   }
 
@@ -209,6 +209,36 @@ impl<'d> Document<'d> {
       document: self,
     }
   }
+
+  fn abstract_p_node(doc: &XmlDoc) -> Option<RoNode> {
+    let xpath_context = Context::new(doc).unwrap();
+    match xpath_context.evaluate(
+      "//*[local-name()='div' and contains(@class,'ltx_abstract') and not(descendant::*[contains(@class,'ltx_ERROR')])]/p[1]",
+    ) {
+      Ok(found_payload) => {
+        let mut abs = found_payload.get_readonly_nodes_as_vec();
+        if !abs.is_empty() {
+          Some(abs.remove(0))
+        } else {
+          None
+        }
+      },
+      _ => None,
+    }
+  }
+
+  /// Get an iterator over the paragraphs of the document, AND notable additional paragraphs, such as abstracts
+  pub fn extended_paragraph_iter(&self) -> ParagraphIterator {
+    let mut paras = Document::paragraph_nodes(&self.dom);
+    if let Some(anode) = Document::abstract_p_node(&self.dom) {
+      paras.push(anode);
+    }
+    ParagraphIterator {
+      walker: paras.into_iter(),
+      document: self,
+    }
+  }
+
 
   /// Obtain the MathML <math> nodes of a libxml `Document`
   pub fn get_math_nodes(&self) -> Vec<RoNode> {

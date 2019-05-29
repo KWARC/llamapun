@@ -56,7 +56,11 @@ pub enum StructuralEnv {
 
 impl From<String> for StructuralEnv {
   fn from(s: String) -> StructuralEnv {
-    let s : String = s.chars().filter(char::is_ascii_alphabetic).collect::<String>().to_lowercase();
+    let s: String = s
+      .chars()
+      .filter(char::is_ascii_alphabetic)
+      .collect::<String>()
+      .to_lowercase();
     if s.starts_with("abstract") {
       StructuralEnv::Abstract
     } else if s.starts_with("acknowledgement") {
@@ -73,13 +77,13 @@ impl From<String> for StructuralEnv {
       StructuralEnv::Introduction
     } else if s.starts_with("keywords") {
       StructuralEnv::Keywords
-    } else if s.starts_with("literature review") {
+    } else if s.starts_with("literaturereview") {
       StructuralEnv::RelatedWork
     } else if s.starts_with("method") || s.ends_with("methods") {
       StructuralEnv::Method
     } else if s.starts_with("overview") {
       StructuralEnv::Overview
-    } else if s.starts_with("related work") {
+    } else if s.starts_with("relatedwork") {
       StructuralEnv::RelatedWork
     } else if s.starts_with("result") || s.ends_with("results") {
       StructuralEnv::Result

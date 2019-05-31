@@ -11,6 +11,7 @@ use std::sync::{Arc, Mutex};
 
 use libxml::xpath::Context;
 use llamapun::dnm;
+use llamapun::dnm::SpecialTagsOption;
 use llamapun::parallel_data::Corpus;
 
 static BUFFER_CAPACITY: usize = 10_485_760;
@@ -42,6 +43,15 @@ pub fn main() {
       return;
     }
   };
+
+  let discard_math = match input_args.next() {
+    Some(value) => match value.as_str() {
+      "discard_math" => true, // should eventually become --discard_math flag, rushing for now.
+      _ => false,
+    },
+    None => false,
+  };
+
   let token_writer = Arc::new(Mutex::new(BufWriter::with_capacity(
     BUFFER_CAPACITY,
     token_model_file,
@@ -51,7 +61,25 @@ pub fn main() {
   // Integers, floats, subfigure numbers
   let is_numeric = Regex::new(r"^-?(?:\d+)(?:[a-k]|(?:\.\d+(?:[eE][+-]?\d+)?))?$").unwrap();
 
-  let corpus = Corpus::new(corpus_path);
+  let mut corpus = Corpus::new(corpus_path);
+  if discard_math {
+    println!("-- will discard math.");
+    corpus
+      .dnm_parameters
+      .special_tag_name_options
+      .insert("math".to_string(), SpecialTagsOption::Skip);
+    corpus
+      .dnm_parameters
+      .special_tag_class_options
+      .insert("ltx_equation".to_string(), SpecialTagsOption::Skip);
+    corpus
+      .dnm_parameters
+      .special_tag_class_options
+      .insert("ltx_equationgroup".to_string(), SpecialTagsOption::Skip);
+  } else {
+    println!("-- will lexematize math.")
+  }
+
   let corpus_counts = corpus.catalog_with_parallel_walk(|document| {
     let (
       mut sentence_count,
@@ -92,7 +120,11 @@ pub fn main() {
             // sometimes they are not cleanly tokenized, e.g. $k$-dimensional
             // will be the word string "mathformula-dimensional"
             if word_string.contains("mathformula") {
-              lexeme_str = dnm::node::lexematize_math(word.range.get_node(), &mut context);
+              if !discard_math {
+                lexeme_str = dnm::node::lexematize_math(word.range.get_node(), &mut context);
+              } else {
+                lexeme_str = String::new();
+              }
               word_str = &lexeme_str;
               formula_count += 1;
             } else if word_string.contains("citationelement") {

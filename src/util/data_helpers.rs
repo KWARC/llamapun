@@ -24,7 +24,7 @@ static MAX_WORD_LENGTH: usize = 25;
 /// - citations become citationelement
 /// - math is replaced by its lexeme annotation (created by latexml), with a "mathformula" fallback
 /// - of the word is longer than the max length of 25, an error is returned
-pub fn ams_normalize_word_range(range: &DNMRange, mut context: &mut Context) -> Result<String, ()> {
+pub fn ams_normalize_word_range(range: &DNMRange, mut context: &mut Context, discard_math: bool) -> Result<String, ()> {
   let mut word_string = range
     .get_plaintext()
     .chars()
@@ -41,7 +41,11 @@ pub fn ams_normalize_word_range(range: &DNMRange, mut context: &mut Context) -> 
   // sometimes they are not cleanly tokenized, e.g. $k$-dimensional
   // will be the word string "mathformula-dimensional"
   if word_string.contains("mathformula") {
-    word_string = dnm::node::lexematize_math(range.get_node(), &mut context);
+    if !discard_math {
+      word_string = dnm::node::lexematize_math(range.get_node(), &mut context);
+    } else {
+      word_string = String::new();
+    }
   } else if word_string.contains("citationelement") {
     word_string = String::from("citationelement");
   } else if IS_NUMERC.is_match(&word_string) {

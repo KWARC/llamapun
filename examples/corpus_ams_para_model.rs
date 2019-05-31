@@ -1,6 +1,12 @@
-// Copyright 2015-2018 KWARC research group. See the LICENSE
+// Copyright 2015-2019 KWARC research group. See the LICENSE
 // file at the top-level directory of this distribution.
 //
+/// Extracts a corpus paragraph model from an unpacked corpus of HTML files
+/// With math lexemes (default):
+/// $ cargo run --release --example corpus_ams_para_model /path/to/corpus paragraph_data.tar
+///
+/// With math discarded:
+/// $ cargo run --release --example corpus_ams_para_model /path/to/corpus paragraph_data_nomath.tar discard_math
 use std::collections::{HashMap, HashSet};
 use std::env;
 use std::fs::File;
@@ -15,6 +21,7 @@ use libxml::xpath::Context;
 use llamapun::ams;
 use llamapun::ams::{AmsEnv, StructuralEnv};
 use llamapun::parallel_data::Corpus;
+use llamapun::dnm::SpecialTagsOption;
 use llamapun::util::data_helpers;
 
 use tar::{Builder, Header};
@@ -84,6 +91,13 @@ pub fn main() -> Result<(), Error> {
     Some(path) => path,
     None => "ams_paragraphs.tar".to_string(),
   };
+  let discard_math = match input_args.next() {
+    Some(value) => match value.as_str() {
+      "discard_math" => true, // should eventually become --discard_math flag, rushing for now.
+      _ => false,
+    },
+    None => false,
+  };
 
   let space = ' ';
   let linebreak = '\n';
@@ -96,7 +110,25 @@ pub fn main() -> Result<(), Error> {
     names: HashSet::new(),
   }));
 
-  let corpus = Corpus::new(corpus_path);
+  let mut corpus = Corpus::new(corpus_path);
+  if discard_math {
+    println!("-- will discard math.");
+    corpus
+      .dnm_parameters
+      .special_tag_name_options
+      .insert("math".to_string(), SpecialTagsOption::Skip);
+    corpus
+      .dnm_parameters
+      .special_tag_class_options
+      .insert("ltx_equation".to_string(), SpecialTagsOption::Skip);
+    corpus
+      .dnm_parameters
+      .special_tag_class_options
+      .insert("ltx_equationgroup".to_string(), SpecialTagsOption::Skip);
+  } else {
+    println!("-- will lexematize math.")
+  }
+
   let catalog = corpus.catalog_with_parallel_walk(|document| {
     let mut paragraph_count: u64 = 0;
     let mut overflow_count = 0;
@@ -143,7 +175,7 @@ pub fn main() -> Result<(), Error> {
         for word in sentence.simple_iter() {
           if !word.range.is_empty() {
             let word_string =
-              match data_helpers::ams_normalize_word_range(&word.range, &mut context) {
+              match data_helpers::ams_normalize_word_range(&word.range, &mut context, discard_math) {
                 Ok(w) => w,
                 Err(_) => {
                   overflow_count += 1;
@@ -151,8 +183,10 @@ pub fn main() -> Result<(), Error> {
                   break 'sentences;
                 }
               };
-            sentence_buffer.push_str(&word_string);
-            sentence_buffer.push(space);
+            if !word_string.is_empty() {
+              sentence_buffer.push_str(&word_string);
+              sentence_buffer.push(space);
+            }
           }
         }
 

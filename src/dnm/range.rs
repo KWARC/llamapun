@@ -316,7 +316,7 @@ fn get_next_sibling(root_node: RoNode, node: RoNode) -> Option<RoNode> {
 
 /// Helper function: Returns the number of a node (the how many-th sibling of
 /// its kind it is)
-fn get_node_number(parent: RoNode, target: RoNode, rule: &Fn(RoNode) -> bool) -> Result<i32, ()> {
+fn get_node_number(parent: RoNode, target: RoNode, rule: &dyn Fn(RoNode) -> bool) -> Result<i32, ()> {
   let mut cur = parent
     .get_first_child()
     .expect("can't get child number - node has no children");

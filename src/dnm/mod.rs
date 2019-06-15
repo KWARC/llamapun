@@ -148,7 +148,7 @@ impl DNM {
   pub fn from_str(
     text: &str,
     params_opt: Option<DNMParameters>,
-  ) -> Result<(Document, Self), Box<Error>> {
+  ) -> Result<(Document, Self), Box<dyn Error>> {
     let params = params_opt.unwrap_or_default();
     // Same as ::new(), but requires initializing a libxml Document with the text content
     let mut doc = Document::new().unwrap();
@@ -176,7 +176,7 @@ impl DNM {
   pub fn from_ams_paragraph_str(
     text: &str,
     params: Option<DNMParameters>,
-  ) -> Result<(Document, Self), Box<Error>> {
+  ) -> Result<(Document, Self), Box<dyn Error>> {
     let rebuilt = c14n::rebuild_normalized_text(text);
     DNM::from_str(&rebuilt, params)
   }

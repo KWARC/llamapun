@@ -64,18 +64,7 @@ pub fn invalid_for_english_latin(dnm: &dnm::DNM) -> bool {
     .replace("REF", " ");
   let detectable = detectable_with_spaces.trim();
   if let Some(info) = detect(&detectable) {
-    if info.script() != Script::Latin || (info.lang() != Lang::Eng && info.confidence() > 0.93) {
-      // println!("\nSkipping Para: {}", &detectable.replace("\n", ""));
-      // println!(
-      //   "Script: {:?}; Lang: {:?}; Confidence: {:?}",
-      //   info.script(),
-      //   info.lang(),
-      //   info.confidence()
-      // );
-      true
-    } else {
-      false
-    }
+    info.script() != Script::Latin || (info.lang() != Lang::Eng && info.confidence() > 0.93)
   } else {
     false
   }

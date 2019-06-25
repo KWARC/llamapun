@@ -229,7 +229,6 @@ impl DNM {
     }
 
     record_node_map!(self, node, offset_start);
-    return;
   }
 
   fn normalize_whitespace(&mut self, string: &mut String, offsets: &mut Vec<i32>) {

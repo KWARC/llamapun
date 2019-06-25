@@ -120,7 +120,6 @@ impl DNM {
         println!("-- Skipping node {:?}", node.get_name());
       } // skip all other node types for now
     }
-    return;
   }
 }
 

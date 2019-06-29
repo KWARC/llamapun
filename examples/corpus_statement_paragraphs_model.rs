@@ -3,10 +3,10 @@
 //
 /// Extracts a corpus paragraph model from an unpacked corpus of HTML files
 /// With math lexemes (default):
-/// $ cargo run --release --example corpus_ams_para_model /path/to/corpus paragraph_data.tar
+/// $ cargo run --release --example corpus_statement_paragraphs_model /path/to/corpus paragraph_data.tar
 ///
 /// With math discarded:
-/// $ cargo run --release --example corpus_ams_para_model /path/to/corpus paragraph_data_nomath.tar discard_math
+/// $ cargo run --release --example corpus_statement_paragraphs_model /path/to/corpus paragraph_data_nomath.tar discard_math
 use std::collections::{HashMap, HashSet};
 use std::env;
 use std::fs::File;

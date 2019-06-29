@@ -46,7 +46,7 @@ Requires **stable** rust, starting from `rustc 1.34.0 (91856ed52 2019-04-10)`.
 
  * **Additional included examples**
    * math-aware corpus token models, via DNM plain text normalization
-   * math-aware dataset extraction for "statement classification" of paragraphs
+   * math-aware [dataset extraction](examples/corpus_statement_paragraphs_model.rs) for "statement classification" of paragraphs
    * "node footprint" statistics for corpora, e.g. [informing the MathML4 effort](https://github.com/mathml-refresh/mathml/issues/55#issuecomment-475916070)
    * track sibling words to inline references in scientific articles, [informing LaTeXML development](https://github.com/brucemiller/LaTeXML/issues/1043#issuecomment-478249149)
 

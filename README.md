@@ -31,7 +31,7 @@ Requires **stable** rust, starting from `rustc 1.34.0 (91856ed52 2019-04-10)`.
    * Chunking and shallow parsing (via [SENNA](http://ml.nec-labs.com/senna/)),
    * Extract token models for [GloVe](http://nlp.stanford.edu/projects/glove/),
    * [Pattern-matching library](doc/pattern_matching.md) for rule-based extraction and/or bootstrapping,
-   * [TODO] Language identification (via [libTextCat](http://software.wise-guys.nl/libtextcat/)),
+   * [TODO] Language identification (via [whatlang](https://crates.io/crates/whatlang)),
    * N-gram footprints
 
  * **Representation Toolkit**

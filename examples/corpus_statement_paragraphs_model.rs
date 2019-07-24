@@ -20,8 +20,8 @@ use crypto::sha2::Sha256;
 use libxml::xpath::Context;
 use llamapun::ams;
 use llamapun::ams::{AmsEnv, StructuralEnv};
-use llamapun::parallel_data::Corpus;
 use llamapun::dnm::SpecialTagsOption;
+use llamapun::parallel_data::Corpus;
 use llamapun::util::data_helpers;
 
 use tar::{Builder, Header};
@@ -75,8 +75,6 @@ impl TarBuilder {
   }
 }
 
-/// Given a `CorTeX` corpus of HTML5 documents, extract a token model as a
-/// single file
 pub fn main() -> Result<(), Error> {
   let start = SystemTime::now();
   let stamp = start.duration_since(UNIX_EPOCH).unwrap().as_secs();
@@ -175,7 +173,8 @@ pub fn main() -> Result<(), Error> {
         for word in sentence.simple_iter() {
           if !word.range.is_empty() {
             let word_string =
-              match data_helpers::ams_normalize_word_range(&word.range, &mut context, discard_math) {
+              match data_helpers::ams_normalize_word_range(&word.range, &mut context, discard_math)
+              {
                 Ok(w) => w,
                 Err(_) => {
                   overflow_count += 1;

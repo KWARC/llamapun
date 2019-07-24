@@ -44,6 +44,22 @@ pub struct Document<'d> {
   pub dnm: Option<DNM>,
 }
 
+/// An iterator over headings of a `Document`. Ignores headings containing `ltx_ERROR` markup
+pub struct HeadingIterator<'iter> {
+  /// A walker over paragraph nodes
+  walker: IntoIter<RoNode>,
+  /// A reference to the document over which we iterate
+  pub document: &'iter Document<'iter>,
+}
+
+/// A heading of a document with a DNM
+pub struct Heading<'p> {
+  /// The dnm of this paragraph
+  pub dnm: DNM,
+  /// A reference to the document containing this paragraph
+  pub document: &'p Document<'p>,
+}
+
 /// An iterator over paragraphs of a `Document`. Ignores paragraphs containing `ltx_ERROR` markup
 pub struct ParagraphIterator<'iter> {
   /// A walker over paragraph nodes
@@ -185,6 +201,29 @@ impl<'d> Document<'d> {
     })
   }
 
+  /// Obtain the problem-free logical headings of a libxml `Document`
+  pub fn get_heading_nodes(&self) -> Vec<RoNode> {
+    Document::heading_nodes(&self.dom)
+  }
+  /// Associated function for `get_paragraph_nodes`
+  fn heading_nodes(doc: &XmlDoc) -> Vec<RoNode> {
+    let xpath_context = Context::new(doc).unwrap();
+    match xpath_context.evaluate(
+      "//*[contains(@class,'ltx_title') and (local-name()='h2' or local-name()='h3' or local-name()='h4' or local-name()='h5' or local-name()='h6') and not(descendant::*[contains(@class,'ltx_ERROR')]) and not(preceding-sibling::*[contains(@class,'ltx_ERROR')])]",
+    ) {
+      Ok(found_payload) => found_payload.get_readonly_nodes_as_vec(),
+      _ => Vec::new(),
+    }
+  }
+  /// Get an iterator over the headings of the document
+  pub fn heading_iter(&self) -> HeadingIterator {
+    let headings = Document::heading_nodes(&self.dom);
+    HeadingIterator {
+      walker: headings.into_iter(),
+      document: self,
+    }
+  }
+
   /// Obtain the problem-free logical paragraphs of a libxml `Document`
   pub fn get_paragraph_nodes(&self) -> Vec<RoNode> {
     Document::paragraph_nodes(&self.dom)
@@ -239,7 +278,6 @@ impl<'d> Document<'d> {
     }
   }
 
-
   /// Obtain the MathML <math> nodes of a libxml `Document`
   pub fn get_math_nodes(&self) -> Vec<RoNode> {
     Document::math_nodes(&self.dom)
@@ -278,6 +316,35 @@ impl<'d> Document<'d> {
     SentenceIterator {
       walker: sentences.into_iter(),
       document: self,
+    }
+  }
+}
+
+impl<'iter> Iterator for HeadingIterator<'iter> {
+  type Item = Heading<'iter>;
+  fn next(&mut self) -> Option<Heading<'iter>> {
+    match self.walker.next() {
+      None => None,
+      Some(node) => {
+        // Create a DNM for the current Heading
+        let dnm = DNM::new(node, DNMParameters::llamapun_normalization());
+        Some(Heading {
+          dnm,
+          document: self.document,
+        })
+      }
+    }
+  }
+}
+
+impl<'p> Heading<'p> {
+  /// Get an iterator over the sentences in this paragraph
+  pub fn iter(&'p mut self) -> SentenceIterator<'p> {
+    let tokenizer = &self.document.corpus.tokenizer;
+    let sentences = tokenizer.sentences(&self.dnm);
+    SentenceIterator {
+      walker: sentences.into_iter(),
+      document: self.document,
     }
   }
 }

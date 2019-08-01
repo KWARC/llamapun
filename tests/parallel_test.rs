@@ -1,4 +1,4 @@
-use llamapun::parallel_data::Corpus;
+use llamapun::parallel_data::*;
 use std::collections::HashMap;
 
 #[test]
@@ -10,7 +10,7 @@ fn can_iterate_corpus() {
     let mut word_count = 0;
     for mut paragraph in document.paragraph_iter() {
       for mut sentence in paragraph.iter() {
-        for word in sentence.simple_iter() {
+        for word in sentence.word_iter() {
           word_count += 1;
           assert!(!word.range.is_empty());
         }

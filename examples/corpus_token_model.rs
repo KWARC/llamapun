@@ -12,7 +12,7 @@ use std::sync::{Arc, Mutex};
 use libxml::xpath::Context;
 use llamapun::dnm;
 use llamapun::dnm::SpecialTagsOption;
-use llamapun::parallel_data::Corpus;
+use llamapun::parallel_data::*;
 
 static BUFFER_CAPACITY: usize = 10_485_760;
 static MAX_WORD_LENGTH: usize = 25;
@@ -98,7 +98,7 @@ pub fn main() {
       for mut sentence in paragraph.iter() {
         let mut sentence_buffer = String::new();
         let mut invalid_sentence = true;
-        'words: for word in sentence.simple_iter() {
+        'words: for word in sentence.word_iter() {
           let lexeme_str: String;
           if !word.range.is_empty() {
             let word_string = word

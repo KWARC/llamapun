@@ -21,7 +21,7 @@ use libxml::xpath::Context;
 use llamapun::ams;
 use llamapun::ams::{AmsEnv, StructuralEnv};
 use llamapun::dnm::SpecialTagsOption;
-use llamapun::parallel_data::Corpus;
+use llamapun::parallel_data::*  ;
 use llamapun::util::data_helpers;
 
 use tar::{Builder, Header};
@@ -170,7 +170,7 @@ pub fn main() -> Result<(), Error> {
       }
       'sentences: for mut sentence in paragraph.iter() {
         sentence_buffer = String::new();
-        for word in sentence.simple_iter() {
+        for word in sentence.word_iter() {
           if !word.range.is_empty() {
             let word_string =
               match data_helpers::ams_normalize_word_range(&word.range, &mut context, discard_math)

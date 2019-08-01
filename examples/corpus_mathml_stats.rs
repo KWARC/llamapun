@@ -21,7 +21,6 @@ use rayon::prelude::*;
 use std::collections::{HashMap, HashSet};
 use std::env;
 use std::fs::File;
-use std::io::prelude::*;
 use std::io::{BufWriter, Error};
 use std::thread;
 
@@ -102,17 +101,15 @@ pub fn main() -> Result<(), Error> {
   let mut catalog_vec: Vec<(&String, &u64)> = catalog.iter().collect();
   catalog_vec.sort_by(|a, b| b.1.cmp(a.1));
 
-  let mut node_statistics_writer = BufWriter::with_capacity(BUFFER_CAPACITY, node_statistics_file);
-  node_statistics_writer.write(b"name@attr[value], frequency\n")?;
+  let buffered_writer = BufWriter::with_capacity(BUFFER_CAPACITY, node_statistics_file);
+  let mut csv_writer = csv::Writer::from_writer(buffered_writer);
+  csv_writer.write_record(&["name@attr[value]","frequency"])?;
 
   for (key, val) in catalog_vec {
-    node_statistics_writer.write(key.as_bytes())?;
-    node_statistics_writer.write(b", ")?;
-    node_statistics_writer.write(val.to_string().as_bytes())?;
-    node_statistics_writer.write(b"\n")?;
+    csv_writer.write_record(&[key,&val.to_string()])?;
   }
   // Close the writer
-  node_statistics_writer.flush()
+  csv_writer.flush()
 }
 
 fn dfs_record(node: RoNode, open_ended: &HashSet<&str>, catalog: &mut HashMap<String, u64>) {

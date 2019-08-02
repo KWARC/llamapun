@@ -193,6 +193,11 @@ impl DNM {
     }
   }
 
+  /// Get the range representing the full DNM
+  pub fn get_range(&self) -> Result<DNMRange, ()> {
+    self.get_range_of_node(self.root_node)
+  }
+
   /// The heart of the dnm generation...
   fn recurse_node_create(&mut self, node: RoNode) {
     if node.is_text_node() {

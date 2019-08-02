@@ -119,3 +119,18 @@ impl<'s> ItemDNMRange<'s> {
     }
   }
 }
+
+impl<'s> ItemDNM<'s> {
+  /// Get an iterator over the words (using rudimentary heuristics)
+  pub fn word_iter(&'s mut self) -> DNMRangeIterator<'s> {
+    let tokenizer = &self.document.corpus.tokenizer;
+    let words = match self.dnm.get_range() {
+      Ok(range) => tokenizer.words(&range),
+      _ => Vec::new(),
+    };
+    DNMRangeIterator {
+      walker: words.into_iter(),
+      document: &self.document,
+    }
+  }
+}

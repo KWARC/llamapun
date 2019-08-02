@@ -53,28 +53,21 @@ pub fn main() -> Result<(), Error> {
       }
       let mut heading_buffer = String::new();
       let mut invalid_heading = false;
-      'sentences: for mut sentence in heading.iter() {
-        let mut sentence_buffer = String::new();
-        for word in sentence.word_iter() {
-          if word.range.is_empty() {
-            continue;
-          }
-          let word_string =
-            match data_helpers::ams_normalize_word_range(&word.range, &mut context, false) {
-              Ok(w) => w,
-              Err(_) => {
-                overflow_count += 1;
-                invalid_heading = true;
-                break 'sentences;
-              }
-            };
-          if !word_string.is_empty() {
-            sentence_buffer.push_str(&word_string);
-            sentence_buffer.push(' ');
-          }
+      for word in heading.word_iter() {
+        if word.range.is_empty() {
+          continue;
         }
-        if !sentence_buffer.is_empty() {
-          heading_buffer.push_str(&sentence_buffer);
+        let word_string =
+          match data_helpers::ams_normalize_word_range(&word.range, &mut context, false) {
+            Ok(w) => w,
+            Err(_) => {
+              overflow_count += 1;
+              invalid_heading = true;
+              break;
+            }
+          };
+        if !word_string.is_empty() {
+          heading_buffer.push_str(&word_string);
           heading_buffer.push(' ');
         }
       }

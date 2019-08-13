@@ -782,10 +782,10 @@ fn load_rule<PatternT, RuleT>(
       summary: String::new(),
     });
   }
-  if rule_opt.is_none() {
-    Err(format!("{} \"{}\" has no content node", rule_type, &name))
+  if let Some(rule) = rule_opt {
+    Ok(rule_gen(rule, meta_opt.unwrap()))
   } else {
-    Ok(rule_gen(rule_opt.unwrap(), meta_opt.unwrap()))
+    Err(format!("{} \"{}\" has no content node", rule_type, &name))
   }
 }
 

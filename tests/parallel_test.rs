@@ -1,3 +1,4 @@
+use libxml::readonly::RoNode;
 use llamapun::parallel_data::*;
 use std::collections::HashMap;
 
@@ -37,10 +38,9 @@ fn can_iterate_xpath() {
   let catalog = corpus.catalog_with_parallel_walk(|document| {
     let mut t_catalog = HashMap::new();
     let mut contacts = 0;
-    for contact in
+    for _contact in
       document.xpath_selector_iter("//*[contains(@class,'ltx_contact') and (local-name()='span')]")
     {
-      println!("contact: {:?}", contact.dnm.plaintext);
       contacts += 1;
     }
     t_catalog.insert(String::from("contact_count"), contacts);
@@ -66,6 +66,30 @@ fn can_iterate_xpath() {
     email_count
   );
 }
-// can_iterate_custom() {
-//   let custom_iterator = document.custom_iter(filter_closure);
-// }
+
+#[test]
+fn can_iterate_custom() {
+  let corpus = Corpus::new("tests".to_string());
+  let email_filter = |node: &RoNode| {
+    node.get_name() == "span"
+      && node
+        .get_attribute("class")
+        .unwrap_or_default()
+        .contains("ltx_contact")
+  };
+  let catalog = corpus.catalog_with_parallel_walk(|document| {
+    let mut t_catalog = HashMap::new();
+    let mut contacts = 0;
+    for _contact in document.filter_iter(&email_filter) {
+      contacts += 1;
+    }
+    t_catalog.insert(String::from("contact_count"), contacts);
+    t_catalog
+  });
+  let contact_count = catalog.get("contact_count").unwrap_or(&0);
+  assert_eq!(
+    *contact_count, 4,
+    "expected 4 contact elements, found {:?}",
+    contact_count
+  );
+}

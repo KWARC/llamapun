@@ -110,11 +110,7 @@ impl<'d> Document<'d> {
 
   /// Associated function for `get_math_nodes`
   pub(crate) fn math_nodes(doc: &XmlDoc) -> Vec<RoNode> {
-    let xpath_context = Context::new(doc).unwrap();
-    match xpath_context.evaluate("//*[local-name()='math']") {
-      Ok(found_payload) => found_payload.get_readonly_nodes_as_vec(),
-      _ => Vec::new(),
-    }
+    Document::xpath_nodes(&doc, "//*[local-name()='math']")
   }
   /// Obtain the <span[class=ltx_ref]> nodes of a libxml `Document`
   pub fn get_ref_nodes(&self) -> Vec<RoNode> {
@@ -122,11 +118,8 @@ impl<'d> Document<'d> {
   }
   /// Associated function for `get_ref_nodes`
   pub(crate) fn ref_nodes(doc: &XmlDoc) -> Vec<RoNode> {
-    let xpath_context = Context::new(doc).unwrap();
-    match xpath_context.evaluate("//*[(local-name()='span' or local-name()='a') and (contains(@class,'ltx_ref ') or @class='ltx_ref')]") {
-      Ok(found_payload) => found_payload.get_readonly_nodes_as_vec(),
-      _ => Vec::new(),
-    }
+    Document::xpath_nodes(&doc,
+    "//*[(local-name()='span' or local-name()='a') and (contains(@class,'ltx_ref ') or @class='ltx_ref')]")
   }
 
   /// Get an iterator over the sentences of the document
@@ -162,6 +155,27 @@ impl<'d> Document<'d> {
   pub fn xpath_selector_iter(&self, xpath_str: &str) -> RoNodeIterator {
     RoNodeIterator {
       walker: Document::xpath_nodes(&self.dom, xpath_str).into_iter(),
+      document: self,
+    }
+  }
+
+  /// Associated function for `get_filtered_nodes`
+  pub(crate) fn dfs_filter_nodes(node: RoNode, filter: &dyn Fn(&RoNode) -> bool) -> Vec<RoNode> {
+    let mut found = Vec::new();
+    if filter(&node) {
+      found.push(node);
+    }
+    for child in node.get_child_nodes().into_iter() {
+      found.extend(Document::dfs_filter_nodes(child, filter));
+    }
+    found
+  }
+
+  /// Get an iterator using a custom closure predicate filter over the document (depth-first descent)
+  pub fn filter_iter(&self, filter: &dyn Fn(&RoNode) -> bool) -> RoNodeIterator {
+    // TODO: Can this be lazy? Eager for now...
+    RoNodeIterator {
+      walker: Document::dfs_filter_nodes(self.dom.get_root_readonly().unwrap(), filter).into_iter(),
       document: self,
     }
   }

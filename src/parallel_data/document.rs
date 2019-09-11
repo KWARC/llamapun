@@ -40,15 +40,11 @@ impl<'d> Document<'d> {
   pub fn get_heading_nodes(&self) -> Vec<RoNode> {
     Document::heading_nodes(&self.dom)
   }
-  /// Associated function for `get_paragraph_nodes`
+  /// Associated function for `get_heading_nodes`
   fn heading_nodes(doc: &XmlDoc) -> Vec<RoNode> {
-    let xpath_context = Context::new(doc).unwrap();
-    match xpath_context.evaluate(
+    Document::xpath_nodes(doc,
       "//*[contains(@class,'ltx_title') and (local-name()='h2' or local-name()='h3' or local-name()='h4' or local-name()='h5' or local-name()='h6') and not(descendant::*[contains(@class,'ltx_ERROR')]) and not(preceding-sibling::*[contains(@class,'ltx_ERROR')])]",
-    ) {
-      Ok(found_payload) => found_payload.get_readonly_nodes_as_vec(),
-      _ => Vec::new(),
-    }
+    )
   }
   /// Get an iterator over the headings of the document
   pub fn heading_iter(&self) -> RoNodeIterator {
@@ -65,13 +61,9 @@ impl<'d> Document<'d> {
 
   /// Associated function for `get_paragraph_nodes`
   fn paragraph_nodes(doc: &XmlDoc) -> Vec<RoNode> {
-    let xpath_context = Context::new(doc).unwrap();
-    match xpath_context.evaluate(
+    Document::xpath_nodes(doc,
       "//*[local-name()='div' and contains(@class,'ltx_para') and not(descendant::*[contains(@class,'ltx_ERROR')]) and not(preceding-sibling::*[contains(@class,'ltx_ERROR')])]",
-    ) {
-      Ok(found_payload) => found_payload.get_readonly_nodes_as_vec(),
-      _ => Vec::new(),
-    }
+    )
   }
 
   /// Get an iterator over the paragraphs of the document
@@ -117,7 +109,7 @@ impl<'d> Document<'d> {
   }
 
   /// Associated function for `get_math_nodes`
-  fn math_nodes(doc: &XmlDoc) -> Vec<RoNode> {
+  pub(crate) fn math_nodes(doc: &XmlDoc) -> Vec<RoNode> {
     let xpath_context = Context::new(doc).unwrap();
     match xpath_context.evaluate("//*[local-name()='math']") {
       Ok(found_payload) => found_payload.get_readonly_nodes_as_vec(),
@@ -129,7 +121,7 @@ impl<'d> Document<'d> {
     Document::ref_nodes(&self.dom)
   }
   /// Associated function for `get_ref_nodes`
-  fn ref_nodes(doc: &XmlDoc) -> Vec<RoNode> {
+  pub(crate) fn ref_nodes(doc: &XmlDoc) -> Vec<RoNode> {
     let xpath_context = Context::new(doc).unwrap();
     match xpath_context.evaluate("//*[(local-name()='span' or local-name()='a') and (contains(@class,'ltx_ref ') or @class='ltx_ref')]") {
       Ok(found_payload) => found_payload.get_readonly_nodes_as_vec(),
@@ -148,6 +140,28 @@ impl<'d> Document<'d> {
     let sentences = tokenizer.sentences(self.dnm.as_ref().unwrap());
     DNMRangeIterator {
       walker: sentences.into_iter(),
+      document: self,
+    }
+  }
+
+  /// Obtain the nodes associated with the xpath evaluation over the underlying libxml `Document`
+  pub fn get_xpath_nodes(&self, xpath_str: &str) -> Vec<RoNode> {
+    Document::xpath_nodes(&self.dom, xpath_str)
+  }
+
+  /// Associated function for `get_xpath_nodes`
+  pub(crate) fn xpath_nodes(doc: &XmlDoc, xpath_str: &str) -> Vec<RoNode> {
+    let xpath_context = Context::new(doc).unwrap();
+    match xpath_context.evaluate(xpath_str) {
+      Ok(found_payload) => found_payload.get_readonly_nodes_as_vec(),
+      _ => Vec::new(),
+    }
+  }
+
+  /// Get an iterator over a custom xpath selector over the document
+  pub fn xpath_selector_iter(&self, xpath_str: &str) -> RoNodeIterator {
+    RoNodeIterator {
+      walker: Document::xpath_nodes(&self.dom, xpath_str).into_iter(),
       document: self,
     }
   }

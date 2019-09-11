@@ -5,8 +5,8 @@ use std::collections::HashMap;
 fn can_iterate_corpus() {
   let corpus = Corpus::new("tests".to_string());
   let catalog = corpus.catalog_with_parallel_walk(|document| {
-    let mut thread_count = HashMap::new();
-    thread_count.insert(String::from("doc_count"), 1);
+    let mut t_catalog = HashMap::new();
+    t_catalog.insert(String::from("doc_count"), 1);
     let mut word_count = 0;
     for mut paragraph in document.paragraph_iter() {
       for mut sentence in paragraph.iter() {
@@ -16,8 +16,8 @@ fn can_iterate_corpus() {
         }
       }
     }
-    thread_count.insert(String::from("word_count"), word_count);
-    thread_count
+    t_catalog.insert(String::from("word_count"), word_count);
+    t_catalog
   });
 
   let word_count = catalog.get("word_count").unwrap_or(&0);
@@ -30,3 +30,42 @@ fn can_iterate_corpus() {
     word_count
   );
 }
+
+#[test]
+fn can_iterate_xpath() {
+  let corpus = Corpus::new("tests".to_string());
+  let catalog = corpus.catalog_with_parallel_walk(|document| {
+    let mut t_catalog = HashMap::new();
+    let mut contacts = 0;
+    for contact in
+      document.xpath_selector_iter("//*[contains(@class,'ltx_contact') and (local-name()='span')]")
+    {
+      println!("contact: {:?}", contact.dnm.plaintext);
+      contacts += 1;
+    }
+    t_catalog.insert(String::from("contact_count"), contacts);
+    t_catalog
+  });
+  let contact_count = catalog.get("contact_count").unwrap_or(&0);
+  assert_eq!(
+    *contact_count, 4,
+    "expected 4 contact elements, found {:?}",
+    contact_count
+  );
+  // emails
+  let email_catalog = corpus.catalog_with_parallel_walk(|document| {
+    let mut t_catalog = HashMap::new();
+    let emails : Vec<ItemDNM> = document.xpath_selector_iter("//*[contains(@class,'ltx_contact') and contains(@class,'ltx_role_email') and (local-name()='span')]").collect();
+    t_catalog.insert(String::from("email_count"), emails.len() as u64);
+    t_catalog
+  });
+  let email_count = email_catalog.get("email_count").unwrap_or(&0);
+  assert_eq!(
+    *email_count, 2,
+    "expected 2 email elements, found {:?}",
+    email_count
+  );
+}
+// can_iterate_custom() {
+//   let custom_iterator = document.custom_iter(filter_closure);
+// }

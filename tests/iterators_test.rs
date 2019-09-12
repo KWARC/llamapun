@@ -21,7 +21,7 @@ fn can_iterate_corpus() {
     }
   }
   println!("Words iterated on: {:?}", word_count);
-  assert_eq!(doc_count, 2, "expected 2 documents, found {:?}", doc_count);
+  assert_eq!(doc_count, 3, "expected 3 documents, found {:?}", doc_count);
   assert!(
     word_count > 8400,
     "expected more than 8400 words, found {:?}",
@@ -86,7 +86,7 @@ fn can_senna_iterate_corpus() {
       }
     }
   }
-  assert_eq!(doc_count, 2, "expected 2 documents, found {:?}", doc_count);
+  assert_eq!(doc_count, 3, "expected 3 documents, found {:?}", doc_count);
   assert!(
     word_count > 9700,
     "expected more than 9700 words, found {:?}",

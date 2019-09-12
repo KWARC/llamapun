@@ -24,7 +24,7 @@ fn can_iterate_corpus() {
   let word_count = catalog.get("word_count").unwrap_or(&0);
   let doc_count = catalog.get("doc_count").unwrap_or(&0);
   println!("Words iterated on: {:?}", word_count);
-  assert_eq!(*doc_count, 2, "expected 2 documents, found {:?}", doc_count);
+  assert_eq!(*doc_count, 3, "expected 3 documents, found {:?}", doc_count);
   assert!(
     *word_count > 8400,
     "expected more than 8400 words, found {:?}",
@@ -48,8 +48,8 @@ fn can_iterate_xpath() {
   });
   let contact_count = catalog.get("contact_count").unwrap_or(&0);
   assert_eq!(
-    *contact_count, 4,
-    "expected 4 contact elements, found {:?}",
+    *contact_count, 9,
+    "expected 9 contact elements, found {:?}",
     contact_count
   );
   // emails
@@ -61,8 +61,8 @@ fn can_iterate_xpath() {
   });
   let email_count = email_catalog.get("email_count").unwrap_or(&0);
   assert_eq!(
-    *email_count, 2,
-    "expected 2 email elements, found {:?}",
+    *email_count, 4,
+    "expected 4 email elements, found {:?}",
     email_count
   );
 }
@@ -88,8 +88,8 @@ fn can_iterate_custom() {
   });
   let contact_count = catalog.get("contact_count").unwrap_or(&0);
   assert_eq!(
-    *contact_count, 4,
-    "expected 4 contact elements, found {:?}",
+    *contact_count, 9,
+    "expected 9 contact elements, found {:?}",
     contact_count
   );
 }

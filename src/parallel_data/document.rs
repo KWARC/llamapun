@@ -91,7 +91,8 @@ impl<'d> Document<'d> {
     }
   }
 
-  /// Get an iterator over the paragraphs of the document, AND notable additional paragraphs, such as abstracts
+  /// Get an iterator over the paragraphs of the document,
+  /// AND notable additional paragraphs, such as abstracts
   pub fn extended_paragraph_iter(&self) -> RoNodeIterator {
     let mut paras = Document::paragraph_nodes(&self.dom);
     if let Some(anode) = Document::abstract_p_node(&self.dom) {

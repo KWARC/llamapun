@@ -3,9 +3,9 @@ use rayon::iter::ParallelBridge;
 use rayon::iter::ParallelIterator;
 use std::collections::HashMap;
 
+use super::document::Document;
 use crate::dnm::DNMParameters;
 use crate::tokenizer::Tokenizer;
-use super::document::Document;
 
 use libxml::parser::Parser;
 
@@ -48,7 +48,7 @@ impl Corpus {
     }
   }
 
-    /// Get a parallel iterator over the documents
+  /// Get a parallel iterator over the documents
   pub fn catalog_with_parallel_walk<F>(&self, closure: F) -> HashMap<String, u64>
   where
     F: Fn(Document) -> HashMap<String, u64> + Send + Sync,
@@ -81,9 +81,9 @@ impl Corpus {
       .map(|each| {
         let (index, path) = each;
         let document = Document::new(path, &self).unwrap();
-        if index % 1000 == 0 {
+        if index % 1000 == 0 && index > 0 {
           println!(
-            "-- catalog_with_parallel_walk processing document {:?}",
+            "-- catalog_with_parallel_walk now processing document {:?}",
             1 + index
           );
         }

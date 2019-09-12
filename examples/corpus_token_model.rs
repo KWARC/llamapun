@@ -93,7 +93,7 @@ pub fn main() {
     let mut thread_buffer = String::new();
 
     let mut context = Context::new(&document.dom).unwrap();
-    for mut paragraph in document.paragraph_iter() {
+    for mut paragraph in document.extended_paragraph_iter() {
       paragraph_count += 1;
       for mut sentence in paragraph.iter() {
         let mut sentence_buffer = String::new();

@@ -75,27 +75,26 @@ impl<'d> Document<'d> {
   }
 
   fn abstract_p_node(doc: &XmlDoc) -> Option<RoNode> {
-    let xpath_context = Context::new(doc).unwrap();
-    match xpath_context.evaluate(
-      "//*[local-name()='div' and contains(@class,'ltx_abstract') and not(descendant::*[contains(@class,'ltx_ERROR')])]/p[1]",
-    ) {
-      Ok(found_payload) => {
-        let mut abs = found_payload.get_readonly_nodes_as_vec();
-        if !abs.is_empty() {
-          Some(abs.remove(0))
-        } else {
-          None
-        }
-      },
-      _ => None,
-    }
+    Document::xpath_node(doc,
+      "//*[local-name()='div' and contains(@class,'ltx_abstract') and not(descendant::*[contains(@class,'ltx_ERROR')])]/p[1]")
+  }
+
+  /// This is for special latexml markup for a <div class='ltx_acknowledgement'>text content</div>
+  /// which remains undetected by the regular paragraph selectors
+  fn acknowledgement_node(doc: &XmlDoc) -> Option<RoNode> {
+    Document::xpath_node(doc,
+      "//*[local-name()='div' and contains(@class,'ltx_acknowledgement') and not(descendant::*[contains(@class,'ltx_ERROR')])]/text()")
   }
 
   /// Get an iterator over the paragraphs of the document,
   /// AND notable additional paragraphs, such as abstracts
   pub fn extended_paragraph_iter(&self) -> RoNodeIterator {
-    let mut paras = Document::paragraph_nodes(&self.dom);
+    let mut paras = Vec::new();
     if let Some(anode) = Document::abstract_p_node(&self.dom) {
+      paras.push(anode);
+    }
+    paras.extend(Document::paragraph_nodes(&self.dom));
+    if let Some(anode) = Document::acknowledgement_node(&self.dom) {
       paras.push(anode);
     }
     RoNodeIterator {
@@ -149,6 +148,27 @@ impl<'d> Document<'d> {
     match xpath_context.evaluate(xpath_str) {
       Ok(found_payload) => found_payload.get_readonly_nodes_as_vec(),
       _ => Vec::new(),
+    }
+  }
+
+  /// Obtain the first node associated with the xpath evaluation over the underlying libxml `Document`
+  pub fn get_xpath_node(&self, xpath_str: &str) -> Option<RoNode> {
+    Document::xpath_node(&self.dom, xpath_str)
+  }
+
+  /// Associated function for `get_xpath_nodes`
+  pub(crate) fn xpath_node(doc: &XmlDoc, xpath_str: &str) -> Option<RoNode> {
+    let xpath_context = Context::new(doc).unwrap();
+    match xpath_context.evaluate(xpath_str) {
+      Ok(found_payload) => {
+        let mut vec_nodes = found_payload.get_readonly_nodes_as_vec();
+        if !vec_nodes.is_empty() {
+          Some(vec_nodes.remove(0))
+        } else {
+          None
+        }
+      }
+      _ => None,
     }
   }
 

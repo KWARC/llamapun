@@ -82,73 +82,66 @@ pub fn main() {
 
   let corpus_counts = corpus.catalog_with_parallel_walk(|document| {
     let (
-      mut sentence_count,
       mut paragraph_count,
       mut word_count,
       mut overflow_count,
       mut formula_count,
       mut citation_count,
       mut num_count,
-    ) = (0, 0, 0, 0, 0, 0, 0);
+    ) = (0, 0, 0, 0, 0, 0);
     let mut thread_buffer = String::new();
 
     let mut context = Context::new(&document.dom).unwrap();
     for mut paragraph in document.extended_paragraph_iter() {
       paragraph_count += 1;
-      for mut sentence in paragraph.iter() {
-        let mut sentence_buffer = String::new();
-        let mut invalid_sentence = true;
-        'words: for word in sentence.word_iter() {
-          let lexeme_str: String;
-          if !word.range.is_empty() {
-            let word_string = word
-              .range
-              .get_plaintext()
-              .chars()
-              .filter(|c| c.is_alphanumeric()) // drop apostrophes, other noise?
-              .collect::<String>()
-              .to_lowercase();
-            if word_string.len() > MAX_WORD_LENGTH {
-              // Using a more aggressive normalization, large words tend to be conversion
-              // errors with lost whitespace - drop the entire sentence when this occurs.
-              overflow_count += 1;
-              invalid_sentence = true;
-              break 'words;
-            }
-            let mut word_str: &str = &word_string;
-            // Note: the formula and citation counts are an approximate lower bound, as
-            // sometimes they are not cleanly tokenized, e.g. $k$-dimensional
-            // will be the word string "mathformula-dimensional"
-            if word_string.contains("mathformula") {
-              if !discard_math {
-                lexeme_str = dnm::node::lexematize_math(word.range.get_node(), &mut context);
-              } else {
-                lexeme_str = String::new();
-              }
-              word_str = &lexeme_str;
-              formula_count += 1;
-            } else if word_string.contains("citationelement") {
-              word_str = "citationelement";
-              citation_count += 1;
-            } else if is_numeric.is_match(&word_string) {
-              num_count += 1;
-              word_str = "NUM";
-            } else {
-              word_count += 1;
-            }
-
-            invalid_sentence = false;
-            sentence_buffer.push_str(word_str);
-            sentence_buffer.push(space);
+      let mut paragraph_buffer = String::new();
+      let mut invalid_paragraph = false;
+      'words: for word in paragraph.word_iter() {
+        if !word.range.is_empty() {
+          let word_string = word
+            .range
+            .get_plaintext()
+            .chars()
+            .filter(|c| c.is_alphanumeric()) // drop apostrophes, other noise?
+            .collect::<String>()
+            .to_lowercase();
+          if word_string.len() > MAX_WORD_LENGTH {
+            // Using a more aggressive normalization, large words tend to be conversion
+            // errors with lost whitespace - drop the entire paragraph when this occurs.
+            overflow_count += 1;
+            invalid_paragraph = true;
+            break 'words;
           }
+          let mut word_str: &str = &word_string;
+          // Note: the formula and citation counts are an approximate lower bound, as
+          // sometimes they are not cleanly tokenized, e.g. $k$-dimensional
+          // will be the word string "mathformula-dimensional"
+          let lexeme_str: String;
+          if word_string.contains("mathformula") {
+            if !discard_math {
+              lexeme_str = dnm::node::lexematize_math(word.range.get_node(), &mut context);
+            } else {
+              lexeme_str = String::new();
+            }
+            word_str = &lexeme_str;
+            formula_count += 1;
+          } else if word_string.contains("citationelement") {
+            word_str = "citationelement";
+            citation_count += 1;
+          } else if is_numeric.is_match(&word_string) {
+            num_count += 1;
+            word_str = "NUM";
+          } else {
+            word_count += 1;
+          }
+          paragraph_buffer.push_str(word_str);
+          paragraph_buffer.push(space);
         }
-
-        // if valid sentence, print to the token model file
-        if !invalid_sentence {
-          sentence_count += 1;
-          thread_buffer.push(linebreak);
-          thread_buffer.push_str(&sentence_buffer);
-        }
+      }
+      // if valid paragraph, print to the token model file
+      if !invalid_paragraph {
+        thread_buffer.push(linebreak);
+        thread_buffer.push_str(&paragraph_buffer);
       }
     }
 
@@ -160,7 +153,6 @@ pub fn main() {
 
     let mut thread_counts = HashMap::new();
     thread_counts.insert(String::from("document_count"), 1);
-    thread_counts.insert(String::from("sentence_count"), sentence_count);
     thread_counts.insert(String::from("paragraph_count"), paragraph_count);
     thread_counts.insert(String::from("word_count"), word_count);
     thread_counts.insert(String::from("overflow_count"), overflow_count);
@@ -189,11 +181,7 @@ pub fn main() {
     corpus_counts.get("paragraph_count").unwrap_or(&0)
   );
   println!(
-    "{:?} sentences;",
-    corpus_counts.get("sentence_count").unwrap_or(&0)
-  );
-  println!(
-    "{:?} discarded sentences (long words)",
+    "{:?} discarded paragraphs (long words)",
     corpus_counts.get("overflow_count").unwrap_or(&0)
   );
   println!("{:?} words;", corpus_counts.get("word_count").unwrap_or(&0));

@@ -74,29 +74,50 @@ impl<'d> Document<'d> {
     }
   }
 
+  /// Obtain the first paragraph of a marked up article abstract (<div class="ltx_abstract"><p>)
   fn abstract_p_node(doc: &XmlDoc) -> Option<RoNode> {
     Document::xpath_node(doc,
       "//*[local-name()='div' and contains(@class,'ltx_abstract') and not(descendant::*[contains(@class,'ltx_ERROR')])]/p[1]")
   }
 
-  /// This is for special latexml markup for a <div class='ltx_acknowledgement'>text content</div>
+  /// Obtain the first <div class='ltx_keywords'>text content</div>
   /// which remains undetected by the regular paragraph selectors
-  fn acknowledgement_node(doc: &XmlDoc) -> Option<RoNode> {
+  /// as deposited by LaTeXML for the \keywords macro
+  fn keywords_node(doc: &XmlDoc) -> Option<RoNode> {
     Document::xpath_node(doc,
-      "//*[local-name()='div' and contains(@class,'ltx_acknowledgement') and not(descendant::*[contains(@class,'ltx_ERROR')])]/text()")
+      "//*[local-name()='div' and contains(@class,'ltx_keywords') and not(descendant::*[contains(@class,'ltx_ERROR')])]")
   }
 
-  /// Get an iterator over the paragraphs of the document,
-  /// AND notable additional paragraphs, such as abstracts
+  /// Obtain the first <div class='ltx_acknowledgement'>text content</div>
+  /// which remains undetected by the regular paragraph selectors
+  /// as deposited by LaTeXML for the \acknowledgements macro
+  fn acknowledgement_node(doc: &XmlDoc) -> Option<RoNode> {
+    Document::xpath_node(doc,
+      "//*[local-name()='div' and contains(@class,'ltx_acknowledgement') and not(descendant::*[contains(@class,'ltx_ERROR')])]")
+  }
+
+  /// Obtains all error-free marked captions (e.g. Figure and Table captions)
+  fn caption_nodes(doc: &XmlDoc) -> Vec<RoNode> {
+    Document::xpath_nodes(doc,
+    "//*[local-name()='figcaption' and contains(@class,'ltx_caption') and not(descendant::*[contains(@class,'ltx_ERROR')])]")
+  }
+
+  /// Get an iterator over textual paragraphs of the document, in a loose sense,
+  /// contents: abstract (first p), keywords, logical paragraphs, acknowledgement, table/figure captions
   pub fn extended_paragraph_iter(&self) -> RoNodeIterator {
     let mut paras = Vec::new();
     if let Some(anode) = Document::abstract_p_node(&self.dom) {
       paras.push(anode);
     }
+    if let Some(keywords) = Document::keywords_node(&self.dom) {
+      paras.push(keywords);
+    }
     paras.extend(Document::paragraph_nodes(&self.dom));
     if let Some(anode) = Document::acknowledgement_node(&self.dom) {
       paras.push(anode);
     }
+    paras.extend(Document::caption_nodes(&self.dom));
+
     RoNodeIterator {
       walker: paras.into_iter(),
       document: self,

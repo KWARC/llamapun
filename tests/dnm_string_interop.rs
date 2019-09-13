@@ -75,9 +75,9 @@ fn real_ams_para_to_dnm() {
       "three sentences if read as a pre-normalized llamapun paragraph."
     );
     assert_eq!(
-      dnm.plaintext.matches("MathFormula").count(),
+      dnm.plaintext.matches("mathformula").count(),
       13,
-      "We expect lexematized mathematics to be compacted to a MathFormula token"
+      "We expect lexematized mathematics to be compacted to a mathformula token"
     );
   }
 }

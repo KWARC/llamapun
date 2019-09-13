@@ -24,7 +24,11 @@ static MAX_WORD_LENGTH: usize = 25;
 /// - citations become citationelement
 /// - math is replaced by its lexeme annotation (created by latexml), with a "mathformula" fallback
 /// - of the word is longer than the max length of 25, an error is returned
-pub fn ams_normalize_word_range(range: &DNMRange, mut context: &mut Context, discard_math: bool) -> Result<String, ()> {
+pub fn ams_normalize_word_range(
+  range: &DNMRange,
+  mut context: &mut Context,
+  discard_math: bool,
+) -> Result<String, ()> {
   let mut word_string = range
     .get_plaintext()
     .chars()
@@ -59,7 +63,7 @@ pub fn ams_normalize_word_range(range: &DNMRange, mut context: &mut Context, dis
 pub fn invalid_for_english_latin(dnm: &dnm::DNM) -> bool {
   let detectable_with_spaces = dnm
     .plaintext
-    .replace("MathFormula", " ")
+    .replace("mathformula", " ")
     .replace("CitationElement", " ")
     .replace("REF", " ");
   let detectable = detectable_with_spaces.trim();

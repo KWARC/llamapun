@@ -43,7 +43,25 @@ fn wordlike_with_upper_next(peekable: &Peekable<Chars>) -> bool {
 }
 
 impl Tokenizer {
+  fn abbreviation_check(&self, left_window: &VecDeque<char>) -> bool {
+    // Check for abbreviations:
+    // Longest abbreviation is 6 characters, but mathformula is 11, so take window
+    // of window_size chars to the left (allow for a space before dot)
+    let lw_string: String = left_window.clone().into_iter().collect();
+    let lw_str: &str = &lw_string;
+    let lw_opt = lw_str.trim().split(|c: char| !c.is_alphabetic()).last();
+    let lw_word: &str = match lw_opt {
+      None => lw_str,
+      Some(w) => w,
+    };
+    // Don't consider single letters followed by a punctuation sign an end of a
+    // sentence, Also "a.m." and "p.m." shouldn't get split
+    return ((lw_word.len() == 1) && (lw_word != "I")) || self.abbreviations.is_match(lw_word);
+  }
+
+  // TODO: Reduce complexity, this tokenization pass is terribly overengineered
   /// gets the sentences from a dnm
+  #[allow(clippy::cognitive_complexity)]
   pub fn sentences<'a>(&self, dnm: &'a DNM) -> Vec<DNMRange<'a>> {
     let text = &dnm.plaintext;
     let mut sentences: Vec<DNMRange<'a>> = Vec::new();
@@ -86,23 +104,7 @@ impl Tokenizer {
               end += next_word_length;
             } else {
               // Regular word case.
-              // Check for abbreviations:
-              // Longest abbreviation is 6 characters, but MathFormula is 11, so take window
-              // of window_size chars to the left (allow for a space before dot)
-              let lw_string: String = left_window.clone().into_iter().collect();
-              let lw_str: &str = &lw_string;
-              let lw_opt = lw_str.trim().split(|c: char| !c.is_alphabetic()).last();
-              let lw_word: &str = match lw_opt {
-                None => lw_str,
-                Some(w) => w,
-              };
-              // Don't consider single letters followed by a punctuation sign an end of a
-              // sentence, Also "a.m." and "p.m." shouldn't get split
-              if ((lw_word.len() == 1) && (lw_word != "I")) ||
-                  // Don't sentence-break colons followed by a formula
-                  ((sentence_char == ':') && next_word_string.starts_with("MathFormula"))
-                || self.abbreviations.is_match(lw_word)
-              {
+              if self.abbreviation_check(&left_window) {
                 left_window.push_back('.');
                 if left_window.len() >= window_size {
                   left_window.pop_front();
@@ -135,17 +137,50 @@ impl Tokenizer {
                 // New sentence
                 sentences.push(DNMRange { start, end, dnm }.trim());
                 start = end;
-              },
-              _ => {
-                // TODO: Maybe break on lowercase stopwords here? unclear...
+              }
+              Some(&c) => {
+                if sentence_char == '.' && c.is_alphabetic() {
+                  let (next_word_string, next_word_length) =
+                    next_word_with_length(&mut text_iterator);
+                  // TODO: Maybe extend to more lowercase stopwords here? unclear...
+                  if next_word_string.to_lowercase().starts_with("mathformula")
+                    && !self.abbreviation_check(&left_window)
+                  {
+                    // Reset the left window
+                    left_window = VecDeque::with_capacity(window_size);
+                    // New sentence
+                    sentences.push(DNMRange { start, end, dnm }.trim());
+                    start = end;
+                  } else {
+                    left_window.push_back('.');
+                    if left_window.len() >= window_size {
+                      left_window.pop_front();
+                    }
+                  }
+                  // We consumed the next word, so make sure we reflect that in either case:
+                  for next_word_char in next_word_string.chars() {
+                    left_window.push_back(next_word_char);
+                    if left_window.len() >= window_size {
+                      left_window.pop_front();
+                    }
+                  }
+                  end += next_word_length;
+                } else {
+                  left_window.push_back('.');
+                  if left_window.len() >= window_size {
+                    left_window.pop_front();
+                  }
+                }
+              }
+              None => {
                 left_window.push_back('.');
                 if left_window.len() >= window_size {
                   left_window.pop_front();
                 }
-              },
+              }
             }
           }
-        },
+        }
         '?' | '!' => {
           if !is_bounded(left_window.back(), text_iterator.peek()) {
             // Reset the left window
@@ -154,7 +189,7 @@ impl Tokenizer {
             sentences.push(DNMRange { start, end, dnm }.trim());
             start = end;
           }
-        },
+        }
         // TODO:
         // Some('\u{2022}'),Some('*') => { // bullet point for itemize
         // Some('\u{220e}') => { // QED symbol
@@ -172,10 +207,10 @@ impl Tokenizer {
             }
             // Get the next word
             let (next_word_string, next_word_length) = next_word_with_length(&mut text_iterator);
-            // Sentence-break, UNLESS a "MathFormula" or a "lowercase word" follows, or a
+            // Sentence-break, UNLESS a "mathformula" or a "lowercase word" follows, or a
             // non-alpha char
             if next_word_string.is_empty()
-              || next_word_string.starts_with("MathFormula")
+              || next_word_string.starts_with("mathformula")
               || next_word_string.chars().next().unwrap().is_lowercase()
             {
               // We consumed the next word, add it to the left window
@@ -195,13 +230,13 @@ impl Tokenizer {
             // We consumed the next word, so make sure we reflect that in either case:
             end += next_word_length;
           }
-        },
+        }
         other_char => {
-          // "MathFormula\nCapitalized" case is a sentence break (but never
-          // "MathFormula\nMathFormula")
-          if other_char.is_uppercase() && other_char != 'M' {
-            let lw_string: String = left_window.clone().into_iter().collect();
-            if lw_string.starts_with("MathFormula") {
+          // "mathformula\nCapitalized" case is a sentence break (but never
+          // "mathformula\nmathformula")
+          if other_char.is_uppercase() {
+            let lw_string: String = left_window.iter().collect();
+            if lw_string.starts_with("mathformula") {
               // Sentence-break found, but exclude the current letter from the end:
               left_window = VecDeque::with_capacity(window_size);
               sentences.push(
@@ -220,12 +255,12 @@ impl Tokenizer {
           if left_window.len() >= window_size {
             left_window.pop_front();
           }
-        },
+        }
       }
     }
 
     end = cmp::min(end, text.chars().count());
-    let last_left_window: String = left_window.into_iter().collect();
+    let last_left_window: String = left_window.clone().into_iter().collect();
     if last_left_window.find(char::is_alphabetic).is_some() {
       sentences.push(DNMRange { start, end, dnm }.trim());
     }

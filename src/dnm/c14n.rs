@@ -135,7 +135,7 @@ pub fn rebuild_normalized_text(text: &str) -> String {
   text
     .split('\n')
     .filter(|line| !line.is_empty())
-    .map(|line| MATH_LEXEMES_RE.replace_all(line, "MathFormula "))
+    .map(|line| MATH_LEXEMES_RE.replace_all(line, "mathformula "))
     .map(|line| make_ascii_titlecase(&line))
     .collect::<Vec<String>>()
     .join(" . ")

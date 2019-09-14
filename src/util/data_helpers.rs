@@ -28,7 +28,8 @@ pub fn ams_normalize_word_range(
   range: &DNMRange,
   mut context: &mut Context,
   discard_math: bool,
-) -> Result<String, ()> {
+) -> Result<String, ()>
+{
   let mut word_string = range
     .get_plaintext()
     .chars()

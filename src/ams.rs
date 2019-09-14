@@ -8,9 +8,7 @@ use regex::Regex;
 use std::fmt;
 
 /// Checks a llamapun `Document` for 'ltx_theorem' AMS markup
-pub fn has_markup(doc: &Document) -> bool {
-  has_markup_xmldoc(&doc.dom)
-}
+pub fn has_markup(doc: &Document) -> bool { has_markup_xmldoc(&doc.dom) }
 
 /// Checks a libxml document for `ltx_theorem` AMS markup
 pub fn has_markup_xmldoc(dom: &XmlDoc) -> bool {
@@ -122,17 +120,20 @@ impl fmt::Display for StructuralEnv {
 pub enum AmsEnv {
   /// typically co-author support for a proof/paper (also "thanks")
   Acknowledgement,
-  /// usually defines a computer science algorithm (also "heuristic"; arXiv data is bad quality, would not recommend using)
+  /// usually defines a computer science algorithm (also "heuristic"; arXiv data is bad quality,
+  /// would not recommend using)
   Algorithm,
   /// To be analyzed (?)
   Answer,
   /// To be analyzed (?)
   Affirmation,
-  /// assumption/axiom/assertion/prior -- should they be included in propositions? Are they separable?
+  /// assumption/axiom/assertion/prior -- should they be included in propositions? Are they
+  /// separable?
   Assumption,
   /// To be analyzed (?)
   Bound,
-  /// usually an actual Figure or Table captions realized via AMS (strange data, would not recommend using)
+  /// usually an actual Figure or Table captions realized via AMS (strange data, would not
+  /// recommend using)
   Caption,
   /// A case in a multi-step proof / description / exposition
   Case,

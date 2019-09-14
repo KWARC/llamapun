@@ -47,7 +47,8 @@ pub fn main() -> Result<(), Error> {
     let mut context = Context::new(&document.dom).unwrap();
 
     'headings: for mut heading in document.heading_iter() {
-      // Before we go into tokenization, ensure this is an English sentence on the math-normalized plain text.
+      // Before we go into tokenization, ensure this is an English sentence on the math-normalized
+      // plain text.
       if data_helpers::invalid_for_english_latin(&heading.dnm) {
         continue 'headings;
       }
@@ -64,7 +65,7 @@ pub fn main() -> Result<(), Error> {
               overflow_count += 1;
               invalid_heading = true;
               break;
-            }
+            },
           };
         if !word_string.is_empty() {
           heading_buffer.push_str(&word_string);

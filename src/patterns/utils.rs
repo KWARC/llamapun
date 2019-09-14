@@ -8,9 +8,7 @@ use libxml::tree::*;
  */
 
 /// checks whether a node is a comment node
-pub fn is_comment_node(node: RoNode) -> bool {
-  node.get_type().unwrap() == NodeType::CommentNode
-}
+pub fn is_comment_node(node: RoNode) -> bool { node.get_type().unwrap() == NodeType::CommentNode }
 
 /// gets the text content of a node. Requires that only child of the node is a
 /// text node
@@ -127,7 +125,8 @@ pub fn check_found_property_already(
   property: &Option<String>,
   node_name: &str,
   parent_name: &str,
-) -> Result<(), String> {
+) -> Result<(), String>
+{
   if property.is_some() {
     Err(format!(
       "found multiple \"{}\" nodes in \"{}\" node",

@@ -37,9 +37,7 @@ impl<'d> Document<'d> {
   }
 
   /// Obtain the problem-free logical headings of a libxml `Document`
-  pub fn get_heading_nodes(&self) -> Vec<RoNode> {
-    Document::heading_nodes(&self.dom)
-  }
+  pub fn get_heading_nodes(&self) -> Vec<RoNode> { Document::heading_nodes(&self.dom) }
   /// Associated function for `get_heading_nodes`
   fn heading_nodes(doc: &XmlDoc) -> Vec<RoNode> {
     Document::xpath_nodes(doc,
@@ -55,9 +53,7 @@ impl<'d> Document<'d> {
   }
 
   /// Obtain the problem-free logical paragraphs of a libxml `Document`
-  pub fn get_paragraph_nodes(&self) -> Vec<RoNode> {
-    Document::paragraph_nodes(&self.dom)
-  }
+  pub fn get_paragraph_nodes(&self) -> Vec<RoNode> { Document::paragraph_nodes(&self.dom) }
 
   /// Associated function for `get_paragraph_nodes`
   fn paragraph_nodes(doc: &XmlDoc) -> Vec<RoNode> {
@@ -103,7 +99,8 @@ impl<'d> Document<'d> {
   }
 
   /// Get an iterator over textual paragraphs of the document, in a loose sense,
-  /// contents: abstract (first p), keywords, logical paragraphs, acknowledgement, table/figure captions
+  /// contents: abstract (first p), keywords, logical paragraphs, acknowledgement, table/figure
+  /// captions
   pub fn extended_paragraph_iter(&self) -> RoNodeIterator {
     let mut paras = Vec::new();
     if let Some(anode) = Document::abstract_p_node(&self.dom) {
@@ -125,18 +122,14 @@ impl<'d> Document<'d> {
   }
 
   /// Obtain the MathML <math> nodes of a libxml `Document`
-  pub fn get_math_nodes(&self) -> Vec<RoNode> {
-    Document::math_nodes(&self.dom)
-  }
+  pub fn get_math_nodes(&self) -> Vec<RoNode> { Document::math_nodes(&self.dom) }
 
   /// Associated function for `get_math_nodes`
   pub(crate) fn math_nodes(doc: &XmlDoc) -> Vec<RoNode> {
     Document::xpath_nodes(&doc, "//*[local-name()='math']")
   }
   /// Obtain the <span[class=ltx_ref]> nodes of a libxml `Document`
-  pub fn get_ref_nodes(&self) -> Vec<RoNode> {
-    Document::ref_nodes(&self.dom)
-  }
+  pub fn get_ref_nodes(&self) -> Vec<RoNode> { Document::ref_nodes(&self.dom) }
   /// Associated function for `get_ref_nodes`
   pub(crate) fn ref_nodes(doc: &XmlDoc) -> Vec<RoNode> {
     Document::xpath_nodes(&doc,
@@ -172,7 +165,8 @@ impl<'d> Document<'d> {
     }
   }
 
-  /// Obtain the first node associated with the xpath evaluation over the underlying libxml `Document`
+  /// Obtain the first node associated with the xpath evaluation over the underlying libxml
+  /// `Document`
   pub fn get_xpath_node(&self, xpath_str: &str) -> Option<RoNode> {
     Document::xpath_node(&self.dom, xpath_str)
   }
@@ -188,7 +182,7 @@ impl<'d> Document<'d> {
         } else {
           None
         }
-      }
+      },
       _ => None,
     }
   }
@@ -213,7 +207,8 @@ impl<'d> Document<'d> {
     found
   }
 
-  /// Get an iterator using a custom closure predicate filter over the document (depth-first descent)
+  /// Get an iterator using a custom closure predicate filter over the document (depth-first
+  /// descent)
   pub fn filter_iter(&self, filter: &dyn Fn(&RoNode) -> bool) -> RoNodeIterator {
     // TODO: Can this be lazy? Eager for now...
     RoNodeIterator {

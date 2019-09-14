@@ -665,7 +665,8 @@ pub fn load<'a>() -> HashSet<&'a str> {
     "yourselves",
     "you've",
     "inspired",
-  ].iter()
-    .cloned()
-    .collect()
+  ]
+  .iter()
+  .cloned()
+  .collect()
 }

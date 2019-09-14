@@ -137,7 +137,7 @@ impl Tokenizer {
                 // New sentence
                 sentences.push(DNMRange { start, end, dnm }.trim());
                 start = end;
-              }
+              },
               Some(&c) => {
                 if sentence_char == '.' && c.is_alphabetic() {
                   let (next_word_string, next_word_length) =
@@ -171,16 +171,16 @@ impl Tokenizer {
                     left_window.pop_front();
                   }
                 }
-              }
+              },
               None => {
                 left_window.push_back('.');
                 if left_window.len() >= window_size {
                   left_window.pop_front();
                 }
-              }
+              },
             }
           }
-        }
+        },
         '?' | '!' => {
           if !is_bounded(left_window.back(), text_iterator.peek()) {
             // Reset the left window
@@ -189,7 +189,7 @@ impl Tokenizer {
             sentences.push(DNMRange { start, end, dnm }.trim());
             start = end;
           }
-        }
+        },
         // TODO:
         // Some('\u{2022}'),Some('*') => { // bullet point for itemize
         // Some('\u{220e}') => { // QED symbol
@@ -230,7 +230,7 @@ impl Tokenizer {
             // We consumed the next word, so make sure we reflect that in either case:
             end += next_word_length;
           }
-        }
+        },
         other_char => {
           // "mathformula\nCapitalized" case is a sentence break (but never
           // "mathformula\nmathformula")
@@ -255,7 +255,7 @@ impl Tokenizer {
           if left_window.len() >= window_size {
             left_window.pop_front();
           }
-        }
+        },
       }
     }
 

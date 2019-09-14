@@ -103,10 +103,10 @@ pub fn main() -> Result<(), Error> {
 
   let buffered_writer = BufWriter::with_capacity(BUFFER_CAPACITY, node_statistics_file);
   let mut csv_writer = csv::Writer::from_writer(buffered_writer);
-  csv_writer.write_record(&["name@attr[value]","frequency"])?;
+  csv_writer.write_record(&["name@attr[value]", "frequency"])?;
 
   for (key, val) in catalog_vec {
-    csv_writer.write_record(&[key,&val.to_string()])?;
+    csv_writer.write_record(&[key, &val.to_string()])?;
   }
   // Close the writer
   csv_writer.flush()

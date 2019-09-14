@@ -31,8 +31,8 @@ pub struct ItemDNMRange<'s> {
 
 /* ---- Iterators ----- */
 
-/// Generic iterater over read-only xml nodes. It is the responsibility of the abstraction returning `NodeIterator`
-/// to specify the grouping principle for collecting the nodes
+/// Generic iterater over read-only xml nodes. It is the responsibility of the abstraction returning
+/// `NodeIterator` to specify the grouping principle for collecting the nodes
 pub struct RoNodeIterator<'iter> {
   /// A walker over read-only nodes
   walker: IntoIter<RoNode>,
@@ -60,7 +60,7 @@ impl<'iter> Iterator for RoNodeIterator<'iter> {
           dnm,
           document: self.document,
         })
-      }
+      },
     }
   }
 }
@@ -82,9 +82,7 @@ pub trait XPathFilteredIterator<'p> {
 }
 
 impl<'p> XPathFilteredIterator<'p> for ItemDNM<'p> {
-  fn get_document(&'p self) -> &Document {
-    &self.document
-  }
+  fn get_document(&'p self) -> &Document { &self.document }
   fn to_sentences(&'p self) -> Vec<DNMRange<'p>> {
     self.document.corpus.tokenizer.sentences(&self.dnm)
   }

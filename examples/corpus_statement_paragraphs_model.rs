@@ -3,10 +3,12 @@
 //
 /// Extracts a corpus paragraph model from an unpacked corpus of HTML files
 /// With math lexemes (default):
-/// $ cargo run --release --example corpus_statement_paragraphs_model /path/to/corpus paragraph_data.tar
+/// $ cargo run --release --example corpus_statement_paragraphs_model /path/to/corpus
+/// paragraph_data.tar
 ///
 /// With math discarded:
-/// $ cargo run --release --example corpus_statement_paragraphs_model /path/to/corpus paragraph_data_nomath.tar discard_math
+/// $ cargo run --release --example corpus_statement_paragraphs_model /path/to/corpus
+/// paragraph_data_nomath.tar discard_math
 use std::collections::{HashMap, HashSet};
 use std::env;
 use std::fs::File;
@@ -21,7 +23,7 @@ use libxml::xpath::Context;
 use llamapun::ams;
 use llamapun::ams::{AmsEnv, StructuralEnv};
 use llamapun::dnm::SpecialTagsOption;
-use llamapun::parallel_data::*  ;
+use llamapun::parallel_data::*;
 use llamapun::util::data_helpers;
 
 use tar::{Builder, Header};
@@ -48,10 +50,10 @@ struct TarBuilder {
 }
 
 impl TarBuilder {
-  /// This is a good place to discuss inodes. The expected number of paragraph files in arXiv 08.2018
-  /// exceeds 50 million. Hence, one would expect a >1 TB ext4 drive, for the default inode
-  /// allocation to suffice However, using a modern NVMe SSD for speed conflicts that requirement.
-  /// Hence, solution -- write directly to a .tar file, and avoid the inode trouble.
+  /// This is a good place to discuss inodes. The expected number of paragraph files in arXiv
+  /// 08.2018 exceeds 50 million. Hence, one would expect a >1 TB ext4 drive, for the default
+  /// inode allocation to suffice However, using a modern NVMe SSD for speed conflicts that
+  /// requirement. Hence, solution -- write directly to a .tar file, and avoid the inode trouble.
   pub fn save(&mut self, data: &str, paragraph_filename: &str) -> Result<(), Error> {
     // if we see the same hash/name twice, ignore all following cases
     if self.names.contains(paragraph_filename) {
@@ -164,7 +166,8 @@ pub fn main() -> Result<(), Error> {
       if !prev_name.is_empty() && !prev_name.starts_with('h') {
         continue 'paragraphs;
       }
-      // Before we go into tokenization, ensure this is an English sentence on the math-normalized plain text.
+      // Before we go into tokenization, ensure this is an English sentence on the math-normalized
+      // plain text.
       if data_helpers::invalid_for_english_latin(&paragraph.dnm) {
         continue 'paragraphs;
       }
@@ -180,7 +183,7 @@ pub fn main() -> Result<(), Error> {
                   overflow_count += 1;
                   invalid_paragraph = true;
                   break 'sentences;
-                }
+                },
               };
             if !word_string.is_empty() {
               sentence_buffer.push_str(&word_string);
@@ -225,7 +228,8 @@ pub fn main() -> Result<(), Error> {
           }
           env.to_string()
         } else {
-          // if no markup at all, ignore the paragraph, as we don't have reliable classification information
+          // if no markup at all, ignore the paragraph, as we don't have reliable classification
+          // information
           continue 'paragraphs;
         };
         paragraph_count += 1;
@@ -305,7 +309,9 @@ pub fn main() -> Result<(), Error> {
 // ---
 // I wasn't sure what was causing more overhead:
 //   - lock rotation (more locks when locking on each paragraph),
-//   - resource starvation (waiting for a document lock to become available, if writing all paragraphs was slow)
+//   - resource starvation (waiting for a document lock to become available, if writing all
+//     paragraphs was slow)
 // Turns out the difference is minor enough to select for the better application effect:
-// Locking once per document allows a guarantee that adjacent paragraphs will have adjacent IDs when saved to the tar,
-// which allows to do some helpful data munging later on in paragraph exploration mode.
+// Locking once per document allows a guarantee that adjacent paragraphs will have adjacent IDs when
+// saved to the tar, which allows to do some helpful data munging later on in paragraph exploration
+// mode.

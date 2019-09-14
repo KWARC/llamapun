@@ -3,11 +3,11 @@ extern crate libxml;
 extern crate llamapun;
 extern crate time;
 
+use llamapun::data::{Corpus, Document};
+use llamapun::ngrams::{Dictionary, Unigrams};
+use llamapun::util::plot::*;
 use std::collections::HashMap;
 use time::PreciseTime;
-use llamapun::ngrams::{Dictionary, Unigrams};
-use llamapun::data::{Corpus, Document};
-use llamapun::util::plot::*;
 
 fn main() {
   let start_example = PreciseTime::now();

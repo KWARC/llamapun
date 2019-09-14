@@ -41,7 +41,7 @@ pub fn main() {
         e
       );
       return;
-    }
+    },
   };
 
   let discard_math = match input_args.next() {

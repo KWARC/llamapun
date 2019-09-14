@@ -236,9 +236,7 @@ impl<'d> Document<'d> {
   }
 
   /// Obtain the MathML <math> nodes of a libxml `Document`
-  pub fn get_math_nodes(&self) -> Vec<RoNode> {
-    Document::math_nodes(&self.dom)
-  }
+  pub fn get_math_nodes(&self) -> Vec<RoNode> { Document::math_nodes(&self.dom) }
 
   /// Associated function for `get_math_nodes`
   fn math_nodes(doc: &XmlDoc) -> Vec<RoNode> {
@@ -249,9 +247,7 @@ impl<'d> Document<'d> {
     }
   }
   /// Obtain the <span[class=ltx_ref]> nodes of a libxml `Document`
-  pub fn get_ref_nodes(&self) -> Vec<RoNode> {
-    Document::ref_nodes(&self.dom)
-  }
+  pub fn get_ref_nodes(&self) -> Vec<RoNode> { Document::ref_nodes(&self.dom) }
   /// Associated function for `get_ref_nodes`
   fn ref_nodes(doc: &XmlDoc) -> Vec<RoNode> {
     let xpath_context = Context::new(doc).unwrap();
@@ -289,7 +285,7 @@ impl<'iter> Iterator for ParagraphIterator<'iter> {
           dnm,
           document: self.document,
         })
-      }
+      },
     }
   }
 }
@@ -322,7 +318,7 @@ impl<'iter> Iterator for SentenceIterator<'iter> {
           };
           Some(sentence)
         }
-      }
+      },
     }
   }
 }

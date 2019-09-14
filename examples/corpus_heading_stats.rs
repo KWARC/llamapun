@@ -57,15 +57,14 @@ pub fn main() -> Result<(), Error> {
         if word.range.is_empty() {
           continue;
         }
-        let word_string =
-          match data_helpers::ams_normalize_word_range(&word.range, &mut context, false) {
-            Ok(w) => w,
-            Err(_) => {
-              overflow_count += 1;
-              invalid_heading = true;
-              break;
-            }
-          };
+        let word_string = match data_helpers::ams_normalize_word_range(&word.range, &mut context, false) {
+          Ok(w) => w,
+          Err(_) => {
+            overflow_count += 1;
+            invalid_heading = true;
+            break;
+          },
+        };
         if !word_string.is_empty() {
           heading_buffer.push_str(&word_string);
           heading_buffer.push(' ');
@@ -91,10 +90,7 @@ pub fn main() -> Result<(), Error> {
     "{:?} Total traversed documents;",
     catalog.remove("total_document_count").unwrap_or(0)
   );
-  println!(
-    "{:?} headings;",
-    catalog.remove("heading_count").unwrap_or(0)
-  );
+  println!("{:?} headings;", catalog.remove("heading_count").unwrap_or(0));
   println!(
     "{:?} discarded headings (long words)",
     catalog.remove("overflow_count").unwrap_or(0)

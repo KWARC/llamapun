@@ -21,9 +21,7 @@ fn test_c14n_basic() {
 #[test]
 fn test_c14n_basic_full() {
   let parser = Parser::default();
-  let doc = parser
-    .parse_file("tests/resources/1311.0066.xhtml")
-    .unwrap();
+  let doc = parser.parse_file("tests/resources/1311.0066.xhtml").unwrap();
 
   let root = doc.get_root_readonly().unwrap();
   let dnm = DNM::new(root, DNMParameters::default());

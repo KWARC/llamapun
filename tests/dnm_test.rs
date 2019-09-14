@@ -16,10 +16,7 @@ fn test_plaintext_simple() {
   let mut options: HashMap<String, SpecialTagsOption> = HashMap::new();
   options.insert("h1".to_string(), SpecialTagsOption::Enter); //actually default behaviour
   options.insert("h2".to_string(), SpecialTagsOption::Skip);
-  options.insert(
-    "a".to_string(),
-    SpecialTagsOption::Normalize("[link]".to_string()),
-  );
+  options.insert("a".to_string(), SpecialTagsOption::Normalize("[link]".to_string()));
   let root = doc.get_root_readonly().unwrap();
   let dnm = DNM::new(
     root,
@@ -29,10 +26,7 @@ fn test_plaintext_simple() {
       ..Default::default()
     },
   );
-  assert_eq!(
-    dnm.plaintext.trim(),
-    "Title Some text [link] and a bit more text."
-  );
+  assert_eq!(dnm.plaintext.trim(), "Title Some text [link] and a bit more text.");
 }
 
 #[test]
@@ -68,10 +62,7 @@ fn test_xml_node_to_plaintext() {
   let mut options: HashMap<String, SpecialTagsOption> = HashMap::new();
   options.insert("h1".to_string(), SpecialTagsOption::Enter); //actually default behaviour
   options.insert("h2".to_string(), SpecialTagsOption::Skip);
-  options.insert(
-    "a".to_string(),
-    SpecialTagsOption::Normalize("[link]".to_string()),
-  );
+  options.insert("a".to_string(), SpecialTagsOption::Normalize("[link]".to_string()));
   let root = doc.get_root_readonly().unwrap();
   let dnm = DNM::new(
     root,
@@ -99,10 +90,7 @@ fn test_xml_node_to_plaintext() {
     }
   }
   //Node content should have been processed
-  assert_eq!(
-    dnm.get_range_of_node(node).unwrap().get_plaintext(),
-    "Title"
-  );
+  assert_eq!(dnm.get_range_of_node(node).unwrap().get_plaintext(), "Title");
   while node.get_name() != "h2" {
     match node.get_next_sibling() {
       Some(n) => node = n,
@@ -118,10 +106,7 @@ fn test_xml_node_to_plaintext() {
     }
   }
   //node content should have been replaced by "[link]"
-  assert_eq!(
-    dnm.get_range_of_node(node).unwrap().get_plaintext().trim(),
-    "[link]"
-  );
+  assert_eq!(dnm.get_range_of_node(node).unwrap().get_plaintext().trim(), "[link]");
 }
 
 #[test]
@@ -130,10 +115,7 @@ fn test_back_mapping_simple() {
   let doc = parser.parse_file("tests/resources/file01.xml").unwrap();
   let root = doc.get_root_readonly().unwrap();
   let mut options: HashMap<String, SpecialTagsOption> = HashMap::new();
-  options.insert(
-    "a".to_string(),
-    SpecialTagsOption::Normalize("[link]".to_string()),
-  );
+  options.insert("a".to_string(), SpecialTagsOption::Normalize("[link]".to_string()));
   let dnm = DNM::new(
     root,
     DNMParameters {

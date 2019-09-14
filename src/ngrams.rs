@@ -46,11 +46,7 @@ pub struct Unigrams {
   pub map: HashMap<String, usize>,
 }
 impl Default for Unigrams {
-  fn default() -> Unigrams {
-    Unigrams {
-      map: HashMap::new(),
-    }
-  }
+  fn default() -> Unigrams { Unigrams { map: HashMap::new() } }
 }
 
 impl Unigrams {

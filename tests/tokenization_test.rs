@@ -59,9 +59,7 @@ fn test_sentence_tokenization_simple() {
 fn test_sentence_tokenization_arxmliv_xhtml() {
   let expected = load_expected_xhtml();
   let parser = Parser::default();
-  let doc = parser
-    .parse_file("tests/resources/1311.0066.xhtml")
-    .unwrap();
+  let doc = parser.parse_file("tests/resources/1311.0066.xhtml").unwrap();
 
   test_each_paragraph(&doc, &expected);
 }
@@ -85,15 +83,14 @@ fn test_each_paragraph<'a>(doc: &'a Document, expected: &[Vec<&'a str>]) {
   // We will tokenize each logical paragraph, which are the textual logical units
   // in an article
   let xpath_context = Context::new(doc).unwrap();
-  let para_xpath_result = xpath_context
-    .evaluate("//*[contains(@class,'ltx_para')]")
-    .unwrap();
+  let para_xpath_result = xpath_context.evaluate("//*[contains(@class,'ltx_para')]").unwrap();
 
   let mut expected_iter = expected.iter();
   for para in para_xpath_result.get_readonly_nodes_as_vec() {
     let mut test_parameters = DNMParameters::llamapun_normalization();
     // TODO: Do we need an overhaul of the sentence tokenization for this test to succeed with wrap_tokens = true?
-    test_parameters.wrap_tokens = false; // llamapun normalization requires mathformula to be properly separated by whitespace. This test was written prior that behavior
+    test_parameters.wrap_tokens = false; // llamapun normalization requires mathformula to be properly separated by whitespace. This test was written prior
+                                         // that behavior
     let dnm = DNM::new(para, test_parameters);
 
     let paragraph_expected = expected_iter.next().unwrap();
@@ -120,10 +117,7 @@ fn test_each_paragraph<'a>(doc: &'a Document, expected: &[Vec<&'a str>]) {
       // little flaky here.
       let expected_text = multispace.replace_all(&expected_para_text, " ");
       let result_text = multispace.replace_all(range.get_plaintext(), " ");
-      assert_eq!(
-        result_text, expected_text,
-        "sentence mismatch, expected right."
-      );
+      assert_eq!(result_text, expected_text, "sentence mismatch, expected right.");
     }
   }
 }

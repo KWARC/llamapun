@@ -43,11 +43,7 @@ fn can_load_document_directly() {
       }
     }
   }
-  assert!(
-    word_count > 1500,
-    "expected more than 1500 words, found {}",
-    word_count
-  );
+  assert!(word_count > 1500, "expected more than 1500 words, found {}", word_count);
 }
 
 #[test]
@@ -62,11 +58,7 @@ fn can_iterate_sentences_directly() {
       assert!(word.pos == POS::NOT_SET);
     }
   }
-  assert!(
-    word_count > 1500,
-    "expected more than 1500 words, found {}",
-    word_count
-  );
+  assert!(word_count > 1500, "expected more than 1500 words, found {}", word_count);
 }
 
 #[test]

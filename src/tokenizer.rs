@@ -79,9 +79,7 @@ impl Tokenizer {
         '.' | ':' => {
           // Baseline condition - only split when we have a following word-ish string with an
           // uppercase letter Get next non-space, non-quote character
-          while text_iterator.peek().unwrap_or(&'.').is_whitespace()
-            || text_iterator.peek() == Some(&'\'')
-          {
+          while text_iterator.peek().unwrap_or(&'.').is_whitespace() || text_iterator.peek() == Some(&'\'') {
             let space_char = text_iterator.next().unwrap();
             end += space_char.len_utf8();
           }
@@ -137,11 +135,10 @@ impl Tokenizer {
                 // New sentence
                 sentences.push(DNMRange { start, end, dnm }.trim());
                 start = end;
-              }
+              },
               Some(&c) => {
                 if sentence_char == '.' && c.is_alphabetic() {
-                  let (next_word_string, next_word_length) =
-                    next_word_with_length(&mut text_iterator);
+                  let (next_word_string, next_word_length) = next_word_with_length(&mut text_iterator);
                   // TODO: Maybe extend to more lowercase stopwords here? unclear...
                   if next_word_string.to_lowercase().starts_with("mathformula")
                     && !self.abbreviation_check(&left_window)
@@ -171,16 +168,16 @@ impl Tokenizer {
                     left_window.pop_front();
                   }
                 }
-              }
+              },
               None => {
                 left_window.push_back('.');
                 if left_window.len() >= window_size {
                   left_window.pop_front();
                 }
-              }
+              },
             }
           }
-        }
+        },
         '?' | '!' => {
           if !is_bounded(left_window.back(), text_iterator.peek()) {
             // Reset the left window
@@ -189,7 +186,7 @@ impl Tokenizer {
             sentences.push(DNMRange { start, end, dnm }.trim());
             start = end;
           }
-        }
+        },
         // TODO:
         // Some('\u{2022}'),Some('*') => { // bullet point for itemize
         // Some('\u{220e}') => { // QED symbol
@@ -230,7 +227,7 @@ impl Tokenizer {
             // We consumed the next word, so make sure we reflect that in either case:
             end += next_word_length;
           }
-        }
+        },
         other_char => {
           // "mathformula\nCapitalized" case is a sentence break (but never
           // "mathformula\nmathformula")
@@ -255,7 +252,7 @@ impl Tokenizer {
           if left_window.len() >= window_size {
             left_window.pop_front();
           }
-        }
+        },
       }
     }
 
@@ -266,10 +263,7 @@ impl Tokenizer {
     }
 
     // Filter out edge cases that return empty ranges
-    sentences
-      .into_iter()
-      .filter(|range| range.start < range.end)
-      .collect()
+    sentences.into_iter().filter(|range| range.start < range.end).collect()
   }
 
   /// returns the words of a sentence using simple heuristics
@@ -305,10 +299,7 @@ impl Tokenizer {
 fn is_bounded<'a>(left: Option<&'a char>, right: Option<&'a char>) -> bool {
   let pair = [left, right];
   match pair {
-    [Some(&'['), Some(&']')]
-    | [Some(&'('), Some(&')')]
-    | [Some(&'{'), Some(&'}')]
-    | [Some(&'"'), Some(&'"')] => true,
+    [Some(&'['), Some(&']')] | [Some(&'('), Some(&')')] | [Some(&'{'), Some(&'}')] | [Some(&'"'), Some(&'"')] => true,
     _ => false,
   }
 }

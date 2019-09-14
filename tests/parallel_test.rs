@@ -38,9 +38,7 @@ fn can_iterate_xpath() {
   let catalog = corpus.catalog_with_parallel_walk(|document| {
     let mut t_catalog = HashMap::new();
     let mut contacts = 0;
-    for _contact in
-      document.xpath_selector_iter("//*[contains(@class,'ltx_contact') and (local-name()='span')]")
-    {
+    for _contact in document.xpath_selector_iter("//*[contains(@class,'ltx_contact') and (local-name()='span')]") {
       contacts += 1;
     }
     t_catalog.insert(String::from("contact_count"), contacts);
@@ -55,27 +53,23 @@ fn can_iterate_xpath() {
   // emails
   let email_catalog = corpus.catalog_with_parallel_walk(|document| {
     let mut t_catalog = HashMap::new();
-    let emails : Vec<ItemDNM> = document.xpath_selector_iter("//*[contains(@class,'ltx_contact') and contains(@class,'ltx_role_email') and (local-name()='span')]").collect();
+    let emails: Vec<ItemDNM> = document
+      .xpath_selector_iter(
+        "//*[contains(@class,'ltx_contact') and contains(@class,'ltx_role_email') and (local-name()='span')]",
+      )
+      .collect();
     t_catalog.insert(String::from("email_count"), emails.len() as u64);
     t_catalog
   });
   let email_count = email_catalog.get("email_count").unwrap_or(&0);
-  assert_eq!(
-    *email_count, 4,
-    "expected 4 email elements, found {:?}",
-    email_count
-  );
+  assert_eq!(*email_count, 4, "expected 4 email elements, found {:?}", email_count);
 }
 
 #[test]
 fn can_iterate_custom() {
   let corpus = Corpus::new("tests".to_string());
   let email_filter = |node: &RoNode| {
-    node.get_name() == "span"
-      && node
-        .get_attribute("class")
-        .unwrap_or_default()
-        .contains("ltx_contact")
+    node.get_name() == "span" && node.get_attribute("class").unwrap_or_default().contains("ltx_contact")
   };
   let catalog = corpus.catalog_with_parallel_walk(|document| {
     let mut t_catalog = HashMap::new();

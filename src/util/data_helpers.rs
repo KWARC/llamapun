@@ -12,8 +12,7 @@ use crate::dnm::DNMRange;
 
 // Integers, floats, subfigure numbers
 lazy_static! {
-  static ref IS_NUMERC: Regex =
-    Regex::new(r"^-?(?:\d+)(?:[a-k]|(?:\.\d+(?:[eE][+-]?\d+)?))?$").unwrap();
+  static ref IS_NUMERC: Regex = Regex::new(r"^-?(?:\d+)(?:[a-k]|(?:\.\d+(?:[eE][+-]?\d+)?))?$").unwrap();
 }
 
 static MAX_WORD_LENGTH: usize = 25;
@@ -24,11 +23,7 @@ static MAX_WORD_LENGTH: usize = 25;
 /// - citations become citationelement
 /// - math is replaced by its lexeme annotation (created by latexml), with a "mathformula" fallback
 /// - of the word is longer than the max length of 25, an error is returned
-pub fn ams_normalize_word_range(
-  range: &DNMRange,
-  mut context: &mut Context,
-  discard_math: bool,
-) -> Result<String, ()> {
+pub fn ams_normalize_word_range(range: &DNMRange, mut context: &mut Context, discard_math: bool) -> Result<String, ()> {
   let mut word_string = range
     .get_plaintext()
     .chars()

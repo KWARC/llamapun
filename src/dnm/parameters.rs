@@ -121,10 +121,7 @@ impl DNMParameters {
       "ltx_equationgroup".to_string(),
       SpecialTagsOption::Normalize("\nmathformula\n".to_string()),
     );
-    class_options.insert(
-      "ltx_ref".to_string(),
-      SpecialTagsOption::Normalize("REF".to_string()),
-    );
+    class_options.insert("ltx_ref".to_string(), SpecialTagsOption::Normalize("REF".to_string()));
     class_options.insert("ltx_authors".to_string(), SpecialTagsOption::Skip);
     class_options.insert("ltx_TOC".to_string(), SpecialTagsOption::Skip);
     class_options.insert("ltx_note_mark".to_string(), SpecialTagsOption::Skip);

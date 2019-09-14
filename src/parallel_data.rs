@@ -60,7 +60,7 @@ impl<'iter> Iterator for RoNodeIterator<'iter> {
           dnm,
           document: self.document,
         })
-      }
+      },
     }
   }
 }
@@ -82,12 +82,8 @@ pub trait XPathFilteredIterator<'p> {
 }
 
 impl<'p> XPathFilteredIterator<'p> for ItemDNM<'p> {
-  fn get_document(&'p self) -> &Document {
-    &self.document
-  }
-  fn to_sentences(&'p self) -> Vec<DNMRange<'p>> {
-    self.document.corpus.tokenizer.sentences(&self.dnm)
-  }
+  fn get_document(&'p self) -> &Document { &self.document }
+  fn to_sentences(&'p self) -> Vec<DNMRange<'p>> { self.document.corpus.tokenizer.sentences(&self.dnm) }
 }
 
 impl<'iter> Iterator for DNMRangeIterator<'iter> {

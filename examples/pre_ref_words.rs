@@ -39,11 +39,7 @@ pub fn main() -> Result<(), Error> {
   let corpus = Corpus::new(corpus_path);
 
   let catalog = corpus.catalog_with_parallel_walk(|document| {
-    println!(
-      "Thread: {:?}, doc: {:?}",
-      thread::current().name(),
-      document.path
-    );
+    println!("Thread: {:?}, doc: {:?}", thread::current().name(), document.path);
     document
       .get_ref_nodes()
       .into_par_iter()

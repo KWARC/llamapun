@@ -16,11 +16,7 @@ pub fn plot_simple<T: Clone + Eq + Hash + DataType>(
   let log_values = map.iter().map(|entry| (entry.1 as f64).log2());
   let mut fg = Figure::new();
   fg.axes2d()
-    .points(
-      keys,
-      log_values,
-      &[PointSymbol('O'), Color("#ffaa77"), PointSize(1.2)],
-    )
+    .points(keys, log_values, &[PointSymbol('O'), Color("#ffaa77"), PointSize(1.2)])
     .set_x_label(x_label, &[Rotate(45.0)])
     .set_y_label(y_label, &[Rotate(90.0)])
     .set_title(title, &[]);

@@ -193,9 +193,7 @@ impl Corpus {
   }
 
   /// Load a specific document in the corpus
-  pub fn load_doc(&self, path: String) -> Result<Document, XmlParseError> {
-    Document::new(path, self)
-  }
+  pub fn load_doc(&self, path: String) -> Result<Document, XmlParseError> { Document::new(path, self) }
 }
 
 impl<'d> Document<'d> {
@@ -236,9 +234,7 @@ impl<'d> Document<'d> {
   }
 
   /// Obtain the MathML <math> nodes of a libxml `Document`
-  pub fn get_math_nodes(&self) -> Vec<RoNode> {
-    Document::math_nodes(&self.dom)
-  }
+  pub fn get_math_nodes(&self) -> Vec<RoNode> { Document::math_nodes(&self.dom) }
 
   /// Associated function for `get_math_nodes`
   fn math_nodes(doc: &XmlDoc) -> Vec<RoNode> {
@@ -249,13 +245,13 @@ impl<'d> Document<'d> {
     }
   }
   /// Obtain the <span[class=ltx_ref]> nodes of a libxml `Document`
-  pub fn get_ref_nodes(&self) -> Vec<RoNode> {
-    Document::ref_nodes(&self.dom)
-  }
+  pub fn get_ref_nodes(&self) -> Vec<RoNode> { Document::ref_nodes(&self.dom) }
   /// Associated function for `get_ref_nodes`
   fn ref_nodes(doc: &XmlDoc) -> Vec<RoNode> {
     let xpath_context = Context::new(doc).unwrap();
-    match xpath_context.evaluate("//*[(local-name()='span' or local-name()='a') and (contains(@class,'ltx_ref ') or @class='ltx_ref')]") {
+    match xpath_context
+      .evaluate("//*[(local-name()='span' or local-name()='a') and (contains(@class,'ltx_ref ') or @class='ltx_ref')]")
+    {
       Ok(found_payload) => found_payload.get_readonly_nodes_as_vec(),
       _ => Vec::new(),
     }
@@ -289,7 +285,7 @@ impl<'iter> Iterator for ParagraphIterator<'iter> {
           dnm,
           document: self.document,
         })
-      }
+      },
     }
   }
 }
@@ -322,7 +318,7 @@ impl<'iter> Iterator for SentenceIterator<'iter> {
           };
           Some(sentence)
         }
-      }
+      },
     }
   }
 }
@@ -352,10 +348,14 @@ impl<'s> Sentence<'s> {
 
   /// Parses the sentence using Senna. The parse options are set in the `Corpus`
   pub fn senna_parse(&'s mut self) -> &Self {
-    self.senna_sentence = Some(self.document.corpus.senna.borrow_mut().parse(
-      (&self.range).get_plaintext(),
-      self.document.corpus.senna_options.get(),
-    ));
+    self.senna_sentence = Some(
+      self
+        .document
+        .corpus
+        .senna
+        .borrow_mut()
+        .parse((&self.range).get_plaintext(), self.document.corpus.senna_options.get()),
+    );
     self
   }
 }

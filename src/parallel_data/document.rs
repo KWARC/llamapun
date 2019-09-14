@@ -37,9 +37,7 @@ impl<'d> Document<'d> {
   }
 
   /// Obtain the problem-free logical headings of a libxml `Document`
-  pub fn get_heading_nodes(&self) -> Vec<RoNode> {
-    Document::heading_nodes(&self.dom)
-  }
+  pub fn get_heading_nodes(&self) -> Vec<RoNode> { Document::heading_nodes(&self.dom) }
   /// Associated function for `get_heading_nodes`
   fn heading_nodes(doc: &XmlDoc) -> Vec<RoNode> {
     Document::xpath_nodes(doc,
@@ -55,9 +53,7 @@ impl<'d> Document<'d> {
   }
 
   /// Obtain the problem-free logical paragraphs of a libxml `Document`
-  pub fn get_paragraph_nodes(&self) -> Vec<RoNode> {
-    Document::paragraph_nodes(&self.dom)
-  }
+  pub fn get_paragraph_nodes(&self) -> Vec<RoNode> { Document::paragraph_nodes(&self.dom) }
 
   /// Associated function for `get_paragraph_nodes`
   fn paragraph_nodes(doc: &XmlDoc) -> Vec<RoNode> {
@@ -76,30 +72,38 @@ impl<'d> Document<'d> {
 
   /// Obtain the first paragraph of a marked up article abstract (<div class="ltx_abstract"><p>)
   fn abstract_p_node(doc: &XmlDoc) -> Option<RoNode> {
-    Document::xpath_node(doc,
-      "//*[local-name()='div' and contains(@class,'ltx_abstract') and not(descendant::*[contains(@class,'ltx_ERROR')])]/p[1]")
+    Document::xpath_node(
+      doc,
+      "//*[local-name()='div' and contains(@class,'ltx_abstract') and not(descendant::*[contains(@class,'ltx_ERROR')])]/p[1]",
+    )
   }
 
   /// Obtain the first <div class='ltx_keywords'>text content</div>
   /// which remains undetected by the regular paragraph selectors
   /// as deposited by LaTeXML for the \keywords macro
   fn keywords_node(doc: &XmlDoc) -> Option<RoNode> {
-    Document::xpath_node(doc,
-      "//*[local-name()='div' and contains(@class,'ltx_keywords') and not(descendant::*[contains(@class,'ltx_ERROR')])]")
+    Document::xpath_node(
+      doc,
+      "//*[local-name()='div' and contains(@class,'ltx_keywords') and not(descendant::*[contains(@class,'ltx_ERROR')])]",
+    )
   }
 
   /// Obtain the first <div class='ltx_acknowledgement'>text content</div>
   /// which remains undetected by the regular paragraph selectors
   /// as deposited by LaTeXML for the \acknowledgements macro
   fn acknowledgement_node(doc: &XmlDoc) -> Option<RoNode> {
-    Document::xpath_node(doc,
-      "//*[local-name()='div' and contains(@class,'ltx_acknowledgement') and not(descendant::*[contains(@class,'ltx_ERROR')])]")
+    Document::xpath_node(
+      doc,
+      "//*[local-name()='div' and contains(@class,'ltx_acknowledgement') and not(descendant::*[contains(@class,'ltx_ERROR')])]",
+    )
   }
 
   /// Obtains all error-free marked captions (e.g. Figure and Table captions)
   fn caption_nodes(doc: &XmlDoc) -> Vec<RoNode> {
-    Document::xpath_nodes(doc,
-    "//*[local-name()='figcaption' and contains(@class,'ltx_caption') and not(descendant::*[contains(@class,'ltx_ERROR')])]")
+    Document::xpath_nodes(
+      doc,
+      "//*[local-name()='figcaption' and contains(@class,'ltx_caption') and not(descendant::*[contains(@class,'ltx_ERROR')])]",
+    )
   }
 
   /// Get an iterator over textual paragraphs of the document, in a loose sense,
@@ -125,22 +129,18 @@ impl<'d> Document<'d> {
   }
 
   /// Obtain the MathML <math> nodes of a libxml `Document`
-  pub fn get_math_nodes(&self) -> Vec<RoNode> {
-    Document::math_nodes(&self.dom)
-  }
+  pub fn get_math_nodes(&self) -> Vec<RoNode> { Document::math_nodes(&self.dom) }
 
   /// Associated function for `get_math_nodes`
-  pub(crate) fn math_nodes(doc: &XmlDoc) -> Vec<RoNode> {
-    Document::xpath_nodes(&doc, "//*[local-name()='math']")
-  }
+  pub(crate) fn math_nodes(doc: &XmlDoc) -> Vec<RoNode> { Document::xpath_nodes(&doc, "//*[local-name()='math']") }
   /// Obtain the <span[class=ltx_ref]> nodes of a libxml `Document`
-  pub fn get_ref_nodes(&self) -> Vec<RoNode> {
-    Document::ref_nodes(&self.dom)
-  }
+  pub fn get_ref_nodes(&self) -> Vec<RoNode> { Document::ref_nodes(&self.dom) }
   /// Associated function for `get_ref_nodes`
   pub(crate) fn ref_nodes(doc: &XmlDoc) -> Vec<RoNode> {
-    Document::xpath_nodes(&doc,
-    "//*[(local-name()='span' or local-name()='a') and (contains(@class,'ltx_ref ') or @class='ltx_ref')]")
+    Document::xpath_nodes(
+      &doc,
+      "//*[(local-name()='span' or local-name()='a') and (contains(@class,'ltx_ref ') or @class='ltx_ref')]",
+    )
   }
 
   /// Get an iterator over the sentences of the document
@@ -159,9 +159,7 @@ impl<'d> Document<'d> {
   }
 
   /// Obtain the nodes associated with the xpath evaluation over the underlying libxml `Document`
-  pub fn get_xpath_nodes(&self, xpath_str: &str) -> Vec<RoNode> {
-    Document::xpath_nodes(&self.dom, xpath_str)
-  }
+  pub fn get_xpath_nodes(&self, xpath_str: &str) -> Vec<RoNode> { Document::xpath_nodes(&self.dom, xpath_str) }
 
   /// Associated function for `get_xpath_nodes`
   pub(crate) fn xpath_nodes(doc: &XmlDoc, xpath_str: &str) -> Vec<RoNode> {
@@ -173,9 +171,7 @@ impl<'d> Document<'d> {
   }
 
   /// Obtain the first node associated with the xpath evaluation over the underlying libxml `Document`
-  pub fn get_xpath_node(&self, xpath_str: &str) -> Option<RoNode> {
-    Document::xpath_node(&self.dom, xpath_str)
-  }
+  pub fn get_xpath_node(&self, xpath_str: &str) -> Option<RoNode> { Document::xpath_node(&self.dom, xpath_str) }
 
   /// Associated function for `get_xpath_nodes`
   pub(crate) fn xpath_node(doc: &XmlDoc, xpath_str: &str) -> Option<RoNode> {
@@ -188,7 +184,7 @@ impl<'d> Document<'d> {
         } else {
           None
         }
-      }
+      },
       _ => None,
     }
   }

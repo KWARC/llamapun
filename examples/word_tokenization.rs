@@ -3,11 +3,11 @@ extern crate libxml;
 extern crate llamapun;
 extern crate time;
 
+use llamapun::data::{Corpus, Document};
+use llamapun::ngrams::{Dictionary, Unigrams};
+use llamapun::util::plot::*;
 use std::collections::HashMap;
 use time::PreciseTime;
-use llamapun::ngrams::{Dictionary, Unigrams};
-use llamapun::data::{Corpus, Document};
-use llamapun::util::plot::*;
 
 fn main() {
   let start_example = PreciseTime::now();
@@ -26,8 +26,7 @@ fn main() {
   // };
   let corpus = Corpus::new("tests/resources/".to_string());
   let arxivid = "0903.1000";
-  let mut document =
-    Document::new("tests/resources/".to_string() + arxivid + ".html", &corpus).unwrap();
+  let mut document = Document::new("tests/resources/".to_string() + arxivid + ".html", &corpus).unwrap();
   let end_parse = PreciseTime::now();
 
   // We will tokenize each logical paragraph, which are the textual logical units
@@ -85,10 +84,7 @@ fn main() {
   // Print out the final report:
   println!("--- Dictionary: \n{:?}\n", inorder_dictionary);
   println!("--- Frequencies: \n{:?}\n", unigrams.sort());
-  println!(
-    "--- Frequency distribution: \n{:?}\n",
-    value_sorted_frequencies
-  );
+  println!("--- Frequency distribution: \n{:?}\n", value_sorted_frequencies);
   println!("--- Paragraphs total: {:?}", total_paragraphs);
   println!("--- Sentences total: {:?}", total_sentences);
   println!("--- Words total: {:?}", total_words);

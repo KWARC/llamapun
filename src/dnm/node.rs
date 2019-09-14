@@ -18,15 +18,10 @@ pub fn lexematize_math(node: RoNode, context: &mut Context) -> String {
     .iter()
     .map(|anno| {
       let mut annotation_string = anno.get_content();
-      // offer fix for latexml 0.8.4 serialization flaw in some cases (e.g. "POSTFIX:endID:end" instead of "POSTFIX:end ID:end")
-      annotation_string = annotation_string
-        .split(":end")
-        .collect::<Vec<&str>>()
-        .join(":end ");
-      annotation_string = annotation_string
-        .split(":start")
-        .collect::<Vec<&str>>()
-        .join(":start ");
+      // offer fix for latexml 0.8.4 serialization flaw in some cases (e.g. "POSTFIX:endID:end" instead of "POSTFIX:end
+      // ID:end")
+      annotation_string = annotation_string.split(":end").collect::<Vec<&str>>().join(":end ");
+      annotation_string = annotation_string.split(":start").collect::<Vec<&str>>().join(":start ");
       annotation_string
         .split_whitespace()
         .map(|anno_word| {

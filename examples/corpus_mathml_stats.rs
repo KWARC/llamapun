@@ -69,11 +69,7 @@ pub fn main() -> Result<(), Error> {
   // open_ended.insert("voffset");
 
   let catalog = corpus.catalog_with_parallel_walk(|document| {
-    println!(
-      "Thread: {:?}, doc: {:?}",
-      thread::current().name(),
-      document.path
-    );
+    println!("Thread: {:?}, doc: {:?}", thread::current().name(), document.path);
 
     // Recursively descend through the math nodes and increment the frequencies of occurrence
     document
@@ -103,10 +99,10 @@ pub fn main() -> Result<(), Error> {
 
   let buffered_writer = BufWriter::with_capacity(BUFFER_CAPACITY, node_statistics_file);
   let mut csv_writer = csv::Writer::from_writer(buffered_writer);
-  csv_writer.write_record(&["name@attr[value]","frequency"])?;
+  csv_writer.write_record(&["name@attr[value]", "frequency"])?;
 
   for (key, val) in catalog_vec {
-    csv_writer.write_record(&[key,&val.to_string()])?;
+    csv_writer.write_record(&[key, &val.to_string()])?;
   }
   // Close the writer
   csv_writer.flush()

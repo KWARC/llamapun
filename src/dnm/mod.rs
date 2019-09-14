@@ -145,10 +145,7 @@ impl DNM {
   }
 
   /// Use the DNM abstraction over a plaintext utterance, assuming it stands for a single paragraph
-  pub fn from_str(
-    text: &str,
-    params_opt: Option<DNMParameters>,
-  ) -> Result<(Document, Self), Box<dyn Error>> {
+  pub fn from_str(text: &str, params_opt: Option<DNMParameters>) -> Result<(Document, Self), Box<dyn Error>> {
     let params = params_opt.unwrap_or_default();
     // Same as ::new(), but requires initializing a libxml Document with the text content
     let mut doc = Document::new().unwrap();
@@ -173,10 +170,7 @@ impl DNM {
 
   /// Rebuild a llamapun-generated tokenized plaintext into a DNM
   /// quite specific to the AMS paragraph generation
-  pub fn from_ams_paragraph_str(
-    text: &str,
-    params: Option<DNMParameters>,
-  ) -> Result<(Document, Self), Box<dyn Error>> {
+  pub fn from_ams_paragraph_str(text: &str, params: Option<DNMParameters>) -> Result<(Document, Self), Box<dyn Error>> {
     let rebuilt = c14n::rebuild_normalized_text(text);
     DNM::from_str(&rebuilt, params)
   }
@@ -184,19 +178,13 @@ impl DNM {
   /// Get the plaintext range of a node
   pub fn get_range_of_node(&self, node: RoNode) -> Result<DNMRange, ()> {
     match self.node_map.get(&node.to_hashable()) {
-      Some(&(start, end)) => Ok(DNMRange {
-        start,
-        end,
-        dnm: self,
-      }),
+      Some(&(start, end)) => Ok(DNMRange { start, end, dnm: self }),
       None => Err(()),
     }
   }
 
   /// Get the range representing the full DNM
-  pub fn get_range(&self) -> Result<DNMRange, ()> {
-    self.get_range_of_node(self.root_node)
-  }
+  pub fn get_range(&self) -> Result<DNMRange, ()> { self.get_range_of_node(self.root_node) }
 
   /// The heart of the dnm generation...
   fn recurse_node_create(&mut self, node: RoNode) {
@@ -293,9 +281,7 @@ impl DNM {
   fn stem_words(&self, string: &mut String /* , offsets : &mut Vec<i32> */) {
     // TODO: Support back-mapping (using e.g. something like min. edit distance to
     // map offsets)
-    if self.parameters.support_back_mapping
-      && (self.parameters.stem_words_full || self.parameters.stem_words_once)
-    {
+    if self.parameters.support_back_mapping && (self.parameters.stem_words_full || self.parameters.stem_words_once) {
       panic!("llamapun::dnm: word stemming does not support back-mapping yet");
     }
     if self.parameters.stem_words_full {
@@ -328,16 +314,16 @@ impl DNM {
             push_token!(self, token, node);
             record_node_map!(self, node, offset_start);
             return;
-          }
+          },
           Some(&SpecialTagsOption::FunctionNormalize(ref f)) => {
             push_token!(self, &f(node), node);
             record_node_map!(self, node, offset_start);
             return;
-          }
+          },
           Some(&SpecialTagsOption::Skip) => {
             record_node_map!(self, node, offset_start);
             return;
-          }
+          },
           None => continue,
         }
       }

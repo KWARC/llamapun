@@ -36,10 +36,7 @@ pub fn main() -> Result<(), Error> {
 
   let node_statistics_file = File::create(node_statistics_filepath)?;
   let node_model_file = File::create(node_model_filepath)?;
-  let node_model_writer = Arc::new(Mutex::new(BufWriter::with_capacity(
-    BUFFER_CAPACITY,
-    node_model_file,
-  )));
+  let node_model_writer = Arc::new(Mutex::new(BufWriter::with_capacity(BUFFER_CAPACITY, node_model_file)));
 
   let corpus = Corpus::new(corpus_path);
   let total_counts = corpus.catalog_with_parallel_walk(|document| {
@@ -47,8 +44,7 @@ pub fn main() -> Result<(), Error> {
     let mut total_counts = HashMap::new();
     if let Some(root) = document.dom.get_root_readonly() {
       let thread_writer = node_model_writer.clone();
-      let node_model =
-        dfs_record(root, &mut total_counts).expect("dfs_record should not encounter any issues.");
+      let node_model = dfs_record(root, &mut total_counts).expect("dfs_record should not encounter any issues.");
       let mut writer_lock = thread_writer.lock().unwrap();
       writer_lock
         .write_all(&node_model)

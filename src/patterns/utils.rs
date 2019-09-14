@@ -8,9 +8,7 @@ use libxml::tree::*;
  */
 
 /// checks whether a node is a comment node
-pub fn is_comment_node(node: RoNode) -> bool {
-  node.get_type().unwrap() == NodeType::CommentNode
-}
+pub fn is_comment_node(node: RoNode) -> bool { node.get_type().unwrap() == NodeType::CommentNode }
 
 /// gets the text content of a node. Requires that only child of the node is a
 /// text node
@@ -18,13 +16,8 @@ pub fn get_simple_node_content(node: RoNode, trim: bool) -> Result<String, Strin
   let child = node.get_first_child();
   if child.is_none() {
     Ok(String::new())
-  } else if !child.as_ref().unwrap().is_text_node()
-    || child.as_ref().unwrap().get_next_sibling().is_some()
-  {
-    Err(format!(
-      "found unexpected nodes in node \"{}\"",
-      node.get_name()
-    ))
+  } else if !child.as_ref().unwrap().is_text_node() || child.as_ref().unwrap().get_next_sibling().is_some() {
+    Err(format!("found unexpected nodes in node \"{}\"", node.get_name()))
   } else {
     Ok(if trim {
       child.as_ref().unwrap().get_content().trim().to_string()
@@ -83,15 +76,9 @@ pub fn fast_get_non_text_children(node: RoNode) -> Vec<RoNode> {
 pub fn get_only_child(node: RoNode) -> Result<RoNode, String> {
   let children = get_non_text_children(node)?;
   if children.is_empty() {
-    Err(format!(
-      "Expected child node in node \"{}\"",
-      node.get_name()
-    ))
+    Err(format!("Expected child node in node \"{}\"", node.get_name()))
   } else if children.len() > 1 {
-    Err(format!(
-      "Too many child nodes in node \"{}\"",
-      node.get_name()
-    ))
+    Err(format!("Too many child nodes in node \"{}\"", node.get_name()))
   } else {
     Ok(children[0])
   }
@@ -103,21 +90,14 @@ pub fn assert_no_child(node: RoNode) -> Result<(), String> {
   if get_non_text_children(node)?.is_empty() {
     Ok(())
   } else {
-    Err(format!(
-      "Found unexpected child of node \"{}\"",
-      node.get_name()
-    ))
+    Err(format!("Found unexpected child of node \"{}\"", node.get_name()))
   }
 }
 
 /// Gets a property from a node (or an `Err`, if it doesn't have the property)
 pub fn require_node_property(node: RoNode, property: &str) -> Result<String, String> {
   match node.get_property(property) {
-    None => Err(format!(
-      "\"{}\" node misses \"{}\" property",
-      node.get_name(),
-      property
-    )),
+    None => Err(format!("\"{}\" node misses \"{}\" property", node.get_name(), property)),
     Some(value) => Ok(value),
   }
 }
@@ -127,7 +107,8 @@ pub fn check_found_property_already(
   property: &Option<String>,
   node_name: &str,
   parent_name: &str,
-) -> Result<(), String> {
+) -> Result<(), String>
+{
   if property.is_some() {
     Err(format!(
       "found multiple \"{}\" nodes in \"{}\" node",

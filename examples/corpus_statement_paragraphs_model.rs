@@ -6,7 +6,8 @@
 /// $ cargo run --release --example corpus_statement_paragraphs_model /path/to/corpus paragraph_data.tar
 ///
 /// With math discarded:
-/// $ cargo run --release --example corpus_statement_paragraphs_model /path/to/corpus paragraph_data_nomath.tar discard_math
+/// $ cargo run --release --example corpus_statement_paragraphs_model /path/to/corpus paragraph_data_nomath.tar
+/// discard_math
 use std::collections::{HashMap, HashSet};
 use std::env;
 use std::fs::File;
@@ -21,7 +22,7 @@ use libxml::xpath::Context;
 use llamapun::ams;
 use llamapun::ams::{AmsEnv, StructuralEnv};
 use llamapun::dnm::SpecialTagsOption;
-use llamapun::parallel_data::*  ;
+use llamapun::parallel_data::*;
 use llamapun::util::data_helpers;
 
 use tar::{Builder, Header};
@@ -69,9 +70,7 @@ impl TarBuilder {
     header.set_gid(0);
     header.set_mtime(self.stamp);
     header.set_cksum();
-    self
-      .builder
-      .append_data(&mut header, paragraph_filename, bytes)
+    self.builder.append_data(&mut header, paragraph_filename, bytes)
   }
 }
 
@@ -172,16 +171,14 @@ pub fn main() -> Result<(), Error> {
         sentence_buffer = String::new();
         for word in sentence.word_iter() {
           if !word.range.is_empty() {
-            let word_string =
-              match data_helpers::ams_normalize_word_range(&word.range, &mut context, discard_math)
-              {
-                Ok(w) => w,
-                Err(_) => {
-                  overflow_count += 1;
-                  invalid_paragraph = true;
-                  break 'sentences;
-                }
-              };
+            let word_string = match data_helpers::ams_normalize_word_range(&word.range, &mut context, discard_math) {
+              Ok(w) => w,
+              Err(_) => {
+                overflow_count += 1;
+                invalid_paragraph = true;
+                break 'sentences;
+              },
+            };
             if !word_string.is_empty() {
               sentence_buffer.push_str(&word_string);
               sentence_buffer.push(space);
@@ -254,10 +251,7 @@ pub fn main() -> Result<(), Error> {
     "{:?} AMS marked up documents;",
     catalog.get("ams_document_count").unwrap_or(&0)
   );
-  println!(
-    "{:?} paragraphs;",
-    catalog.get("paragraph_count").unwrap_or(&0)
-  );
+  println!("{:?} paragraphs;", catalog.get("paragraph_count").unwrap_or(&0));
   println!(
     "{:?} discarded paragraphs (long words)",
     catalog.get("overflow_count").unwrap_or(&0)

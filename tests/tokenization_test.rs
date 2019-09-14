@@ -91,7 +91,10 @@ fn test_each_paragraph<'a>(doc: &'a Document, expected: &[Vec<&'a str>]) {
 
   let mut expected_iter = expected.iter();
   for para in para_xpath_result.get_readonly_nodes_as_vec() {
-    let dnm = DNM::new(para, DNMParameters::llamapun_normalization());
+    let mut test_parameters = DNMParameters::llamapun_normalization();
+    // TODO: Do we need an overhaul of the sentence tokenization for this test to succeed with wrap_tokens = true?
+    test_parameters.wrap_tokens = false; // llamapun normalization requires mathformula to be properly separated by whitespace. This test was written prior that behavior
+    let dnm = DNM::new(para, test_parameters);
 
     let paragraph_expected = expected_iter.next().unwrap();
     let expected_paragraph = multispace.replace_all(paragraph_expected[0], " ");

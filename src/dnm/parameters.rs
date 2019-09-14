@@ -136,7 +136,10 @@ impl DNMParameters {
       special_tag_class_options: class_options,
       normalize_white_spaces: false, /* Keeping it raw for tokenization best results, newlines
                                       * are meaningful */
-      wrap_tokens: false,
+      /* important for cases where we have things like x$\prime\prime$, and risk creating a single word "xmathformula" instead of the lexical "x mathformula"
+        There may be better tokenization tricks to employ later on (in the word tokenizer), but for now wrapping seems necessary
+      */
+      wrap_tokens: true,
       normalize_unicode: true,
       ..Default::default()
     }

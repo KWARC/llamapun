@@ -41,7 +41,7 @@ pub fn main() {
         e
       );
       return;
-    },
+    }
   };
 
   let discard_math = match input_args.next() {
@@ -96,15 +96,9 @@ pub fn main() {
       paragraph_count += 1;
       let mut paragraph_buffer = String::new();
       let mut invalid_paragraph = false;
-      'words: for word in paragraph.word_iter() {
+      'words: for word in paragraph.word_and_punct_iter() {
         if !word.range.is_empty() {
-          let word_string = word
-            .range
-            .get_plaintext()
-            .chars()
-            .filter(|c| c.is_alphanumeric()) // drop apostrophes, other noise?
-            .collect::<String>()
-            .to_lowercase();
+          let word_string = word.range.get_plaintext().to_lowercase();
           if word_string.len() > MAX_WORD_LENGTH {
             // Using a more aggressive normalization, large words tend to be conversion
             // errors with lost whitespace - drop the entire paragraph when this occurs.

@@ -60,7 +60,7 @@ impl<'iter> Iterator for RoNodeIterator<'iter> {
           dnm,
           document: self.document,
         })
-      },
+      }
     }
   }
 }
@@ -82,7 +82,9 @@ pub trait XPathFilteredIterator<'p> {
 }
 
 impl<'p> XPathFilteredIterator<'p> for ItemDNM<'p> {
-  fn get_document(&'p self) -> &Document { &self.document }
+  fn get_document(&'p self) -> &Document {
+    &self.document
+  }
   fn to_sentences(&'p self) -> Vec<DNMRange<'p>> {
     self.document.corpus.tokenizer.sentences(&self.dnm)
   }
@@ -116,6 +118,16 @@ impl<'s> ItemDNMRange<'s> {
       document: &self.document,
     }
   }
+  /// Get an iterator over the words and punctuation (using rudimentary heuristics)
+  pub fn word_and_punct_iter(&'s mut self) -> DNMRangeIterator<'s> {
+    let tokenizer = &self.document.corpus.tokenizer;
+    let words = tokenizer.words_and_punct(&self.range);
+    DNMRangeIterator {
+      walker: words.into_iter(),
+      document: &self.document,
+    }
+  }
+
 }
 
 impl<'s> ItemDNM<'s> {
@@ -124,6 +136,18 @@ impl<'s> ItemDNM<'s> {
     let tokenizer = &self.document.corpus.tokenizer;
     let words = match self.dnm.get_range() {
       Ok(range) => tokenizer.words(&range),
+      _ => Vec::new(),
+    };
+    DNMRangeIterator {
+      walker: words.into_iter(),
+      document: &self.document,
+    }
+  }
+  /// Get an iterator over the words and punctuation (using rudimentary heuristics)
+  pub fn word_and_punct_iter(&'s mut self) -> DNMRangeIterator<'s> {
+    let tokenizer = &self.document.corpus.tokenizer;
+    let words = match self.dnm.get_range() {
+      Ok(range) => tokenizer.words_and_punct(&range),
       _ => Vec::new(),
     };
     DNMRangeIterator {

@@ -56,7 +56,7 @@ impl Tokenizer {
     };
     // Don't consider single letters followed by a punctuation sign an end of a
     // sentence, Also "a.m." and "p.m." shouldn't get split
-    return ((lw_word.len() == 1) && (lw_word != "I")) || self.abbreviations.is_match(lw_word);
+    ((lw_word.len() == 1) && (lw_word != "I")) || self.abbreviations.is_match(lw_word)
   }
 
   // TODO: Reduce complexity, this tokenization pass is terribly overengineered
@@ -137,7 +137,7 @@ impl Tokenizer {
                 // New sentence
                 sentences.push(DNMRange { start, end, dnm }.trim());
                 start = end;
-              },
+              }
               Some(&c) => {
                 if sentence_char == '.' && c.is_alphabetic() {
                   let (next_word_string, next_word_length) =
@@ -171,16 +171,16 @@ impl Tokenizer {
                     left_window.pop_front();
                   }
                 }
-              },
+              }
               None => {
                 left_window.push_back('.');
                 if left_window.len() >= window_size {
                   left_window.pop_front();
                 }
-              },
+              }
             }
           }
-        },
+        }
         '?' | '!' => {
           if !is_bounded(left_window.back(), text_iterator.peek()) {
             // Reset the left window
@@ -189,7 +189,7 @@ impl Tokenizer {
             sentences.push(DNMRange { start, end, dnm }.trim());
             start = end;
           }
-        },
+        }
         // TODO:
         // Some('\u{2022}'),Some('*') => { // bullet point for itemize
         // Some('\u{220e}') => { // QED symbol
@@ -230,7 +230,7 @@ impl Tokenizer {
             // We consumed the next word, so make sure we reflect that in either case:
             end += next_word_length;
           }
-        },
+        }
         other_char => {
           // "mathformula\nCapitalized" case is a sentence break (but never
           // "mathformula\nmathformula")
@@ -255,7 +255,7 @@ impl Tokenizer {
           if left_window.len() >= window_size {
             left_window.pop_front();
           }
-        },
+        }
       }
     }
 
@@ -299,8 +299,45 @@ impl Tokenizer {
     }
     result
   }
-}
 
+  /// returns the words and punctuation of a sentence, using simple heuristics
+  pub fn words_and_punct<'a, 'b>(&'b self, sentence_range: &'a DNMRange<'b>) -> Vec<DNMRange> {
+    let text_iterator = sentence_range.get_plaintext().chars();
+    let mut start = 0usize;
+    let mut end = 0usize;
+    let mut result: Vec<DNMRange> = Vec::new();
+    for c in text_iterator {
+      // letters, numbers can accumulate
+      if c.is_alphanumeric() {
+        end += c.len_utf8();
+      } else {
+        // everything else completes a word and starts a new one
+        if start < end {
+          result.push(sentence_range.get_subrange(start, end));
+        }
+        // except that whitepace can be skipped over
+        if c.is_whitespace() {
+          end += c.len_utf8();
+          start = end;
+        }
+        // non-alphanum chars are standalone words EXCEPT when connectors such as apostrophes
+        else {
+          start = end;
+          end += c.len_utf8();
+          if c != '\'' && c != '’' {
+            // standalone char word case
+            result.push(sentence_range.get_subrange(start, end));
+            start = end;
+          }
+        }
+      }
+    }
+    if start < end {
+      result.push(sentence_range.get_subrange(start, end));
+    }
+    result
+  }
+}
 /// checks whether two characters are matching brackets or quotation marks
 fn is_bounded<'a>(left: Option<&'a char>, right: Option<&'a char>) -> bool {
   let pair = [left, right];

@@ -1,5 +1,11 @@
+use lazy_static::lazy_static;
 use libxml::readonly::RoNode;
 use libxml::xpath::Context;
+use regex::Regex;
+
+lazy_static! {
+ static ref FUSED_ENDS : Regex = Regex::new(r"^(.+)((?:OPFUNCTION|OPERATOR|UNKNOWN|ADDOP|RELOP|MULOP|ID|BIGOP|OVERACCENT|UNDERACCENT)[:]end)$").unwrap();
+}
 
 /// Map math nodes to their lexemes
 pub fn lexematize_math(node: RoNode, context: &mut Context) -> String {
@@ -20,6 +26,9 @@ pub fn lexematize_math(node: RoNode, context: &mut Context) -> String {
       let mut annotation_string = anno.get_content();
       // offer fix for latexml 0.8.4 serialization flaw in some cases (e.g. "POSTFIX:endID:end"
       // instead of "POSTFIX:end ID:end")
+      // THERE is a list of complications on the left side as well, namely:
+      // (OPFUNCTION|OPERATOR|UNKNOWN|ADDOP|RELOP|MULOP|ID|BIGOP|OVERACCENT|UNDERACCENT)_end
+      // show as glued to ~approx random left-hand side content (e.g. OPFUNCTION_TrivOPFUNCTION_end)
       annotation_string = annotation_string
         .split(":end")
         .collect::<Vec<&str>>()
@@ -29,7 +38,16 @@ pub fn lexematize_math(node: RoNode, context: &mut Context) -> String {
         .collect::<Vec<&str>>()
         .join(":start ");
       annotation_string
+        .trim()
         .split_whitespace()
+        .flat_map(|anno_word|
+          if let Some(cap) = FUSED_ENDS.captures(anno_word) {
+            let first = cap.get(1).map_or("", |w| w.as_str());
+            let second = cap.get(2).map_or("", |w| w.as_str());
+            vec![first, second]
+          } else {
+            vec![anno_word]
+          })
         .map(|anno_word| {
           if anno_word.starts_with("NUM") {
             String::from("NUM")
@@ -50,9 +68,11 @@ pub fn lexematize_math(node: RoNode, context: &mut Context) -> String {
               .collect()
           }
         })
+        .filter(|x| !x.is_empty())
         .collect::<Vec<String>>()
         .join(" ")
     })
+    .filter(|x| !x.is_empty())
     .collect::<Vec<String>>()
     .join(" ");
   if !lexemes.is_empty() {

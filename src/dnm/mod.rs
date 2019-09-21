@@ -148,8 +148,7 @@ impl DNM {
   pub fn from_str(
     text: &str,
     params_opt: Option<DNMParameters>,
-  ) -> Result<(Document, Self), Box<dyn Error>>
-  {
+  ) -> Result<(Document, Self), Box<dyn Error>> {
     let params = params_opt.unwrap_or_default();
     // Same as ::new(), but requires initializing a libxml Document with the text content
     let mut doc = Document::new().unwrap();
@@ -177,8 +176,7 @@ impl DNM {
   pub fn from_ams_paragraph_str(
     text: &str,
     params: Option<DNMParameters>,
-  ) -> Result<(Document, Self), Box<dyn Error>>
-  {
+  ) -> Result<(Document, Self), Box<dyn Error>> {
     let rebuilt = c14n::rebuild_normalized_text(text);
     DNM::from_str(&rebuilt, params)
   }
@@ -196,7 +194,9 @@ impl DNM {
   }
 
   /// Get the range representing the full DNM
-  pub fn get_range(&self) -> Result<DNMRange, ()> { self.get_range_of_node(self.root_node) }
+  pub fn get_range(&self) -> Result<DNMRange, ()> {
+    self.get_range_of_node(self.root_node)
+  }
 
   /// The heart of the dnm generation...
   fn recurse_node_create(&mut self, node: RoNode) {
@@ -328,16 +328,16 @@ impl DNM {
             push_token!(self, token, node);
             record_node_map!(self, node, offset_start);
             return;
-          },
+          }
           Some(&SpecialTagsOption::FunctionNormalize(ref f)) => {
             push_token!(self, &f(node), node);
             record_node_map!(self, node, offset_start);
             return;
-          },
+          }
           Some(&SpecialTagsOption::Skip) => {
             record_node_map!(self, node, offset_start);
             return;
-          },
+          }
           None => continue,
         }
       }

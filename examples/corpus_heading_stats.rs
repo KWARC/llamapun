@@ -10,6 +10,7 @@ use std::fs::File;
 use std::io::{BufWriter, Error};
 
 use libxml::xpath::Context;
+use llamapun::dnm::SpecialTagsOption;
 use llamapun::parallel_data::*;
 use llamapun::util::data_helpers;
 use serde::Serialize;
@@ -36,7 +37,28 @@ pub fn main() -> Result<(), Error> {
     None => "headings_report_filename.csv".to_string(),
   };
 
-  let corpus = Corpus::new(corpus_path);
+  let mut corpus = Corpus::new(corpus_path);
+  // we are interested in canonical heading statistics, so discard a lot of the counting machinery and special content
+  corpus
+    .dnm_parameters
+    .special_tag_name_options
+    .insert("math".to_string(), SpecialTagsOption::Skip);
+  corpus
+    .dnm_parameters
+    .special_tag_class_options
+    .insert("ltx_equation".to_string(), SpecialTagsOption::Skip);
+  corpus
+    .dnm_parameters
+    .special_tag_class_options
+    .insert("ltx_equationgroup".to_string(), SpecialTagsOption::Skip);
+  corpus
+    .dnm_parameters
+    .special_tag_name_options
+    .insert("cite".to_string(), SpecialTagsOption::Skip);
+  corpus
+    .dnm_parameters
+    .special_tag_class_options
+    .insert("ltx_ref".to_string(), SpecialTagsOption::Skip);
 
   let mut catalog = corpus.catalog_with_parallel_walk(|document| {
     let mut heading_count: u64 = 0;
@@ -65,22 +87,22 @@ pub fn main() -> Result<(), Error> {
               overflow_count += 1;
               invalid_heading = true;
               break;
-            },
+            }
           };
-        if !word_string.is_empty() {
+        if !word_string.is_empty() && word_string != "NUM" {
           heading_buffer.push_str(&word_string);
           heading_buffer.push(' ');
         }
       }
       // If heading was valid and contains text, record it
-      if !invalid_heading && !heading_buffer.is_empty() {
+      if !invalid_heading {
         // simplify/normalize to standard names
-        while heading_buffer.ends_with('\n') || heading_buffer.ends_with(' ') {
-          heading_buffer.pop();
+        heading_buffer = data_helpers::normalize_heading_title(&heading_buffer);
+        if !heading_buffer.is_empty() {
+          heading_count += 1;
+          let this_heading_counter = thread_counts.entry(heading_buffer).or_insert(0);
+          *this_heading_counter += 1;
         }
-        heading_count += 1;
-        let this_heading_counter = thread_counts.entry(heading_buffer).or_insert(0);
-        *this_heading_counter += 1;
       }
     }
     thread_counts.insert(String::from("heading_count"), heading_count);

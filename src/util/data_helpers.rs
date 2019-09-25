@@ -17,10 +17,10 @@ lazy_static! {
   static ref ROMAN_NUMERAL: Regex = Regex::new(r"(^|\s)[xiv]*(\s|$)").unwrap();
   static ref SINGLE_LEAD_LETTER: Regex = Regex::new(r"(^|\s)[abcdefghijklmnop](\s|$)").unwrap();
   static ref SINGLE_TRAIL_LETTER: Regex = Regex::new(r"\s[abcdefghijklmnop]$").unwrap();
-  static ref LEAD_FIXED_PHRASE: Regex = Regex::new(r"^(list of|summary of|sketch of|general|chapter|section|an|our|the)\s").unwrap();
+  static ref LEAD_FIXED_PHRASE: Regex = Regex::new(r"^(comparison with|(?:list|summary|outline|sketch|overview|start|end) of|general|other|additional|completion|finishing|first|second|third|new|alternative|chapter|section|some|basic|closely|an|our|the)\s").unwrap();
   static ref TRAILING_FIXED_WORD: Regex = Regex::new(r"\s(see|of|for|of the paper)$").unwrap();
   static ref COMMON_PLURALS : Regex = Regex::new(
-    r"(notation|subject|dataset|definition|discussion|axiom|conjecture|condition|experiment|algorithm|assumption|step|application|model|question|conclusion|theorem|lemma|proof|method|result|proposition|remark|problem|observation|example|simulation|contribution)s(\s|$)"
+    r"(a(?:xiom|lgorithm|ssumption|pplication)|con(?:jecture|dition|clusion|tribution)|d(?:ata\s?set|efinition|iscussion)|e(?:xperiment|xample)|lemma|m(?:odel|ethod|otivation)|notation|observation|pr(?:oof|oposition|oblem)|question|re(?:sult|mark)|s(?:ubject|tep|imulation)|theorem|work)s(?:\s|$)"
   ).unwrap();
 }
 
@@ -86,64 +86,88 @@ pub fn normalize_heading_title(heading: &str) -> String {
   } else {
     // Otherwise, just look for simple variations of known cases, or return as-is:
     match simple_heading.as_ref() {
-      "lemme" | "remarque" | "corollaire" => "", // ignore non-English
+      "lemme" | "remarque" | "corollaire" | "dokazatelstvo" => "", // ignore non-English
       "hypothesis" | "hypotheses" => "conjecture",
       "implementation details" => "implementation",
       "mathematics subject classification" | "subject headings" => "subject",
       "bibliography" => "references",
-      "previous work" => "related work",
+      "previous work" | "prior work" | "related literature" | "related research"
+      | "related studies" | "literature review" => "related work",
       "preliminary" => "preliminaries",
       "analyses" => "analysis",
-      h if h.starts_with("demonstration ") || h.ends_with(" demonstration") => "demonstration",
+      "theoretical background" => "background",
+      "exemple" => "example",
+      // starts are strong cueues than ends
+      h if h.starts_with("demonstration ") => "demonstration",
       h if h.starts_with("simulation result") => "result",
-      h if h.starts_with("simulation ") || h.ends_with(" simulation") => "simulation",
-      h if h.starts_with("proof ") || h.ends_with(" proof") => "proof",
-      h if h.starts_with("remark ") || h.ends_with(" remark") => "remark",
-      h if h.starts_with("experiment") || h.ends_with(" experiment") => "experiment",
+      h if h.starts_with("simulation ") => "simulation",
+      h if h.starts_with("acknowledg") || h.starts_with("aknowledg") => "acknowledgement",
+      h if h.starts_with("proof") => "proof",
+      h if h.starts_with("remark ") => "remark",
+      h if h.starts_with("experiment") => "experiment",
       h if h.starts_with("key word") || h.starts_with("keyword") => "keywords",
       h if h.starts_with("introduction") => "introduction",
       h if h.starts_with("related work") => "related work",
-      h if h.starts_with("acknowledg") => "acknowledgement",
+      h if h.starts_with("background ") => "background",
       h if h.starts_with("appendi") => "appendix",
-      h if h.starts_with("lemma") || h.ends_with(" lemma") => "lemma",
-      h if h.starts_with("theorem") || h.ends_with(" theorem") => "theorem",
-      h if h.starts_with("notation") || h.ends_with(" notation") => "notation",
-      h if h.starts_with("corollary") || h.ends_with(" corollary") => "corollary",
-      h if h.starts_with("proposition") || h.ends_with(" proposition") => "proposition",
-      h if h.starts_with("definition") || h.ends_with(" definition") => "definition",
-      h if h.starts_with("axiom") || h.ends_with(" axiom") => "axiom",
-      h if h.starts_with("conjecture")
-        || h.ends_with(" conjecture")
-        || h.starts_with("hypothesis")
-        || h.ends_with(" hypothesis") =>
-      {
-        "conjecture"
-      }
-      h if h.starts_with("problem ") || h.ends_with(" problem") => "problem",
-      h if h.starts_with("question ") || h.ends_with(" question") => "question",
-      h if h.starts_with("result") || h.ends_with(" result") => "result",
-      h if h.starts_with("method") || h.ends_with(" method") => "method",
+      h if h.starts_with("notation") => "notation",
+      h if h.starts_with("theorem") => "theorem",
+      h if h.starts_with("lemma") => "lemma",
+      h if h.starts_with("corollary") => "corollary",
+      h if h.starts_with("proposition") => "proposition",
+      h if h.starts_with("definition") => "definition",
+      h if h.starts_with("axiom") => "axiom",
+      h if h.starts_with("conjecture") || h.starts_with("hypothesis") => "conjecture",
+      h if h.starts_with("fact ") => "fact",
+      h if h.starts_with("problem ") => "problem",
+      h if h.starts_with("question ") => "question",
+      h if h.starts_with("result") => "result",
       h if h.starts_with("msc") => "subject",
-      h if h.starts_with("conclusion ")
-        || h.ends_with(" conclusion")
-        || h.starts_with("concluding remarks") =>
-      {
-        "conclusion"
-      }
-      h if h.starts_with("summary ") || h.ends_with(" summary") => "conclusion",
+      h if h.starts_with("conclusion") || h.starts_with("concluding remarks") => "conclusion",
+      h if h.starts_with("summary ") => "conclusion",
       h if h.starts_with("observation") => "observation",
-      h if h.starts_with("model") || h.ends_with(" model") => "model",
-      h if h.starts_with("method") || h.ends_with(" method") => "methods",
+      h if h.starts_with("model") => "model",
+      h if h.starts_with("method") => "methods",
       h if h.starts_with("future") => "future work",
-      h if h.starts_with("description") || h.ends_with(" description") => "description",
-      h if h.starts_with("discussion") || h.ends_with(" discussion") => "discussion",
-      h if h.starts_with("analaysis ") || h.ends_with(" analysis") => "analysis",
-      h if h.starts_with("properties") || h.ends_with(" properties") => "property",
-      h if h.starts_with("property ") || h.ends_with(" property") => "property",
-      h if h.starts_with("preliminaries ") || h.ends_with(" preliminaries") => "preliminaries",
-      h if h.starts_with("condition ") || h.ends_with(" condition") => "condition",
-      h if h.starts_with("contribution ") || h.ends_with(" contribution") => "contribution",
-      h if h.starts_with("analysis ") || h.ends_with(" analysis") => "analysis",
+      h if h.starts_with("description") => "description",
+      h if h.starts_with("discussion") => "discussion",
+      h if h.starts_with("example") => "example",
+      h if h.starts_with("properties") || h.starts_with("property ") => "property",
+      h if h.starts_with("preliminaries ") => "preliminaries",
+      h if h.starts_with("condition ") => "condition",
+      h if h.starts_with("contribution ") => "contribution",
+      h if h.starts_with("analaysis") || h.starts_with("analysis ") => "analysis",
+      h if h.starts_with("motivation ") => "motivation",
+      // ends are still usable clues
+      h if h.ends_with(" demonstration") => "demonstration",
+      h if h.ends_with(" simulation") => "simulation",
+      h if h.ends_with(" proof") => "proof",
+      h if h.ends_with(" remark") => "remark",
+      h if h.ends_with(" notation") => "notation",
+      h if h.ends_with(" experiment") => "experiment",
+      h if h.ends_with(" theorem") => "theorem",
+      h if h.ends_with(" lemma") => "lemma",
+      h if h.ends_with(" corollary") => "corollary",
+      h if h.ends_with(" proposition") => "proposition",
+      h if h.ends_with(" definition") => "definition",
+      h if h.ends_with(" axiom") => "axiom",
+      h if h.ends_with(" conjecture") || h.ends_with(" hypothesis") => "conjecture",
+      h if h.ends_with(" conclusion") || h.ends_with(" summary") => "conclusion",
+      h if h.ends_with(" problem") => "problem",
+      h if h.ends_with(" question") => "question",
+      h if h.ends_with(" result") => "result",
+      h if h.ends_with(" method") => "methods",
+      h if h.ends_with(" model") => "model",
+      h if h.ends_with(" description") => "description",
+      h if h.ends_with(" discussion") => "discussion",
+      h if h.ends_with(" example") => "example",
+      h if h.ends_with(" property") || h.ends_with(" properties") => "property",
+      h if h.ends_with(" preliminaries") => "preliminaries",
+      h if h.ends_with(" condition") => "condition",
+      h if h.ends_with(" contribution") => "contribution",
+      h if h.ends_with(" analysis") => "analysis",
+      h if h.ends_with(" motivation") => "motivation",
+      // self if no known case
       any => any,
     }
     .to_string()

@@ -3,7 +3,7 @@
 //
 /// Extracts a corpus heading model from an unpacked corpus of HTML files
 /// With math lexemes (default):
-/// $ cargo run --release --example corpus_heading_stats /path/to/corpus heading_data.tar
+/// $ cargo run --release --example corpus_heading_stats /path/to/corpus/  heading_report_filename.csv
 use std::collections::HashMap;
 use std::env;
 use std::fs::File;

@@ -24,8 +24,8 @@ use llamapun::ams;
 use llamapun::ams::{AmsEnv, StructuralEnv};
 use llamapun::dnm::SpecialTagsOption;
 use llamapun::parallel_data::*;
-use llamapun::util::data_helpers::LexicalOptions;
 use llamapun::util::data_helpers;
+use llamapun::util::data_helpers::LexicalOptions;
 
 use tar::{Builder, Header};
 
@@ -172,6 +172,7 @@ pub fn main() -> Result<(), Error> {
         continue 'paragraphs;
       }
 
+      let mut word_count = 0;
       'words: for word in paragraph.word_and_punct_iter() {
         if word.range.is_empty() {
           continue 'words;
@@ -182,7 +183,8 @@ pub fn main() -> Result<(), Error> {
           LexicalOptions {
             discard_math,
             discard_punct: false,
-            discard_case: true,}
+            discard_case: true,
+          },
         ) {
           Ok(w) => w,
           Err(_) => {
@@ -192,17 +194,20 @@ pub fn main() -> Result<(), Error> {
           }
         };
         if !word_string.is_empty() {
+          word_count += 1;
           paragraph_buffer.push_str(&word_string);
           paragraph_buffer.push(space);
         }
       }
-
-      if !paragraph_buffer.is_empty() {
-        paragraph_buffer.push(linebreak);
+      // Discard paragraphs outside of a reasonable [4,1024] word count range
+      if word_count < 4 || word_count > 1024 {
+        overflow_count += 1;
+        invalid_paragraph = true;
       }
 
       // If paragraph was valid and contains text, record it
-      if !invalid_paragraph && !paragraph_buffer.is_empty() {
+      if !invalid_paragraph {
+        paragraph_buffer.push(linebreak);
         // paragraph was valid, what is its label?
         let parent_class = para_parent.get_attribute("class").unwrap_or_default();
         let ams_class = if has_ams_markup {
@@ -267,7 +272,7 @@ pub fn main() -> Result<(), Error> {
     catalog.get("paragraph_count").unwrap_or(&0)
   );
   println!(
-    "{:?} discarded paragraphs (long words)",
+    "{:?} discarded paragraphs (irregular word count or word length)",
     catalog.get("overflow_count").unwrap_or(&0)
   );
   let mut builder_lock = tar_builder.lock().unwrap();

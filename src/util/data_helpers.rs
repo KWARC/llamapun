@@ -14,18 +14,37 @@ use crate::dnm::DNMRange;
 lazy_static! {
   static ref IS_NUMERC: Regex =
     Regex::new(r"^-?(?:\d+)(?:[a-k]|(?:\.\d+(?:[eE][+-]?\d+)?))?$").unwrap();
+  static ref IS_NUM: Regex = Regex::new(r"\s*NUM\s*").unwrap();
   static ref ROMAN_NUMERAL: Regex = Regex::new(r"(^|\s)[xiv]*(\s|$)").unwrap();
   static ref SINGLE_LEAD_LETTER: Regex = Regex::new(r"(^|\s)[abcdefghijklmnop](\s|$)").unwrap();
   static ref SINGLE_TRAIL_LETTER: Regex = Regex::new(r"\s[abcdefghijklmnop]$").unwrap();
   static ref LEAD_FIXED_PHRASE: Regex = Regex::new(r"^(comparison with|(?:list|summary|outline|sketch|overview|start|end) of|general|other|additional|completion|finishing|first|second|third|new|alternative|chapter|section|some|basic|closely|an|our|the)\s").unwrap();
   static ref TRAILING_FIXED_WORD: Regex = Regex::new(r"\s(see|of|for|of the paper)$").unwrap();
   static ref COMMON_PLURALS : Regex = Regex::new(
-    r"(a(?:xiom|lgorithm|ssumption|pplication)|con(?:jecture|dition|clusion|tribution)|d(?:ata\s?set|efinition|iscussion)|e(?:xperiment|xample)|lemma|m(?:odel|ethod|otivation)|notation|observation|pr(?:oof|oposition|oblem)|question|re(?:sult|mark)|s(?:ubject|tep|imulation)|theorem|work)s(?:\s|$)"
+    r"(a(?:xiom|lgorithm|ssumption|pplication)|con(?:jecture|dition|clusion|tribution)|d(?:ata\s?set|efinition|iscussion)|e(?:xperiment|xample|xercise)|lemma|m(?:odel|ethod|otivation)|notation|observation|pr(?:oof|oposition|oblem)|question|re(?:sult|mark)|s(?:ubject|tep|imulation)|theorem|work)s(?:\s|$)"
   ).unwrap();
 }
 
 static MAX_WORD_LENGTH: usize = 25;
 
+/// Options for lexical normalization on an individual word
+pub struct LexicalOptions {
+  /// math will be entirely omitted when set
+  pub discard_math: bool,
+  /// non-alphanumeric characters will be entirely omitted when set
+  pub discard_punct: bool,
+  /// all letters will be lowercased when set
+  pub discard_case: bool,
+}
+impl Default for LexicalOptions {
+  fn default() -> Self {
+    LexicalOptions {
+      discard_math: false,
+      discard_punct: true,
+      discard_case: true,
+    }
+  }
+}
 /// Normalization of word lexemes created for the "AMS paragraph classification" experiment
 /// operating on a DNMRange representation
 /// - numeric literals are replaced by NUM
@@ -35,14 +54,17 @@ static MAX_WORD_LENGTH: usize = 25;
 pub fn ams_normalize_word_range(
   range: &DNMRange,
   mut context: &mut Context,
-  discard_math: bool,
+  options: LexicalOptions,
 ) -> Result<String, ()> {
-  let mut word_string = range
-    .get_plaintext()
-    .chars()
-    .filter(|c| c.is_alphanumeric()) // drop apostrophes, other noise?
-    .collect::<String>()
-    .to_lowercase();
+  let mut word_string = if options.discard_punct {
+    range
+      .get_plaintext()
+      .chars()
+      .filter(|c| c.is_alphanumeric()) // drop apostrophes, other noise?
+      .collect::<String>()
+  } else {
+    range.get_plaintext().to_lowercase()
+  };
   if word_string.len() > MAX_WORD_LENGTH {
     // Using a more aggressive normalization, large words tend to be conversion
     // errors with lost whitespace - drop the entire paragraph when this occurs.
@@ -53,10 +75,10 @@ pub fn ams_normalize_word_range(
   // sometimes they are not cleanly tokenized, e.g. $k$-dimensional
   // will be the word string "mathformula-dimensional"
   if word_string.contains("mathformula") {
-    if !discard_math {
-      word_string = dnm::node::lexematize_math(range.get_node(), &mut context);
-    } else {
+    if options.discard_math {
       word_string = String::new();
+    } else {
+      word_string = dnm::node::lexematize_math(range.get_node(), &mut context);
     }
   } else if word_string.contains("citationelement") {
     word_string = String::from("citationelement");
@@ -72,6 +94,7 @@ pub fn ams_normalize_word_range(
 #[allow(clippy::cognitive_complexity)]
 pub fn normalize_heading_title(heading: &str) -> String {
   let simple_heading = ROMAN_NUMERAL.replace_all(heading.trim(), "");
+  let simple_heading = IS_NUM.replace_all(simple_heading.trim(), " ");
   let simple_heading = SINGLE_LEAD_LETTER.replace_all(simple_heading.trim(), "");
   let simple_heading = SINGLE_TRAIL_LETTER.replace_all(simple_heading.trim(), "");
   let simple_heading = LEAD_FIXED_PHRASE.replace_all(simple_heading.trim(), "");
@@ -86,7 +109,9 @@ pub fn normalize_heading_title(heading: &str) -> String {
   } else {
     // Otherwise, just look for simple variations of known cases, or return as-is:
     match simple_heading.as_ref() {
-      "lemme" | "remarque" | "corollaire" | "dokazatelstvo" => "", // ignore non-English
+      // ignore non-English
+      "lemme" | "remarque" | "corollaire" | "dokazatelstvo" => "",
+      // synonyms
       "hypothesis" | "hypotheses" => "conjecture",
       "implementation details" => "implementation",
       "mathematics subject classification" | "subject headings" => "subject",
@@ -97,6 +122,7 @@ pub fn normalize_heading_title(heading: &str) -> String {
       "analyses" => "analysis",
       "theoretical background" => "background",
       "exemple" => "example",
+      "exercise" => "problem",
       // starts are strong cueues than ends
       h if h.starts_with("demonstration ") => "demonstration",
       h if h.starts_with("simulation result") => "result",
@@ -119,12 +145,12 @@ pub fn normalize_heading_title(heading: &str) -> String {
       h if h.starts_with("axiom") => "axiom",
       h if h.starts_with("conjecture") || h.starts_with("hypothesis") => "conjecture",
       h if h.starts_with("fact ") => "fact",
-      h if h.starts_with("problem ") => "problem",
+      h if h.starts_with("problem ") || h.starts_with("exercise ") => "problem",
       h if h.starts_with("question ") => "question",
       h if h.starts_with("result") => "result",
       h if h.starts_with("msc") => "subject",
       h if h.starts_with("conclusion") || h.starts_with("concluding remarks") => "conclusion",
-      h if h.starts_with("summary ") => "conclusion",
+      h if h.starts_with("summary ") => "summary",
       h if h.starts_with("observation") => "observation",
       h if h.starts_with("model") => "model",
       h if h.starts_with("method") => "methods",
@@ -152,8 +178,9 @@ pub fn normalize_heading_title(heading: &str) -> String {
       h if h.ends_with(" definition") => "definition",
       h if h.ends_with(" axiom") => "axiom",
       h if h.ends_with(" conjecture") || h.ends_with(" hypothesis") => "conjecture",
-      h if h.ends_with(" conclusion") || h.ends_with(" summary") => "conclusion",
-      h if h.ends_with(" problem") => "problem",
+      h if h.ends_with(" conclusion") => "conclusion",
+      h if h.ends_with(" summary") => "summary",
+      h if h.ends_with(" problem") || h.ends_with("exercise") => "problem",
       h if h.ends_with(" question") => "question",
       h if h.ends_with(" result") => "result",
       h if h.ends_with(" method") => "methods",

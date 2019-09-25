@@ -2,13 +2,16 @@
 //! scientific documents
 
 use crate::data::Document;
+use crate::util::data_helpers;
 use libxml::tree::Document as XmlDoc;
 use libxml::xpath::Context;
 use regex::Regex;
 use std::fmt;
 
 /// Checks a llamapun `Document` for 'ltx_theorem' AMS markup
-pub fn has_markup(doc: &Document) -> bool { has_markup_xmldoc(&doc.dom) }
+pub fn has_markup(doc: &Document) -> bool {
+  has_markup_xmldoc(&doc.dom)
+}
 
 /// Checks a libxml document for `ltx_theorem` AMS markup
 pub fn has_markup_xmldoc(dom: &XmlDoc) -> bool {
@@ -21,92 +24,174 @@ pub fn has_markup_xmldoc(dom: &XmlDoc) -> bool {
 }
 
 /// Semantically fixed structural environments in scientific documents, to collect as
-/// counter-balance to the AMS markup
+/// add-on to the AMS markup
+///
+/// Note we are explicitly ignoring some of the very high-frequency environments, as they are not rich on textual content.
+/// Namely: references, appendix, pacs, subject; Which are rich in metadata and semi-structured content (figures, tables).
+#[allow(missing_docs)]
 #[derive(Copy, Clone, Debug, PartialEq)]
 pub enum StructuralEnv {
-  /// abstract lead-in
   Abstract,
-  /// Acknowledgement(.+) section
   Acknowledgement,
-  /// Conclusion(.+) section
+  Algorithm,
+  Analysis,
+  Application,
+  Assumption,
+  Background,
+  Case,
+  Claim,
   Conclusion,
-  /// Discussion(.+) section
+  Condition,
+  // An unproven proposition (includes, "Hypothesis")
+  Conjecture,
+  Contribution,
+  Corollary,
+  Data,
+  Dataset,
+  Definition,
+  Demonstration,
+  Description,
   Discussion,
-  /// Example(.+) section
   Example,
-  /// Exercise(.+) section
-  Exercise,
-  /// Introduction(.+) section
+  Experiment,
+  Fact,
+  FutureWork,
+  Implementation,
   Introduction,
-  /// Keywords metadata from paper frontmatter
   Keywords,
-  /// Related Work/Literature Review(.+) section
-  RelatedWork,
-  /// Method(s) section
-  Method,
-  /// Overview(.+) sections
-  Overview,
-  /// Result(s) section
-  Result,
-  /// Anything else
+  Lemma,
+  Methods,
+  Model,
+  Motivation,
+  Notation,
+  Observation,
   Other,
+  Preliminaries,
+  /// A task to be solved (sometimes with solution following), includes "Exercise"
+  Problem,
+  Proof,
+  Property,
+  Proposition,
+  Question,
+  RelatedWork,
+  Remark,
+  Result,
+  Simulation,
+  Step,
+  Summary,
+  Theorem,
+  Theory,
 }
 
-impl From<String> for StructuralEnv {
-  fn from(s: String) -> StructuralEnv {
-    let s: String = s
-      .chars()
-      .filter(char::is_ascii_alphabetic)
-      .collect::<String>()
-      .to_lowercase();
-    if s.starts_with("abstract") {
-      StructuralEnv::Abstract
-    } else if s.starts_with("acknowledgement") {
-      StructuralEnv::Acknowledgement
-    } else if s.starts_with("conclusion") {
-      StructuralEnv::Conclusion
-    } else if s.starts_with("discussion") {
-      StructuralEnv::Discussion
-    } else if s.starts_with("example") {
-      StructuralEnv::Example
-    } else if s.starts_with("exercise") {
-      StructuralEnv::Exercise
-    } else if s.starts_with("introduction") {
-      StructuralEnv::Introduction
-    } else if s.starts_with("keywords") {
-      StructuralEnv::Keywords
-    } else if s.starts_with("literaturereview") {
-      StructuralEnv::RelatedWork
-    } else if s.starts_with("method") || s.ends_with("methods") {
-      StructuralEnv::Method
-    } else if s.starts_with("overview") {
-      StructuralEnv::Overview
-    } else if s.starts_with("relatedwork") {
-      StructuralEnv::RelatedWork
-    } else if s.starts_with("result") || s.ends_with("results") {
-      StructuralEnv::Result
-    } else {
-      StructuralEnv::Other
+impl From<&str> for StructuralEnv {
+  fn from(heading: &str) -> StructuralEnv {
+    use StructuralEnv::*;
+    let normalized_heading = data_helpers::normalize_heading_title(&heading.to_lowercase());
+    match normalized_heading.as_str() {
+      "abstract" => Abstract,
+      "acknowledgement" => Acknowledgement,
+      "algorithm" => Algorithm,
+      "analysis" => Analysis,
+      "application" => Application,
+      "assumption" => Assumption,
+      "background" => Background,
+      "case" => Case,
+      "claim" => Claim,
+      "conclusion" => Conclusion,
+      "condition" => Condition,
+      "conjecture" => Conjecture,
+      "contribution" => Contribution,
+      "corollary" => Corollary,
+      "data" => Data,
+      "dataset" => Dataset,
+      "definition" => Definition,
+      "demonstration" => Demonstration,
+      "description" => Description,
+      "discussion" => Discussion,
+      "example" => Example,
+      "experiment" => Experiment,
+      "fact" => Fact,
+      "future work" => FutureWork,
+      "implementation" => Implementation,
+      "introduction" => Introduction,
+      "keywords" => Keywords,
+      "lemma" => Lemma,
+      "methods" => Methods,
+      "model" => Model,
+      "motivation" => Motivation,
+      "notation" => Notation,
+      "observation" => Observation,
+      "preliminaries" => Preliminaries,
+      "problem" => Problem,
+      "proof" => Proof,
+      "property" => Property,
+      "proposition" => Proposition,
+      "question" => Question,
+      "related work" => RelatedWork,
+      "remark" => Remark,
+      "result" => Result,
+      "simulation" => Simulation,
+      "step" => Step,
+      "summary" => Summary,
+      "theorem" => Theorem,
+      "theory" => Theory,
+      _ => Other,
     }
   }
 }
 
 impl fmt::Display for StructuralEnv {
   fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+    use StructuralEnv::*;
     let val = match self {
-      StructuralEnv::Abstract => "abstract",
-      StructuralEnv::Acknowledgement => "acknowledgement",
-      StructuralEnv::Conclusion => "conclusion",
-      StructuralEnv::Discussion => "discussion",
-      StructuralEnv::Example => "example",
-      StructuralEnv::Exercise => "exercise",
-      StructuralEnv::Introduction => "introduction",
-      StructuralEnv::Keywords => "keywords",
-      StructuralEnv::RelatedWork => "relatedwork",
-      StructuralEnv::Method => "method",
-      StructuralEnv::Overview => "overview",
-      StructuralEnv::Result => "result",
-      StructuralEnv::Other => "other",
+      Abstract => "abstract",
+      Acknowledgement => "acknowledgement",
+      Algorithm => "algorithm",
+      Analysis => "analysis",
+      Application => "application",
+      Assumption => "assumption",
+      Background => "background",
+      Case => "case",
+      Claim => "claim",
+      Conclusion => "conclusion",
+      Condition => "condition",
+      Conjecture => "conjecture",
+      Contribution => "contribution",
+      Corollary => "corollary",
+      Data => "data",
+      Dataset => "dataset",
+      Definition => "definition",
+      Demonstration => "demonstration",
+      Description => "description",
+      Discussion => "discussion",
+      Example => "example",
+      Experiment => "experiment",
+      Fact => "fact",
+      FutureWork => "future work",
+      Implementation => "implementation",
+      Introduction => "introduction",
+      Keywords => "keywords",
+      Lemma => "lemma",
+      Methods => "methods",
+      Model => "model",
+      Motivation => "motivation",
+      Notation => "notation",
+      Observation => "observation",
+      Preliminaries => "preliminaries",
+      Problem => "problem",
+      Proof => "proof",
+      Property => "property",
+      Proposition => "proposition",
+      Question => "question",
+      RelatedWork => "related work",
+      Remark => "remark",
+      Result => "result",
+      Simulation => "simulation",
+      Step => "step",
+      Summary => "summary",
+      Theorem => "theorem",
+      Theory => "theory",
+      Other => "other",
     };
     fmt.write_str(val)
   }

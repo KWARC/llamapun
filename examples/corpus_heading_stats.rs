@@ -13,6 +13,7 @@ use libxml::xpath::Context;
 use llamapun::dnm::SpecialTagsOption;
 use llamapun::parallel_data::*;
 use llamapun::util::data_helpers;
+use llamapun::util::data_helpers::LexicalOptions;
 use serde::Serialize;
 
 static BUFFER_CAPACITY: usize = 10_485_760;
@@ -81,7 +82,7 @@ pub fn main() -> Result<(), Error> {
           continue;
         }
         let word_string =
-          match data_helpers::ams_normalize_word_range(&word.range, &mut context, false) {
+          match data_helpers::ams_normalize_word_range(&word.range, &mut context, LexicalOptions::default()) {
             Ok(w) => w,
             Err(_) => {
               overflow_count += 1;

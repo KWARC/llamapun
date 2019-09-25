@@ -24,6 +24,7 @@ use llamapun::ams;
 use llamapun::ams::{AmsEnv, StructuralEnv};
 use llamapun::dnm::SpecialTagsOption;
 use llamapun::parallel_data::*;
+use llamapun::util::data_helpers::LexicalOptions;
 use llamapun::util::data_helpers;
 
 use tar::{Builder, Header};
@@ -147,56 +148,59 @@ pub fn main() -> Result<(), Error> {
 
     'paragraphs: for mut paragraph in document.extended_paragraph_iter() {
       let mut paragraph_buffer = String::new();
-      let mut sentence_buffer;
       let mut invalid_paragraph = false;
       let para_parent = paragraph.dnm.root_node.get_parent().unwrap();
-      let mut prev_opt = paragraph.dnm.root_node.get_prev_sibling();
+      let mut prev_heading_opt = paragraph.dnm.root_node.get_prev_sibling();
       let mut prev_name = String::new();
       // only record the First paragraph of a named class,
       // i.e. previous sibling needs to be an h* element, if any
-      while let Some(prev_node) = prev_opt {
+      while let Some(prev_node) = prev_heading_opt {
         if prev_node.is_element_node() {
           prev_name = prev_node.get_name();
-          prev_opt = Some(prev_node);
+          prev_heading_opt = Some(prev_node);
           break;
         } else {
-          prev_opt = prev_node.get_prev_sibling();
+          prev_heading_opt = prev_node.get_prev_sibling();
         }
       }
       if !prev_name.is_empty() && !prev_name.starts_with('h') {
         continue 'paragraphs;
       }
-      // Before we go into tokenization, ensure this is an English sentence on the math-normalized
+      // Before we go into tokenization, ensure this is an English paragraph on the math-normalized
       // plain text.
       if data_helpers::invalid_for_english_latin(&paragraph.dnm) {
         continue 'paragraphs;
       }
-      'sentences: for mut sentence in paragraph.iter() {
-        sentence_buffer = String::new();
-        for word in sentence.word_iter() {
-          if !word.range.is_empty() {
-            let word_string =
-              match data_helpers::ams_normalize_word_range(&word.range, &mut context, discard_math)
-              {
-                Ok(w) => w,
-                Err(_) => {
-                  overflow_count += 1;
-                  invalid_paragraph = true;
-                  break 'sentences;
-                },
-              };
-            if !word_string.is_empty() {
-              sentence_buffer.push_str(&word_string);
-              sentence_buffer.push(space);
-            }
-          }
-        }
 
-        if !sentence_buffer.is_empty() {
-          paragraph_buffer.push_str(&sentence_buffer);
-          paragraph_buffer.push(linebreak);
+      'words: for word in paragraph.word_and_punct_iter() {
+        if word.range.is_empty() {
+          continue 'words;
+        }
+        let word_string = match data_helpers::ams_normalize_word_range(
+          &word.range,
+          &mut context,
+          LexicalOptions {
+            discard_math,
+            discard_punct: false,
+            discard_case: true,}
+        ) {
+          Ok(w) => w,
+          Err(_) => {
+            overflow_count += 1;
+            invalid_paragraph = true;
+            break 'words;
+          }
+        };
+        if !word_string.is_empty() {
+          paragraph_buffer.push_str(&word_string);
+          paragraph_buffer.push(space);
         }
       }
+
+      if !paragraph_buffer.is_empty() {
+        paragraph_buffer.push(linebreak);
+      }
+
       // If paragraph was valid and contains text, record it
       if !invalid_paragraph && !paragraph_buffer.is_empty() {
         // paragraph was valid, what is its label?
@@ -219,9 +223,9 @@ pub fn main() -> Result<(), Error> {
           } else {
             env.to_string()
           }
-        } else if let Some(ref prev_node) = prev_opt {
+        } else if let Some(ref prev_node) = prev_heading_opt {
           // if None AMS markup found, check for structural markup
-          let env: StructuralEnv = prev_node.get_content().into();
+          let env: StructuralEnv = prev_node.get_content().as_str().into();
           if env == StructuralEnv::Other {
             // if Other markup, ignore
             continue 'paragraphs;

@@ -4,6 +4,7 @@ use libxml::xpath::Context;
 
 use crate::data::{Corpus, Document};
 use crate::util::data_helpers;
+use crate::util::data_helpers::LexicalOptions;
 
 /// Given a path to a document, return a word-tokenized string of all of its paragraphs
 pub fn path_to_words(path: String) -> String {
@@ -22,7 +23,7 @@ pub fn path_to_words(path: String) -> String {
       for word in sentence.simple_iter() {
         if !word.range.is_empty() {
           let word_string =
-            match data_helpers::ams_normalize_word_range(&word.range, &mut context, false) {
+            match data_helpers::ams_normalize_word_range(&word.range, &mut context, LexicalOptions::default()) {
               Ok(w) => w,
               Err(_) => {
                 invalid_paragraph = true;

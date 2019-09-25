@@ -7,8 +7,7 @@
 /// paragraph_data.tar
 ///
 /// With math discarded:
-/// $ cargo run --release --example corpus_statement_paragraphs_model /path/to/corpus
-/// paragraph_data_nomath.tar discard_math
+/// $ cargo run --release --example corpus_statement_paragraphs_model /path/to/corpus statement_paragraphs.tar discard_math
 use std::collections::{HashMap, HashSet};
 use std::env;
 use std::fs::File;
@@ -90,7 +89,7 @@ pub fn main() -> Result<(), Error> {
   };
   let paragraph_model_file = match input_args.next() {
     Some(path) => path,
-    None => "ams_paragraphs.tar".to_string(),
+    None => "statement_paragraphs.tar".to_string(),
   };
   let discard_math = match input_args.next() {
     Some(value) => match value.as_str() {
@@ -149,10 +148,20 @@ pub fn main() -> Result<(), Error> {
     'paragraphs: for mut paragraph in document.extended_paragraph_iter() {
       let mut paragraph_buffer = String::new();
       let mut invalid_paragraph = false;
-      let para_parent = paragraph.dnm.root_node.get_parent().unwrap();
+      let para = paragraph.dnm.root_node;
+      let para_class = para.get_attribute("class").unwrap_or_default();
+      let mut special_marker = None;
+      // Check if we are looking at the two current special markup casesthread::spawn(move || {
+      // div.ltx_acknowledgement
+      if para_class.contains("ltx_acknowledgement") {
+        special_marker = Some(StructuralEnv::Acknowledgement);
+      } else if para_class.contains("ltx_caption") {
+        special_marker = Some(StructuralEnv::Caption);
+      }
+      let para_parent = para.get_parent().unwrap();
       let mut prev_heading_opt = paragraph.dnm.root_node.get_prev_sibling();
       let mut prev_name = String::new();
-      // only record the First paragraph of a named class,
+      // in regular div.ltx_para cases, only record the First paragraph of a named class,
       // i.e. previous sibling needs to be an h* element, if any
       while let Some(prev_node) = prev_heading_opt {
         if prev_node.is_element_node() {
@@ -163,7 +172,7 @@ pub fn main() -> Result<(), Error> {
           prev_heading_opt = prev_node.get_prev_sibling();
         }
       }
-      if !prev_name.is_empty() && !prev_name.starts_with('h') {
+      if special_marker.is_none() && !prev_name.is_empty() && !prev_name.starts_with('h') {
         continue 'paragraphs;
       }
       // Before we go into tokenization, ensure this is an English paragraph on the math-normalized
@@ -216,7 +225,9 @@ pub fn main() -> Result<(), Error> {
           None
         };
 
-        let class_directory = if let Some(env) = ams_class {
+        let class_directory = if let Some(env) = special_marker {
+          env.to_string()
+        } else if let Some(env) = ams_class {
           if env == AmsEnv::Other // Other and other-like entities that are too noisy to include
             || env == AmsEnv::Caption
             || env == AmsEnv::Algorithm

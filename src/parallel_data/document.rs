@@ -43,7 +43,7 @@ impl<'d> Document<'d> {
   /// Associated function for `get_heading_nodes`
   fn heading_nodes(doc: &XmlDoc) -> Vec<RoNode> {
     Document::xpath_nodes(doc,
-      "//*[contains(@class,'ltx_title') and (local-name()='h2' or local-name()='h3' or local-name()='h4' or local-name()='h5' or local-name()='h6') and not(descendant::*[contains(@class,'ltx_ERROR')])]",
+      "//*[contains(@class,'ltx_title') and not(contains(@class,'ltx_title_document')) and (local-name()='h1' or local-name()='h2' or local-name()='h3' or local-name()='h4' or local-name()='h5' or local-name()='h6') and not(descendant::*[contains(@class,'ltx_ERROR')])]",
     )
   }
   /// Get an iterator over the headings of the document

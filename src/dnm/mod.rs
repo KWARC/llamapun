@@ -198,6 +198,11 @@ impl DNM {
     self.get_range_of_node(self.root_node)
   }
 
+  /// Get the underlying text for this DNM
+  pub fn get_plaintext(&self) -> &str {
+    &self.plaintext
+  }
+
   /// The heart of the dnm generation...
   fn recurse_node_create(&mut self, node: RoNode) {
     if node.is_text_node() {

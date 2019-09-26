@@ -3,12 +3,14 @@
 //! TODO: May be reorganized better with some more thought, same as path_helpers
 
 use lazy_static::lazy_static;
+use libxml::readonly::RoNode;
 use libxml::xpath::Context;
 use regex::Regex;
 use whatlang::{detect, Lang, Script};
 
 use crate::dnm;
-use crate::dnm::DNMRange;
+use crate::dnm::{DNMParameters, DNMRange, DNM};
+use crate::tokenizer::Tokenizer;
 
 // Integers, floats, subfigure numbers
 lazy_static! {
@@ -87,6 +89,37 @@ pub fn ams_normalize_word_range(
   }
 
   Ok(word_string)
+}
+
+/// Provides a string for a given heading node, using DNM-enabled word-tokenization
+/// TODO: This is a low-level auxiliary function, we may need to build more user-facing interfaces
+/// if it becomes more widely useful
+pub fn heading_from_node_aux(
+  node: RoNode,
+  tokenizer: &Tokenizer,
+  mut context: &mut Context,
+) -> Option<String> {
+  let heading_dnm = DNM::new(node, DNMParameters::llamapun_normalization());
+  let heading_range = match heading_dnm.get_range() {
+    Ok(range) => range,
+    _ => return None,
+  };
+  let mut heading_text = String::new();
+  for word_range in tokenizer.words(&heading_range) {
+    if word_range.is_empty() {
+      continue;
+    }
+    let heading_word =
+      match ams_normalize_word_range(&word_range, &mut context, LexicalOptions::default()) {
+        Ok(w) => w,
+        Err(_) => return None,
+      };
+    if !heading_word.is_empty() && heading_word != "NUM" {
+      heading_text.push_str(&heading_word);
+      heading_text.push(' ');
+    }
+  }
+  Some(heading_text)
 }
 
 /// Attempt to recover the "type" of a potentially specialized heading,
@@ -233,7 +266,7 @@ pub fn normalize_heading_title(heading: &str) -> String {
 // "spectroscopic analysis"  => "analysis",
 
 /// Check if the given DNM contains valid English+Latin content
-pub fn invalid_for_english_latin(dnm: &dnm::DNM) -> bool {
+pub fn invalid_for_english_latin(dnm: &DNM) -> bool {
   let detectable_with_spaces = dnm
     .plaintext
     .replace("mathformula", " ")

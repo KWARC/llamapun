@@ -15,9 +15,8 @@ pub fn has_markup(doc: &Document) -> bool {
 
 /// Checks a libxml document for `ltx_theorem` AMS markup
 pub fn has_markup_xmldoc(dom: &XmlDoc) -> bool {
-  // TODO: Can this be done faster? We need to fetch and drop a bunch of nodes here as it is...
   let xpath_context = Context::new(dom).unwrap();
-  match xpath_context.evaluate("//div[contains(@class,'ltx_theorem')]") {
+  match xpath_context.evaluate("//*[local-name()='div' and contains(@class,'ltx_theorem')][1]") {
     Ok(found_payload) => !found_payload.get_nodes_as_vec().is_empty(),
     _ => false,
   }

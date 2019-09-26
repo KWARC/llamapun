@@ -77,7 +77,7 @@ impl<'d> Document<'d> {
   /// Obtain the first paragraph of a marked up article abstract (<div class="ltx_abstract"><p>)
   fn abstract_p_node(doc: &XmlDoc) -> Option<RoNode> {
     Document::xpath_node(doc,
-      "//*[local-name()='div' and contains(@class,'ltx_abstract') and not(descendant::*[contains(@class,'ltx_ERROR')])]/p[1]")
+      "//*[local-name()='div' and contains(@class,'ltx_abstract') and not(descendant::*[contains(@class,'ltx_ERROR')])]//*[local-name()='p' and contains(@class,'ltx_p')][1]")
   }
 
   /// Obtain the first <div class='ltx_keywords'>text content</div>

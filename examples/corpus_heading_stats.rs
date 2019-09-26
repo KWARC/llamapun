@@ -81,15 +81,18 @@ pub fn main() -> Result<(), Error> {
         if word.range.is_empty() {
           continue;
         }
-        let word_string =
-          match data_helpers::ams_normalize_word_range(&word.range, &mut context, LexicalOptions::default()) {
-            Ok(w) => w,
-            Err(_) => {
-              overflow_count += 1;
-              invalid_heading = true;
-              break;
-            }
-          };
+        let word_string = match data_helpers::ams_normalize_word_range(
+          &word.range,
+          &mut context,
+          LexicalOptions::default(),
+        ) {
+          Ok(w) => w,
+          Err(_) => {
+            overflow_count += 1;
+            invalid_heading = true;
+            break;
+          }
+        };
         if !word_string.is_empty() && word_string != "NUM" {
           heading_buffer.push_str(&word_string);
           heading_buffer.push(' ');

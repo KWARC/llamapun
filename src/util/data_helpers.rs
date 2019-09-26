@@ -60,7 +60,7 @@ pub fn ams_normalize_word_range(
 ) -> Result<String, ()> {
   let mut word_string = if options.discard_punct {
     range
-      .get_plaintext()
+      .get_plaintext().to_lowercase()
       .chars()
       .filter(|c| c.is_alphanumeric()) // drop apostrophes, other noise?
       .collect::<String>()

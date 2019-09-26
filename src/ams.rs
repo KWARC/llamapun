@@ -32,7 +32,7 @@ pub fn has_markup_xmldoc(dom: &XmlDoc) -> bool {
 pub enum StructuralEnv {
   Abstract,
   Acknowledgement,
-  Algorithm,
+  // Algorithm, // avoid due to noise+confusion with AMS
   Analysis,
   Application,
   Assumption,
@@ -90,7 +90,7 @@ impl From<&str> for StructuralEnv {
     match normalized_heading.as_str() {
       "abstract" => Abstract,
       "acknowledgement" => Acknowledgement,
-      "algorithm" => Algorithm,
+      // "algorithm" => Algorithm,
       "analysis" => Analysis,
       "application" => Application,
       "assumption" => Assumption,
@@ -147,7 +147,7 @@ impl fmt::Display for StructuralEnv {
     let val = match self {
       Abstract => "abstract",
       Acknowledgement => "acknowledgement",
-      Algorithm => "algorithm",
+      // Algorithm => "algorithm",
       Analysis => "analysis",
       Application => "application",
       Assumption => "assumption",

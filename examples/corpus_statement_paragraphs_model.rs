@@ -230,17 +230,29 @@ fn extract_document_statements(
         None
       };
       if let Some(env) = ams_class {
-        if env == AmsEnv::Other // Other and other-like entities that are too noisy to include
-            || env == AmsEnv::Caption
-            || env == AmsEnv::Algorithm
-            || env == AmsEnv::Paragraph
-        // New for 2019: ignore the low-volume cases as well
-        {
-          // if Other markup (long tail ams env classes), ignore the paragraph to avoid
-          // pollution by mis-counting class A paras as class B (or Other)
-          continue 'paragraphs;
-        } else {
-          env.to_string()
+        match env {
+          // Other and other-like entities that are too noisy to include
+          // New for 2019: ignore the low-volume cases as well
+          AmsEnv::Affirmation
+          | AmsEnv::Algorithm
+          | AmsEnv::Answer
+          | AmsEnv::Bound
+          | AmsEnv::Caption
+          | AmsEnv::Comment
+          | AmsEnv::Constraint
+          | AmsEnv::Criterion
+          | AmsEnv::Expansion
+          | AmsEnv::Expectation
+          | AmsEnv::Explanation
+          | AmsEnv::Hint
+          | AmsEnv::Issue
+          | AmsEnv::Notice
+          | AmsEnv::Paragraph
+          | AmsEnv::Principle
+          | AmsEnv::Rule
+          | AmsEnv::Solution
+          | AmsEnv::Other => continue 'paragraphs,
+          _ => env.to_string(),
         }
       } else if let Some(heading_node) = prev_heading_opt {
         // if None AMS markup found, check for structural markup

@@ -14,7 +14,7 @@ use crate::tokenizer::Tokenizer;
 
 // Integers, floats, subfigure numbers
 lazy_static! {
-  static ref IS_NUMERC: Regex =
+  static ref IS_NUMERIC: Regex =
     Regex::new(r"^-?(?:\d+)(?:[a-k]|(?:\.\d+(?:[eE][+-]?\d+)?))?$").unwrap();
   static ref IS_NUM: Regex = Regex::new(r"\s*NUM\s*").unwrap();
   static ref ROMAN_NUMERAL: Regex = Regex::new(r"(^|\s)[xiv]*(\s|$)").unwrap();
@@ -60,7 +60,8 @@ pub fn ams_normalize_word_range(
 ) -> Result<String, ()> {
   let mut word_string = if options.discard_punct {
     range
-      .get_plaintext().to_lowercase()
+      .get_plaintext()
+      .to_lowercase()
       .chars()
       .filter(|c| c.is_alphanumeric()) // drop apostrophes, other noise?
       .collect::<String>()
@@ -84,7 +85,7 @@ pub fn ams_normalize_word_range(
     }
   } else if word_string.contains("citationelement") {
     word_string = String::from("citationelement");
-  } else if IS_NUMERC.is_match(&word_string) {
+  } else if IS_NUMERIC.is_match(&word_string) {
     word_string = String::from("NUM");
   }
 

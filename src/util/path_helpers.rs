@@ -22,14 +22,17 @@ pub fn path_to_words(path: String) -> String {
       let mut sentence_buffer = String::new();
       for word in sentence.simple_iter() {
         if !word.range.is_empty() {
-          let word_string =
-            match data_helpers::ams_normalize_word_range(&word.range, &mut context, LexicalOptions::default()) {
-              Ok(w) => w,
-              Err(_) => {
-                invalid_paragraph = true;
-                break 'sentences;
-              },
-            };
+          let word_string = match data_helpers::ams_normalize_word_range(
+            &word.range,
+            &mut context,
+            LexicalOptions::default(),
+          ) {
+            Ok(w) => w,
+            Err(_) => {
+              invalid_paragraph = true;
+              break 'sentences;
+            }
+          };
           sentence_buffer.push_str(&word_string);
           sentence_buffer.push(' ');
         }

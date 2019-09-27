@@ -301,20 +301,41 @@ impl Tokenizer {
   }
 
   /// returns the words and punctuation of a sentence, using simple heuristics
-  pub fn words_and_punct<'a, 'b>(&'b self, sentence_range: &'a DNMRange<'b>) -> Vec<DNMRange> {
-    let text_iterator = sentence_range.get_plaintext().chars();
+  #[allow(unused_assignments)]
+  pub fn words_and_punct<'a, 'b>(&'b self, range: &'a DNMRange<'b>) -> Vec<DNMRange> {
+    let range_text = range.get_plaintext();
+    let text_iterator = range_text.chars();
     let mut start = 0usize;
     let mut end = 0usize;
     let mut result: Vec<DNMRange> = Vec::new();
+    let mut apostrophe_flag = false;
+    macro_rules! complete_word {
+      () => {
+        if start < end {
+          if apostrophe_flag {
+            match &range_text[start + 1..end] {
+              // Handle closed set of apostrophe cases, detach from all other cases
+              "t" | "s" | "un" | "th" | "ll" | "d" | "ve" | "il" | "re" | "m" => {}
+              _ => {
+                result.push(range.get_subrange(start, start + 1));
+                start += 1;
+              }
+            }
+          }
+          result.push(range.get_subrange(start, end));
+          apostrophe_flag = false;
+          start = end;
+        }
+      };
+    }
+
     for c in text_iterator {
       // letters, numbers can accumulate
       if c.is_alphanumeric() {
         end += c.len_utf8();
       } else {
         // everything else completes a word and starts a new one
-        if start < end {
-          result.push(sentence_range.get_subrange(start, end));
-        }
+        complete_word!();
         // except that whitepace can be skipped over
         if c.is_whitespace() {
           end += c.len_utf8();
@@ -322,19 +343,17 @@ impl Tokenizer {
         }
         // non-alphanum chars are standalone words EXCEPT when connectors such as apostrophes
         else {
-          start = end;
           end += c.len_utf8();
-          if c != '\'' && c != '’' {
+          if c == '\'' || c == '’' {
+            apostrophe_flag = true;
+          } else {
             // standalone char word case
-            result.push(sentence_range.get_subrange(start, end));
-            start = end;
+            complete_word!();
           }
         }
       }
     }
-    if start < end {
-      result.push(sentence_range.get_subrange(start, end));
-    }
+    complete_word!();
     result
   }
 }
@@ -345,6 +364,7 @@ fn is_bounded<'a>(left: Option<&'a char>, right: Option<&'a char>) -> bool {
     [Some(&'['), Some(&']')]
     | [Some(&'('), Some(&')')]
     | [Some(&'{'), Some(&'}')]
+    | [Some(&'\''), Some(&'\'')]
     | [Some(&'"'), Some(&'"')] => true,
     _ => false,
   }

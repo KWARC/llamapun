@@ -240,12 +240,15 @@ fn extract_document_statements(
           | AmsEnv::Caption
           | AmsEnv::Comment
           | AmsEnv::Constraint
+          | AmsEnv::Convention
           | AmsEnv::Criterion
           | AmsEnv::Expansion
           | AmsEnv::Expectation
           | AmsEnv::Explanation
           | AmsEnv::Hint
           | AmsEnv::Issue
+          | AmsEnv::Keywords
+          | AmsEnv::Note
           | AmsEnv::Notice
           | AmsEnv::Paragraph
           | AmsEnv::Principle

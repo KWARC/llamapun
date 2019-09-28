@@ -1,6 +1,5 @@
-extern crate llamapun;
-extern crate senna;
 use llamapun::data::{Corpus, Document};
+use llamapun::util::test::RESOURCE_DOCUMENTS;
 use senna::pos::POS;
 
 #[test]
@@ -21,7 +20,12 @@ fn can_iterate_corpus() {
     }
   }
   println!("Words iterated on: {:?}", word_count);
-  assert_eq!(doc_count, 3, "expected 3 documents, found {:?}", doc_count);
+  assert_eq!(
+    doc_count,
+    RESOURCE_DOCUMENTS.len(),
+    "found {:?} resource documents",
+    doc_count
+  );
   assert!(
     word_count > 8400,
     "expected more than 8400 words, found {:?}",
@@ -86,7 +90,13 @@ fn can_senna_iterate_corpus() {
       }
     }
   }
-  assert_eq!(doc_count, 3, "expected 3 documents, found {:?}", doc_count);
+  assert_eq!(
+    doc_count,
+    RESOURCE_DOCUMENTS.len(),
+    "expected {:?} documents, found {:?}",
+    RESOURCE_DOCUMENTS.len(),
+    doc_count
+  );
   assert!(
     word_count > 9700,
     "expected more than 9700 words, found {:?}",

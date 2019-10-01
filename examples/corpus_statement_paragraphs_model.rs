@@ -17,7 +17,6 @@ use std::time::{SystemTime, UNIX_EPOCH};
 
 use crypto::digest::Digest;
 use crypto::sha2::Sha256;
-
 use libxml::xpath::Context;
 use llamapun::ams;
 use llamapun::ams::{AmsEnv, StructuralEnv};
@@ -25,57 +24,7 @@ use llamapun::dnm::SpecialTagsOption;
 use llamapun::parallel_data::*;
 use llamapun::util::data_helpers;
 use llamapun::util::data_helpers::LexicalOptions;
-
 use tar::{Builder, Header};
-
-/// assume we are dealing with less than 100m items here
-pub fn num_file_path(directory: &str, index: u64) -> String {
-  let mut file_base = (100_000_000 + index).to_string();
-  file_base.remove(0);
-  directory.to_string() + "/" + &file_base + ".txt"
-}
-/// give a sha256 hash, assemble a filename based on it
-pub fn hash_file_path(directory: &str, content: &str) -> String {
-  let mut hasher = Sha256::new();
-  hasher.input_str(&content);
-  let hash = hasher.result_str();
-  directory.to_string() + "/" + &hash + ".txt"
-}
-
-struct TarBuilder {
-  builder: Builder<File>,
-  count: u64,
-  stamp: u64,
-  names: HashSet<String>,
-}
-
-impl TarBuilder {
-  /// This is a good place to discuss inodes. The expected number of paragraph files in arXiv
-  /// 08.2018 exceeds 50 million. Hence, one would expect a >1 TB ext4 drive, for the default
-  /// inode allocation to suffice However, using a modern NVMe SSD for speed conflicts that
-  /// requirement. Hence, solution -- write directly to a .tar file, and avoid the inode trouble.
-  pub fn save(&mut self, data: &str, paragraph_filename: &str) -> Result<(), Error> {
-    // if we see the same hash/name twice, ignore all following cases
-    if self.names.contains(paragraph_filename) {
-      return Ok(());
-    } else {
-      self.names.insert(paragraph_filename.to_string());
-    }
-    self.count += 1;
-    // let paragraph_filename = num_file_path(in_tar_directory, self.count);
-    let bytes = data.as_bytes();
-    let mut header = Header::new_gnu();
-    header.set_size(bytes.len() as u64);
-    header.set_mode(0o644);
-    header.set_uid(0);
-    header.set_gid(0);
-    header.set_mtime(self.stamp);
-    header.set_cksum();
-    self
-      .builder
-      .append_data(&mut header, paragraph_filename, bytes)
-  }
-}
 
 pub fn main() -> Result<(), Error> {
   let start = SystemTime::now();
@@ -163,25 +112,28 @@ pub fn main() -> Result<(), Error> {
   Ok(())
 }
 
+/// Extraction and preprocessing logic
 fn extract_document_statements(
   document: Document,
   tar_builder: Arc<Mutex<TarBuilder>>,
   discard_math: bool,
 ) -> HashMap<String, u64> {
+  // Document-level context variables
   let mut paragraph_count: u64 = 0;
   let mut overflow_count = 0;
   let mut thread_data = Vec::new();
   let mut thread_counts = HashMap::new();
   thread_counts.insert(String::from("total_document_count"), 1);
-  // Count if document contains AMS markup
+  // Check if document contains AMS markup
   let has_ams_markup = ams::has_markup_xmldoc(&document.dom);
   if has_ams_markup {
     thread_counts.insert(String::from("ams_document_count"), 1);
   }
-
   let mut context = Context::new(&document.dom).unwrap();
 
   'paragraphs: for mut paragraph in document.extended_paragraph_iter() {
+    // I. Determine the class for this paragraph entry, so that we can iterate over its content after
+    // if no markup at all, ignore the paragraph and skip to next
     let para = paragraph.dnm.root_node;
     let para_parent = para.get_parent().unwrap();
     let mut prev_heading_opt = paragraph.dnm.root_node.get_prev_sibling();
@@ -210,19 +162,15 @@ fn extract_document_statements(
       }
       None
     };
-    // Before we go into tokenization, ensure this is an English paragraph on the math-normalized
-    // plain text.
+    // Before we go into tokenization, ensure this is an English paragraph
     if data_helpers::invalid_for_english_latin(&paragraph.dnm) {
       continue 'paragraphs;
     }
-    // II. Determine the class for this paragraph entry, so that we can iterate over its content after
-    // if no markup at all, ignore the paragraph, as we don't have reliable classification
-    // information
     let class_directory = if let Some(env) = special_marker {
-      // 2.1. specific element markup is an override to heading siblings
+      // specific element markup is an override to heading siblings
       env.to_string()
     } else {
-      // 2.2 set ams class
+      // set ams class, if any
       let ams_class = if has_ams_markup {
         let parent_class = para_parent.get_attribute("class").unwrap_or_default();
         ams::class_to_env(&parent_class)
@@ -258,7 +206,7 @@ fn extract_document_statements(
           _ => env.to_string(),
         }
       } else if let Some(heading_node) = prev_heading_opt {
-        // if None AMS markup found, check for structural markup
+        // if no AMS markup found, check for structural markup
         if let Some(heading_text) = data_helpers::heading_from_node_aux(
           heading_node,
           &document.corpus.tokenizer,
@@ -277,7 +225,7 @@ fn extract_document_statements(
         continue 'paragraphs;
       }
     };
-    // I. Extract content of current paragraph, validating basic quality of data
+    // II. We have a labeled statement. Extract content of current paragraph, validating basic data quality
     let mut word_count = 0;
     let mut invalid_paragraph = false;
     let mut paragraph_buffer = String::new();
@@ -317,54 +265,67 @@ fn extract_document_statements(
     if !invalid_paragraph {
       paragraph_buffer.push('\n');
 
-      // III. Record valid entry
       paragraph_count += 1;
       // precompute sha inside the thread, to do more in parallel
       let paragraph_filename = hash_file_path(&class_directory, &paragraph_buffer);
       thread_data.push((paragraph_buffer, paragraph_filename));
     }
   }
+  // III. Record valid entries into archive target, having collected all labeled samples for this document
   let mut builder_lock = tar_builder.lock().unwrap();
   for (paragraph_buffer, paragraph_filename) in thread_data.into_iter() {
     builder_lock
       .save(&paragraph_buffer, &paragraph_filename)
       .expect("Tar builder should always succeed.")
   }
-
+  // IV. Bookkeep counts for final report and finish this document
   thread_counts.insert(String::from("paragraph_count"), paragraph_count);
   thread_counts.insert(String::from("overflow_count"), overflow_count);
   thread_counts
 }
 
-// Locking notes:
-// I.Running a mutex lock on every paragraph write yields:
-// ---
-// AMS paragraph model finished in 272s, gathered:
-// 12330 documents;
-// 249880 paragraphs;
-// 250 discarded paragraphs (long words)
 //
-// real	4m32.821s
-// user	90m37.348s
-// sys	1m14.862s
+// -- Auxiliary helpers that don't yet have a home in llamapun
 //
-// II.Running a mutex lock once per document thread
-//    (for in-order numbering of a document's paragraphs)
-// ---
-// AMS paragraph model finished in 267s, gathered:
-// 12330 documents;
-// 249880 paragraphs;
-// 250 discarded paragraphs (long words)
-//
-// real	4m29.651s
-// user	93m17.793s
-// sys	1m12.189s
-// ---
-// I wasn't sure what was causing more overhead:
-//   - lock rotation (more locks when locking on each paragraph),
-//   - resource starvation (waiting for a document lock to become available, if writing all
-//     paragraphs was slow)
-// Turns out the difference is minor enough to select for the better application effect:
-// Locking once per document allows a guarantee that adjacent paragraphs will have adjacent IDs when
-// saved to the tar, which allows to do some helpful data munging later on in paragraph exploration
-// mode.
+
+/// give a sha256 hash, assemble a filename based on it
+fn hash_file_path(directory: &str, content: &str) -> String {
+  let mut hasher = Sha256::new();
+  hasher.input_str(&content);
+  let hash = hasher.result_str();
+  directory.to_string() + "/" + &hash + ".txt"
+}
+
+struct TarBuilder {
+  builder: Builder<File>,
+  count: u64,
+  stamp: u64,
+  names: HashSet<String>,
+}
+
+impl TarBuilder {
+  /// This is a good place to discuss inodes. The expected number of paragraph files in arXiv
+  /// 08.2018 exceeds 50 million. Hence, one would expect a >1 TB ext4 drive, for the default
+  /// inode allocation to suffice However, using a modern NVMe SSD for speed conflicts that
+  /// requirement. Hence, solution -- write directly to a .tar file, and avoid the inode trouble.
+  pub fn save(&mut self, data: &str, paragraph_filename: &str) -> Result<(), Error> {
+    // if we see the same hash/name twice, ignore all following cases
+    if self.names.contains(paragraph_filename) {
+      return Ok(());
+    } else {
+      self.names.insert(paragraph_filename.to_string());
+    }
+    self.count += 1;
+    let bytes = data.as_bytes();
+    let mut header = Header::new_gnu();
+    header.set_size(bytes.len() as u64);
+    header.set_mode(0o644);
+    header.set_uid(0);
+    header.set_gid(0);
+    header.set_mtime(self.stamp);
+    header.set_cksum();
+    self
+      .builder
+      .append_data(&mut header, paragraph_filename, bytes)
+  }
+}

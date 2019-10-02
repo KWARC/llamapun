@@ -34,3 +34,30 @@ whatlang = "0.7.0"
 serde = {version = "1.0", features = ["derive"]}
 csv = "1.1"
 serde_json = "1.0"
+
+[[example]]
+name="corpus_heading_stats"
+
+[[example]]
+name="corpus_mathml_stats"
+
+[[example]]
+name="corpus_node_model"
+
+[[example]]
+name="corpus_statement_paragraphs_model"
+
+[[example]]
+name="corpus_token_model"
+
+[[example]]
+name="pattern_example"
+
+[[example]]
+name="pos_tagging"
+
+[[example]]
+name="pre_ref_words"
+
+[[example]]
+name="word_tokenization"

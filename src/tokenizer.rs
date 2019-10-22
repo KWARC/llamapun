@@ -260,7 +260,7 @@ impl Tokenizer {
     }
 
     end = cmp::min(end, text.chars().count());
-    let last_left_window: String = left_window.clone().into_iter().collect();
+    let last_left_window: String = left_window.into_iter().collect();
     if last_left_window.find(char::is_alphabetic).is_some() {
       sentences.push(DNMRange { start, end, dnm }.trim());
     }

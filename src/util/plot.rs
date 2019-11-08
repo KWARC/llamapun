@@ -10,8 +10,7 @@ pub fn plot_simple<T: Clone + Eq + Hash + DataType>(
   y_label: &str,
   title: &str,
   pathname: &str,
-)
-{
+) {
   let keys: Vec<T> = map.iter().map(|entry| entry.0.clone()).collect();
   let log_values = map.iter().map(|entry| (entry.1 as f64).log2());
   let mut fg = Figure::new();
@@ -26,5 +25,5 @@ pub fn plot_simple<T: Clone + Eq + Hash + DataType>(
     .set_title(title, &[]);
 
   fg.set_terminal("pngcairo", pathname);
-  fg.show();
+  fg.show().unwrap();
 }

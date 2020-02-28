@@ -4,7 +4,7 @@ extern crate llamapun;
 extern crate time;
 
 use llamapun::data::{Corpus, Document};
-use llamapun::ngrams::{Dictionary, Unigrams};
+use llamapun::ngrams::{Dictionary, Ngrams};
 use llamapun::util::plot::*;
 use std::collections::HashMap;
 use time::PreciseTime;
@@ -13,7 +13,7 @@ fn main() {
   let start_example = PreciseTime::now();
 
   let mut dictionary = Dictionary::new();
-  let mut unigrams = Unigrams::default();
+  let mut unigrams = Ngrams::default();
   let mut total_words = 0;
   let mut total_sentences = 0;
   let mut total_paragraphs = 0;
@@ -47,7 +47,7 @@ fn main() {
   let end_example = PreciseTime::now();
 
   // Word frequencies in order of document appearance
-  let inorder_dictionary = dictionary.sort();
+  let inorder_dictionary = dictionary.sorted();
   let mut inorder_frequency: Vec<(usize, usize)> = Vec::new();
   for entry in &inorder_dictionary {
     let frequency = unigrams.get(&entry.0);
@@ -84,7 +84,7 @@ fn main() {
 
   // Print out the final report:
   println!("--- Dictionary: \n{:?}\n", inorder_dictionary);
-  println!("--- Frequencies: \n{:?}\n", unigrams.sort());
+  println!("--- Frequencies: \n{:?}\n", unigrams.sorted());
   println!(
     "--- Frequency distribution: \n{:?}\n",
     value_sorted_frequencies

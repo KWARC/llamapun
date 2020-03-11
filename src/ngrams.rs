@@ -118,7 +118,7 @@ impl Ngrams {
         words_since_anchor_seen = 0;
         side = AnchorSide::Right;
         // analyze whatever is in the buffer, and empty it
-        continuous_buffer = context_window.asc_iter().map(|w| *w).collect();
+        continuous_buffer = context_window.asc_iter().copied().collect();
         context_window.clear();
       } else {
         words_since_anchor_seen += 1;
@@ -131,7 +131,7 @@ impl Ngrams {
       }
     }
     // Any remaining content should be added
-    continuous_buffer.extend(context_window.asc_iter().map(|w| *w));
+    continuous_buffer.extend(context_window.asc_iter().copied());
     self.record_words(continuous_buffer.drain(..).collect());
   }
 
@@ -145,7 +145,7 @@ impl Ngrams {
     for w in words.into_iter() {
       gram_window.push(w);
       if gram_window.len() == self.n {
-        let key = gram_window.asc_iter().map(|w| *w).collect::<Vec<_>>().join(" ");
+        let key = gram_window.asc_iter().copied().collect::<Vec<_>>().join(" ");
         self.insert(key);
       }
     }

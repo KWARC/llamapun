@@ -1,6 +1,6 @@
 //! A "corpus token model"-generation utilities
 use crate::dnm;
-use crate::dnm::SpecialTagsOption;
+use crate::dnm::{DNMParameters, SpecialTagsOption};
 use crate::parallel_data::*;
 use libxml::xpath::Context;
 use regex::Regex;
@@ -14,7 +14,7 @@ use std::sync::{Arc, Mutex};
 static BUFFER_CAPACITY: usize = 10_485_760;
 static MAX_WORD_LENGTH: usize = 25;
 
-/// Parallel traversal of latexml-style HTML5 document corpora, based on jwalk and `DNMParameter::llamapun_normalization`
+/// Parallel traversal of latexml-style HTML5 document corpora, based on jwalk and `DNMParameters::transformer_style_normalization`
 /// with additional subformula lexemes via `dnm::node::lexematize_math`
 pub fn extract(
   corpus_path: String,
@@ -33,6 +33,7 @@ pub fn extract(
   let is_numeric = Regex::new(r"^-?(?:\d+)(?:[a-k]|(?:\.\d+(?:[eE][+-]?\d+)?))?$").unwrap();
 
   let mut corpus = Corpus::new(corpus_path);
+  corpus.dnm_parameters = DNMParameters::transformer_style_normalization();
   if discard_math {
     println!("-- will discard math.");
     corpus
@@ -82,7 +83,7 @@ pub fn extract(
           // sometimes they are not cleanly tokenized, e.g. $k$-dimensional
           // will be the word string "mathformula-dimensional"
           let lexeme_str: String;
-          if word_string.contains("mathformula") {
+          if word_string.contains("qmathp") {
             if !discard_math {
               lexeme_str = dnm::node::lexematize_math(word.range.get_node(), &mut context);
             } else {
@@ -90,12 +91,14 @@ pub fn extract(
             }
             word_str = &lexeme_str;
             formula_count += 1;
-          } else if word_string.contains("citationelement") {
-            word_str = "citationelement";
+          } else if word_string.contains("qcitep") {
+            word_str = "[CITE]";
             citation_count += 1;
+          } else if word_string.contains("qrefp") {
+            word_str = "[REF]";
           } else if is_numeric.is_match(&word_string) {
             num_count += 1;
-            word_str = "NUM";
+            word_str = "[NUM]";
           } else {
             word_count += 1;
           }
@@ -105,10 +108,16 @@ pub fn extract(
       }
       // if valid paragraph, print to the token model file
       if !invalid_paragraph {
-        thread_buffer.push(linebreak);
+        if !thread_buffer.is_empty() {
+          thread_buffer.push(linebreak);
+        }
         thread_buffer.push_str(&paragraph_buffer);
       }
     }
+    // Empty line after document, and no empty lines within one
+    thread_buffer = thread_buffer.replace("\n\n","\n");
+    thread_buffer.push('\n');
+    thread_buffer.push('\n');
 
     token_writer
       .lock()

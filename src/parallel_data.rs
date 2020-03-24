@@ -1,7 +1,7 @@
 //! Data structures and Iterators for rayon-enabled parallel processing
 //! including parallel I/O in walking a corpus
 //! as well as DOM primitives that allow parallel iterators on XPath results, etc
-use crate::dnm::{DNMParameters, DNMRange, DNM};
+use crate::dnm::{DNMRange, DNM};
 use libxml::readonly::RoNode;
 use std::vec::IntoIter;
 
@@ -55,7 +55,7 @@ impl<'iter> Iterator for RoNodeIterator<'iter> {
       None => None,
       Some(node) => {
         // Create a DNM for the current ItemDNM
-        let dnm = DNM::new(node, DNMParameters::llamapun_normalization());
+        let dnm = DNM::new(node, self.document.corpus.dnm_parameters.clone());
         Some(ItemDNM {
           dnm,
           document: self.document,

@@ -150,6 +150,60 @@ impl DNMParameters {
     }
   }
 
+  /// Replacements using BERT-style special tokens, in [MASK] style, for math, cite and ref
+  pub fn transformer_style_normalization() -> DNMParameters {
+   let mut name_options = HashMap::new();
+    name_options.insert(
+      "math".to_string(),
+      SpecialTagsOption::Normalize("qMATHp".to_string()),
+    );
+    name_options.insert(
+      "cite".to_string(),
+      SpecialTagsOption::Normalize("qCITEp".to_string()),
+    );
+    name_options.insert("img".to_string(), SpecialTagsOption::Skip);
+    name_options.insert("table".to_string(), SpecialTagsOption::Skip);
+    name_options.insert("head".to_string(), SpecialTagsOption::Skip);
+    name_options.insert("footer".to_string(), SpecialTagsOption::Skip);
+
+    let mut class_options = HashMap::new();
+    class_options.insert(
+      "ltx_equation".to_string(),
+      SpecialTagsOption::Normalize("\nqMATHp\n".to_string()),
+    );
+    class_options.insert(
+      "ltx_equationgroup".to_string(),
+      SpecialTagsOption::Normalize("\nqMATHp\n".to_string()),
+    );
+    class_options.insert(
+      "ltx_ref".to_string(),
+      SpecialTagsOption::Normalize("qREFp".to_string()),
+    );
+    class_options.insert("ltx_authors".to_string(), SpecialTagsOption::Skip);
+    class_options.insert("ltx_TOC".to_string(), SpecialTagsOption::Skip);
+    class_options.insert("ltx_note_mark".to_string(), SpecialTagsOption::Skip);
+    class_options.insert("ltx_note_outer".to_string(), SpecialTagsOption::Skip);
+    class_options.insert("ltx_bibliography".to_string(), SpecialTagsOption::Skip);
+    // Ignores all caption metadata tags, to avoid leaking artefacts into a pure language target
+    // TODO: Is there merit to extending this to ignoring all ltx_tag elements? leaving things as-is allows for some
+    // curious artefacts to sneak into the plain-text files, such as bullets/numbers from \item commands
+    class_options.insert("ltx_tag_figure".to_string(), SpecialTagsOption::Skip);
+    class_options.insert("ltx_tag_table".to_string(), SpecialTagsOption::Skip);
+
+    DNMParameters {
+      special_tag_name_options: name_options,
+      special_tag_class_options: class_options,
+      normalize_white_spaces: false, /* Keeping it raw for tokenization best results, newlines
+                                      * are meaningful */
+      /* important for cases where we have things like x$\prime\prime$, and risk creating a single word "xmathformula" instead of the lexical "x mathformula"
+        There may be better tokenization tricks to employ later on (in the word tokenizer), but for now wrapping seems necessary
+      */
+      wrap_tokens: true,
+      normalize_unicode: true,
+      ..Default::default()
+    }
+  }
+
   /// Prints warnings, if the parameter settings don't make sense.
   /// Doesn't check for every possible stupidity
   pub fn check(&self) {

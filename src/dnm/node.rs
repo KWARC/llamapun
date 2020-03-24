@@ -67,6 +67,6 @@ pub fn lexematize_math(node: RoNode, context: &mut Context) -> String {
     // Fallback if no lexemes - a generic substitution
     // intended to be used in a lowercased context, where only significant lexemes are left
     // capitalized
-    String::from("mathformula")
+    String::from("[MATH]")
   }
 }

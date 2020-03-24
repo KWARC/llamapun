@@ -151,6 +151,7 @@ impl DNMParameters {
   }
 
   /// Replacements using BERT-style special tokens, in [MASK] style, for math, cite and ref
+  /// Note that the llamapun sentence tokenizers are currently not equipped to work with this style of normalization
   pub fn transformer_style_normalization() -> DNMParameters {
    let mut name_options = HashMap::new();
     name_options.insert(
@@ -169,11 +170,11 @@ impl DNMParameters {
     let mut class_options = HashMap::new();
     class_options.insert(
       "ltx_equation".to_string(),
-      SpecialTagsOption::Normalize("\nqMATHp\n".to_string()),
+      SpecialTagsOption::Normalize("qMATHp".to_string()),
     );
     class_options.insert(
       "ltx_equationgroup".to_string(),
-      SpecialTagsOption::Normalize("\nqMATHp\n".to_string()),
+      SpecialTagsOption::Normalize("qMATHp".to_string()),
     );
     class_options.insert(
       "ltx_ref".to_string(),

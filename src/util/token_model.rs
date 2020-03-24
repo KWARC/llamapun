@@ -107,15 +107,14 @@ pub fn extract(
         }
       }
       // if valid paragraph, print to the token model file
-      if !invalid_paragraph {
+      if !invalid_paragraph && !paragraph_buffer.is_empty() {
         if !thread_buffer.is_empty() {
           thread_buffer.push(linebreak);
         }
-        thread_buffer.push_str(&paragraph_buffer);
+        thread_buffer.push_str(paragraph_buffer.trim());
       }
     }
     // Empty line after document, and no empty lines within one
-    thread_buffer = thread_buffer.replace("\n\n","\n");
     thread_buffer.push('\n');
     thread_buffer.push('\n');
 

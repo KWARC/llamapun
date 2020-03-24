@@ -36,6 +36,7 @@ pub fn lexematize_math(node: RoNode, context: &mut Context) -> String {
         .join(":start ");
       annotation_string
         .split_whitespace()
+        .filter(|x| !x.is_empty())
         .map(|anno_word| {
           if anno_word.starts_with("NUM") {
             String::from("NUM")

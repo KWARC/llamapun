@@ -28,7 +28,7 @@ libxml = "0.2.11"
 tar = "0.4"
 rayon = "1.2.0"
 jwalk = "0.4.0"
-whatlang = "0.7.0"
+whatlang = "0.10.0"
 circular-queue = "0.2"
 
 [dev-dependencies]

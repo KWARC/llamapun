@@ -80,7 +80,7 @@ impl DNM {
           let class_attr = node.get_property("class").unwrap_or_default();
           let mut classes_split = class_attr.split_whitespace().collect::<Vec<_>>();
           if !classes_split.is_empty() {
-            classes_split.sort();
+            classes_split.sort_unstable();
             canonical_node.push_str(" class=\"");
             for class_value in classes_split {
               canonical_node.push_str(class_value);
@@ -89,7 +89,7 @@ impl DNM {
             canonical_node.pop();
             canonical_node.push('"');
           }
-          canonical_node.push_str(">");
+          canonical_node.push('>');
         }
 
         // Recurse into children
@@ -109,7 +109,7 @@ impl DNM {
           canonical_node.push_str(&indent_string);
           canonical_node.push_str("</");
           canonical_node.push_str(&name);
-          canonical_node.push_str(">");
+          canonical_node.push('>');
         }
       },
       _ => {

@@ -360,14 +360,12 @@ impl Tokenizer {
 /// checks whether two characters are matching brackets or quotation marks
 fn is_bounded<'a>(left: Option<&'a char>, right: Option<&'a char>) -> bool {
   let pair = [left, right];
-  match pair {
+  matches!(pair,
     [Some(&'['), Some(&']')]
     | [Some(&'('), Some(&')')]
     | [Some(&'{'), Some(&'}')]
     | [Some(&'\''), Some(&'\'')]
-    | [Some(&'"'), Some(&'"')] => true,
-    _ => false,
-  }
+    | [Some(&'"'), Some(&'"')])
 }
 
 /// Obtains the next word from the `Peekable<Chars>` iterator, where only

@@ -4,11 +4,12 @@
 use llamapun::util::token_model;
 use std::env;
 use std::error::Error;
+use std::time::Instant;
 
 /// Given a `CorTeX` corpus of HTML5 documents, extract a token model as a
 /// single file
 pub fn main() -> Result<(), Box<dyn Error>> {
-  let start = time::get_time();
+  let start = Instant::now();
   // Read input arguments
   let mut input_args = env::args();
   let _ = input_args.next(); // skip process name
@@ -31,8 +32,7 @@ pub fn main() -> Result<(), Box<dyn Error>> {
 
   let corpus_counts = token_model::extract(corpus_path, token_model_filepath, discard_math)?;
 
-  let end = time::get_time();
-  let duration_sec = (end - start).num_milliseconds() / 1000;
+  let duration_sec = start.elapsed().as_secs();
   println!("---");
   println!("Token model finished in {:?}s, gathered: ", duration_sec);
   println!(

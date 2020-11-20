@@ -6,7 +6,6 @@
 //    /data/datasets/embeddings-arXMLiv-08-2019/token_model_warning_2.txt
 //    /data/datasets/embeddings-arXMLiv-08-2019/token_model_error.txt
 extern crate llamapun;
-extern crate time;
 
 use llamapun::ngrams::{Ngrams};
 use std::collections::HashMap;
@@ -14,7 +13,7 @@ use std::error::Error;
 use std::env;
 use std::fs::File;
 use std::io::{prelude::*, BufWriter, BufReader};
-use time::PreciseTime;
+use std::time::Instant;
 use serde::Serialize;
 
 static BUFFER_CAPACITY: usize = 10_485_760;
@@ -26,7 +25,7 @@ struct HeadingRecord<'a> {
 
 
 fn main() -> Result<(), Box<dyn Error>> {
-  let start_example = PreciseTime::now();
+  let start_example = Instant::now();
   let mut ngrams = Ngrams {
     n: 4,
     window_size: 15,
@@ -52,7 +51,6 @@ fn main() -> Result<(), Box<dyn Error>> {
       }
     }
   }
-  let end_example = PreciseTime::now();
   let ngrams_file = File::create(format!("{}_grams_{}_window.csv", ngrams.n, ngrams.window_size))?;
   let buffered_writer = BufWriter::with_capacity(BUFFER_CAPACITY, ngrams_file);
   let mut csv_writer = csv::Writer::from_writer(buffered_writer);
@@ -61,8 +59,8 @@ fn main() -> Result<(), Box<dyn Error>> {
   }
   csv_writer.flush()?;
   eprintln!(
-    "    citation ngram extraction took {:?}ms",
-    start_example.to(end_example).num_milliseconds()
+    "    citation ngram extraction took {:?}s",
+    start_example.elapsed().as_secs()
   );
   Ok(())
 }

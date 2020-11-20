@@ -8,6 +8,7 @@ use std::collections::HashMap;
 use std::env;
 use std::fs::File;
 use std::io::{BufWriter, Error};
+use std::time::Instant;
 
 use libxml::xpath::Context;
 use llamapun::dnm::SpecialTagsOption;
@@ -25,7 +26,7 @@ struct HeadingRecord<'a> {
 }
 
 pub fn main() -> Result<(), Error> {
-  let start = time::get_time();
+  let start = Instant::now();
   // Read input arguments
   let mut input_args = env::args();
   let _ = input_args.next(); // skip process name
@@ -138,8 +139,7 @@ pub fn main() -> Result<(), Error> {
   }
   csv_writer.flush()?;
 
-  let end = time::get_time();
-  let duration_sec = (end - start).num_milliseconds() / 1000;
+  let duration_sec = start.elapsed().as_secs();
   println!("---");
   println!("Headings statistics finished in {:?}s", duration_sec);
 

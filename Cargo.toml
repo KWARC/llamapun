@@ -18,7 +18,6 @@ version = "*"
 [dependencies]
 libc = "0.2"
 regex = "1.1"
-time = "0.1"
 walkdir = "2"
 gnuplot = "0.0.37"
 unidecode = "0.3"

@@ -1,16 +1,16 @@
 extern crate libc;
 extern crate libxml;
 extern crate llamapun;
-extern crate time;
+
+use std::collections::HashMap;
+use std::time::Instant;
 
 use llamapun::data::{Corpus, Document};
 use llamapun::ngrams::{Dictionary, Ngrams};
 use llamapun::util::plot::*;
-use std::collections::HashMap;
-use time::PreciseTime;
 
 fn main() {
-  let start_example = PreciseTime::now();
+  let start_example = Instant::now();
 
   let mut dictionary = Dictionary::new();
   let mut unigrams = Ngrams::default();
@@ -28,7 +28,7 @@ fn main() {
   let arxivid = "0903.1000";
   let mut document =
     Document::new("tests/resources/".to_string() + arxivid + ".html", &corpus).unwrap();
-  let end_parse = PreciseTime::now();
+  let end_parse = start_example.elapsed().as_millis();
 
   // We will tokenize each logical paragraph, which are the textual logical units
   // in an article
@@ -44,7 +44,7 @@ fn main() {
       }
     }
   }
-  let end_example = PreciseTime::now();
+  let end_example = start_example.elapsed().as_millis();
 
   // Word frequencies in order of document appearance
   let inorder_dictionary = dictionary.sorted();
@@ -96,22 +96,22 @@ fn main() {
   println!();
 
   // As well as some basic Benchmarking info:
-  let end_reports = PreciseTime::now();
+  let end_reports = start_example.elapsed().as_millis();
   println!("--- Benchmark report:");
   println!(
     "    LibXML parse took {:?}ms",
-    start_example.to(end_parse).num_milliseconds()
+    end_parse
   );
   println!(
     "    LLaMaPun word tokenization took {:?}ms",
-    end_parse.to(end_example).num_milliseconds()
+    end_example-end_parse
   );
   println!(
     "    Finished report generation in {:?}ms",
-    end_example.to(end_reports).num_milliseconds()
+    end_reports - end_example
   );
   println!(
     "    Total time: {:?}ms",
-    start_example.to(end_reports).num_milliseconds()
+    end_reports
   );
 }

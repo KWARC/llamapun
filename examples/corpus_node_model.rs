@@ -9,6 +9,7 @@ use std::fs::File;
 use std::io::prelude::*;
 use std::io::{BufWriter, Error};
 use std::sync::{Arc, Mutex};
+use std::time::Instant;
 
 use libxml::readonly::RoNode;
 use llamapun::parallel_data::Corpus;
@@ -17,7 +18,7 @@ static NEWLINE: &'static [u8] = b"\n";
 static BUFFER_CAPACITY: usize = 10_485_760;
 
 pub fn main() -> Result<(), Error> {
-  let start = time::get_time();
+  let start = Instant::now();
   // Read input arguments
   let mut input_args = env::args();
   let _ = input_args.next(); // skip process name
@@ -59,8 +60,7 @@ pub fn main() -> Result<(), Error> {
 
   node_model_writer.lock().unwrap().flush()?;
 
-  let end = time::get_time();
-  let duration_sec = (end - start).num_milliseconds() / 1000;
+  let duration_sec = start.elapsed().as_secs();
   println!("---");
   println!("Node model finished in {:?}s", duration_sec);
 

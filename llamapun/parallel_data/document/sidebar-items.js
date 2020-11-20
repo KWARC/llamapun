@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["Document","One of our math documents, thread-friendly"]]});

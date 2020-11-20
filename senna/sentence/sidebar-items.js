@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["PSGNode","A node in the PSG tree (which can be either a leaf, referring to a word, or a phrase)"]],"struct":[["PSGPhrase","A phrase node in the PSG tree"],["Sentence","A tokenized sentence"],["Word",""]]});

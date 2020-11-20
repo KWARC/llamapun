@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["DirEntry","Representation of a file or directory."],["DirEntryIter","Iterator yielding directory entries."],["ReadDirSpec","Specification use to read a directory."],["WalkDir","Builder for walking a directory."]]});

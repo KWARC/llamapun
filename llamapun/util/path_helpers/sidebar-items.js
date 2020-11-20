@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["path_to_words","Given a path to a document, return a word-tokenized string of all of its paragraphs"]]});

@@ -1,0 +1,1 @@
+initSidebarItems({"constant":[["SENNA_PATH","Generated automatically at build time"]]});

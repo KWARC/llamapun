@@ -1,0 +1,14 @@
+(function() {var implementors = {};
+implementors["aho_corasick"] = [{"text":"impl Error for Error","synthetic":false,"types":[]}];
+implementors["crossbeam_channel"] = [{"text":"impl&lt;T:&nbsp;Send&gt; Error for SendError&lt;T&gt;","synthetic":false,"types":[]},{"text":"impl&lt;T:&nbsp;Send&gt; Error for TrySendError&lt;T&gt;","synthetic":false,"types":[]},{"text":"impl&lt;T:&nbsp;Send&gt; Error for SendTimeoutError&lt;T&gt;","synthetic":false,"types":[]},{"text":"impl Error for RecvError","synthetic":false,"types":[]},{"text":"impl Error for TryRecvError","synthetic":false,"types":[]},{"text":"impl Error for RecvTimeoutError","synthetic":false,"types":[]},{"text":"impl Error for TrySelectError","synthetic":false,"types":[]},{"text":"impl Error for SelectTimeoutError","synthetic":false,"types":[]}];
+implementors["gnuplot"] = [{"text":"impl Error for GnuplotInitError","synthetic":false,"types":[]}];
+implementors["libxml"] = [{"text":"impl Error for XmlParseError","synthetic":false,"types":[]}];
+implementors["rand"] = [{"text":"impl Error for TimerError","synthetic":false,"types":[]}];
+implementors["rayon_core"] = [{"text":"impl Error for ThreadPoolBuildError","synthetic":false,"types":[]}];
+implementors["regex"] = [{"text":"impl Error for Error","synthetic":false,"types":[]}];
+implementors["regex_syntax"] = [{"text":"impl Error for Error","synthetic":false,"types":[]},{"text":"impl Error for Error","synthetic":false,"types":[]},{"text":"impl Error for Error","synthetic":false,"types":[]},{"text":"impl Error for CaseFoldError","synthetic":false,"types":[]},{"text":"impl Error for UnicodeWordError","synthetic":false,"types":[]}];
+implementors["rustc_serialize"] = [{"text":"impl Error for FromBase64Error","synthetic":false,"types":[]},{"text":"impl Error for FromHexError","synthetic":false,"types":[]},{"text":"impl Error for DecoderError","synthetic":false,"types":[]},{"text":"impl Error for ParserError","synthetic":false,"types":[]},{"text":"impl Error for EncoderError","synthetic":false,"types":[]}];
+implementors["time"] = [{"text":"impl Error for OutOfRangeError","synthetic":false,"types":[]},{"text":"impl Error for ParseError","synthetic":false,"types":[]}];
+implementors["walkdir"] = [{"text":"impl Error for Error","synthetic":false,"types":[]}];
+implementors["xattr"] = [{"text":"impl Error for UnsupportedPlatformError","synthetic":false,"types":[]}];
+if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()

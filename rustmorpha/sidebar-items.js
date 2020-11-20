@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["close","Should be called after everything is done"],["full_stem","Stem as many times as something changes (For example tilings -> tiling -> tile)"],["init","Will be called automatically, just provided for completeness"],["m_close",""],["m_full_stem",""],["m_init",""],["m_stem",""],["stem","Stem once"]]});

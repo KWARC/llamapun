@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["Tokenizer","Stores auxiliary resources required by the tokenizer so that they need to be initialized only once"]]});

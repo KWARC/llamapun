@@ -182,19 +182,19 @@ impl DNM {
   }
 
   /// Get the plaintext range of a node
-  pub fn get_range_of_node(&self, node: RoNode) -> Result<DNMRange, ()> {
+  pub fn get_range_of_node(&self, node: RoNode) -> Result<DNMRange, Box<dyn Error>> {
     match self.node_map.get(&node.to_hashable()) {
       Some(&(start, end)) => Ok(DNMRange {
         start,
         end,
         dnm: self,
       }),
-      None => Err(()),
+      None => Err("not found in node map".into())
     }
   }
 
   /// Get the range representing the full DNM
-  pub fn get_range(&self) -> Result<DNMRange, ()> {
+  pub fn get_range(&self) -> Result<DNMRange, Box<dyn Error>> {
     self.get_range_of_node(self.root_node)
   }
 

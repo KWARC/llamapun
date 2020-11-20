@@ -197,7 +197,7 @@ impl<'dnmrange> DNMRange<'dnmrange> {
               "text()".to_string()
             } else if let Some(ns) = act.get_namespace() {
               let prefix = ns.get_prefix();
-              if prefix == "" {
+              if prefix.is_empty() {
                 // default namespace without prefix
                 format!("*[local-name() = '{}']", act.get_name())
               } else {
@@ -266,7 +266,7 @@ impl<'dnmrange> DNMRange<'dnmrange> {
           }
           pos
         },
-        Err(()) => get_position_of_lowest_parent(node, dnm),
+        Err(_) => get_position_of_lowest_parent(node, dnm),
       }
     } else {
       let node_str = string;
@@ -289,7 +289,7 @@ impl<'dnmrange> DNMRange<'dnmrange> {
 fn get_position_of_lowest_parent(node: RoNode, dnm: &DNM) -> usize {
   match dnm.get_range_of_node(node) {
     Ok(range) => range.start,
-    Err(()) => get_position_of_lowest_parent(node.get_parent().unwrap(), dnm),
+    Err(_) => get_position_of_lowest_parent(node.get_parent().unwrap(), dnm),
   }
 }
 

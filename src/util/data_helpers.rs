@@ -6,6 +6,7 @@ use lazy_static::lazy_static;
 use libxml::readonly::RoNode;
 use libxml::xpath::Context;
 use regex::Regex;
+use std::error::Error;
 use whatlang::{detect, Lang, Script};
 
 use crate::dnm;
@@ -57,7 +58,7 @@ pub fn ams_normalize_word_range(
   range: &DNMRange,
   mut context: &mut Context,
   options: LexicalOptions,
-) -> Result<String, ()> {
+) -> Result<String, Box<dyn Error>> {
   let mut word_string = if options.discard_punct {
     range
       .get_plaintext()
@@ -71,7 +72,7 @@ pub fn ams_normalize_word_range(
   if word_string.len() > MAX_WORD_LENGTH {
     // Using a more aggressive normalization, large words tend to be conversion
     // errors with lost whitespace - drop the entire paragraph when this occurs.
-    return Err(());
+    return Err("exceeded max length".into());
   }
 
   // Note: the formula and citation counts are an approximate lower bound, as

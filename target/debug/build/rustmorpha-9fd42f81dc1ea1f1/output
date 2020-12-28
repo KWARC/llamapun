@@ -1,2 +1,0 @@
-cargo:rustc-link-search=native=/home/runner/work/llamapun/llamapun/target/debug/build/rustmorpha-9fd42f81dc1ea1f1/out
-cargo:rustc-link-lib=static=morpha_interface

@@ -1,1 +1,0 @@
-initSidebarItems({"fn":[["load","Load a set of stopwords Annoyingly, `HashSet`s are not allowed as static variables in Rust (yet?)"]]});

@@ -1,1 +1,0 @@
-initSidebarItems({"struct":[["Dictionary","Records single words, in order of appearance"],["Ngrams","Ngrams are dictionaries with"]]});

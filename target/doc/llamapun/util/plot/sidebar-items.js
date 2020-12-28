@@ -1,1 +1,0 @@
-initSidebarItems({"fn":[["plot_simple","A simple plot"]]});

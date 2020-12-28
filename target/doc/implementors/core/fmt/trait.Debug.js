@@ -1,0 +1,3 @@
+(function() {var implementors = {};
+implementors["llamapun"] = [{"text":"impl Debug for StructuralEnv","synthetic":false,"types":[]},{"text":"impl Debug for AmsEnv","synthetic":false,"types":[]},{"text":"impl Debug for RuntimeParseData","synthetic":false,"types":[]},{"text":"impl Debug for SpecialTagsOption","synthetic":false,"types":[]},{"text":"impl Debug for DNMParameters","synthetic":false,"types":[]},{"text":"impl&lt;'dnmrange&gt; Debug for DNMRange&lt;'dnmrange&gt;","synthetic":false,"types":[]},{"text":"impl Debug for DNM","synthetic":false,"types":[]}];
+if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()

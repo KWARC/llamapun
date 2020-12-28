@@ -1,0 +1,43 @@
+In file included from src/morpha_interface.c:14:0:
+../../rasp3os/morph/morpha.lex: In function ‘yylex’:
+../../rasp3os/morph/morpha.lex:229:10: warning: implicit declaration of function ‘ynull_stem’; did you mean ‘m_full_stem’? [-Wimplicit-function-declaration]
+In file included from src/morpha_interface.c:14:0:
+../../rasp3os/morph/morpha.lex:235:10: warning: implicit declaration of function ‘stem’; did you mean ‘system’? [-Wimplicit-function-declaration]
+In file included from src/morpha_interface.c:14:0:
+../../rasp3os/morph/morpha.lex:257:10: warning: implicit declaration of function ‘null_stem’; did you mean ‘m_full_stem’? [-Wimplicit-function-declaration]
+In file included from src/morpha_interface.c:14:0:
+../../rasp3os/morph/morpha.lex:297:10: warning: implicit declaration of function ‘semi_reg_stem’ [-Wimplicit-function-declaration]
+In file included from src/morpha_interface.c:14:0:
+../../rasp3os/morph/morpha.lex:904:10: warning: implicit declaration of function ‘xnull_stem’; did you mean ‘m_full_stem’? [-Wimplicit-function-declaration]
+In file included from src/morpha_interface.c:14:0:
+../../rasp3os/morph/morpha.lex:1549:10: warning: implicit declaration of function ‘cnull_stem’; did you mean ‘m_full_stem’? [-Wimplicit-function-declaration]
+In file included from src/morpha_interface.c:14:0:
+../../rasp3os/morph/morpha.lex:1699:10: warning: implicit declaration of function ‘condub_stem’ [-Wimplicit-function-declaration]
+In file included from src/morpha_interface.c:14:0:
+../../rasp3os/morph/morpha.lex:1761:10: warning: implicit declaration of function ‘common_noun_stem’ [-Wimplicit-function-declaration]
+In file included from src/morpha_interface.c:14:0:
+../../rasp3os/morph/morpha.lex:1792:10: warning: implicit declaration of function ‘proper_name_stem’; did you mean ‘open_memstream’? [-Wimplicit-function-declaration]
+In file included from src/morpha_interface.c:14:0:
+../../rasp3os/morph/morpha.lex: In function ‘read_verbstem’:
+../../rasp3os/morph/morpha.lex:2111:22: warning: passing argument 1 of ‘fmemopen’ discards ‘const’ qualifier from pointer target type [-Wdiscarded-qualifiers]
+In file included from src/morpha_interface.c:3:0:
+/usr/include/stdio.h:278:14: note: expected ‘void *’ but argument is of type ‘const char *’
+ extern FILE *fmemopen (void *__s, size_t __len, const char *__modes)
+              ^~~~~~~~
+src/morpha_interface.c: In function ‘m_full_stem’:
+src/morpha_interface.c:160:12: warning: passing argument 1 of ‘free’ discards ‘const’ qualifier from pointer target type [-Wdiscarded-qualifiers]
+       free(input);
+            ^~~~~
+In file included from ../../rasp3os/morph/morpha.yy.c:41559:0,
+                 from src/morpha_interface.c:14:
+/usr/include/stdlib.h:563:13: note: expected ‘void *’ but argument is of type ‘const char *’
+ extern void free (void *__ptr) __THROW;
+             ^~~~
+src/morpha_interface.c:164:10: warning: passing argument 1 of ‘free’ discards ‘const’ qualifier from pointer target type [-Wdiscarded-qualifiers]
+     free(input);
+          ^~~~~
+In file included from ../../rasp3os/morph/morpha.yy.c:41559:0,
+                 from src/morpha_interface.c:14:
+/usr/include/stdlib.h:563:13: note: expected ‘void *’ but argument is of type ‘const char *’
+ extern void free (void *__ptr) __THROW;
+             ^~~~

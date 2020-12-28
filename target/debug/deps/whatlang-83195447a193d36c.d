@@ -1,0 +1,14 @@
+/home/runner/work/llamapun/llamapun/target/debug/deps/whatlang-83195447a193d36c.rmeta: /home/runner/.cargo/registry/src/github.com-1ecc6299db9ec823/whatlang-0.11.1/src/lib.rs /home/runner/.cargo/registry/src/github.com-1ecc6299db9ec823/whatlang-0.11.1/src/constants.rs /home/runner/.cargo/registry/src/github.com-1ecc6299db9ec823/whatlang-0.11.1/src/detect.rs /home/runner/.cargo/registry/src/github.com-1ecc6299db9ec823/whatlang-0.11.1/src/detector.rs /home/runner/.cargo/registry/src/github.com-1ecc6299db9ec823/whatlang-0.11.1/src/info.rs /home/runner/.cargo/registry/src/github.com-1ecc6299db9ec823/whatlang-0.11.1/src/lang.rs /home/runner/.cargo/registry/src/github.com-1ecc6299db9ec823/whatlang-0.11.1/src/options.rs /home/runner/.cargo/registry/src/github.com-1ecc6299db9ec823/whatlang-0.11.1/src/script.rs /home/runner/.cargo/registry/src/github.com-1ecc6299db9ec823/whatlang-0.11.1/src/trigrams.rs /home/runner/.cargo/registry/src/github.com-1ecc6299db9ec823/whatlang-0.11.1/src/utils.rs
+
+/home/runner/work/llamapun/llamapun/target/debug/deps/whatlang-83195447a193d36c.d: /home/runner/.cargo/registry/src/github.com-1ecc6299db9ec823/whatlang-0.11.1/src/lib.rs /home/runner/.cargo/registry/src/github.com-1ecc6299db9ec823/whatlang-0.11.1/src/constants.rs /home/runner/.cargo/registry/src/github.com-1ecc6299db9ec823/whatlang-0.11.1/src/detect.rs /home/runner/.cargo/registry/src/github.com-1ecc6299db9ec823/whatlang-0.11.1/src/detector.rs /home/runner/.cargo/registry/src/github.com-1ecc6299db9ec823/whatlang-0.11.1/src/info.rs /home/runner/.cargo/registry/src/github.com-1ecc6299db9ec823/whatlang-0.11.1/src/lang.rs /home/runner/.cargo/registry/src/github.com-1ecc6299db9ec823/whatlang-0.11.1/src/options.rs /home/runner/.cargo/registry/src/github.com-1ecc6299db9ec823/whatlang-0.11.1/src/script.rs /home/runner/.cargo/registry/src/github.com-1ecc6299db9ec823/whatlang-0.11.1/src/trigrams.rs /home/runner/.cargo/registry/src/github.com-1ecc6299db9ec823/whatlang-0.11.1/src/utils.rs
+
+/home/runner/.cargo/registry/src/github.com-1ecc6299db9ec823/whatlang-0.11.1/src/lib.rs:
+/home/runner/.cargo/registry/src/github.com-1ecc6299db9ec823/whatlang-0.11.1/src/constants.rs:
+/home/runner/.cargo/registry/src/github.com-1ecc6299db9ec823/whatlang-0.11.1/src/detect.rs:
+/home/runner/.cargo/registry/src/github.com-1ecc6299db9ec823/whatlang-0.11.1/src/detector.rs:
+/home/runner/.cargo/registry/src/github.com-1ecc6299db9ec823/whatlang-0.11.1/src/info.rs:
+/home/runner/.cargo/registry/src/github.com-1ecc6299db9ec823/whatlang-0.11.1/src/lang.rs:
+/home/runner/.cargo/registry/src/github.com-1ecc6299db9ec823/whatlang-0.11.1/src/options.rs:
+/home/runner/.cargo/registry/src/github.com-1ecc6299db9ec823/whatlang-0.11.1/src/script.rs:
+/home/runner/.cargo/registry/src/github.com-1ecc6299db9ec823/whatlang-0.11.1/src/trigrams.rs:
+/home/runner/.cargo/registry/src/github.com-1ecc6299db9ec823/whatlang-0.11.1/src/utils.rs:

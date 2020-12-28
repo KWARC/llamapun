@@ -1,1 +1,0 @@
-initSidebarItems({"mod":[["document","Document feature set"],["namespace","Namespace feature set"],["node","Node, and related, feature set"],["nodetype","Types of libxml2 Nodes"]]});

@@ -1,1 +1,0 @@
-initSidebarItems({"struct":[["SchemaParserContext","Wrapper on xmlSchemaParserCtxt"],["SchemaValidationContext","Wrapper on xmlSchemaValidCtxt"]]});

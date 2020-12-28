@@ -1,1 +1,0 @@
-initSidebarItems({"struct":[["Namespace","An xml namespace"]]});

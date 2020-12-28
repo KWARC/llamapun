@@ -1,4 +1,0 @@
-(function() {var implementors = {};
-implementors["crypto"] = [{"text":"impl Add&lt;Fe&gt; for Fe","synthetic":false,"types":[]},{"text":"impl Add&lt;GeCached&gt; for GeP3","synthetic":false,"types":[]},{"text":"impl Add&lt;GePrecomp&gt; for GeP3","synthetic":false,"types":[]}];
-implementors["time"] = [{"text":"impl Add&lt;Duration&gt; for Duration","synthetic":false,"types":[]},{"text":"impl Add&lt;Duration&gt; for Timespec","synthetic":false,"types":[]},{"text":"impl Add&lt;Duration&gt; for SteadyTime","synthetic":false,"types":[]},{"text":"impl Add&lt;Duration&gt; for Tm","synthetic":false,"types":[]}];
-if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()

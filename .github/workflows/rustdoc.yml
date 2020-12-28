@@ -13,7 +13,7 @@ jobs:
 
         steps:
             - name: Checkout Repository
-              uses: actions/checkout@v1
+              uses: actions/checkout@v2
 
             - name: Install Rust toolchain
               uses: actions-rs/toolchain@v1
@@ -31,10 +31,14 @@ jobs:
 
             - name: Deploy Documentation
               env:
-                ACTIONS_DEPLOY_KEY: ${{ secrets.ACTIONS_DEPLOY_KEY }}
                 PUBLISH_BRANCH: gh-pages
                 PUBLISH_DIR: ./target/doc
-                SCRIPT_MODE: true
-              run: |
-                wget https://raw.githubusercontent.com/peaceiris/actions-gh-pages/v2.5.0/entrypoint.sh
-                bash ./entrypoint.sh 
+              run: |                
+                git config user.name "${GITHUB_ACTOR}"
+                git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+                git fetch origin ${PUBLISH_BRANCH}
+                git checkout ${PUBLISH_BRANCH}
+                find "${GITHUB_WORKSPACE}/${PUBLISH_DIR}" -maxdepth 1 | tail -n +2 | xargs -I % cp -rf % "."
+                git add --all
+                git commit --allow-empty -m "Automated deployment: $(date -u) ${GITHUB_SHA}"
+                git push origin ${PUBLISH_BRANCH}

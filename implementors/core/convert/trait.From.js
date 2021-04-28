@@ -1,3 +1,3 @@
 (function() {var implementors = {};
-implementors["llamapun"] = [{"text":"impl&lt;'_&gt; From&lt;&amp;'_ str&gt; for StructuralEnv","synthetic":false,"types":[]}];
+implementors["llamapun"] = [{"text":"impl <a class=\"trait\" href=\"https://doc.rust-lang.org/nightly/core/convert/trait.From.html\" title=\"trait core::convert::From\">From</a>&lt;&amp;'_ <a class=\"primitive\" href=\"https://doc.rust-lang.org/nightly/std/primitive.str.html\">str</a>&gt; for <a class=\"enum\" href=\"llamapun/ams/enum.StructuralEnv.html\" title=\"enum llamapun::ams::StructuralEnv\">StructuralEnv</a>","synthetic":false,"types":["llamapun::ams::StructuralEnv"]}];
 if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()

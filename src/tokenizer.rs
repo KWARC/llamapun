@@ -101,7 +101,6 @@ impl Tokenizer {
               // New sentence
               sentences.push(DNMRange { start, end, dnm }.trim());
               start = end;
-              end += next_word_length;
             } else {
               // Regular word case.
               if self.abbreviation_check(&left_window) {
@@ -126,8 +125,8 @@ impl Tokenizer {
                   left_window.pop_front();
                 }
               }
-              end += next_word_length;
             }
+            end += next_word_length;
           } else {
             // lowercase and non-alphanum characters
             match text_iterator.peek() {
@@ -360,12 +359,14 @@ impl Tokenizer {
 /// checks whether two characters are matching brackets or quotation marks
 fn is_bounded<'a>(left: Option<&'a char>, right: Option<&'a char>) -> bool {
   let pair = [left, right];
-  matches!(pair,
+  matches!(
+    pair,
     [Some(&'['), Some(&']')]
-    | [Some(&'('), Some(&')')]
-    | [Some(&'{'), Some(&'}')]
-    | [Some(&'\''), Some(&'\'')]
-    | [Some(&'"'), Some(&'"')])
+      | [Some(&'('), Some(&')')]
+      | [Some(&'{'), Some(&'}')]
+      | [Some(&'\''), Some(&'\'')]
+      | [Some(&'"'), Some(&'"')]
+  )
 }
 
 /// Obtains the next word from the `Peekable<Chars>` iterator, where only

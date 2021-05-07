@@ -41,12 +41,12 @@ fn math_node_to_string(node: RoNode) -> String {
 fn math_node_to_string_actual(node: RoNode, mut string: &mut String) {
   match node.get_name().as_ref() {
     "semantics" => math_node_to_string_children(node, &mut string),
-    "annotation" | "annotation-xml" => {},
+    "annotation" | "annotation-xml" => {}
     "text" => {
       if node.is_text_node() {
         string.push_str(&node.get_content());
       }
-    },
+    }
     default => {
       string.push('<');
       string.push_str(default);
@@ -56,7 +56,7 @@ fn math_node_to_string_actual(node: RoNode, mut string: &mut String) {
       string.push('/');
       string.push_str(default);
       string.push('>');
-    },
+    }
   }
 }
 
@@ -82,14 +82,14 @@ fn print_marker(marker: &MarkerEnum, alt_dnm: &DNM, xpath_context: &Context) {
         DNMRange::deserialize(&text_marker.range.serialize(), alt_dnm, xpath_context)
           .get_plaintext()
       );
-    },
+    }
     MarkerEnum::Math(ref math_marker) => {
       println!(
         "<h5>MathMarker</h5> \"{}\"\n <br /><br /> <p>{}</p>",
         &get_pattern_marker_string(&math_marker.marker),
         &math_node_to_string(math_marker.node)
       );
-    },
+    }
   }
 }
 
@@ -135,7 +135,7 @@ fn get_alternative_dnm(root: RoNode) -> DNM {
 pub fn main() {
   let pattern_file_result = PatternFile::load("examples/declaration_pattern.xml");
   let pattern_file = match pattern_file_result {
-    Err(x) => panic!(x),
+    Err(x) => panic!("{}", x),
     Ok(x) => x,
   };
 

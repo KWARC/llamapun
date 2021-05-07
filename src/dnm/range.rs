@@ -34,10 +34,14 @@ impl<'dnmrange> DNMRange<'dnmrange> {
     &(self.dnm.plaintext)[self.dnm.byte_offsets[self.start]..self.dnm.byte_offsets[self.end]]
   }
   /// Get the plaintext without trailing white spaces
-  pub fn get_plaintext_truncated(&self) -> &'dnmrange str { self.get_plaintext().trim_end() }
+  pub fn get_plaintext_truncated(&self) -> &'dnmrange str {
+    self.get_plaintext().trim_end()
+  }
 
   /// Get the first corresponding DOM node for this range
-  pub fn get_node(&self) -> RoNode { self.dnm.back_map[self.start].0 }
+  pub fn get_node(&self) -> RoNode {
+    self.dnm.back_map[self.start].0
+  }
 
   /// Returns a `DNMRange` with the leading and trailing whitespaces removed
   pub fn trim(&self) -> DNMRange<'dnmrange> {
@@ -88,8 +92,7 @@ impl<'dnmrange> DNMRange<'dnmrange> {
     &self,
     rel_start: usize,
     rel_end: usize,
-  ) -> DNMRange<'dnmrange>
-  {
+  ) -> DNMRange<'dnmrange> {
     DNMRange {
       start: self.byte_offset_bisection(
         self.dnm.byte_offsets[self.start] + rel_start,
@@ -110,8 +113,7 @@ impl<'dnmrange> DNMRange<'dnmrange> {
     target_byte: usize,
     lower_char: usize,
     upper_char: usize,
-  ) -> usize
-  {
+  ) -> usize {
     if lower_char == upper_char {
       return lower_char;
     } else if upper_char == lower_char + 1 {
@@ -131,7 +133,9 @@ impl<'dnmrange> DNMRange<'dnmrange> {
   }
 
   /// checks whether the range is empty
-  pub fn is_empty(&self) -> bool { self.start == self.end }
+  pub fn is_empty(&self) -> bool {
+    self.start == self.end
+  }
 
   /*
    * SERIALIZATION CODE
@@ -151,7 +155,9 @@ impl<'dnmrange> DNMRange<'dnmrange> {
   }
 
   /// creates an arange from to xpointers
-  pub fn create_arange(from: &str, to: &str) -> String { format!("arange({},{})", from, to) }
+  pub fn create_arange(from: &str, to: &str) -> String {
+    format!("arange({},{})", from, to)
+  }
 
   /// Serializes a node and an offset into an xpointer
   /// is_end indicates whether the node indicates the end of the interval
@@ -209,7 +215,7 @@ impl<'dnmrange> DNMRange<'dnmrange> {
             get_node_number(parent, act, &|n: RoNode| n.get_name() == act.get_name()).unwrap()
           );
         }
-      },
+      }
       Some(x) => format!("//*[@id=\"{}\"]", x),
     }
   }
@@ -225,8 +231,7 @@ impl<'dnmrange> DNMRange<'dnmrange> {
     string: &str,
     dnm: &'dnmrange DNM,
     xpath_context: &Context,
-  ) -> DNMRange<'dnmrange>
-  {
+  ) -> DNMRange<'dnmrange> {
     assert_eq!(&(string[0..7]), "arange(");
     assert_eq!(&(string[string.len() - 1..string.len()]), ")");
 
@@ -243,7 +248,7 @@ impl<'dnmrange> DNMRange<'dnmrange> {
     let start = DNMRange::xpointer_to_offset(start_str, dnm, xpath_context);
     let end = DNMRange::xpointer_to_offset(end_str, dnm, xpath_context);
 
-    DNMRange { dnm, start, end }
+    DNMRange { start, end, dnm }
   }
 
   /// Gets the plaintext offset corresponding to an XPath/string-index'ed XPointer,
@@ -265,7 +270,7 @@ impl<'dnmrange> DNMRange<'dnmrange> {
             pos += 1;
           }
           pos
-        },
+        }
         Err(_) => get_position_of_lowest_parent(node, dnm),
       }
     } else {
@@ -304,7 +309,7 @@ fn get_next_sibling(root_node: RoNode, node: RoNode) -> Option<RoNode> {
       } else {
         get_next_sibling(root_node, node.get_parent().unwrap())
       }
-    },
+    }
     Some(n) => Some(n),
   }
 }
@@ -315,8 +320,7 @@ fn get_node_number(
   parent: RoNode,
   target: RoNode,
   rule: &dyn Fn(RoNode) -> bool,
-) -> Result<i32, ()>
-{
+) -> Result<i32, ()> {
   let mut cur = parent
     .get_first_child()
     .expect("can't get child number - node has no children");
@@ -328,10 +332,10 @@ fn get_node_number(
     match cur.get_next_sibling() {
       None => {
         return Err(());
-      },
+      }
       Some(n) => {
         cur = n;
-      },
+      }
     }
   }
   Ok(count)

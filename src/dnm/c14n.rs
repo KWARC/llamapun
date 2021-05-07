@@ -20,7 +20,9 @@ impl DNM {
   /// Our linguistic canonical form will only include 1) node name, 2) class attribute and 3)
   /// textual content - excludes certain experimental markup, such as all math annotation
   /// elements  - excludes whitespace nodes and comment nodes
-  pub fn to_c14n_basic(&self) -> String { self.node_c14n_basic(self.root_node) }
+  pub fn to_c14n_basic(&self) -> String {
+    self.node_c14n_basic(self.root_node)
+  }
 
   /// Canonicalize a single node of choice
   pub fn node_c14n_basic(&self, node: RoNode) -> String {
@@ -30,7 +32,9 @@ impl DNM {
   }
 
   /// Obtain an MD5 hash from the canonical string of the entire DOM
-  pub fn to_hash_basic(&self) -> String { self.node_hash_basic(self.root_node) }
+  pub fn to_hash_basic(&self) -> String {
+    self.node_hash_basic(self.root_node)
+  }
 
   /// Obtain an MD5 hash from the canonical string of a Node
   pub fn node_hash_basic(&self, node: RoNode) -> String {
@@ -46,10 +50,7 @@ impl DNM {
       Some(level) => String::new() + "\n" + &(1..level).map(|_| " ").collect::<String>(),
       None => String::new(),
     };
-    let next_indent_level = match indent {
-      Some(level) => Some(level + 2),
-      None => None,
-    };
+    let next_indent_level = indent.map(|level| level + 2);
 
     match node.get_type() {
       Some(TextNode) => {
@@ -62,7 +63,7 @@ impl DNM {
             // ignore empty nodes
           }
         }
-      },
+      }
       Some(ElementNode) => {
         // Skip artefact nodes
         let name: String = node.get_name();
@@ -111,10 +112,10 @@ impl DNM {
           canonical_node.push_str(&name);
           canonical_node.push('>');
         }
-      },
+      }
       _ => {
         println!("-- Skipping node {:?}", node.get_name());
-      }, // skip all other node types for now
+      } // skip all other node types for now
     }
   }
 }

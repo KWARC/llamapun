@@ -1,7 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/dnm/mod.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>mod.rs - source</title><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../light.css"  id="themeStyle"><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled ><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled ><script id="default-settings"></script><script src="../../../storage.js"></script><script src="../../../crates.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="icon" type="image/svg+xml" href="../../../favicon.svg">
-<link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png">
-<link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><style type="text/css">#crate-search{background-image:url("../../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu" role="button">&#9776;</div><a href='../../../llamapun/index.html'><div class='logo-container rust-logo'><img src='../../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu"><img src="../../../brush.svg" width="18" height="18" alt="Pick another theme!"></button><div id="theme-choices" role="menu"></div></div><script src="../../../theme.js"></script><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><button type="button" class="help-button">?</button>
-                <a id="settings-menu" href="../../../settings.html"><img src="../../../wheel.svg" width="18" height="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src&#x2F;dnm&#x2F;mod.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>mod.rs - source</title><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../light.css"  id="themeStyle"><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled ><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled ><script id="default-settings" ></script><script src="../../../storage.js"></script><script src="../../../crates.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"><style type="text/css">#crate-search{background-image:url("../../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu" role="button">&#9776;</div><a href='../../../llamapun/index.html'><div class='logo-container rust-logo'><img src='../../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="18" height="18" alt="Pick another theme!" src="../../../brush.svg"></button><div id="theme-choices" role="menu"></div></div><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../../../settings.html" title="settings"><img width="18" height="18" alt="Change settings" src="../../../wheel.svg"></a></div></form></nav><section id="main" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -362,8 +359,7 @@
 <span id="359">359</span>
 <span id="360">360</span>
 <span id="361">361</span>
-</pre><div class="example-wrap"><pre class="rust ">
-<span class="doccomment">//! The `dnm` can be used for easier switching between the DOM</span>
+</pre><pre class="rust"><code><span class="doccomment">//! The `dnm` can be used for easier switching between the DOM</span>
 <span class="doccomment">//! (Document Object Model) representation and the plain text representation,</span>
 <span class="doccomment">//! which is needed for most NLP tools.</span>
 <span class="kw">mod</span> <span class="ident">c14n</span>;
@@ -372,15 +368,15 @@
 <span class="kw">mod</span> <span class="ident">parameters</span>;
 <span class="kw">mod</span> <span class="ident">range</span>;
 
-<span class="kw">use</span> <span class="ident">libxml</span>::<span class="ident">readonly</span>::<span class="ident">RoNode</span>;
-<span class="kw">use</span> <span class="ident">libxml</span>::<span class="ident">tree</span>::<span class="kw-2">*</span>;
-<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">collections</span>::<span class="ident">HashMap</span>;
-<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">error</span>::<span class="ident">Error</span>;
-<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">fmt</span>;
+<span class="kw">use</span> <span class="ident">libxml::readonly::RoNode</span>;
+<span class="kw">use</span> <span class="ident">libxml::tree</span>::<span class="kw-2">*</span>;
+<span class="kw">use</span> <span class="ident">std::collections::HashMap</span>;
+<span class="kw">use</span> <span class="ident">std::error::Error</span>;
+<span class="kw">use</span> <span class="ident">std::fmt</span>;
 <span class="kw">use</span> <span class="ident">unidecode</span>::{<span class="ident">unidecode</span>, <span class="ident">unidecode_char</span>};
 
-<span class="kw">pub</span> <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">dnm</span>::<span class="ident">parameters</span>::{<span class="ident">DNMParameters</span>, <span class="ident">RuntimeParseData</span>, <span class="ident">SpecialTagsOption</span>};
-<span class="kw">pub</span> <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">dnm</span>::<span class="ident">range</span>::<span class="ident">DNMRange</span>;
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::dnm::parameters</span>::{<span class="ident">DNMParameters</span>, <span class="ident">RuntimeParseData</span>, <span class="ident">SpecialTagsOption</span>};
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::dnm::range::DNMRange</span>;
 
 <span class="doccomment">/// The `DNM` is essentially a wrapper around the plain text representation</span>
 <span class="doccomment">/// of the document, which facilitates mapping plaintext pieces to the DOM.</span>
@@ -408,20 +404,20 @@
 <span class="kw">impl</span> <span class="ident">Default</span> <span class="kw">for</span> <span class="ident">DNM</span> {
   <span class="kw">fn</span> <span class="ident">default</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">DNM</span> {
     <span class="ident">DNM</span> {
-      <span class="ident">parameters</span>: <span class="ident">DNMParameters</span>::<span class="ident">default</span>(),
-      <span class="ident">root_node</span>: <span class="ident">RoNode</span>::<span class="ident">null</span>(),
-      <span class="ident">plaintext</span>: <span class="ident">String</span>::<span class="ident">new</span>(),
-      <span class="ident">byte_offsets</span>: <span class="ident">Vec</span>::<span class="ident">new</span>(),
-      <span class="ident">node_map</span>: <span class="ident">HashMap</span>::<span class="ident">new</span>(),
-      <span class="ident">runtime</span>: <span class="ident">RuntimeParseData</span>::<span class="ident">default</span>(),
-      <span class="ident">back_map</span>: <span class="ident">Vec</span>::<span class="ident">new</span>(),
+      <span class="ident">parameters</span>: <span class="ident">DNMParameters::default</span>(),
+      <span class="ident">root_node</span>: <span class="ident">RoNode::null</span>(),
+      <span class="ident">plaintext</span>: <span class="ident">String::new</span>(),
+      <span class="ident">byte_offsets</span>: <span class="ident">Vec::new</span>(),
+      <span class="ident">node_map</span>: <span class="ident">HashMap::new</span>(),
+      <span class="ident">runtime</span>: <span class="ident">RuntimeParseData::default</span>(),
+      <span class="ident">back_map</span>: <span class="ident">Vec::new</span>(),
     }
   }
 }
 
-<span class="kw">impl</span> <span class="ident">fmt</span>::<span class="ident">Debug</span> <span class="kw">for</span> <span class="ident">DNM</span> {
-  <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">fmt</span>::<span class="ident">Formatter</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">fmt</span>::<span class="prelude-ty">Result</span> {
-    <span class="macro">write</span><span class="macro">!</span>(
+<span class="kw">impl</span> <span class="ident">fmt::Debug</span> <span class="kw">for</span> <span class="ident">DNM</span> {
+  <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">fmt::Formatter</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">fmt::Result</span> {
+    <span class="macro">write!</span>(
       <span class="comment">// TODO: Do we want to/need to print more of the fields for debugging here?</span>
       <span class="ident">f</span>,
       <span class="string">&quot;DNM {{ parameters: {:?}, plaintext: {:?} }}&quot;</span>,
@@ -433,17 +429,17 @@
 
 <span class="doccomment">/// A handy macro for idiomatic recording in the node_map</span>
 <span class="attribute">#[<span class="ident">macro_export</span>]</span>
-<span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">record_node_map</span>(
+<span class="macro">macro_rules!</span> <span class="ident">record_node_map</span>(
   (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">dnm</span>: <span class="ident">expr</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">node</span>: <span class="ident">expr</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">offset_start</span>: <span class="ident">expr</span>) <span class="op">=</span><span class="op">&gt;</span> {{
     <span class="macro-nonterminal">$</span><span class="macro-nonterminal">dnm</span>.<span class="ident">node_map</span>.<span class="ident">insert</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">node</span>.<span class="ident">to_hashable</span>(), (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">offset_start</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">dnm</span>.<span class="ident">runtime</span>.<span class="ident">chars</span>.<span class="ident">len</span>()));
   }}
 );
 
-<span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">push_token</span>(
+<span class="macro">macro_rules!</span> <span class="ident">push_token</span>(
   (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">dnm</span>: <span class="ident">expr</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">token</span>: <span class="ident">expr</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">node</span>: <span class="ident">expr</span>) <span class="op">=</span><span class="op">&gt;</span> (
   {
     <span class="kw">if</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">dnm</span>.<span class="ident">parameters</span>.<span class="ident">wrap_tokens</span> {
-      <span class="macro">push_whitespace</span><span class="macro">!</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">dnm</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">node</span>, <span class="op">-</span><span class="number">1</span>);
+      <span class="macro">push_whitespace!</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">dnm</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">node</span>, <span class="op">-</span><span class="number">1</span>);
     }
 
     <span class="kw">if</span> <span class="op">!</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">dnm</span>.<span class="ident">parameters</span>.<span class="ident">support_back_mapping</span> {
@@ -457,13 +453,13 @@
     <span class="macro-nonterminal">$</span><span class="macro-nonterminal">dnm</span>.<span class="ident">runtime</span>.<span class="ident">had_whitespace</span> <span class="op">=</span> <span class="bool-val">false</span>;
 
     <span class="kw">if</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">dnm</span>.<span class="ident">parameters</span>.<span class="ident">wrap_tokens</span> {
-      <span class="macro">push_whitespace</span><span class="macro">!</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">dnm</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">node</span>, <span class="op">-</span><span class="number">1</span>);
+      <span class="macro">push_whitespace!</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">dnm</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">node</span>, <span class="op">-</span><span class="number">1</span>);
     }
   }
   )
 );
 
-<span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">push_whitespace</span>(
+<span class="macro">macro_rules!</span> <span class="ident">push_whitespace</span>(
   (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">dnm</span>: <span class="ident">expr</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">node</span>: <span class="ident">expr</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">offset</span>: <span class="ident">expr</span>) <span class="op">=</span><span class="op">&gt;</span> (
   {
     <span class="kw">if</span> <span class="op">!</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">dnm</span>.<span class="ident">runtime</span>.<span class="ident">had_whitespace</span> <span class="op">|</span><span class="op">|</span> <span class="op">!</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">dnm</span>.<span class="ident">parameters</span>.<span class="ident">normalize_white_spaces</span> {
@@ -487,11 +483,11 @@
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">dnm</span> <span class="op">=</span> <span class="ident">DNM</span> {
       <span class="ident">parameters</span>,
       <span class="ident">root_node</span>,
-      <span class="ident">back_map</span>: <span class="ident">Vec</span>::<span class="ident">new</span>(),
-      <span class="ident">byte_offsets</span>: <span class="ident">Vec</span>::<span class="ident">new</span>(),
-      <span class="ident">node_map</span>: <span class="ident">HashMap</span>::<span class="ident">new</span>(),
-      <span class="ident">plaintext</span>: <span class="ident">String</span>::<span class="ident">new</span>(),
-      <span class="ident">runtime</span>: <span class="ident">RuntimeParseData</span>::<span class="ident">default</span>(),
+      <span class="ident">back_map</span>: <span class="ident">Vec::new</span>(),
+      <span class="ident">byte_offsets</span>: <span class="ident">Vec::new</span>(),
+      <span class="ident">node_map</span>: <span class="ident">HashMap::new</span>(),
+      <span class="ident">plaintext</span>: <span class="ident">String::new</span>(),
+      <span class="ident">runtime</span>: <span class="ident">RuntimeParseData::default</span>(),
     };
 
     <span class="comment">// Depth-first traversal of the DOM extracting a plaintext representation and</span>
@@ -499,7 +495,7 @@
     <span class="ident">dnm</span>.<span class="ident">recurse_node_create</span>(<span class="ident">root_node</span>);
 
     <span class="comment">// generate plaintext</span>
-    <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">dnm</span>.<span class="ident">plaintext</span>.<span class="ident">len</span>(), <span class="number">0</span>);
+    <span class="macro">assert_eq!</span>(<span class="ident">dnm</span>.<span class="ident">plaintext</span>.<span class="ident">len</span>(), <span class="number">0</span>);
     <span class="kw">for</span> <span class="ident">c</span> <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="ident">dnm</span>.<span class="ident">runtime</span>.<span class="ident">chars</span> {
       <span class="ident">dnm</span>.<span class="ident">byte_offsets</span>.<span class="ident">push</span>(<span class="ident">dnm</span>.<span class="ident">plaintext</span>.<span class="ident">len</span>());
       <span class="ident">dnm</span>.<span class="ident">plaintext</span>.<span class="ident">push</span>(<span class="kw-2">*</span><span class="ident">c</span>);
@@ -516,18 +512,18 @@
   ) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(<span class="ident">Document</span>, <span class="self">Self</span>), <span class="ident">Box</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">Error</span><span class="op">&gt;</span><span class="op">&gt;</span> {
     <span class="kw">let</span> <span class="ident">params</span> <span class="op">=</span> <span class="ident">params_opt</span>.<span class="ident">unwrap_or_default</span>();
     <span class="comment">// Same as ::new(), but requires initializing a libxml Document with the text content</span>
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">doc</span> <span class="op">=</span> <span class="ident">Document</span>::<span class="ident">new</span>().<span class="ident">unwrap</span>();
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">root</span> <span class="op">=</span> <span class="ident">Node</span>::<span class="ident">new</span>(<span class="string">&quot;html&quot;</span>, <span class="prelude-val">None</span>, <span class="kw-2">&amp;</span><span class="ident">doc</span>).<span class="ident">unwrap</span>();
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">doc</span> <span class="op">=</span> <span class="ident">Document::new</span>().<span class="ident">unwrap</span>();
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">root</span> <span class="op">=</span> <span class="ident">Node::new</span>(<span class="string">&quot;html&quot;</span>, <span class="prelude-val">None</span>, <span class="kw-2">&amp;</span><span class="ident">doc</span>).<span class="ident">unwrap</span>();
     <span class="ident">doc</span>.<span class="ident">set_root_element</span>(<span class="kw-2">&amp;</span><span class="ident">root</span>);
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">body</span> <span class="op">=</span> <span class="ident">Node</span>::<span class="ident">new</span>(<span class="string">&quot;body&quot;</span>, <span class="prelude-val">None</span>, <span class="kw-2">&amp;</span><span class="ident">doc</span>).<span class="ident">unwrap</span>();
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">body</span> <span class="op">=</span> <span class="ident">Node::new</span>(<span class="string">&quot;body&quot;</span>, <span class="prelude-val">None</span>, <span class="kw-2">&amp;</span><span class="ident">doc</span>).<span class="ident">unwrap</span>();
     <span class="ident">root</span>.<span class="ident">add_child</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">body</span>)<span class="question-mark">?</span>;
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">para</span> <span class="op">=</span> <span class="ident">Node</span>::<span class="ident">new</span>(<span class="string">&quot;div&quot;</span>, <span class="prelude-val">None</span>, <span class="kw-2">&amp;</span><span class="ident">doc</span>).<span class="ident">unwrap</span>();
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">para</span> <span class="op">=</span> <span class="ident">Node::new</span>(<span class="string">&quot;div&quot;</span>, <span class="prelude-val">None</span>, <span class="kw-2">&amp;</span><span class="ident">doc</span>).<span class="ident">unwrap</span>();
     <span class="ident">body</span>.<span class="ident">add_child</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">para</span>)<span class="question-mark">?</span>;
     <span class="ident">para</span>.<span class="ident">set_attribute</span>(<span class="string">&quot;class&quot;</span>, <span class="string">&quot;ltx_para&quot;</span>)<span class="question-mark">?</span>;
     <span class="ident">para</span>.<span class="ident">append_text</span>(<span class="ident">text</span>)<span class="question-mark">?</span>;
 
     <span class="comment">// Now initialize a DNM as usual</span>
-    <span class="kw">let</span> <span class="ident">dnm</span> <span class="op">=</span> <span class="ident">DNM</span>::<span class="ident">new</span>(
+    <span class="kw">let</span> <span class="ident">dnm</span> <span class="op">=</span> <span class="ident">DNM::new</span>(
       <span class="ident">doc</span>
         .<span class="ident">get_root_readonly</span>()
         .<span class="ident">expect</span>(<span class="string">&quot;read only root node should always be found.&quot;</span>),
@@ -542,8 +538,8 @@
     <span class="ident">text</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>,
     <span class="ident">params</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">DNMParameters</span><span class="op">&gt;</span>,
   ) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(<span class="ident">Document</span>, <span class="self">Self</span>), <span class="ident">Box</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">Error</span><span class="op">&gt;</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="ident">rebuilt</span> <span class="op">=</span> <span class="ident">c14n</span>::<span class="ident">rebuild_normalized_text</span>(<span class="ident">text</span>);
-    <span class="ident">DNM</span>::<span class="ident">from_str</span>(<span class="kw-2">&amp;</span><span class="ident">rebuilt</span>, <span class="ident">params</span>)
+    <span class="kw">let</span> <span class="ident">rebuilt</span> <span class="op">=</span> <span class="ident">c14n::rebuild_normalized_text</span>(<span class="ident">text</span>);
+    <span class="ident">DNM::from_str</span>(<span class="kw-2">&amp;</span><span class="ident">rebuilt</span>, <span class="ident">params</span>)
   }
 
   <span class="doccomment">/// Get the plaintext range of a node</span>
@@ -583,7 +579,7 @@
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">offsets</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">i32</span><span class="op">&gt;</span> <span class="op">=</span> <span class="kw">if</span> <span class="self">self</span>.<span class="ident">parameters</span>.<span class="ident">support_back_mapping</span> {
       (<span class="number">0i32</span>..(<span class="ident">string</span>.<span class="ident">chars</span>().<span class="ident">count</span>() <span class="kw">as</span> <span class="ident">i32</span>)).<span class="ident">collect</span>()
     } <span class="kw">else</span> {
-      <span class="ident">Vec</span>::<span class="ident">new</span>()
+      <span class="ident">Vec::new</span>()
     };
 
     <span class="comment">// string processing steps</span>
@@ -597,21 +593,21 @@
     <span class="comment">// push results</span>
     <span class="self">self</span>.<span class="ident">runtime</span>.<span class="ident">chars</span>.<span class="ident">extend</span>(<span class="ident">string</span>.<span class="ident">chars</span>());
     <span class="kw">if</span> <span class="self">self</span>.<span class="ident">parameters</span>.<span class="ident">support_back_mapping</span> {
-      <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">string</span>.<span class="ident">chars</span>().<span class="ident">count</span>(), <span class="ident">offsets</span>.<span class="ident">len</span>());
+      <span class="macro">assert_eq!</span>(<span class="ident">string</span>.<span class="ident">chars</span>().<span class="ident">count</span>(), <span class="ident">offsets</span>.<span class="ident">len</span>());
       <span class="kw">for</span> <span class="ident">offset</span> <span class="kw">in</span> <span class="ident">offsets</span> {
         <span class="self">self</span>.<span class="ident">back_map</span>.<span class="ident">push</span>((<span class="ident">node</span>, <span class="ident">offset</span>));
       }
     }
 
-    <span class="macro">record_node_map</span><span class="macro">!</span>(<span class="self">self</span>, <span class="ident">node</span>, <span class="ident">offset_start</span>);
+    <span class="macro">record_node_map!</span>(<span class="self">self</span>, <span class="ident">node</span>, <span class="ident">offset_start</span>);
   }
 
   <span class="kw">fn</span> <span class="ident">normalize_whitespace</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">string</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">String</span>, <span class="ident">offsets</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">i32</span><span class="op">&gt;</span>) {
     <span class="kw">if</span> <span class="op">!</span><span class="self">self</span>.<span class="ident">parameters</span>.<span class="ident">normalize_white_spaces</span> {
       <span class="kw">return</span>;
     }
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">new_string</span> <span class="op">=</span> <span class="ident">String</span>::<span class="ident">new</span>();
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">new_offsets</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">i32</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">Vec</span>::<span class="ident">new</span>();
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">new_string</span> <span class="op">=</span> <span class="ident">String::new</span>();
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">new_offsets</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">i32</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">Vec::new</span>();
 
     <span class="kw">for</span> (<span class="ident">i</span>, <span class="ident">c</span>) <span class="kw">in</span> <span class="ident">string</span>.<span class="ident">chars</span>().<span class="ident">enumerate</span>() {
       <span class="kw">if</span> <span class="ident">c</span>.<span class="ident">is_whitespace</span>() {
@@ -646,8 +642,8 @@
 
     <span class="comment">// the tricky part: unidecode can replace a character by multiple characters.</span>
     <span class="comment">// We need to maintain the offsets for back mapping</span>
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">new_string</span> <span class="op">=</span> <span class="ident">String</span>::<span class="ident">new</span>();
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">new_offsets</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">i32</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">Vec</span>::<span class="ident">new</span>();
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">new_string</span> <span class="op">=</span> <span class="ident">String::new</span>();
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">new_offsets</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">i32</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">Vec::new</span>();
 
     <span class="kw">for</span> (<span class="ident">i</span>, <span class="ident">co</span>) <span class="kw">in</span> <span class="ident">string</span>.<span class="ident">chars</span>().<span class="ident">enumerate</span>() {
       <span class="kw">for</span> <span class="ident">cn</span> <span class="kw">in</span> <span class="ident">unidecode_char</span>(<span class="ident">co</span>).<span class="ident">chars</span>() {
@@ -666,12 +662,12 @@
     <span class="kw">if</span> <span class="self">self</span>.<span class="ident">parameters</span>.<span class="ident">support_back_mapping</span>
       <span class="op">&amp;&amp;</span> (<span class="self">self</span>.<span class="ident">parameters</span>.<span class="ident">stem_words_full</span> <span class="op">|</span><span class="op">|</span> <span class="self">self</span>.<span class="ident">parameters</span>.<span class="ident">stem_words_once</span>)
     {
-      <span class="macro">panic</span><span class="macro">!</span>(<span class="string">&quot;llamapun::dnm: word stemming does not support back-mapping yet&quot;</span>);
+      <span class="macro">panic!</span>(<span class="string">&quot;llamapun::dnm: word stemming does not support back-mapping yet&quot;</span>);
     }
     <span class="kw">if</span> <span class="self">self</span>.<span class="ident">parameters</span>.<span class="ident">stem_words_full</span> {
-      <span class="kw-2">*</span><span class="ident">string</span> <span class="op">=</span> <span class="ident">rustmorpha</span>::<span class="ident">full_stem</span>(<span class="ident">string</span>);
+      <span class="kw-2">*</span><span class="ident">string</span> <span class="op">=</span> <span class="ident">rustmorpha::full_stem</span>(<span class="ident">string</span>);
     } <span class="kw">else</span> <span class="kw">if</span> <span class="self">self</span>.<span class="ident">parameters</span>.<span class="ident">stem_words_once</span> {
-      <span class="kw-2">*</span><span class="ident">string</span> <span class="op">=</span> <span class="ident">rustmorpha</span>::<span class="ident">stem</span>(<span class="ident">string</span>);
+      <span class="kw-2">*</span><span class="ident">string</span> <span class="op">=</span> <span class="ident">rustmorpha::stem</span>(<span class="ident">string</span>);
     }
   }
 
@@ -681,7 +677,7 @@
     {
       <span class="comment">// Start scope of self.parameters borrow, to allow mutable self borrow for</span>
       <span class="comment">// recurse_node_create</span>
-      <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">rules</span> <span class="op">=</span> <span class="ident">Vec</span>::<span class="ident">new</span>();
+      <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">rules</span> <span class="op">=</span> <span class="ident">Vec::new</span>();
       <span class="comment">// First class rules, as more specific</span>
       <span class="kw">for</span> <span class="ident">classname</span> <span class="kw">in</span> <span class="ident">node</span>.<span class="ident">get_class_names</span>() {
         <span class="kw">let</span> <span class="ident">class_rule</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">parameters</span>.<span class="ident">special_tag_class_options</span>.<span class="ident">get</span>(<span class="kw-2">&amp;</span><span class="ident">classname</span>);
@@ -693,19 +689,19 @@
       <span class="kw">for</span> <span class="ident">rule</span> <span class="kw">in</span> <span class="ident">rules</span> {
         <span class="comment">// iterate over applying rules</span>
         <span class="kw">match</span> <span class="ident">rule</span> {
-          <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="ident">SpecialTagsOption</span>::<span class="ident">Enter</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="kw">break</span>,
-          <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="ident">SpecialTagsOption</span>::<span class="ident">Normalize</span>(<span class="kw-2">ref</span> <span class="ident">token</span>)) <span class="op">=</span><span class="op">&gt;</span> {
-            <span class="macro">push_token</span><span class="macro">!</span>(<span class="self">self</span>, <span class="ident">token</span>, <span class="ident">node</span>);
-            <span class="macro">record_node_map</span><span class="macro">!</span>(<span class="self">self</span>, <span class="ident">node</span>, <span class="ident">offset_start</span>);
+          <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="ident">SpecialTagsOption::Enter</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="kw">break</span>,
+          <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="ident">SpecialTagsOption::Normalize</span>(<span class="kw-2">ref</span> <span class="ident">token</span>)) <span class="op">=</span><span class="op">&gt;</span> {
+            <span class="macro">push_token!</span>(<span class="self">self</span>, <span class="ident">token</span>, <span class="ident">node</span>);
+            <span class="macro">record_node_map!</span>(<span class="self">self</span>, <span class="ident">node</span>, <span class="ident">offset_start</span>);
             <span class="kw">return</span>;
           }
-          <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="ident">SpecialTagsOption</span>::<span class="ident">FunctionNormalize</span>(<span class="kw-2">ref</span> <span class="ident">f</span>)) <span class="op">=</span><span class="op">&gt;</span> {
-            <span class="macro">push_token</span><span class="macro">!</span>(<span class="self">self</span>, <span class="kw-2">&amp;</span><span class="ident">f</span>(<span class="ident">node</span>), <span class="ident">node</span>);
-            <span class="macro">record_node_map</span><span class="macro">!</span>(<span class="self">self</span>, <span class="ident">node</span>, <span class="ident">offset_start</span>);
+          <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="ident">SpecialTagsOption::FunctionNormalize</span>(<span class="kw-2">ref</span> <span class="ident">f</span>)) <span class="op">=</span><span class="op">&gt;</span> {
+            <span class="macro">push_token!</span>(<span class="self">self</span>, <span class="kw-2">&amp;</span><span class="ident">f</span>(<span class="ident">node</span>), <span class="ident">node</span>);
+            <span class="macro">record_node_map!</span>(<span class="self">self</span>, <span class="ident">node</span>, <span class="ident">offset_start</span>);
             <span class="kw">return</span>;
           }
-          <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="ident">SpecialTagsOption</span>::<span class="ident">Skip</span>) <span class="op">=</span><span class="op">&gt;</span> {
-            <span class="macro">record_node_map</span><span class="macro">!</span>(<span class="self">self</span>, <span class="ident">node</span>, <span class="ident">offset_start</span>);
+          <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span><span class="ident">SpecialTagsOption::Skip</span>) <span class="op">=</span><span class="op">&gt;</span> {
+            <span class="macro">record_node_map!</span>(<span class="self">self</span>, <span class="ident">node</span>, <span class="ident">offset_start</span>);
             <span class="kw">return</span>;
           }
           <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="kw">continue</span>,
@@ -721,9 +717,10 @@
         <span class="ident">child_node</span> <span class="op">=</span> <span class="ident">child</span>;
       }
     }
-    <span class="macro">record_node_map</span><span class="macro">!</span>(<span class="self">self</span>, <span class="ident">node</span>, <span class="ident">offset_start</span>);
+    <span class="macro">record_node_map!</span>(<span class="self">self</span>, <span class="ident">node</span>, <span class="ident">offset_start</span>);
   }
 }
-</pre></div>
-</section><section id="search" class="content hidden"></section><section class="footer"></section><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="llamapun" data-search-js="../../../search-index.js"></div>
-    <script src="../../../main.js"></script><script src="../../../source-script.js"></script><script src="../../../source-files.js"></script></body></html>
+</code></pre></div>
+</section><section id="search" class="content hidden"></section><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="llamapun" data-search-index-js="../../../search-index.js" data-search-js="../../../search.js"></div>
+    <script src="../../../main.js"></script><script src="../../../source-script.js"></script><script src="../../../source-files.js"></script>
+</body></html>

@@ -1,7 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/data.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>data.rs - source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../light.css"  id="themeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css" disabled ><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled ><script id="default-settings"></script><script src="../../storage.js"></script><script src="../../crates.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="icon" type="image/svg+xml" href="../../favicon.svg">
-<link rel="alternate icon" type="image/png" href="../../favicon-16x16.png">
-<link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu" role="button">&#9776;</div><a href='../../llamapun/index.html'><div class='logo-container rust-logo'><img src='../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu"><img src="../../brush.svg" width="18" height="18" alt="Pick another theme!"></button><div id="theme-choices" role="menu"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><button type="button" class="help-button">?</button>
-                <a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" height="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src&#x2F;data.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>data.rs - source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../light.css"  id="themeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css" disabled ><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled ><script id="default-settings" ></script><script src="../../storage.js"></script><script src="../../crates.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu" role="button">&#9776;</div><a href='../../llamapun/index.html'><div class='logo-container rust-logo'><img src='../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="18" height="18" alt="Pick another theme!" src="../../brush.svg"></button><div id="theme-choices" role="menu"></div></div><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../../settings.html" title="settings"><img width="18" height="18" alt="Change settings" src="../../wheel.svg"></a></div></form></nav><section id="main" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -398,25 +395,24 @@
 <span id="395">395</span>
 <span id="396">396</span>
 <span id="397">397</span>
-</pre><div class="example-wrap"><pre class="rust ">
-<span class="doccomment">//! Data structures and Iterators for convenient high-level syntax</span>
-<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">cell</span>::{<span class="ident">Cell</span>, <span class="ident">RefCell</span>};
-<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">vec</span>::<span class="ident">IntoIter</span>;
-<span class="kw">use</span> <span class="ident">walkdir</span>::<span class="ident">IntoIter</span> <span class="kw">as</span> <span class="ident">WalkDirIterator</span>;
-<span class="kw">use</span> <span class="ident">walkdir</span>::<span class="ident">WalkDir</span>;
+</pre><pre class="rust"><code><span class="doccomment">//! Data structures and Iterators for convenient high-level syntax</span>
+<span class="kw">use</span> <span class="ident">std::cell</span>::{<span class="ident">Cell</span>, <span class="ident">RefCell</span>};
+<span class="kw">use</span> <span class="ident">std::vec::IntoIter</span>;
+<span class="kw">use</span> <span class="ident">walkdir::IntoIter</span> <span class="kw">as</span> <span class="ident">WalkDirIterator</span>;
+<span class="kw">use</span> <span class="ident">walkdir::WalkDir</span>;
 
-<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">dnm</span>::{<span class="ident">DNMParameters</span>, <span class="ident">DNMRange</span>, <span class="ident">DNM</span>};
-<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">tokenizer</span>::<span class="ident">Tokenizer</span>;
+<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::dnm</span>::{<span class="ident">DNMParameters</span>, <span class="ident">DNMRange</span>, <span class="ident">DNM</span>};
+<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::tokenizer::Tokenizer</span>;
 
-<span class="kw">use</span> <span class="ident">libxml</span>::<span class="ident">parser</span>::{<span class="ident">Parser</span>, <span class="ident">XmlParseError</span>};
-<span class="kw">use</span> <span class="ident">libxml</span>::<span class="ident">readonly</span>::<span class="ident">RoNode</span>;
-<span class="kw">use</span> <span class="ident">libxml</span>::<span class="ident">tree</span>::<span class="ident">Document</span> <span class="kw">as</span> <span class="ident">XmlDoc</span>;
-<span class="kw">use</span> <span class="ident">libxml</span>::<span class="ident">xpath</span>::<span class="ident">Context</span>;
+<span class="kw">use</span> <span class="ident">libxml::parser</span>::{<span class="ident">Parser</span>, <span class="ident">XmlParseError</span>};
+<span class="kw">use</span> <span class="ident">libxml::readonly::RoNode</span>;
+<span class="kw">use</span> <span class="ident">libxml::tree::Document</span> <span class="kw">as</span> <span class="ident">XmlDoc</span>;
+<span class="kw">use</span> <span class="ident">libxml::xpath::Context</span>;
 
-<span class="kw">use</span> <span class="ident">senna</span>::<span class="ident">pos</span>::<span class="ident">POS</span>;
-<span class="kw">use</span> <span class="ident">senna</span>::<span class="ident">senna</span>::{<span class="ident">Senna</span>, <span class="ident">SennaParseOptions</span>};
-<span class="kw">use</span> <span class="ident">senna</span>::<span class="ident">sennapath</span>::<span class="ident">SENNA_PATH</span>;
-<span class="kw">use</span> <span class="ident">senna</span>::<span class="ident">sentence</span>::<span class="ident">Sentence</span> <span class="kw">as</span> <span class="ident">SennaSentence</span>;
+<span class="kw">use</span> <span class="ident">senna::pos::POS</span>;
+<span class="kw">use</span> <span class="ident">senna::senna</span>::{<span class="ident">Senna</span>, <span class="ident">SennaParseOptions</span>};
+<span class="kw">use</span> <span class="ident">senna::sennapath::SENNA_PATH</span>;
+<span class="kw">use</span> <span class="ident">senna::sentence::Sentence</span> <span class="kw">as</span> <span class="ident">SennaSentence</span>;
 
 <span class="doccomment">/// An iterable Corpus of HTML5 documents</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Corpus</span> {
@@ -543,7 +539,7 @@
         };
         <span class="kw">if</span> <span class="ident">selected</span> {
           <span class="kw">let</span> <span class="ident">path</span> <span class="op">=</span> <span class="ident">entry</span>.<span class="ident">path</span>().<span class="ident">to_str</span>().<span class="ident">unwrap_or</span>(<span class="string">&quot;&quot;</span>).<span class="ident">to_owned</span>();
-          <span class="kw">let</span> <span class="ident">doc_result</span> <span class="op">=</span> <span class="ident">Document</span>::<span class="ident">new</span>(<span class="ident">path</span>, <span class="self">self</span>.<span class="ident">corpus</span>);
+          <span class="kw">let</span> <span class="ident">doc_result</span> <span class="op">=</span> <span class="ident">Document::new</span>(<span class="ident">path</span>, <span class="self">self</span>.<span class="ident">corpus</span>);
           <span class="kw">return</span> <span class="kw">match</span> <span class="ident">doc_result</span> {
             <span class="prelude-val">Ok</span>(<span class="ident">doc</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">doc</span>),
             <span class="comment">// TODO: Currently encountering an unparseable file will terminate the entire corpus</span>
@@ -554,7 +550,7 @@
           };
         }
       } <span class="kw">else</span> {
-        <span class="macro">println</span><span class="macro">!</span>(<span class="string">&quot;-- Error while walking for entry: {:?}&quot;</span>, <span class="ident">next_entry</span>)
+        <span class="macro">println!</span>(<span class="string">&quot;-- Error while walking for entry: {:?}&quot;</span>, <span class="ident">next_entry</span>)
       }
     }
     <span class="prelude-val">None</span>
@@ -566,12 +562,12 @@
     <span class="ident">Corpus</span> {
       <span class="ident">extension</span>: <span class="prelude-val">None</span>,
       <span class="ident">path</span>: <span class="string">&quot;.&quot;</span>.<span class="ident">to_string</span>(),
-      <span class="ident">tokenizer</span>: <span class="ident">Tokenizer</span>::<span class="ident">default</span>(),
-      <span class="ident">xml_parser</span>: <span class="ident">Parser</span>::<span class="ident">default</span>(),
-      <span class="ident">html_parser</span>: <span class="ident">Parser</span>::<span class="ident">default_html</span>(),
-      <span class="ident">senna</span>: <span class="ident">RefCell</span>::<span class="ident">new</span>(<span class="ident">Senna</span>::<span class="ident">new</span>(<span class="ident">SENNA_PATH</span>.<span class="ident">to_owned</span>())),
-      <span class="ident">senna_options</span>: <span class="ident">Cell</span>::<span class="ident">new</span>(<span class="ident">SennaParseOptions</span>::<span class="ident">default</span>()),
-      <span class="ident">dnm_parameters</span>: <span class="ident">DNMParameters</span>::<span class="ident">llamapun_normalization</span>(),
+      <span class="ident">tokenizer</span>: <span class="ident">Tokenizer::default</span>(),
+      <span class="ident">xml_parser</span>: <span class="ident">Parser::default</span>(),
+      <span class="ident">html_parser</span>: <span class="ident">Parser::default_html</span>(),
+      <span class="ident">senna</span>: <span class="ident">RefCell::new</span>(<span class="ident">Senna::new</span>(<span class="ident">SENNA_PATH</span>.<span class="ident">to_owned</span>())),
+      <span class="ident">senna_options</span>: <span class="ident">Cell::new</span>(<span class="ident">SennaParseOptions::default</span>()),
+      <span class="ident">dnm_parameters</span>: <span class="ident">DNMParameters::llamapun_normalization</span>(),
     }
   }
 }
@@ -581,21 +577,21 @@
   <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">dirpath</span>: <span class="ident">String</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
     <span class="ident">Corpus</span> {
       <span class="ident">path</span>: <span class="ident">dirpath</span>,
-      ..<span class="ident">Corpus</span>::<span class="ident">default</span>()
+      ..<span class="ident">Corpus::default</span>()
     }
   }
 
   <span class="doccomment">/// Get an iterator over the documents</span>
   <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">iter</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">DocumentIterator</span> {
     <span class="ident">DocumentIterator</span> {
-      <span class="ident">walker</span>: <span class="ident">Box</span>::<span class="ident">new</span>(<span class="ident">WalkDir</span>::<span class="ident">new</span>(<span class="self">self</span>.<span class="ident">path</span>.<span class="ident">clone</span>()).<span class="ident">into_iter</span>()),
+      <span class="ident">walker</span>: <span class="ident">Box::new</span>(<span class="ident">WalkDir::new</span>(<span class="self">self</span>.<span class="ident">path</span>.<span class="ident">clone</span>()).<span class="ident">into_iter</span>()),
       <span class="ident">corpus</span>: <span class="self">self</span>,
     }
   }
 
   <span class="doccomment">/// Load a specific document in the corpus</span>
   <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">load_doc</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">path</span>: <span class="ident">String</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Document</span>, <span class="ident">XmlParseError</span><span class="op">&gt;</span> {
-    <span class="ident">Document</span>::<span class="ident">new</span>(<span class="ident">path</span>, <span class="self">self</span>)
+    <span class="ident">Document::new</span>(<span class="ident">path</span>, <span class="self">self</span>)
   }
 }
 
@@ -618,18 +614,18 @@
 
   <span class="doccomment">/// Obtain the problem-free logical paragraphs of a libxml `Document`</span>
   <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">paragraph_nodes</span>(<span class="ident">doc</span>: <span class="kw-2">&amp;</span><span class="ident">XmlDoc</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">RoNode</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="ident">xpath_context</span> <span class="op">=</span> <span class="ident">Context</span>::<span class="ident">new</span>(<span class="ident">doc</span>).<span class="ident">unwrap</span>();
+    <span class="kw">let</span> <span class="ident">xpath_context</span> <span class="op">=</span> <span class="ident">Context::new</span>(<span class="ident">doc</span>).<span class="ident">unwrap</span>();
     <span class="kw">match</span> <span class="ident">xpath_context</span>.<span class="ident">evaluate</span>(
       <span class="string">&quot;//*[local-name()=&#39;div&#39; and contains(@class,&#39;ltx_para&#39;) and not(descendant::*[contains(@class,&#39;ltx_ERROR&#39;)]) and not(preceding-sibling::*[contains(@class,&#39;ltx_ERROR&#39;)])]&quot;</span>,
     ) {
       <span class="prelude-val">Ok</span>(<span class="ident">found_payload</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">found_payload</span>.<span class="ident">get_readonly_nodes_as_vec</span>(),
-      <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Vec</span>::<span class="ident">new</span>(),
+      <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Vec::new</span>(),
     }
   }
 
   <span class="doccomment">/// Get an iterator over the paragraphs of the document</span>
   <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">paragraph_iter</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">ParagraphIterator</span> {
-    <span class="kw">let</span> <span class="ident">paras</span> <span class="op">=</span> <span class="ident">Document</span>::<span class="ident">paragraph_nodes</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">dom</span>);
+    <span class="kw">let</span> <span class="ident">paras</span> <span class="op">=</span> <span class="ident">Document::paragraph_nodes</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">dom</span>);
     <span class="ident">ParagraphIterator</span> {
       <span class="ident">walker</span>: <span class="ident">paras</span>.<span class="ident">into_iter</span>(),
       <span class="ident">document</span>: <span class="self">self</span>,
@@ -637,24 +633,24 @@
   }
 
   <span class="doccomment">/// Obtain the MathML &lt;math&gt; nodes of a libxml `Document`</span>
-  <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_math_nodes</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">RoNode</span><span class="op">&gt;</span> { <span class="ident">Document</span>::<span class="ident">math_nodes</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">dom</span>) }
+  <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_math_nodes</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">RoNode</span><span class="op">&gt;</span> { <span class="ident">Document::math_nodes</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">dom</span>) }
 
   <span class="doccomment">/// Associated function for `get_math_nodes`</span>
   <span class="kw">fn</span> <span class="ident">math_nodes</span>(<span class="ident">doc</span>: <span class="kw-2">&amp;</span><span class="ident">XmlDoc</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">RoNode</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="ident">xpath_context</span> <span class="op">=</span> <span class="ident">Context</span>::<span class="ident">new</span>(<span class="ident">doc</span>).<span class="ident">unwrap</span>();
+    <span class="kw">let</span> <span class="ident">xpath_context</span> <span class="op">=</span> <span class="ident">Context::new</span>(<span class="ident">doc</span>).<span class="ident">unwrap</span>();
     <span class="kw">match</span> <span class="ident">xpath_context</span>.<span class="ident">evaluate</span>(<span class="string">&quot;//*[local-name()=&#39;math&#39;]&quot;</span>) {
       <span class="prelude-val">Ok</span>(<span class="ident">found_payload</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">found_payload</span>.<span class="ident">get_readonly_nodes_as_vec</span>(),
-      <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Vec</span>::<span class="ident">new</span>(),
+      <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Vec::new</span>(),
     }
   }
   <span class="doccomment">/// Obtain the &lt;span[class=ltx_ref]&gt; nodes of a libxml `Document`</span>
-  <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_ref_nodes</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">RoNode</span><span class="op">&gt;</span> { <span class="ident">Document</span>::<span class="ident">ref_nodes</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">dom</span>) }
+  <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_ref_nodes</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">RoNode</span><span class="op">&gt;</span> { <span class="ident">Document::ref_nodes</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">dom</span>) }
   <span class="doccomment">/// Associated function for `get_ref_nodes`</span>
   <span class="kw">fn</span> <span class="ident">ref_nodes</span>(<span class="ident">doc</span>: <span class="kw-2">&amp;</span><span class="ident">XmlDoc</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">RoNode</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="ident">xpath_context</span> <span class="op">=</span> <span class="ident">Context</span>::<span class="ident">new</span>(<span class="ident">doc</span>).<span class="ident">unwrap</span>();
+    <span class="kw">let</span> <span class="ident">xpath_context</span> <span class="op">=</span> <span class="ident">Context::new</span>(<span class="ident">doc</span>).<span class="ident">unwrap</span>();
     <span class="kw">match</span> <span class="ident">xpath_context</span>.<span class="ident">evaluate</span>(<span class="string">&quot;//*[(local-name()=&#39;span&#39; or local-name()=&#39;a&#39;) and (contains(@class,&#39;ltx_ref &#39;) or @class=&#39;ltx_ref&#39;)]&quot;</span>) {
       <span class="prelude-val">Ok</span>(<span class="ident">found_payload</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">found_payload</span>.<span class="ident">get_readonly_nodes_as_vec</span>(),
-      <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Vec</span>::<span class="ident">new</span>(),
+      <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Vec::new</span>(),
     }
   }
 
@@ -662,7 +658,7 @@
   <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">sentence_iter</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">SentenceIterator</span> {
     <span class="kw">if</span> <span class="self">self</span>.<span class="ident">dnm</span>.<span class="ident">is_none</span>() {
       <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">root</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">dom</span>.<span class="ident">get_root_readonly</span>() {
-        <span class="self">self</span>.<span class="ident">dnm</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">DNM</span>::<span class="ident">new</span>(<span class="ident">root</span>, <span class="self">self</span>.<span class="ident">corpus</span>.<span class="ident">dnm_parameters</span>.<span class="ident">clone</span>()));
+        <span class="self">self</span>.<span class="ident">dnm</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">DNM::new</span>(<span class="ident">root</span>, <span class="self">self</span>.<span class="ident">corpus</span>.<span class="ident">dnm_parameters</span>.<span class="ident">clone</span>()));
       }
     }
     <span class="kw">let</span> <span class="ident">tokenizer</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">corpus</span>.<span class="ident">tokenizer</span>;
@@ -681,7 +677,7 @@
       <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">None</span>,
       <span class="prelude-val">Some</span>(<span class="ident">node</span>) <span class="op">=</span><span class="op">&gt;</span> {
         <span class="comment">// Create a DNM for the current paragraph</span>
-        <span class="kw">let</span> <span class="ident">dnm</span> <span class="op">=</span> <span class="ident">DNM</span>::<span class="ident">new</span>(<span class="ident">node</span>, <span class="ident">DNMParameters</span>::<span class="ident">llamapun_normalization</span>());
+        <span class="kw">let</span> <span class="ident">dnm</span> <span class="op">=</span> <span class="ident">DNM::new</span>(<span class="ident">node</span>, <span class="ident">DNMParameters::llamapun_normalization</span>());
         <span class="prelude-val">Some</span>(<span class="ident">Paragraph</span> {
           <span class="ident">dnm</span>,
           <span class="ident">document</span>: <span class="self">self</span>.<span class="ident">document</span>,
@@ -765,7 +761,7 @@
       <span class="prelude-val">Some</span>(<span class="ident">range</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">Word</span> {
         <span class="ident">range</span>,
         <span class="ident">sentence</span>: <span class="self">self</span>.<span class="ident">sentence</span>,
-        <span class="ident">pos</span>: <span class="ident">POS</span>::<span class="ident">NOT_SET</span>,
+        <span class="ident">pos</span>: <span class="ident">POS::NOT_SET</span>,
       }),
     }
   }
@@ -796,6 +792,7 @@
     }
   }
 }
-</pre></div>
-</section><section id="search" class="content hidden"></section><section class="footer"></section><div id="rustdoc-vars" data-root-path="../../" data-current-crate="llamapun" data-search-js="../../search-index.js"></div>
-    <script src="../../main.js"></script><script src="../../source-script.js"></script><script src="../../source-files.js"></script></body></html>
+</code></pre></div>
+</section><section id="search" class="content hidden"></section><div id="rustdoc-vars" data-root-path="../../" data-current-crate="llamapun" data-search-index-js="../../search-index.js" data-search-js="../../search.js"></div>
+    <script src="../../main.js"></script><script src="../../source-script.js"></script><script src="../../source-files.js"></script>
+</body></html>

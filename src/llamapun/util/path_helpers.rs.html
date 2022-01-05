@@ -57,7 +57,7 @@
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::util::data_helpers::LexicalOptions</span>;
 
 <span class="doccomment">/// Given a path to a document, return a word-tokenized string of all of its paragraphs</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">path_to_words</span>(<span class="ident">path</span>: <span class="ident">String</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">String</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">path_to_words</span>(<span class="ident">path</span>: <span class="ident">String</span>) -&gt; <span class="ident">String</span> {
   <span class="kw">let</span> <span class="ident">corpus</span> <span class="op">=</span> <span class="ident">Corpus::default</span>();
   <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">document</span> <span class="op">=</span> <span class="ident">Document::new</span>(<span class="ident">path</span>, <span class="kw-2">&amp;</span><span class="ident">corpus</span>).<span class="ident">unwrap</span>();
   <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">context</span> <span class="op">=</span> <span class="ident">Context::new</span>(<span class="kw-2">&amp;</span><span class="ident">document</span>.<span class="ident">dom</span>).<span class="ident">unwrap</span>();
@@ -77,8 +77,8 @@
             <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">context</span>,
             <span class="ident">LexicalOptions::default</span>(),
           ) {
-            <span class="prelude-val">Ok</span>(<span class="ident">w</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">w</span>,
-            <span class="prelude-val">Err</span>(<span class="kw">_</span>) <span class="op">=</span><span class="op">&gt;</span> {
+            <span class="prelude-val">Ok</span>(<span class="ident">w</span>) =&gt; <span class="ident">w</span>,
+            <span class="prelude-val">Err</span>(<span class="kw">_</span>) =&gt; {
               <span class="ident">invalid_paragraph</span> <span class="op">=</span> <span class="bool-val">true</span>;
               <span class="kw">break</span> <span class="lifetime">&#39;sentences</span>;
             }

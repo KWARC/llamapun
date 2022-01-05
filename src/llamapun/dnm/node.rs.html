@@ -79,7 +79,7 @@
 }
 
 <span class="doccomment">/// Map math nodes to their lexemes</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">lexematize_math</span>(<span class="ident">node</span>: <span class="ident">RoNode</span>, <span class="ident">context</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Context</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">String</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">lexematize_math</span>(<span class="ident">node</span>: <span class="ident">RoNode</span>, <span class="ident">context</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Context</span>) -&gt; <span class="ident">String</span> {
   <span class="comment">// We are going to descend down an assumed equation/formula/eqnarray, grabbing any x-llamapun</span>
   <span class="comment">// encoded lexemes we can find</span>
 
@@ -121,9 +121,9 @@
             <span class="ident">anno_word</span>
               .<span class="ident">chars</span>()
               .<span class="ident">map</span>(<span class="op">|</span><span class="ident">c</span><span class="op">|</span> <span class="kw">match</span> <span class="ident">c</span> {
-                <span class="string">&#39;:&#39;</span> <span class="op">|</span> <span class="string">&#39;-&#39;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&#39;_&#39;</span>,
-                <span class="string">&#39;\n&#39;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&#39; &#39;</span>,
-                <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">c</span>,
+                <span class="string">&#39;:&#39;</span> <span class="op">|</span> <span class="string">&#39;-&#39;</span> =&gt; <span class="string">&#39;_&#39;</span>,
+                <span class="string">&#39;\n&#39;</span> =&gt; <span class="string">&#39; &#39;</span>,
+                <span class="kw">_</span> =&gt; <span class="ident">c</span>,
               })
               .<span class="ident">collect</span>()
           }

@@ -2157,16 +2157,16 @@
 <span class="kw">use</span> <span class="ident">std::fmt</span>;
 
 <span class="doccomment">/// Checks a llamapun `Document` for &#39;ltx_theorem&#39; AMS markup</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">has_markup</span>(<span class="ident">doc</span>: <span class="kw-2">&amp;</span><span class="ident">Document</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">has_markup</span>(<span class="ident">doc</span>: <span class="kw-2">&amp;</span><span class="ident">Document</span>) -&gt; <span class="ident">bool</span> {
   <span class="ident">has_markup_xmldoc</span>(<span class="kw-2">&amp;</span><span class="ident">doc</span>.<span class="ident">dom</span>)
 }
 
 <span class="doccomment">/// Checks a libxml document for `ltx_theorem` AMS markup</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">has_markup_xmldoc</span>(<span class="ident">dom</span>: <span class="kw-2">&amp;</span><span class="ident">XmlDoc</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">has_markup_xmldoc</span>(<span class="ident">dom</span>: <span class="kw-2">&amp;</span><span class="ident">XmlDoc</span>) -&gt; <span class="ident">bool</span> {
   <span class="kw">let</span> <span class="ident">xpath_context</span> <span class="op">=</span> <span class="ident">Context::new</span>(<span class="ident">dom</span>).<span class="ident">unwrap</span>();
   <span class="kw">match</span> <span class="ident">xpath_context</span>.<span class="ident">evaluate</span>(<span class="string">&quot;//*[local-name()=&#39;div&#39; and contains(@class,&#39;ltx_theorem&#39;)][1]&quot;</span>) {
-    <span class="prelude-val">Ok</span>(<span class="ident">found_payload</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="op">!</span><span class="ident">found_payload</span>.<span class="ident">get_nodes_as_vec</span>().<span class="ident">is_empty</span>(),
-    <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="bool-val">false</span>,
+    <span class="prelude-val">Ok</span>(<span class="ident">found_payload</span>) =&gt; <span class="op">!</span><span class="ident">found_payload</span>.<span class="ident">get_nodes_as_vec</span>().<span class="ident">is_empty</span>(),
+    <span class="kw">_</span> =&gt; <span class="bool-val">false</span>,
   }
 }
 
@@ -2232,116 +2232,116 @@
 }
 
 <span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">str</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">StructuralEnv</span> {
-  <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">heading</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">StructuralEnv</span> {
+  <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">heading</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) -&gt; <span class="ident">StructuralEnv</span> {
     <span class="kw">use</span> <span class="ident">StructuralEnv</span>::<span class="kw-2">*</span>;
     <span class="kw">let</span> <span class="ident">normalized_heading</span> <span class="op">=</span> <span class="ident">data_helpers::normalize_heading_title</span>(<span class="kw-2">&amp;</span><span class="ident">heading</span>.<span class="ident">to_lowercase</span>());
     <span class="kw">match</span> <span class="ident">normalized_heading</span>.<span class="ident">as_str</span>() {
-      <span class="string">&quot;abstract&quot;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Abstract</span>,
-      <span class="string">&quot;acknowledgement&quot;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Acknowledgement</span>,
+      <span class="string">&quot;abstract&quot;</span> =&gt; <span class="ident">Abstract</span>,
+      <span class="string">&quot;acknowledgement&quot;</span> =&gt; <span class="ident">Acknowledgement</span>,
       <span class="comment">// &quot;algorithm&quot; =&gt; Algorithm,</span>
-      <span class="string">&quot;analysis&quot;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Analysis</span>,
-      <span class="string">&quot;application&quot;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Application</span>,
-      <span class="string">&quot;assumption&quot;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Assumption</span>,
-      <span class="string">&quot;background&quot;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Background</span>,
-      <span class="string">&quot;case&quot;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Case</span>,
-      <span class="string">&quot;caption&quot;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Caption</span>,
-      <span class="string">&quot;claim&quot;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Claim</span>,
-      <span class="string">&quot;conclusion&quot;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Conclusion</span>,
-      <span class="string">&quot;condition&quot;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Condition</span>,
-      <span class="string">&quot;conjecture&quot;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Conjecture</span>,
-      <span class="string">&quot;contribution&quot;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Contribution</span>,
-      <span class="string">&quot;corollary&quot;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Corollary</span>,
-      <span class="string">&quot;data&quot;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Data</span>,
-      <span class="string">&quot;dataset&quot;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Dataset</span>,
-      <span class="string">&quot;definition&quot;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Definition</span>,
-      <span class="string">&quot;demonstration&quot;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Demonstration</span>,
-      <span class="string">&quot;description&quot;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Description</span>,
-      <span class="string">&quot;discussion&quot;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Discussion</span>,
-      <span class="string">&quot;example&quot;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Example</span>,
-      <span class="string">&quot;experiment&quot;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Experiment</span>,
-      <span class="string">&quot;fact&quot;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Fact</span>,
-      <span class="string">&quot;future work&quot;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">FutureWork</span>,
-      <span class="string">&quot;implementation&quot;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Implementation</span>,
-      <span class="string">&quot;introduction&quot;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Introduction</span>,
+      <span class="string">&quot;analysis&quot;</span> =&gt; <span class="ident">Analysis</span>,
+      <span class="string">&quot;application&quot;</span> =&gt; <span class="ident">Application</span>,
+      <span class="string">&quot;assumption&quot;</span> =&gt; <span class="ident">Assumption</span>,
+      <span class="string">&quot;background&quot;</span> =&gt; <span class="ident">Background</span>,
+      <span class="string">&quot;case&quot;</span> =&gt; <span class="ident">Case</span>,
+      <span class="string">&quot;caption&quot;</span> =&gt; <span class="ident">Caption</span>,
+      <span class="string">&quot;claim&quot;</span> =&gt; <span class="ident">Claim</span>,
+      <span class="string">&quot;conclusion&quot;</span> =&gt; <span class="ident">Conclusion</span>,
+      <span class="string">&quot;condition&quot;</span> =&gt; <span class="ident">Condition</span>,
+      <span class="string">&quot;conjecture&quot;</span> =&gt; <span class="ident">Conjecture</span>,
+      <span class="string">&quot;contribution&quot;</span> =&gt; <span class="ident">Contribution</span>,
+      <span class="string">&quot;corollary&quot;</span> =&gt; <span class="ident">Corollary</span>,
+      <span class="string">&quot;data&quot;</span> =&gt; <span class="ident">Data</span>,
+      <span class="string">&quot;dataset&quot;</span> =&gt; <span class="ident">Dataset</span>,
+      <span class="string">&quot;definition&quot;</span> =&gt; <span class="ident">Definition</span>,
+      <span class="string">&quot;demonstration&quot;</span> =&gt; <span class="ident">Demonstration</span>,
+      <span class="string">&quot;description&quot;</span> =&gt; <span class="ident">Description</span>,
+      <span class="string">&quot;discussion&quot;</span> =&gt; <span class="ident">Discussion</span>,
+      <span class="string">&quot;example&quot;</span> =&gt; <span class="ident">Example</span>,
+      <span class="string">&quot;experiment&quot;</span> =&gt; <span class="ident">Experiment</span>,
+      <span class="string">&quot;fact&quot;</span> =&gt; <span class="ident">Fact</span>,
+      <span class="string">&quot;future work&quot;</span> =&gt; <span class="ident">FutureWork</span>,
+      <span class="string">&quot;implementation&quot;</span> =&gt; <span class="ident">Implementation</span>,
+      <span class="string">&quot;introduction&quot;</span> =&gt; <span class="ident">Introduction</span>,
       <span class="comment">// &quot;keywords&quot; =&gt; Keywords,</span>
-      <span class="string">&quot;lemma&quot;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Lemma</span>,
-      <span class="string">&quot;methods&quot;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Methods</span>,
-      <span class="string">&quot;model&quot;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Model</span>,
-      <span class="string">&quot;motivation&quot;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Motivation</span>,
-      <span class="string">&quot;notation&quot;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Notation</span>,
-      <span class="string">&quot;observation&quot;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Observation</span>,
-      <span class="string">&quot;preliminaries&quot;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Preliminaries</span>,
-      <span class="string">&quot;problem&quot;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Problem</span>,
-      <span class="string">&quot;proof&quot;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Proof</span>,
-      <span class="string">&quot;property&quot;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Property</span>,
-      <span class="string">&quot;proposition&quot;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Proposition</span>,
-      <span class="string">&quot;question&quot;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Question</span>,
-      <span class="string">&quot;related work&quot;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">RelatedWork</span>,
-      <span class="string">&quot;remark&quot;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Remark</span>,
-      <span class="string">&quot;result&quot;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span>,
-      <span class="string">&quot;simulation&quot;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Simulation</span>,
-      <span class="string">&quot;step&quot;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Step</span>,
-      <span class="string">&quot;summary&quot;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Summary</span>,
-      <span class="string">&quot;theorem&quot;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Theorem</span>,
-      <span class="string">&quot;theory&quot;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Theory</span>,
-      <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">Other</span>,
+      <span class="string">&quot;lemma&quot;</span> =&gt; <span class="ident">Lemma</span>,
+      <span class="string">&quot;methods&quot;</span> =&gt; <span class="ident">Methods</span>,
+      <span class="string">&quot;model&quot;</span> =&gt; <span class="ident">Model</span>,
+      <span class="string">&quot;motivation&quot;</span> =&gt; <span class="ident">Motivation</span>,
+      <span class="string">&quot;notation&quot;</span> =&gt; <span class="ident">Notation</span>,
+      <span class="string">&quot;observation&quot;</span> =&gt; <span class="ident">Observation</span>,
+      <span class="string">&quot;preliminaries&quot;</span> =&gt; <span class="ident">Preliminaries</span>,
+      <span class="string">&quot;problem&quot;</span> =&gt; <span class="ident">Problem</span>,
+      <span class="string">&quot;proof&quot;</span> =&gt; <span class="ident">Proof</span>,
+      <span class="string">&quot;property&quot;</span> =&gt; <span class="ident">Property</span>,
+      <span class="string">&quot;proposition&quot;</span> =&gt; <span class="ident">Proposition</span>,
+      <span class="string">&quot;question&quot;</span> =&gt; <span class="ident">Question</span>,
+      <span class="string">&quot;related work&quot;</span> =&gt; <span class="ident">RelatedWork</span>,
+      <span class="string">&quot;remark&quot;</span> =&gt; <span class="ident">Remark</span>,
+      <span class="string">&quot;result&quot;</span> =&gt; <span class="prelude-ty">Result</span>,
+      <span class="string">&quot;simulation&quot;</span> =&gt; <span class="ident">Simulation</span>,
+      <span class="string">&quot;step&quot;</span> =&gt; <span class="ident">Step</span>,
+      <span class="string">&quot;summary&quot;</span> =&gt; <span class="ident">Summary</span>,
+      <span class="string">&quot;theorem&quot;</span> =&gt; <span class="ident">Theorem</span>,
+      <span class="string">&quot;theory&quot;</span> =&gt; <span class="ident">Theory</span>,
+      <span class="kw">_</span> =&gt; <span class="ident">Other</span>,
     }
   }
 }
 
 <span class="kw">impl</span> <span class="ident">fmt::Display</span> <span class="kw">for</span> <span class="ident">StructuralEnv</span> {
-  <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">fmt</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">fmt::Formatter</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">fmt::Result</span> {
+  <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">fmt</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">fmt::Formatter</span>) -&gt; <span class="ident">fmt::Result</span> {
     <span class="kw">use</span> <span class="ident">StructuralEnv</span>::<span class="kw-2">*</span>;
     <span class="kw">let</span> <span class="ident">val</span> <span class="op">=</span> <span class="kw">match</span> <span class="self">self</span> {
-      <span class="ident">Abstract</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;abstract&quot;</span>,
-      <span class="ident">Acknowledgement</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;acknowledgement&quot;</span>,
+      <span class="ident">Abstract</span> =&gt; <span class="string">&quot;abstract&quot;</span>,
+      <span class="ident">Acknowledgement</span> =&gt; <span class="string">&quot;acknowledgement&quot;</span>,
       <span class="comment">// Algorithm =&gt; &quot;algorithm&quot;,</span>
-      <span class="ident">Analysis</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;analysis&quot;</span>,
-      <span class="ident">Application</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;application&quot;</span>,
-      <span class="ident">Assumption</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;assumption&quot;</span>,
-      <span class="ident">Background</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;background&quot;</span>,
-      <span class="ident">Case</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;case&quot;</span>,
-      <span class="ident">Claim</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;claim&quot;</span>,
-      <span class="ident">Caption</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;caption&quot;</span>,
-      <span class="ident">Conclusion</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;conclusion&quot;</span>,
-      <span class="ident">Condition</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;condition&quot;</span>,
-      <span class="ident">Conjecture</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;conjecture&quot;</span>,
-      <span class="ident">Contribution</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;contribution&quot;</span>,
-      <span class="ident">Corollary</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;corollary&quot;</span>,
-      <span class="ident">Data</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;data&quot;</span>,
-      <span class="ident">Dataset</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;dataset&quot;</span>,
-      <span class="ident">Definition</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;definition&quot;</span>,
-      <span class="ident">Demonstration</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;demonstration&quot;</span>,
-      <span class="ident">Description</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;description&quot;</span>,
-      <span class="ident">Discussion</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;discussion&quot;</span>,
-      <span class="ident">Example</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;example&quot;</span>,
-      <span class="ident">Experiment</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;experiment&quot;</span>,
-      <span class="ident">Fact</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;fact&quot;</span>,
-      <span class="ident">FutureWork</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;future work&quot;</span>,
-      <span class="ident">Implementation</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;implementation&quot;</span>,
-      <span class="ident">Introduction</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;introduction&quot;</span>,
+      <span class="ident">Analysis</span> =&gt; <span class="string">&quot;analysis&quot;</span>,
+      <span class="ident">Application</span> =&gt; <span class="string">&quot;application&quot;</span>,
+      <span class="ident">Assumption</span> =&gt; <span class="string">&quot;assumption&quot;</span>,
+      <span class="ident">Background</span> =&gt; <span class="string">&quot;background&quot;</span>,
+      <span class="ident">Case</span> =&gt; <span class="string">&quot;case&quot;</span>,
+      <span class="ident">Claim</span> =&gt; <span class="string">&quot;claim&quot;</span>,
+      <span class="ident">Caption</span> =&gt; <span class="string">&quot;caption&quot;</span>,
+      <span class="ident">Conclusion</span> =&gt; <span class="string">&quot;conclusion&quot;</span>,
+      <span class="ident">Condition</span> =&gt; <span class="string">&quot;condition&quot;</span>,
+      <span class="ident">Conjecture</span> =&gt; <span class="string">&quot;conjecture&quot;</span>,
+      <span class="ident">Contribution</span> =&gt; <span class="string">&quot;contribution&quot;</span>,
+      <span class="ident">Corollary</span> =&gt; <span class="string">&quot;corollary&quot;</span>,
+      <span class="ident">Data</span> =&gt; <span class="string">&quot;data&quot;</span>,
+      <span class="ident">Dataset</span> =&gt; <span class="string">&quot;dataset&quot;</span>,
+      <span class="ident">Definition</span> =&gt; <span class="string">&quot;definition&quot;</span>,
+      <span class="ident">Demonstration</span> =&gt; <span class="string">&quot;demonstration&quot;</span>,
+      <span class="ident">Description</span> =&gt; <span class="string">&quot;description&quot;</span>,
+      <span class="ident">Discussion</span> =&gt; <span class="string">&quot;discussion&quot;</span>,
+      <span class="ident">Example</span> =&gt; <span class="string">&quot;example&quot;</span>,
+      <span class="ident">Experiment</span> =&gt; <span class="string">&quot;experiment&quot;</span>,
+      <span class="ident">Fact</span> =&gt; <span class="string">&quot;fact&quot;</span>,
+      <span class="ident">FutureWork</span> =&gt; <span class="string">&quot;future work&quot;</span>,
+      <span class="ident">Implementation</span> =&gt; <span class="string">&quot;implementation&quot;</span>,
+      <span class="ident">Introduction</span> =&gt; <span class="string">&quot;introduction&quot;</span>,
       <span class="comment">// Keywords =&gt; &quot;keywords&quot;,</span>
-      <span class="ident">Lemma</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;lemma&quot;</span>,
-      <span class="ident">Methods</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;methods&quot;</span>,
-      <span class="ident">Model</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;model&quot;</span>,
-      <span class="ident">Motivation</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;motivation&quot;</span>,
-      <span class="ident">Notation</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;notation&quot;</span>,
-      <span class="ident">Observation</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;observation&quot;</span>,
-      <span class="ident">Preliminaries</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;preliminaries&quot;</span>,
-      <span class="ident">Problem</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;problem&quot;</span>,
-      <span class="ident">Proof</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;proof&quot;</span>,
-      <span class="ident">Property</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;property&quot;</span>,
-      <span class="ident">Proposition</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;proposition&quot;</span>,
-      <span class="ident">Question</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;question&quot;</span>,
-      <span class="ident">RelatedWork</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;related work&quot;</span>,
-      <span class="ident">Remark</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;remark&quot;</span>,
-      <span class="prelude-ty">Result</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;result&quot;</span>,
-      <span class="ident">Simulation</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;simulation&quot;</span>,
-      <span class="ident">Step</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;step&quot;</span>,
-      <span class="ident">Summary</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;summary&quot;</span>,
-      <span class="ident">Theorem</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;theorem&quot;</span>,
-      <span class="ident">Theory</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;theory&quot;</span>,
-      <span class="ident">Other</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;other&quot;</span>,
+      <span class="ident">Lemma</span> =&gt; <span class="string">&quot;lemma&quot;</span>,
+      <span class="ident">Methods</span> =&gt; <span class="string">&quot;methods&quot;</span>,
+      <span class="ident">Model</span> =&gt; <span class="string">&quot;model&quot;</span>,
+      <span class="ident">Motivation</span> =&gt; <span class="string">&quot;motivation&quot;</span>,
+      <span class="ident">Notation</span> =&gt; <span class="string">&quot;notation&quot;</span>,
+      <span class="ident">Observation</span> =&gt; <span class="string">&quot;observation&quot;</span>,
+      <span class="ident">Preliminaries</span> =&gt; <span class="string">&quot;preliminaries&quot;</span>,
+      <span class="ident">Problem</span> =&gt; <span class="string">&quot;problem&quot;</span>,
+      <span class="ident">Proof</span> =&gt; <span class="string">&quot;proof&quot;</span>,
+      <span class="ident">Property</span> =&gt; <span class="string">&quot;property&quot;</span>,
+      <span class="ident">Proposition</span> =&gt; <span class="string">&quot;proposition&quot;</span>,
+      <span class="ident">Question</span> =&gt; <span class="string">&quot;question&quot;</span>,
+      <span class="ident">RelatedWork</span> =&gt; <span class="string">&quot;related work&quot;</span>,
+      <span class="ident">Remark</span> =&gt; <span class="string">&quot;remark&quot;</span>,
+      <span class="prelude-ty">Result</span> =&gt; <span class="string">&quot;result&quot;</span>,
+      <span class="ident">Simulation</span> =&gt; <span class="string">&quot;simulation&quot;</span>,
+      <span class="ident">Step</span> =&gt; <span class="string">&quot;step&quot;</span>,
+      <span class="ident">Summary</span> =&gt; <span class="string">&quot;summary&quot;</span>,
+      <span class="ident">Theorem</span> =&gt; <span class="string">&quot;theorem&quot;</span>,
+      <span class="ident">Theory</span> =&gt; <span class="string">&quot;theory&quot;</span>,
+      <span class="ident">Other</span> =&gt; <span class="string">&quot;other&quot;</span>,
     };
     <span class="ident">fmt</span>.<span class="ident">write_str</span>(<span class="ident">val</span>)
   }
@@ -2455,68 +2455,68 @@
 }
 
 <span class="kw">impl</span> <span class="ident">fmt::Display</span> <span class="kw">for</span> <span class="ident">AmsEnv</span> {
-  <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">fmt</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">fmt::Formatter</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">fmt::Result</span> {
+  <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">fmt</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">fmt::Formatter</span>) -&gt; <span class="ident">fmt::Result</span> {
     <span class="kw">use</span> <span class="ident">AmsEnv</span>::<span class="kw-2">*</span>;
     <span class="kw">let</span> <span class="ident">val</span> <span class="op">=</span> <span class="kw">match</span> <span class="self">self</span> {
-      <span class="ident">Acknowledgement</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;acknowledgement&quot;</span>,
-      <span class="ident">Affirmation</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;affirmation&quot;</span>,
-      <span class="ident">Algorithm</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;algorithm&quot;</span>,
-      <span class="ident">Answer</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;answer&quot;</span>,
-      <span class="ident">Assumption</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;assumption&quot;</span>,
-      <span class="ident">Bound</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;bound&quot;</span>,
-      <span class="ident">Caption</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;caption&quot;</span>,
-      <span class="ident">Case</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;case&quot;</span>,
-      <span class="ident">Claim</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;claim&quot;</span>,
-      <span class="ident">Comment</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;comment&quot;</span>,
-      <span class="ident">Conclusion</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;conclusion&quot;</span>,
-      <span class="ident">Condition</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;condition&quot;</span>,
-      <span class="ident">Conjecture</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;conjecture&quot;</span>,
-      <span class="ident">Constraint</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;constraint&quot;</span>,
-      <span class="ident">Convention</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;convention&quot;</span>,
-      <span class="ident">Corollary</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;corollary&quot;</span>,
-      <span class="ident">Criterion</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;criterion&quot;</span>,
-      <span class="ident">Definition</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;definition&quot;</span>,
-      <span class="ident">Demonstration</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;demonstration&quot;</span>,
-      <span class="ident">Discussion</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;discussion&quot;</span>,
-      <span class="ident">Example</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;example&quot;</span>,
-      <span class="ident">Expansion</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;expansion&quot;</span>,
-      <span class="ident">Expectation</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;expectation&quot;</span>,
-      <span class="ident">Experiment</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;experiment&quot;</span>,
-      <span class="ident">Explanation</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;explanation&quot;</span>,
-      <span class="ident">Fact</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;fact&quot;</span>,
-      <span class="ident">Hint</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;hint&quot;</span>,
-      <span class="ident">Issue</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;issue&quot;</span>,
-      <span class="ident">Keywords</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;keywords&quot;</span>,
-      <span class="ident">Lemma</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;lemma&quot;</span>,
-      <span class="ident">Notation</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;notation&quot;</span>,
-      <span class="ident">Note</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;note&quot;</span>,
-      <span class="ident">Notice</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;notice&quot;</span>,
-      <span class="ident">Observation</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;observation&quot;</span>,
-      <span class="ident">Other</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;other&quot;</span>,
-      <span class="ident">Paragraph</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;paragraph&quot;</span>,
-      <span class="ident">Principle</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;principle&quot;</span>,
-      <span class="ident">Problem</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;problem&quot;</span>,
-      <span class="ident">Proof</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;proof&quot;</span>,
-      <span class="ident">Proposition</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;proposition&quot;</span>,
-      <span class="ident">Question</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;question&quot;</span>,
-      <span class="ident">Remark</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;remark&quot;</span>,
-      <span class="prelude-ty">Result</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;result&quot;</span>,
-      <span class="ident">Rule</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;rule&quot;</span>,
-      <span class="ident">Solution</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;solution&quot;</span>,
-      <span class="ident">Step</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;step&quot;</span>,
-      <span class="ident">Summary</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;summary&quot;</span>,
-      <span class="ident">Theorem</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;theorem&quot;</span>,
+      <span class="ident">Acknowledgement</span> =&gt; <span class="string">&quot;acknowledgement&quot;</span>,
+      <span class="ident">Affirmation</span> =&gt; <span class="string">&quot;affirmation&quot;</span>,
+      <span class="ident">Algorithm</span> =&gt; <span class="string">&quot;algorithm&quot;</span>,
+      <span class="ident">Answer</span> =&gt; <span class="string">&quot;answer&quot;</span>,
+      <span class="ident">Assumption</span> =&gt; <span class="string">&quot;assumption&quot;</span>,
+      <span class="ident">Bound</span> =&gt; <span class="string">&quot;bound&quot;</span>,
+      <span class="ident">Caption</span> =&gt; <span class="string">&quot;caption&quot;</span>,
+      <span class="ident">Case</span> =&gt; <span class="string">&quot;case&quot;</span>,
+      <span class="ident">Claim</span> =&gt; <span class="string">&quot;claim&quot;</span>,
+      <span class="ident">Comment</span> =&gt; <span class="string">&quot;comment&quot;</span>,
+      <span class="ident">Conclusion</span> =&gt; <span class="string">&quot;conclusion&quot;</span>,
+      <span class="ident">Condition</span> =&gt; <span class="string">&quot;condition&quot;</span>,
+      <span class="ident">Conjecture</span> =&gt; <span class="string">&quot;conjecture&quot;</span>,
+      <span class="ident">Constraint</span> =&gt; <span class="string">&quot;constraint&quot;</span>,
+      <span class="ident">Convention</span> =&gt; <span class="string">&quot;convention&quot;</span>,
+      <span class="ident">Corollary</span> =&gt; <span class="string">&quot;corollary&quot;</span>,
+      <span class="ident">Criterion</span> =&gt; <span class="string">&quot;criterion&quot;</span>,
+      <span class="ident">Definition</span> =&gt; <span class="string">&quot;definition&quot;</span>,
+      <span class="ident">Demonstration</span> =&gt; <span class="string">&quot;demonstration&quot;</span>,
+      <span class="ident">Discussion</span> =&gt; <span class="string">&quot;discussion&quot;</span>,
+      <span class="ident">Example</span> =&gt; <span class="string">&quot;example&quot;</span>,
+      <span class="ident">Expansion</span> =&gt; <span class="string">&quot;expansion&quot;</span>,
+      <span class="ident">Expectation</span> =&gt; <span class="string">&quot;expectation&quot;</span>,
+      <span class="ident">Experiment</span> =&gt; <span class="string">&quot;experiment&quot;</span>,
+      <span class="ident">Explanation</span> =&gt; <span class="string">&quot;explanation&quot;</span>,
+      <span class="ident">Fact</span> =&gt; <span class="string">&quot;fact&quot;</span>,
+      <span class="ident">Hint</span> =&gt; <span class="string">&quot;hint&quot;</span>,
+      <span class="ident">Issue</span> =&gt; <span class="string">&quot;issue&quot;</span>,
+      <span class="ident">Keywords</span> =&gt; <span class="string">&quot;keywords&quot;</span>,
+      <span class="ident">Lemma</span> =&gt; <span class="string">&quot;lemma&quot;</span>,
+      <span class="ident">Notation</span> =&gt; <span class="string">&quot;notation&quot;</span>,
+      <span class="ident">Note</span> =&gt; <span class="string">&quot;note&quot;</span>,
+      <span class="ident">Notice</span> =&gt; <span class="string">&quot;notice&quot;</span>,
+      <span class="ident">Observation</span> =&gt; <span class="string">&quot;observation&quot;</span>,
+      <span class="ident">Other</span> =&gt; <span class="string">&quot;other&quot;</span>,
+      <span class="ident">Paragraph</span> =&gt; <span class="string">&quot;paragraph&quot;</span>,
+      <span class="ident">Principle</span> =&gt; <span class="string">&quot;principle&quot;</span>,
+      <span class="ident">Problem</span> =&gt; <span class="string">&quot;problem&quot;</span>,
+      <span class="ident">Proof</span> =&gt; <span class="string">&quot;proof&quot;</span>,
+      <span class="ident">Proposition</span> =&gt; <span class="string">&quot;proposition&quot;</span>,
+      <span class="ident">Question</span> =&gt; <span class="string">&quot;question&quot;</span>,
+      <span class="ident">Remark</span> =&gt; <span class="string">&quot;remark&quot;</span>,
+      <span class="prelude-ty">Result</span> =&gt; <span class="string">&quot;result&quot;</span>,
+      <span class="ident">Rule</span> =&gt; <span class="string">&quot;rule&quot;</span>,
+      <span class="ident">Solution</span> =&gt; <span class="string">&quot;solution&quot;</span>,
+      <span class="ident">Step</span> =&gt; <span class="string">&quot;step&quot;</span>,
+      <span class="ident">Summary</span> =&gt; <span class="string">&quot;summary&quot;</span>,
+      <span class="ident">Theorem</span> =&gt; <span class="string">&quot;theorem&quot;</span>,
     };
     <span class="ident">fmt</span>.<span class="ident">write_str</span>(<span class="ident">val</span>)
   }
 }
 
 <span class="doccomment">/// Maps a latexml-produced HTML class, such as &quot;ltx_theorem ltx_theorem_lemma&quot; to an `AmsEnv` enum</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">class_to_env</span>(<span class="ident">class</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">AmsEnv</span><span class="op">&gt;</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">class_to_env</span>(<span class="ident">class</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">AmsEnv</span><span class="op">&gt;</span> {
   <span class="kw">if</span> <span class="ident">class</span>.<span class="ident">is_empty</span>() {
     <span class="prelude-val">None</span>
   } <span class="kw">else</span> <span class="kw">if</span> <span class="op">!</span><span class="ident">class</span>.<span class="ident">contains</span>(<span class="string">&quot;ltx_theorem&quot;</span>) {
-    <span class="kw">if</span> <span class="ident">class</span> <span class="op">=</span><span class="op">=</span> <span class="string">&quot;ltx_proof&quot;</span> {
+    <span class="kw">if</span> <span class="ident">class</span> <span class="op">==</span> <span class="string">&quot;ltx_proof&quot;</span> {
       <span class="prelude-val">Some</span>(<span class="ident">AmsEnv::Proof</span>)
     } <span class="kw">else</span> {
       <span class="prelude-val">None</span>
@@ -2526,8 +2526,8 @@
       <span class="kw">static</span> <span class="kw-2">ref</span> <span class="ident">AMS_ENV</span>: <span class="ident">Regex</span> <span class="op">=</span> <span class="ident">Regex::new</span>(<span class="string">r&quot;ltx_theorem_(\w+)&quot;</span>).<span class="ident">unwrap</span>();
     }
     <span class="kw">let</span> <span class="ident">env</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">AMS_ENV</span>.<span class="ident">captures</span>(<span class="ident">class</span>) {
-      <span class="prelude-val">None</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">AmsEnv::Theorem</span>, <span class="comment">// simply &quot;ltx_theorem&quot; markup</span>
-      <span class="prelude-val">Some</span>(<span class="ident">caps</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="ident">normalize_env</span>(<span class="ident">caps</span>.<span class="ident">get</span>(<span class="number">1</span>).<span class="ident">unwrap</span>().<span class="ident">as_str</span>()),
+      <span class="prelude-val">None</span> =&gt; <span class="ident">AmsEnv::Theorem</span>, <span class="comment">// simply &quot;ltx_theorem&quot; markup</span>
+      <span class="prelude-val">Some</span>(<span class="ident">caps</span>) =&gt; <span class="ident">normalize_env</span>(<span class="ident">caps</span>.<span class="ident">get</span>(<span class="number">1</span>).<span class="ident">unwrap</span>().<span class="ident">as_str</span>()),
     };
     <span class="prelude-val">Some</span>(<span class="ident">env</span>)
   }
@@ -2537,16 +2537,16 @@
 <span class="doccomment">/// environments. Returns None if there is no AMS markup. Most experiments would be best off with</span>
 <span class="doccomment">/// dropping the AmsEnv::Other resulting paragraphs, to avoid unintended dilution of the known</span>
 <span class="doccomment">/// environments.</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">normalize_env</span>(<span class="ident">env</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">AmsEnv</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">normalize_env</span>(<span class="ident">env</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) -&gt; <span class="ident">AmsEnv</span> {
   <span class="kw">match</span> <span class="ident">env</span> {
     <span class="string">&quot;ack&quot;</span> <span class="op">|</span> <span class="string">&quot;ackn&quot;</span> <span class="op">|</span> <span class="string">&quot;ackno&quot;</span> <span class="op">|</span> <span class="string">&quot;acknow&quot;</span> <span class="op">|</span> <span class="string">&quot;acknowledge&quot;</span> <span class="op">|</span> <span class="string">&quot;acknowledgement&quot;</span>
     <span class="op">|</span> <span class="string">&quot;acknowledgements&quot;</span> <span class="op">|</span> <span class="string">&quot;acknowledgment&quot;</span> <span class="op">|</span> <span class="string">&quot;acknowledgments&quot;</span> <span class="op">|</span> <span class="string">&quot;acknowlegement&quot;</span> <span class="op">|</span> <span class="string">&quot;acks&quot;</span>
-    <span class="op">|</span> <span class="string">&quot;thanks&quot;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">AmsEnv::Acknowledgement</span>,
-    <span class="string">&quot;affirmation&quot;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">AmsEnv::Affirmation</span>,
+    <span class="op">|</span> <span class="string">&quot;thanks&quot;</span> =&gt; <span class="ident">AmsEnv::Acknowledgement</span>,
+    <span class="string">&quot;affirmation&quot;</span> =&gt; <span class="ident">AmsEnv::Affirmation</span>,
     <span class="string">&quot;algm&quot;</span> <span class="op">|</span> <span class="string">&quot;alg&quot;</span> <span class="op">|</span> <span class="string">&quot;algo&quot;</span> <span class="op">|</span> <span class="string">&quot;algo1&quot;</span> <span class="op">|</span> <span class="string">&quot;algor&quot;</span> <span class="op">|</span> <span class="string">&quot;algor0&quot;</span> <span class="op">|</span> <span class="string">&quot;algorithm&quot;</span> <span class="op">|</span> <span class="string">&quot;algorithm1&quot;</span>
     <span class="op">|</span> <span class="string">&quot;algorithm2&quot;</span> <span class="op">|</span> <span class="string">&quot;algorithmdef&quot;</span> <span class="op">|</span> <span class="string">&quot;algorithme&quot;</span> <span class="op">|</span> <span class="string">&quot;algorithms&quot;</span> <span class="op">|</span> <span class="string">&quot;algoritmo&quot;</span>
     <span class="op">|</span> <span class="string">&quot;inneralgorithm&quot;</span> <span class="op">|</span> <span class="string">&quot;algx&quot;</span> <span class="op">|</span> <span class="string">&quot;heu&quot;</span> <span class="op">|</span> <span class="string">&quot;heur&quot;</span> <span class="op">|</span> <span class="string">&quot;heuristic&quot;</span> <span class="op">|</span> <span class="string">&quot;heuristics&quot;</span> <span class="op">|</span> <span class="string">&quot;myalgo&quot;</span>
-    <span class="op">|</span> <span class="string">&quot;myalgorithm&quot;</span> <span class="op">|</span> <span class="string">&quot;meinalgorithmus&quot;</span> <span class="op">|</span> <span class="string">&quot;prealgorithm&quot;</span> <span class="op">|</span> <span class="string">&quot;protoalgorithm&quot;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">AmsEnv::Algorithm</span>,
+    <span class="op">|</span> <span class="string">&quot;myalgorithm&quot;</span> <span class="op">|</span> <span class="string">&quot;meinalgorithmus&quot;</span> <span class="op">|</span> <span class="string">&quot;prealgorithm&quot;</span> <span class="op">|</span> <span class="string">&quot;protoalgorithm&quot;</span> =&gt; <span class="ident">AmsEnv::Algorithm</span>,
     <span class="string">&quot;aassumption&quot;</span>
     <span class="op">|</span> <span class="string">&quot;as&quot;</span>
     <span class="op">|</span> <span class="string">&quot;asm&quot;</span>
@@ -2618,13 +2618,13 @@
     <span class="op">|</span> <span class="string">&quot;sideassumption&quot;</span>
     <span class="op">|</span> <span class="string">&quot;simplifyingassumption&quot;</span>
     <span class="op">|</span> <span class="string">&quot;standingassumption&quot;</span>
-    <span class="op">|</span> <span class="string">&quot;subsubaxiom&quot;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">AmsEnv::Assumption</span>,
-    <span class="string">&quot;bound&quot;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">AmsEnv::Bound</span>,
+    <span class="op">|</span> <span class="string">&quot;subsubaxiom&quot;</span> =&gt; <span class="ident">AmsEnv::Assumption</span>,
+    <span class="string">&quot;bound&quot;</span> =&gt; <span class="ident">AmsEnv::Bound</span>,
     <span class="string">&quot;diag&quot;</span> <span class="op">|</span> <span class="string">&quot;fig&quot;</span> <span class="op">|</span> <span class="string">&quot;figcaption&quot;</span> <span class="op">|</span> <span class="string">&quot;figm&quot;</span> <span class="op">|</span> <span class="string">&quot;fignum&quot;</span> <span class="op">|</span> <span class="string">&quot;figure&quot;</span> <span class="op">|</span> <span class="string">&quot;figuretext&quot;</span> <span class="op">|</span> <span class="string">&quot;tab&quot;</span>
-    <span class="op">|</span> <span class="string">&quot;tabel&quot;</span> <span class="op">|</span> <span class="string">&quot;tabl&quot;</span> <span class="op">|</span> <span class="string">&quot;tabla&quot;</span> <span class="op">|</span> <span class="string">&quot;table&quot;</span> <span class="op">|</span> <span class="string">&quot;tldiag&quot;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">AmsEnv::Caption</span>,
+    <span class="op">|</span> <span class="string">&quot;tabel&quot;</span> <span class="op">|</span> <span class="string">&quot;tabl&quot;</span> <span class="op">|</span> <span class="string">&quot;tabla&quot;</span> <span class="op">|</span> <span class="string">&quot;table&quot;</span> <span class="op">|</span> <span class="string">&quot;tldiag&quot;</span> =&gt; <span class="ident">AmsEnv::Caption</span>,
     <span class="string">&quot;case&quot;</span> <span class="op">|</span> <span class="string">&quot;case1&quot;</span> <span class="op">|</span> <span class="string">&quot;case2&quot;</span> <span class="op">|</span> <span class="string">&quot;case3&quot;</span> <span class="op">|</span> <span class="string">&quot;caseone&quot;</span> <span class="op">|</span> <span class="string">&quot;casestudy&quot;</span> <span class="op">|</span> <span class="string">&quot;casetwo&quot;</span>
     <span class="op">|</span> <span class="string">&quot;innercustomcase&quot;</span> <span class="op">|</span> <span class="string">&quot;mycase&quot;</span> <span class="op">|</span> <span class="string">&quot;scase&quot;</span> <span class="op">|</span> <span class="string">&quot;sscase&quot;</span> <span class="op">|</span> <span class="string">&quot;subcase&quot;</span> <span class="op">|</span> <span class="string">&quot;subcase2&quot;</span> <span class="op">|</span> <span class="string">&quot;subsubcase&quot;</span>
-    <span class="op">|</span> <span class="string">&quot;subsubsubcase&quot;</span> <span class="op">|</span> <span class="string">&quot;tcase&quot;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">AmsEnv::Case</span>,
+    <span class="op">|</span> <span class="string">&quot;subsubsubcase&quot;</span> <span class="op">|</span> <span class="string">&quot;tcase&quot;</span> =&gt; <span class="ident">AmsEnv::Case</span>,
     <span class="string">&quot;aclaim&quot;</span> <span class="op">|</span> <span class="string">&quot;alphaclaim&quot;</span> <span class="op">|</span> <span class="string">&quot;boldclaim&quot;</span> <span class="op">|</span> <span class="string">&quot;cclaim&quot;</span> <span class="op">|</span> <span class="string">&quot;cdellsclaim&quot;</span> <span class="op">|</span> <span class="string">&quot;cdtopiclaim&quot;</span> <span class="op">|</span> <span class="string">&quot;cla&quot;</span> <span class="op">|</span> <span class="string">&quot;clai&quot;</span>
     <span class="op">|</span> <span class="string">&quot;claim&quot;</span> <span class="op">|</span> <span class="string">&quot;claim1&quot;</span> <span class="op">|</span> <span class="string">&quot;claim2&quot;</span> <span class="op">|</span> <span class="string">&quot;claim3&quot;</span> <span class="op">|</span> <span class="string">&quot;claim4&quot;</span> <span class="op">|</span> <span class="string">&quot;claim5&quot;</span> <span class="op">|</span> <span class="string">&quot;claima&quot;</span> <span class="op">|</span> <span class="string">&quot;claimapp&quot;</span>
     <span class="op">|</span> <span class="string">&quot;claimb&quot;</span> <span class="op">|</span> <span class="string">&quot;claimc&quot;</span> <span class="op">|</span> <span class="string">&quot;claimenv&quot;</span> <span class="op">|</span> <span class="string">&quot;claimfoo&quot;</span> <span class="op">|</span> <span class="string">&quot;claimi&quot;</span> <span class="op">|</span> <span class="string">&quot;claimlncs&quot;</span> <span class="op">|</span> <span class="string">&quot;claimm&quot;</span> <span class="op">|</span> <span class="string">&quot;claimn&quot;</span>
@@ -2634,10 +2634,10 @@
     <span class="op">|</span> <span class="string">&quot;misclaim&quot;</span> <span class="op">|</span> <span class="string">&quot;myclaim&quot;</span> <span class="op">|</span>  <span class="string">&quot;nclaim&quot;</span> <span class="op">|</span>  <span class="string">&quot;newclaim&quot;</span> <span class="op">|</span>  <span class="string">&quot;numberedclaim&quot;</span> <span class="op">|</span>  <span class="string">&quot;numclaim&quot;</span> <span class="op">|</span>  <span class="string">&quot;ourclaim&quot;</span>
     <span class="op">|</span> <span class="string">&quot;pclaim&quot;</span> <span class="op">|</span> <span class="string">&quot;prclaim&quot;</span> <span class="op">|</span> <span class="string">&quot;preclaim&quot;</span> <span class="op">|</span> <span class="string">&quot;procclaim&quot;</span> <span class="op">|</span> <span class="string">&quot;proclaim&quot;</span> <span class="op">|</span> <span class="string">&quot;proclaimmydef&quot;</span>
     <span class="op">|</span> <span class="string">&quot;quasiclaim&quot;</span> <span class="op">|</span> <span class="string">&quot;sclaim&quot;</span> <span class="op">|</span> <span class="string">&quot;proclaimmypreuve&quot;</span> <span class="op">|</span> <span class="string">&quot;subclai&quot;</span> <span class="op">|</span> <span class="string">&quot;subclaim&quot;</span> <span class="op">|</span> <span class="string">&quot;tclaim&quot;</span> <span class="op">|</span> <span class="string">&quot;tittoclaim&quot;</span>
-    <span class="op">|</span> <span class="string">&quot;uclaim&quot;</span> <span class="op">|</span> <span class="string">&quot;varclaim&quot;</span> <span class="op">|</span> <span class="string">&quot;xclaim&quot;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">AmsEnv::Claim</span>,
+    <span class="op">|</span> <span class="string">&quot;uclaim&quot;</span> <span class="op">|</span> <span class="string">&quot;varclaim&quot;</span> <span class="op">|</span> <span class="string">&quot;xclaim&quot;</span> =&gt; <span class="ident">AmsEnv::Claim</span>,
     <span class="string">&quot;clcriterion&quot;</span> <span class="op">|</span> <span class="string">&quot;cnd&quot;</span> <span class="op">|</span> <span class="string">&quot;cond&quot;</span> <span class="op">|</span> <span class="string">&quot;condi&quot;</span> <span class="op">|</span> <span class="string">&quot;condition&quot;</span> <span class="op">|</span> <span class="string">&quot;conditiona&quot;</span> <span class="op">|</span> <span class="string">&quot;conditionb&quot;</span>
     <span class="op">|</span> <span class="string">&quot;conditionc&quot;</span> <span class="op">|</span> <span class="string">&quot;conditions&quot;</span> <span class="op">|</span> <span class="string">&quot;condn&quot;</span> <span class="op">|</span> <span class="string">&quot;conds&quot;</span> <span class="op">|</span> <span class="string">&quot;crit&quot;</span> <span class="op">|</span> <span class="string">&quot;criteria&quot;</span> <span class="op">|</span> <span class="string">&quot;innercondition&quot;</span>
-    <span class="op">|</span> <span class="string">&quot;lcon&quot;</span> <span class="op">|</span> <span class="string">&quot;mycond&quot;</span> <span class="op">|</span> <span class="string">&quot;ncond&quot;</span> <span class="op">|</span> <span class="string">&quot;ocond&quot;</span> <span class="op">|</span> <span class="string">&quot;xcondition&quot;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">AmsEnv::Condition</span>,
+    <span class="op">|</span> <span class="string">&quot;lcon&quot;</span> <span class="op">|</span> <span class="string">&quot;mycond&quot;</span> <span class="op">|</span> <span class="string">&quot;ncond&quot;</span> <span class="op">|</span> <span class="string">&quot;ocond&quot;</span> <span class="op">|</span> <span class="string">&quot;xcondition&quot;</span> =&gt; <span class="ident">AmsEnv::Condition</span>,
     <span class="string">&quot;abconjecture&quot;</span> <span class="op">|</span> <span class="string">&quot;aconj&quot;</span> <span class="op">|</span> <span class="string">&quot;ansatz&quot;</span> <span class="op">|</span> <span class="string">&quot;cn&quot;</span> <span class="op">|</span> <span class="string">&quot;cnj&quot;</span> <span class="op">|</span> <span class="string">&quot;con&quot;</span> <span class="op">|</span> <span class="string">&quot;con1&quot;</span> <span class="op">|</span> <span class="string">&quot;con2&quot;</span> <span class="op">|</span> <span class="string">&quot;cona&quot;</span>
     <span class="op">|</span> <span class="string">&quot;conj&quot;</span> <span class="op">|</span> <span class="string">&quot;conj0&quot;</span> <span class="op">|</span> <span class="string">&quot;conj1&quot;</span> <span class="op">|</span> <span class="string">&quot;conj2&quot;</span> <span class="op">|</span> <span class="string">&quot;conja&quot;</span> <span class="op">|</span> <span class="string">&quot;conjb&quot;</span> <span class="op">|</span> <span class="string">&quot;conjc&quot;</span> <span class="op">|</span> <span class="string">&quot;conje&quot;</span> <span class="op">|</span> <span class="string">&quot;conjec&quot;</span>
     <span class="op">|</span> <span class="string">&quot;conject&quot;</span> <span class="op">|</span> <span class="string">&quot;conjecture&quot;</span> <span class="op">|</span> <span class="string">&quot;conjecture0&quot;</span> <span class="op">|</span> <span class="string">&quot;conjecture1&quot;</span> <span class="op">|</span> <span class="string">&quot;conjecture2&quot;</span> <span class="op">|</span> <span class="string">&quot;conjecturea&quot;</span>
@@ -2648,8 +2648,8 @@
     <span class="op">|</span> <span class="string">&quot;hypothesis&quot;</span> <span class="op">|</span> <span class="string">&quot;hyps&quot;</span> <span class="op">|</span> <span class="string">&quot;iconj&quot;</span> <span class="op">|</span> <span class="string">&quot;innerconjecture&quot;</span> <span class="op">|</span> <span class="string">&quot;innercustomhyp&quot;</span> <span class="op">|</span> <span class="string">&quot;introconj&quot;</span>
     <span class="op">|</span> <span class="string">&quot;introconjecture&quot;</span> <span class="op">|</span> <span class="string">&quot;itconjecture&quot;</span> <span class="op">|</span> <span class="string">&quot;mainconj&quot;</span> <span class="op">|</span> <span class="string">&quot;mainconjecture&quot;</span> <span class="op">|</span> <span class="string">&quot;mconj&quot;</span> <span class="op">|</span> <span class="string">&quot;myconj&quot;</span>
     <span class="op">|</span> <span class="string">&quot;myconjecture&quot;</span> <span class="op">|</span> <span class="string">&quot;ourconjecture&quot;</span> <span class="op">|</span> <span class="string">&quot;precon&quot;</span> <span class="op">|</span> <span class="string">&quot;preconj&quot;</span> <span class="op">|</span> <span class="string">&quot;rconjecture&quot;</span> <span class="op">|</span> <span class="string">&quot;sconj&quot;</span>
-    <span class="op">|</span> <span class="string">&quot;sconjecture&quot;</span> <span class="op">|</span> <span class="string">&quot;subconj&quot;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">AmsEnv::Conjecture</span>,
-    <span class="string">&quot;conv&quot;</span> <span class="op">|</span> <span class="string">&quot;conve&quot;</span> <span class="op">|</span> <span class="string">&quot;conventie&quot;</span> <span class="op">|</span> <span class="string">&quot;convention&quot;</span> <span class="op">|</span> <span class="string">&quot;conventionfoo&quot;</span> <span class="op">|</span> <span class="string">&quot;conventionn&quot;</span> <span class="op">|</span> <span class="string">&quot;conventions&quot;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">AmsEnv::Convention</span>,
+    <span class="op">|</span> <span class="string">&quot;sconjecture&quot;</span> <span class="op">|</span> <span class="string">&quot;subconj&quot;</span> =&gt; <span class="ident">AmsEnv::Conjecture</span>,
+    <span class="string">&quot;conv&quot;</span> <span class="op">|</span> <span class="string">&quot;conve&quot;</span> <span class="op">|</span> <span class="string">&quot;conventie&quot;</span> <span class="op">|</span> <span class="string">&quot;convention&quot;</span> <span class="op">|</span> <span class="string">&quot;conventionfoo&quot;</span> <span class="op">|</span> <span class="string">&quot;conventionn&quot;</span> <span class="op">|</span> <span class="string">&quot;conventions&quot;</span> =&gt; <span class="ident">AmsEnv::Convention</span>,
     <span class="string">&quot;acorollary&quot;</span> <span class="op">|</span> <span class="string">&quot;apulause&quot;</span> <span class="op">|</span> <span class="string">&quot;bcorollary&quot;</span> <span class="op">|</span> <span class="string">&quot;bigcorollary&quot;</span> <span class="op">|</span> <span class="string">&quot;ccor&quot;</span> <span class="op">|</span> <span class="string">&quot;ccoro&quot;</span> <span class="op">|</span> <span class="string">&quot;ccorollary&quot;</span>
     <span class="op">|</span> <span class="string">&quot;cl&quot;</span> <span class="op">|</span> <span class="string">&quot;cllry&quot;</span> <span class="op">|</span> <span class="string">&quot;cnv&quot;</span> <span class="op">|</span> <span class="string">&quot;co&quot;</span> <span class="op">|</span> <span class="string">&quot;col&quot;</span> <span class="op">|</span> <span class="string">&quot;coll&quot;</span> <span class="op">|</span> <span class="string">&quot;collary&quot;</span> <span class="op">|</span> <span class="string">&quot;collolary&quot;</span> <span class="op">|</span> <span class="string">&quot;collorary&quot;</span>
     <span class="op">|</span> <span class="string">&quot;coly&quot;</span> <span class="op">|</span> <span class="string">&quot;comq&quot;</span> <span class="op">|</span> <span class="string">&quot;coor&quot;</span> <span class="op">|</span> <span class="string">&quot;cor&quot;</span> <span class="op">|</span> <span class="string">&quot;cor0&quot;</span> <span class="op">|</span> <span class="string">&quot;cor1&quot;</span> <span class="op">|</span> <span class="string">&quot;cor2&quot;</span> <span class="op">|</span> <span class="string">&quot;cor3&quot;</span> <span class="op">|</span> <span class="string">&quot;cor4&quot;</span> <span class="op">|</span> <span class="string">&quot;cor5&quot;</span>
@@ -2676,8 +2676,8 @@
     <span class="op">|</span> <span class="string">&quot;nncorollary&quot;</span> <span class="op">|</span> <span class="string">&quot;nonumbercorollary&quot;</span> <span class="op">|</span> <span class="string">&quot;ourcorollary&quot;</span> <span class="op">|</span> <span class="string">&quot;precor&quot;</span> <span class="op">|</span> <span class="string">&quot;precorol&quot;</span> <span class="op">|</span> <span class="string">&quot;rigor2&quot;</span>
     <span class="op">|</span> <span class="string">&quot;rmkk&quot;</span> <span class="op">|</span> <span class="string">&quot;scor&quot;</span> <span class="op">|</span> <span class="string">&quot;scorol&quot;</span> <span class="op">|</span> <span class="string">&quot;scorollary&quot;</span> <span class="op">|</span> <span class="string">&quot;subcorollary&quot;</span> <span class="op">|</span> <span class="string">&quot;supos&quot;</span> <span class="op">|</span> <span class="string">&quot;tcor&quot;</span>
     <span class="op">|</span> <span class="string">&quot;tcorollary&quot;</span> <span class="op">|</span> <span class="string">&quot;tem&quot;</span> <span class="op">|</span> <span class="string">&quot;theorex&quot;</span> <span class="op">|</span> <span class="string">&quot;thmcorollary&quot;</span> <span class="op">|</span> <span class="string">&quot;uncorollary&quot;</span> <span class="op">|</span> <span class="string">&quot;wn&quot;</span> <span class="op">|</span> <span class="string">&quot;xcor&quot;</span>
-    <span class="op">|</span> <span class="string">&quot;xcorollary&quot;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">AmsEnv::Corollary</span>,
-    <span class="string">&quot;criterion&quot;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">AmsEnv::Criterion</span>,
+    <span class="op">|</span> <span class="string">&quot;xcorollary&quot;</span> =&gt; <span class="ident">AmsEnv::Corollary</span>,
+    <span class="string">&quot;criterion&quot;</span> =&gt; <span class="ident">AmsEnv::Criterion</span>,
     <span class="string">&quot;1def&quot;</span>
     <span class="op">|</span> <span class="string">&quot;adefi&quot;</span>
     <span class="op">|</span> <span class="string">&quot;adefinition&quot;</span>
@@ -2980,9 +2980,9 @@
     <span class="op">|</span> <span class="string">&quot;xdef&quot;</span>
     <span class="op">|</span> <span class="string">&quot;xdefinition&quot;</span>
     <span class="op">|</span> <span class="string">&quot;xdefn&quot;</span>
-    <span class="op">|</span> <span class="string">&quot;xtdef&quot;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">AmsEnv::Definition</span>,
-    <span class="string">&quot;demonstration&quot;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">AmsEnv::Demonstration</span>,
-    <span class="string">&quot;disc&quot;</span> <span class="op">|</span> <span class="string">&quot;discussion&quot;</span> <span class="op">|</span> <span class="string">&quot;notationanddiscussion&quot;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">AmsEnv::Discussion</span>,
+    <span class="op">|</span> <span class="string">&quot;xtdef&quot;</span> =&gt; <span class="ident">AmsEnv::Definition</span>,
+    <span class="string">&quot;demonstration&quot;</span> =&gt; <span class="ident">AmsEnv::Demonstration</span>,
+    <span class="string">&quot;disc&quot;</span> <span class="op">|</span> <span class="string">&quot;discussion&quot;</span> <span class="op">|</span> <span class="string">&quot;notationanddiscussion&quot;</span> =&gt; <span class="ident">AmsEnv::Discussion</span>,
     <span class="string">&quot;appexample&quot;</span> <span class="op">|</span> <span class="string">&quot;backtheorem&quot;</span> <span class="op">|</span> <span class="string">&quot;baseexample&quot;</span> <span class="op">|</span> <span class="string">&quot;beispiel&quot;</span> <span class="op">|</span> <span class="string">&quot;bexample&quot;</span> <span class="op">|</span> <span class="string">&quot;bigexample&quot;</span>
     <span class="op">|</span> <span class="string">&quot;bp&quot;</span> <span class="op">|</span> <span class="string">&quot;bsp&quot;</span> <span class="op">|</span> <span class="string">&quot;bsp1&quot;</span> <span class="op">|</span> <span class="string">&quot;bspe&quot;</span> <span class="op">|</span> <span class="string">&quot;cexample&quot;</span> <span class="op">|</span> <span class="string">&quot;cexpl&quot;</span> <span class="op">|</span> <span class="string">&quot;conda&quot;</span> <span class="op">|</span> <span class="string">&quot;counterexample&quot;</span>
     <span class="op">|</span> <span class="string">&quot;csexample&quot;</span> <span class="op">|</span> <span class="string">&quot;dexample&quot;</span> <span class="op">|</span> <span class="string">&quot;e1&quot;</span> <span class="op">|</span> <span class="string">&quot;eexam&quot;</span> <span class="op">|</span> <span class="string">&quot;eexample&quot;</span> <span class="op">|</span> <span class="string">&quot;eexemples&quot;</span> <span class="op">|</span> <span class="string">&quot;eg&quot;</span> <span class="op">|</span> <span class="string">&quot;ejem&quot;</span>
@@ -3005,13 +3005,13 @@
     <span class="op">|</span> <span class="string">&quot;nonexample&quot;</span> <span class="op">|</span> <span class="string">&quot;numberedexample&quot;</span> <span class="op">|</span> <span class="string">&quot;numexample&quot;</span> <span class="op">|</span> <span class="string">&quot;nxmpl&quot;</span> <span class="op">|</span> <span class="string">&quot;orexample&quot;</span> <span class="op">|</span> <span class="string">&quot;plcexample&quot;</span>
     <span class="op">|</span> <span class="string">&quot;preex&quot;</span> <span class="op">|</span> <span class="string">&quot;preexample&quot;</span> <span class="op">|</span> <span class="string">&quot;preexamples&quot;</span> <span class="op">|</span> <span class="string">&quot;prexample&quot;</span> <span class="op">|</span> <span class="string">&quot;proexample&quot;</span> <span class="op">|</span> <span class="string">&quot;rexample&quot;</span>
     <span class="op">|</span> <span class="string">&quot;rrexampleraw&quot;</span> <span class="op">|</span> <span class="string">&quot;runex&quot;</span> <span class="op">|</span> <span class="string">&quot;runningexample&quot;</span> <span class="op">|</span> <span class="string">&quot;sexample&quot;</span> <span class="op">|</span> <span class="string">&quot;subexample&quot;</span> <span class="op">|</span> <span class="string">&quot;texample&quot;</span>
-    <span class="op">|</span> <span class="string">&quot;textofexample&quot;</span> <span class="op">|</span> <span class="string">&quot;theexample&quot;</span> <span class="op">|</span> <span class="string">&quot;theoremnl&quot;</span> <span class="op">|</span> <span class="string">&quot;varexample&quot;</span> <span class="op">|</span> <span class="string">&quot;xexample&quot;</span> <span class="op">|</span> <span class="string">&quot;xmpl&quot;</span> <span class="op">=</span><span class="op">&gt;</span>
+    <span class="op">|</span> <span class="string">&quot;textofexample&quot;</span> <span class="op">|</span> <span class="string">&quot;theexample&quot;</span> <span class="op">|</span> <span class="string">&quot;theoremnl&quot;</span> <span class="op">|</span> <span class="string">&quot;varexample&quot;</span> <span class="op">|</span> <span class="string">&quot;xexample&quot;</span> <span class="op">|</span> <span class="string">&quot;xmpl&quot;</span> =&gt;
       <span class="ident">AmsEnv::Example</span>,
-    <span class="string">&quot;experiment&quot;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">AmsEnv::Experiment</span>,
-    <span class="string">&quot;explanation&quot;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">AmsEnv::Explanation</span>,
-    <span class="string">&quot;expansion&quot;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">AmsEnv::Expansion</span>,
-    <span class="string">&quot;expectation&quot;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">AmsEnv::Expectation</span>,
-    <span class="string">&quot;principle&quot;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">AmsEnv::Principle</span>,
+    <span class="string">&quot;experiment&quot;</span> =&gt; <span class="ident">AmsEnv::Experiment</span>,
+    <span class="string">&quot;explanation&quot;</span> =&gt; <span class="ident">AmsEnv::Explanation</span>,
+    <span class="string">&quot;expansion&quot;</span> =&gt; <span class="ident">AmsEnv::Expansion</span>,
+    <span class="string">&quot;expectation&quot;</span> =&gt; <span class="ident">AmsEnv::Expectation</span>,
+    <span class="string">&quot;principle&quot;</span> =&gt; <span class="ident">AmsEnv::Principle</span>,
     <span class="string">&quot;algrule&quot;</span>
     <span class="op">|</span> <span class="string">&quot;arule&quot;</span>
     <span class="op">|</span> <span class="string">&quot;branchrule&quot;</span>
@@ -3045,7 +3045,7 @@
     <span class="op">|</span> <span class="string">&quot;syntaxrule&quot;</span>
     <span class="op">|</span> <span class="string">&quot;trule&quot;</span>
     <span class="op">|</span> <span class="string">&quot;validrule&quot;</span>
-    <span class="op">|</span> <span class="string">&quot;edgerule&quot;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">AmsEnv::Rule</span>,
+    <span class="op">|</span> <span class="string">&quot;edgerule&quot;</span> =&gt; <span class="ident">AmsEnv::Rule</span>,
     <span class="op">|</span> <span class="string">&quot;definitionandfact&quot;</span>
     <span class="op">|</span> <span class="string">&quot;fac&quot;</span>
     <span class="op">|</span> <span class="string">&quot;fact&quot;</span>
@@ -3071,9 +3071,9 @@
     <span class="op">|</span> <span class="string">&quot;romanfact&quot;</span>
     <span class="op">|</span> <span class="string">&quot;sfact&quot;</span>
     <span class="op">|</span> <span class="string">&quot;stylizedfact&quot;</span>
-    <span class="op">|</span> <span class="string">&quot;subfact&quot;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">AmsEnv::Fact</span>,
-    <span class="string">&quot;issue&quot;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">AmsEnv::Issue</span>,
-    <span class="string">&quot;keywords&quot;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">AmsEnv::Keywords</span>,
+    <span class="op">|</span> <span class="string">&quot;subfact&quot;</span> =&gt; <span class="ident">AmsEnv::Fact</span>,
+    <span class="string">&quot;issue&quot;</span> =&gt; <span class="ident">AmsEnv::Issue</span>,
+    <span class="string">&quot;keywords&quot;</span> =&gt; <span class="ident">AmsEnv::Keywords</span>,
     <span class="string">&quot;alemma&quot;</span> <span class="op">|</span> <span class="string">&quot;aplemma&quot;</span> <span class="op">|</span> <span class="string">&quot;appendixlemma&quot;</span> <span class="op">|</span> <span class="string">&quot;applemma&quot;</span> <span class="op">|</span> <span class="string">&quot;approximationlemma&quot;</span> <span class="op">|</span> <span class="string">&quot;appxlem&quot;</span>
     <span class="op">|</span> <span class="string">&quot;appxlemma&quot;</span> <span class="op">|</span> <span class="string">&quot;aslemma&quot;</span> <span class="op">|</span> <span class="string">&quot;assumptions&quot;</span> <span class="op">|</span> <span class="string">&quot;bigclm&quot;</span> <span class="op">|</span> <span class="string">&quot;blemma&quot;</span> <span class="op">|</span> <span class="string">&quot;defilemma&quot;</span>
     <span class="op">|</span> <span class="string">&quot;definitionlemma&quot;</span> <span class="op">|</span> <span class="string">&quot;deflemma&quot;</span> <span class="op">|</span> <span class="string">&quot;defnlem&quot;</span> <span class="op">|</span> <span class="string">&quot;dlemma&quot;</span> <span class="op">|</span> <span class="string">&quot;elem&quot;</span> <span class="op">|</span> <span class="string">&quot;elemme&quot;</span> <span class="op">|</span> <span class="string">&quot;envlem&quot;</span>
@@ -3103,7 +3103,7 @@
     <span class="op">|</span> <span class="string">&quot;starex&quot;</span> <span class="op">|</span> <span class="string">&quot;steplemma&quot;</span> <span class="op">|</span> <span class="string">&quot;sub&quot;</span> <span class="op">|</span> <span class="string">&quot;sublem&quot;</span> <span class="op">|</span> <span class="string">&quot;sublema&quot;</span> <span class="op">|</span> <span class="string">&quot;sublemm&quot;</span> <span class="op">|</span> <span class="string">&quot;sublemma&quot;</span> <span class="op">|</span> <span class="string">&quot;sublm&quot;</span>
     <span class="op">|</span> <span class="string">&quot;subsublemma&quot;</span> <span class="op">|</span> <span class="string">&quot;suplemma&quot;</span> <span class="op">|</span> <span class="string">&quot;technicallemma&quot;</span> <span class="op">|</span> <span class="string">&quot;textoflemma&quot;</span> <span class="op">|</span> <span class="string">&quot;theirlemma&quot;</span> <span class="op">|</span> <span class="string">&quot;thmlemma&quot;</span>
     <span class="op">|</span> <span class="string">&quot;tlemma&quot;</span> <span class="op">|</span> <span class="string">&quot;twistinglemma&quot;</span> <span class="op">|</span> <span class="string">&quot;unnumberedlemma&quot;</span> <span class="op">|</span> <span class="string">&quot;xlem&quot;</span> <span class="op">|</span> <span class="string">&quot;xlemm&quot;</span> <span class="op">|</span> <span class="string">&quot;xlemma&quot;</span>
-    <span class="op">|</span> <span class="string">&quot;zamechanie&quot;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">AmsEnv::Lemma</span>,
+    <span class="op">|</span> <span class="string">&quot;zamechanie&quot;</span> =&gt; <span class="ident">AmsEnv::Lemma</span>,
     <span class="comment">// | &quot;config&quot; ??</span>
     <span class="comment">// | &quot;defbemerkung&quot; ??</span>
     <span class="comment">// | &quot;definite&quot; ??</span>
@@ -3145,7 +3145,7 @@
     <span class="op">|</span> <span class="string">&quot;snotation&quot;</span>
     <span class="op">|</span> <span class="string">&quot;subcounter&quot;</span>
     <span class="op">|</span> <span class="string">&quot;term&quot;</span>
-    <span class="op">|</span> <span class="string">&quot;terminology&quot;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">AmsEnv::Notation</span>,
+    <span class="op">|</span> <span class="string">&quot;terminology&quot;</span> =&gt; <span class="ident">AmsEnv::Notation</span>,
     <span class="string">&quot;explain&quot;</span>
     <span class="op">|</span> <span class="string">&quot;parab&quot;</span>
     <span class="op">|</span> <span class="string">&quot;parag&quot;</span>
@@ -3163,7 +3163,7 @@
     <span class="op">|</span> <span class="string">&quot;sbpara&quot;</span>
     <span class="op">|</span> <span class="string">&quot;sect&quot;</span>
     <span class="op">|</span> <span class="string">&quot;subparag&quot;</span>
-    <span class="op">|</span> <span class="string">&quot;subsec&quot;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">AmsEnv::Paragraph</span>,
+    <span class="op">|</span> <span class="string">&quot;subsec&quot;</span> =&gt; <span class="ident">AmsEnv::Paragraph</span>,
     <span class="string">&quot;classproblem&quot;</span>
     <span class="op">|</span> <span class="string">&quot;condb&quot;</span>
     <span class="op">|</span> <span class="string">&quot;coreproblem&quot;</span>
@@ -3234,7 +3234,7 @@
     <span class="op">|</span> <span class="string">&quot;thmalg&quot;</span>
     <span class="op">|</span> <span class="string">&quot;tprob&quot;</span>
     <span class="op">|</span> <span class="string">&quot;xca&quot;</span>
-    <span class="op">|</span> <span class="string">&quot;xopen&quot;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">AmsEnv::Problem</span>,
+    <span class="op">|</span> <span class="string">&quot;xopen&quot;</span> =&gt; <span class="ident">AmsEnv::Problem</span>,
     <span class="string">&quot;afirmativa&quot;</span> <span class="op">|</span> <span class="string">&quot;beweis&quot;</span> <span class="op">|</span> <span class="string">&quot;claimproof&quot;</span> <span class="op">|</span> <span class="string">&quot;clproof&quot;</span> <span class="op">|</span> <span class="string">&quot;cproof&quot;</span> <span class="op">|</span> <span class="string">&quot;cproofa&quot;</span> <span class="op">|</span> <span class="string">&quot;cproofb&quot;</span>
     <span class="op">|</span> <span class="string">&quot;eproof&quot;</span> <span class="op">|</span> <span class="string">&quot;lemproof&quot;</span> <span class="op">|</span> <span class="string">&quot;mproof&quot;</span> <span class="op">|</span> <span class="string">&quot;myproo&quot;</span> <span class="op">|</span> <span class="string">&quot;myproof&quot;</span> <span class="op">|</span> <span class="string">&quot;namedproof&quot;</span>
     <span class="op">|</span> <span class="string">&quot;notationinproof&quot;</span> <span class="op">|</span> <span class="string">&quot;oldproof&quot;</span> <span class="op">|</span> <span class="string">&quot;pf&quot;</span> <span class="op">|</span> <span class="string">&quot;pprf&quot;</span> <span class="op">|</span> <span class="string">&quot;preproof&quot;</span> <span class="op">|</span> <span class="string">&quot;preprooff&quot;</span> <span class="op">|</span> <span class="string">&quot;prf&quot;</span>
@@ -3242,7 +3242,7 @@
     <span class="op">|</span> <span class="string">&quot;proofaux&quot;</span> <span class="op">|</span> <span class="string">&quot;proofcase&quot;</span> <span class="op">|</span> <span class="string">&quot;proofclaim&quot;</span> <span class="op">|</span> <span class="string">&quot;prooff&quot;</span> <span class="op">|</span> <span class="string">&quot;prooffact&quot;</span> <span class="op">|</span> <span class="string">&quot;proofhead&quot;</span>
     <span class="op">|</span> <span class="string">&quot;proofidea&quot;</span> <span class="op">|</span> <span class="string">&quot;prooflem&quot;</span> <span class="op">|</span> <span class="string">&quot;proofn&quot;</span> <span class="op">|</span> <span class="string">&quot;proofof&quot;</span> <span class="op">|</span> <span class="string">&quot;proofoftheorem&quot;</span> <span class="op">|</span> <span class="string">&quot;proofpart&quot;</span>
     <span class="op">|</span> <span class="string">&quot;proofprop&quot;</span> <span class="op">|</span> <span class="string">&quot;proofsketch&quot;</span> <span class="op">|</span> <span class="string">&quot;proofth&quot;</span> <span class="op">|</span> <span class="string">&quot;prooftheorem&quot;</span> <span class="op">|</span> <span class="string">&quot;proofthm&quot;</span> <span class="op">|</span> <span class="string">&quot;proofx&quot;</span>
-    <span class="op">|</span> <span class="string">&quot;sketchofproof&quot;</span> <span class="op">|</span> <span class="string">&quot;theoremproof&quot;</span> <span class="op">|</span> <span class="string">&quot;xproof&quot;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">AmsEnv::Proof</span>,
+    <span class="op">|</span> <span class="string">&quot;sketchofproof&quot;</span> <span class="op">|</span> <span class="string">&quot;theoremproof&quot;</span> <span class="op">|</span> <span class="string">&quot;xproof&quot;</span> =&gt; <span class="ident">AmsEnv::Proof</span>,
     <span class="string">&quot;5proposition&quot;</span>
     <span class="comment">// | &quot;a4&quot;</span>
     <span class="comment">// | &quot;a5&quot;</span>
@@ -3493,18 +3493,18 @@
     <span class="comment">// | &quot;weaknesses&quot;</span>
     <span class="op">|</span> <span class="string">&quot;wproposition&quot;</span>
     <span class="op">|</span> <span class="string">&quot;xprop&quot;</span>
-    <span class="op">|</span> <span class="string">&quot;xproposition&quot;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">AmsEnv::Proposition</span>,
+    <span class="op">|</span> <span class="string">&quot;xproposition&quot;</span> =&gt; <span class="ident">AmsEnv::Proposition</span>,
     <span class="string">&quot;boldquestion&quot;</span> <span class="op">|</span> <span class="string">&quot;emquestion&quot;</span> <span class="op">|</span> <span class="string">&quot;innerquestion&quot;</span> <span class="op">|</span> <span class="string">&quot;introquestion&quot;</span> <span class="op">|</span> <span class="string">&quot;mainquestion&quot;</span>
     <span class="op">|</span> <span class="string">&quot;myquest&quot;</span> <span class="op">|</span> <span class="string">&quot;myquestion&quot;</span> <span class="op">|</span> <span class="string">&quot;op&quot;</span> <span class="op">|</span> <span class="string">&quot;openquestion&quot;</span> <span class="op">|</span> <span class="string">&quot;prequestion&quot;</span> <span class="op">|</span> <span class="string">&quot;puzzle&quot;</span> <span class="op">|</span> <span class="string">&quot;q&quot;</span> <span class="op">|</span> <span class="string">&quot;qn&quot;</span>
     <span class="op">|</span> <span class="string">&quot;qst&quot;</span> <span class="op">|</span> <span class="string">&quot;qstn&quot;</span> <span class="op">|</span> <span class="string">&quot;qtn&quot;</span> <span class="op">|</span> <span class="string">&quot;qu&quot;</span> <span class="op">|</span> <span class="string">&quot;que&quot;</span> <span class="op">|</span> <span class="string">&quot;que1&quot;</span> <span class="op">|</span> <span class="string">&quot;query&quot;</span> <span class="op">|</span> <span class="string">&quot;ques&quot;</span> <span class="op">|</span> <span class="string">&quot;quesb&quot;</span> <span class="op">|</span> <span class="string">&quot;quess&quot;</span>
     <span class="op">|</span> <span class="string">&quot;quest&quot;</span> <span class="op">|</span> <span class="string">&quot;quest0&quot;</span> <span class="op">|</span> <span class="string">&quot;question&quot;</span> <span class="op">|</span> <span class="string">&quot;question0&quot;</span> <span class="op">|</span> <span class="string">&quot;question1&quot;</span> <span class="op">|</span> <span class="string">&quot;question2&quot;</span> <span class="op">|</span> <span class="string">&quot;question3&quot;</span>
     <span class="op">|</span> <span class="string">&quot;questionapp&quot;</span> <span class="op">|</span> <span class="string">&quot;questionb&quot;</span> <span class="op">|</span> <span class="string">&quot;questioni&quot;</span> <span class="op">|</span> <span class="string">&quot;questionintro&quot;</span> <span class="op">|</span> <span class="string">&quot;questions&quot;</span> <span class="op">|</span> <span class="string">&quot;queststar&quot;</span>
-    <span class="op">|</span> <span class="string">&quot;researchquestion&quot;</span> <span class="op">|</span> <span class="string">&quot;rquestion&quot;</span> <span class="op">|</span> <span class="string">&quot;subquestion&quot;</span> <span class="op">|</span> <span class="string">&quot;varquestion&quot;</span> <span class="op">|</span> <span class="string">&quot;vopros&quot;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">AmsEnv::Question</span>,
+    <span class="op">|</span> <span class="string">&quot;researchquestion&quot;</span> <span class="op">|</span> <span class="string">&quot;rquestion&quot;</span> <span class="op">|</span> <span class="string">&quot;subquestion&quot;</span> <span class="op">|</span> <span class="string">&quot;varquestion&quot;</span> <span class="op">|</span> <span class="string">&quot;vopros&quot;</span> =&gt; <span class="ident">AmsEnv::Question</span>,
     <span class="comment">// Extracted from original big parent Remark category:</span>
-    <span class="string">&quot;mycomment&quot;</span><span class="op">|</span> <span class="string">&quot;comment&quot;</span> <span class="op">|</span> <span class="string">&quot;commentary&quot;</span> <span class="op">|</span> <span class="string">&quot;comments&quot;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">AmsEnv::Comment</span>,
-    <span class="string">&quot;note&quot;</span> <span class="op">|</span> <span class="string">&quot;lnote&quot;</span> <span class="op">|</span> <span class="string">&quot;mynote&quot;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">AmsEnv::Note</span>,
-    <span class="string">&quot;notice&quot;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">AmsEnv::Notice</span>,
-    <span class="string">&quot;hint&quot;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">AmsEnv::Hint</span>,
+    <span class="string">&quot;mycomment&quot;</span><span class="op">|</span> <span class="string">&quot;comment&quot;</span> <span class="op">|</span> <span class="string">&quot;commentary&quot;</span> <span class="op">|</span> <span class="string">&quot;comments&quot;</span> =&gt; <span class="ident">AmsEnv::Comment</span>,
+    <span class="string">&quot;note&quot;</span> <span class="op">|</span> <span class="string">&quot;lnote&quot;</span> <span class="op">|</span> <span class="string">&quot;mynote&quot;</span> =&gt; <span class="ident">AmsEnv::Note</span>,
+    <span class="string">&quot;notice&quot;</span> =&gt; <span class="ident">AmsEnv::Notice</span>,
+    <span class="string">&quot;hint&quot;</span> =&gt; <span class="ident">AmsEnv::Hint</span>,
     <span class="op">|</span> <span class="string">&quot;localobservation&quot;</span>
     <span class="op">|</span> <span class="string">&quot;myobservation&quot;</span>
     <span class="op">|</span> <span class="string">&quot;myoss&quot;</span>
@@ -3525,8 +3525,8 @@
     <span class="op">|</span> <span class="string">&quot;osserv&quot;</span>
     <span class="op">|</span> <span class="string">&quot;osserva&quot;</span>
     <span class="op">|</span> <span class="string">&quot;osservazione&quot;</span>
-    <span class="op">|</span> <span class="string">&quot;preobserv&quot;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">AmsEnv::Observation</span>,
-    <span class="string">&quot;summary&quot;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">AmsEnv::Summary</span>,
+    <span class="op">|</span> <span class="string">&quot;preobserv&quot;</span> =&gt; <span class="ident">AmsEnv::Observation</span>,
+    <span class="string">&quot;summary&quot;</span> =&gt; <span class="ident">AmsEnv::Summary</span>,
     <span class="string">&quot;a3remark&quot;</span>
     <span class="comment">// | &quot;advice&quot; ???</span>
     <span class="op">|</span> <span class="string">&quot;aremark&quot;</span>
@@ -3704,16 +3704,16 @@
     <span class="op">|</span> <span class="string">&quot;xrem&quot;</span>
     <span class="op">|</span> <span class="string">&quot;xremark&quot;</span>
     <span class="op">|</span> <span class="string">&quot;xrmk&quot;</span>
-    <span class="op">|</span> <span class="string">&quot;zero&quot;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">AmsEnv::Remark</span>,
-    <span class="string">&quot;answer&quot;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">AmsEnv::Answer</span>,
-    <span class="string">&quot;conclude&quot;</span> <span class="op">|</span> <span class="string">&quot;conclusion&quot;</span> <span class="op">|</span> <span class="string">&quot;conclusions&quot;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">AmsEnv::Conclusion</span>,
-    <span class="string">&quot;final&quot;</span> <span class="op">|</span> <span class="string">&quot;mainresult&quot;</span> <span class="op">|</span> <span class="string">&quot;mdresult&quot;</span> <span class="op">|</span> <span class="string">&quot;numres&quot;</span> <span class="op">|</span> <span class="string">&quot;priorresults&quot;</span> <span class="op">|</span> <span class="string">&quot;res&quot;</span> <span class="op">|</span> <span class="string">&quot;resu&quot;</span> <span class="op">|</span> <span class="string">&quot;resul&quot;</span> <span class="op">|</span> <span class="string">&quot;result&quot;</span> <span class="op">|</span> <span class="string">&quot;resultat&quot;</span> <span class="op">|</span> <span class="string">&quot;results&quot;</span> <span class="op">|</span> <span class="string">&quot;resump&quot;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">AmsEnv::Result</span>,
-    <span class="string">&quot;solution&quot;</span> <span class="op">|</span> <span class="string">&quot;solutions&quot;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">AmsEnv::Solution</span>,
-    <span class="string">&quot;cons&quot;</span> <span class="op">|</span> <span class="string">&quot;constr&quot;</span> <span class="op">|</span> <span class="string">&quot;constraint&quot;</span> <span class="op">|</span> <span class="string">&quot;constraints&quot;</span> <span class="op">|</span> <span class="string">&quot;constrinternal&quot;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">AmsEnv::Constraint</span>,
+    <span class="op">|</span> <span class="string">&quot;zero&quot;</span> =&gt; <span class="ident">AmsEnv::Remark</span>,
+    <span class="string">&quot;answer&quot;</span> =&gt; <span class="ident">AmsEnv::Answer</span>,
+    <span class="string">&quot;conclude&quot;</span> <span class="op">|</span> <span class="string">&quot;conclusion&quot;</span> <span class="op">|</span> <span class="string">&quot;conclusions&quot;</span> =&gt; <span class="ident">AmsEnv::Conclusion</span>,
+    <span class="string">&quot;final&quot;</span> <span class="op">|</span> <span class="string">&quot;mainresult&quot;</span> <span class="op">|</span> <span class="string">&quot;mdresult&quot;</span> <span class="op">|</span> <span class="string">&quot;numres&quot;</span> <span class="op">|</span> <span class="string">&quot;priorresults&quot;</span> <span class="op">|</span> <span class="string">&quot;res&quot;</span> <span class="op">|</span> <span class="string">&quot;resu&quot;</span> <span class="op">|</span> <span class="string">&quot;resul&quot;</span> <span class="op">|</span> <span class="string">&quot;result&quot;</span> <span class="op">|</span> <span class="string">&quot;resultat&quot;</span> <span class="op">|</span> <span class="string">&quot;results&quot;</span> <span class="op">|</span> <span class="string">&quot;resump&quot;</span> =&gt; <span class="ident">AmsEnv::Result</span>,
+    <span class="string">&quot;solution&quot;</span> <span class="op">|</span> <span class="string">&quot;solutions&quot;</span> =&gt; <span class="ident">AmsEnv::Solution</span>,
+    <span class="string">&quot;cons&quot;</span> <span class="op">|</span> <span class="string">&quot;constr&quot;</span> <span class="op">|</span> <span class="string">&quot;constraint&quot;</span> <span class="op">|</span> <span class="string">&quot;constraints&quot;</span> <span class="op">|</span> <span class="string">&quot;constrinternal&quot;</span> =&gt; <span class="ident">AmsEnv::Constraint</span>,
     <span class="string">&quot;art&quot;</span> <span class="op">|</span> <span class="string">&quot;astep&quot;</span> <span class="op">|</span> <span class="string">&quot;chunk&quot;</span> <span class="op">|</span> <span class="string">&quot;construct&quot;</span> <span class="op">|</span> <span class="string">&quot;construction&quot;</span> <span class="op">|</span> <span class="string">&quot;constructions&quot;</span> <span class="op">|</span> <span class="string">&quot;cstep&quot;</span> <span class="op">|</span> <span class="string">&quot;emf&quot;</span>
     <span class="op">|</span> <span class="string">&quot;nothing&quot;</span> <span class="op">|</span> <span class="string">&quot;ournothing&quot;</span> <span class="op">|</span> <span class="string">&quot;pstep&quot;</span> <span class="op">|</span> <span class="string">&quot;reduction&quot;</span> <span class="op">|</span> <span class="string">&quot;require&quot;</span> <span class="op">|</span> <span class="string">&quot;stage&quot;</span> <span class="op">|</span> <span class="string">&quot;step&quot;</span> <span class="op">|</span> <span class="string">&quot;step1&quot;</span>
     <span class="op">|</span> <span class="string">&quot;step2&quot;</span> <span class="op">|</span> <span class="string">&quot;step3&quot;</span> <span class="op">|</span> <span class="string">&quot;step4&quot;</span> <span class="op">|</span> <span class="string">&quot;step5&quot;</span> <span class="op">|</span> <span class="string">&quot;stepa&quot;</span> <span class="op">|</span> <span class="string">&quot;stepb&quot;</span> <span class="op">|</span> <span class="string">&quot;stepmain&quot;</span> <span class="op">|</span> <span class="string">&quot;stepn&quot;</span>
-    <span class="op">|</span> <span class="string">&quot;stepnamed&quot;</span> <span class="op">|</span> <span class="string">&quot;stepnn&quot;</span> <span class="op">|</span> <span class="string">&quot;stepp&quot;</span> <span class="op">|</span> <span class="string">&quot;stepwise&quot;</span> <span class="op">|</span> <span class="string">&quot;substep&quot;</span> <span class="op">|</span> <span class="string">&quot;ttt&quot;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">AmsEnv::Step</span>,
+    <span class="op">|</span> <span class="string">&quot;stepnamed&quot;</span> <span class="op">|</span> <span class="string">&quot;stepnn&quot;</span> <span class="op">|</span> <span class="string">&quot;stepp&quot;</span> <span class="op">|</span> <span class="string">&quot;stepwise&quot;</span> <span class="op">|</span> <span class="string">&quot;substep&quot;</span> <span class="op">|</span> <span class="string">&quot;ttt&quot;</span> =&gt; <span class="ident">AmsEnv::Step</span>,
     <span class="string">&quot;5theorem&quot;</span>
     <span class="op">|</span> <span class="string">&quot;a3theorem&quot;</span>
     <span class="op">|</span> <span class="string">&quot;abctheorem&quot;</span>
@@ -4290,8 +4290,8 @@
     <span class="op">|</span> <span class="string">&quot;vthm&quot;</span>
     <span class="op">|</span> <span class="string">&quot;xtheo&quot;</span>
     <span class="op">|</span> <span class="string">&quot;xtheorem&quot;</span>
-    <span class="op">|</span> <span class="string">&quot;xthm&quot;</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">AmsEnv::Theorem</span>,
-    <span class="kw">_</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">AmsEnv::Other</span>,
+    <span class="op">|</span> <span class="string">&quot;xthm&quot;</span> =&gt; <span class="ident">AmsEnv::Theorem</span>,
+    <span class="kw">_</span> =&gt; <span class="ident">AmsEnv::Other</span>,
   }
 }
 </code></pre></div>

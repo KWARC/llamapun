@@ -191,7 +191,7 @@
   <span class="kw">pub</span> <span class="ident">chars</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">char</span><span class="op">&gt;</span>,
 }
 <span class="kw">impl</span> <span class="ident">Default</span> <span class="kw">for</span> <span class="ident">RuntimeParseData</span> {
-  <span class="kw">fn</span> <span class="ident">default</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">RuntimeParseData</span> {
+  <span class="kw">fn</span> <span class="ident">default</span>() -&gt; <span class="ident">RuntimeParseData</span> {
     <span class="ident">RuntimeParseData</span> {
       <span class="ident">had_whitespace</span>: <span class="bool-val">true</span>, <span class="comment">// skip leading whitespace</span>
       <span class="ident">chars</span>: <span class="ident">Vec::new</span>(),
@@ -207,20 +207,20 @@
   <span class="doccomment">/// Normalize tag, replacing it by some token</span>
   <span class="ident">Normalize</span>(<span class="ident">String</span>),
   <span class="doccomment">/// Normalize tag, obtain replacement string by function call</span>
-  <span class="ident">FunctionNormalize</span>(<span class="ident">Arc</span><span class="op">&lt;</span><span class="kw">fn</span>(<span class="ident">RoNode</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">String</span><span class="op">&gt;</span>),
+  <span class="ident">FunctionNormalize</span>(<span class="ident">Arc</span><span class="op">&lt;</span><span class="kw">fn</span>(<span class="ident">RoNode</span>) -&gt; <span class="ident">String</span><span class="op">&gt;</span>),
   <span class="doccomment">/// Skip tag</span>
   <span class="ident">Skip</span>,
 }
 
 <span class="kw">impl</span> <span class="ident">fmt::Debug</span> <span class="kw">for</span> <span class="ident">SpecialTagsOption</span> {
-  <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">fmt::Formatter</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">fmt::Result</span> {
+  <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">fmt::Formatter</span>) -&gt; <span class="ident">fmt::Result</span> {
     <span class="kw">use</span> <span class="ident">SpecialTagsOption</span>::<span class="kw-2">*</span>;
     <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;SpecialTagsOption {{&quot;</span>)<span class="question-mark">?</span>;
     <span class="kw">match</span> <span class="self">self</span> {
-      <span class="ident">Enter</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Enter&quot;</span>)<span class="question-mark">?</span>,
-      <span class="ident">Skip</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Skip&quot;</span>)<span class="question-mark">?</span>,
-      <span class="ident">Normalize</span>(<span class="ident">v</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Normalize({})&quot;</span>, <span class="ident">v</span>)<span class="question-mark">?</span>,
-      <span class="ident">FunctionNormalize</span>(<span class="kw">_</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;FunctionNormalize&quot;</span>)<span class="question-mark">?</span>,
+      <span class="ident">Enter</span> =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Enter&quot;</span>)<span class="question-mark">?</span>,
+      <span class="ident">Skip</span> =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Skip&quot;</span>)<span class="question-mark">?</span>,
+      <span class="ident">Normalize</span>(<span class="ident">v</span>) =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Normalize({})&quot;</span>, <span class="ident">v</span>)<span class="question-mark">?</span>,
+      <span class="ident">FunctionNormalize</span>(<span class="kw">_</span>) =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;FunctionNormalize&quot;</span>)<span class="question-mark">?</span>,
     };
     <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;}}&quot;</span>)
   }
@@ -255,7 +255,7 @@
 
 <span class="kw">impl</span> <span class="ident">Default</span> <span class="kw">for</span> <span class="ident">DNMParameters</span> {
   <span class="doccomment">/// Don&#39;t do anything fancy and specific by default</span>
-  <span class="kw">fn</span> <span class="ident">default</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">DNMParameters</span> {
+  <span class="kw">fn</span> <span class="ident">default</span>() -&gt; <span class="ident">DNMParameters</span> {
     <span class="ident">DNMParameters</span> {
       <span class="ident">special_tag_name_options</span>: <span class="ident">HashMap::new</span>(),
       <span class="ident">special_tag_class_options</span>: <span class="ident">HashMap::new</span>(),
@@ -272,7 +272,7 @@
 
 <span class="kw">impl</span> <span class="ident">DNMParameters</span> {
   <span class="doccomment">/// Normalize in a reasonable way for our math documents</span>
-  <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">llamapun_normalization</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">DNMParameters</span> {
+  <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">llamapun_normalization</span>() -&gt; <span class="ident">DNMParameters</span> {
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">name_options</span> <span class="op">=</span> <span class="ident">HashMap::new</span>();
     <span class="ident">name_options</span>.<span class="ident">insert</span>(
       <span class="string">&quot;math&quot;</span>.<span class="ident">to_string</span>(),

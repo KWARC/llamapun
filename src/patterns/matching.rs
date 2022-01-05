@@ -282,7 +282,7 @@ fn match_seq<'t>(
         if let Some(rule) = end_condition {
           let mut matched = false;
           for end_start_pos in pos..*end_pos {
-            let m = match_seq(pf, &rule, sentence, phrase_tree, range, end_start_pos);
+            let m = match_seq(pf, rule, sentence, phrase_tree, range, end_start_pos);
             if !m.matched {
               continue;
             }

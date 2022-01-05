@@ -56,7 +56,7 @@ impl Default for LexicalOptions {
 /// - of the word is longer than the max length of 25, an error is returned
 pub fn ams_normalize_word_range(
   range: &DNMRange,
-  mut context: &mut Context,
+  context: &mut Context,
   options: LexicalOptions,
 ) -> Result<String, Box<dyn Error>> {
   let mut word_string = if options.discard_punct {
@@ -82,7 +82,7 @@ pub fn ams_normalize_word_range(
     if options.discard_math {
       word_string = String::new();
     } else {
-      word_string = dnm::node::lexematize_math(range.get_node(), &mut context);
+      word_string = dnm::node::lexematize_math(range.get_node(), context);
     }
   } else if word_string.contains("citationelement") {
     word_string = String::from("citationelement");
@@ -99,7 +99,7 @@ pub fn ams_normalize_word_range(
 pub fn heading_from_node_aux(
   node: RoNode,
   tokenizer: &Tokenizer,
-  mut context: &mut Context,
+  context: &mut Context,
 ) -> Option<String> {
   let heading_dnm = DNM::new(node, DNMParameters::llamapun_normalization());
   let heading_range = match heading_dnm.get_range() {
@@ -112,7 +112,7 @@ pub fn heading_from_node_aux(
       continue;
     }
     let heading_word =
-      match ams_normalize_word_range(&word_range, &mut context, LexicalOptions::default()) {
+      match ams_normalize_word_range(&word_range, context, LexicalOptions::default()) {
         Ok(w) => w,
         Err(_) => return None,
       };
@@ -275,7 +275,7 @@ pub fn invalid_for_english_latin(dnm: &DNM) -> bool {
     .replace("CitationElement", " ")
     .replace("REF", " ");
   let detectable = detectable_with_spaces.trim();
-  if let Some(info) = detect(&detectable) {
+  if let Some(info) = detect(detectable) {
     info.script() != Script::Latin || (info.lang() != Lang::Eng && info.confidence() > 0.93)
   } else {
     false

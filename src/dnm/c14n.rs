@@ -44,7 +44,7 @@ impl DNM {
     hasher.result_str()
   }
 
-  fn canonical_internal(&self, node: RoNode, indent: Option<u32>, mut canonical_node: &mut String) {
+  fn canonical_internal(&self, node: RoNode, indent: Option<u32>, canonical_node: &mut String) {
     // Bookkeep indents, if requested
     let indent_string = match indent {
       Some(level) => String::new() + "\n" + &(1..level).map(|_| " ").collect::<String>(),
@@ -95,11 +95,11 @@ impl DNM {
 
         // Recurse into children
         if let Some(child) = node.get_first_child() {
-          self.canonical_internal(child, next_indent_level, &mut canonical_node);
+          self.canonical_internal(child, next_indent_level, canonical_node);
           let mut child_node = child;
 
           while let Some(child) = child_node.get_next_sibling() {
-            self.canonical_internal(child, next_indent_level, &mut canonical_node);
+            self.canonical_internal(child, next_indent_level, canonical_node);
             child_node = child;
           }
         }

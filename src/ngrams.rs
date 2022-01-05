@@ -1,26 +1,21 @@
 //! A small ngram library
 //! ngrams are sequences of n consecutive words
-use std::collections::HashMap;
 use circular_queue::CircularQueue;
+use std::collections::HashMap;
 
 /// Records single words, in order of appearance
+#[derive(Debug, Default)]
 pub struct Dictionary {
   /// hashmap for the records
   pub map: HashMap<String, usize>,
   /// index of the next word
   index: usize,
 }
-impl Default for Dictionary {
-  fn default() -> Dictionary {
-    Dictionary {
-      map: HashMap::new(),
-      index: 0,
-    }
-  }
-}
 impl Dictionary {
   /// create a new dictionary
-  pub fn new() -> Self { Dictionary::default() }
+  pub fn new() -> Self {
+    Dictionary::default()
+  }
   /// insert a new word into the dictionary (if it hasn't been inserted yet)
   pub fn insert(&mut self, word: String) {
     let map = &mut self.map;
@@ -32,12 +27,14 @@ impl Dictionary {
   }
   /// get the entries of the dictionary sorted by occurence
   pub fn sorted(&self) -> Vec<(&String, usize)> {
-    let mut as_vec = self.map.iter().map(|(x,y)| (x,*y)).collect::<Vec<_>>();
+    let mut as_vec = self.map.iter().map(|(x, y)| (x, *y)).collect::<Vec<_>>();
     as_vec.sort_by(|a, b| b.1.cmp(&a.1));
     as_vec
   }
   /// get the number of entries in the dictionary
-  pub fn count(&self) -> usize { self.index }
+  pub fn count(&self) -> usize {
+    self.index
+  }
 }
 
 /// Ngrams are dictionaries with
@@ -65,7 +62,7 @@ impl Default for Ngrams {
 #[derive(Debug, Copy, Clone, PartialEq)]
 enum AnchorSide {
   Left,
-  Right
+  Right,
 }
 
 impl Ngrams {
@@ -83,12 +80,14 @@ impl Ngrams {
   }
   /// obtain the ngram report, sorted by descending frequency
   pub fn sorted(&self) -> Vec<(&String, usize)> {
-    let mut as_vec = self.counts.iter().map(|(x,y)| (x,*y)).collect::<Vec<_>>();
+    let mut as_vec = self.counts.iter().map(|(x, y)| (x, *y)).collect::<Vec<_>>();
     as_vec.sort_by(|a, b| b.1.cmp(&a.1));
     as_vec
   }
   /// get the number of distinct ngrams recorded
-  pub fn distinct_count(&self) -> usize { self.counts.len() }
+  pub fn distinct_count(&self) -> usize {
+    self.counts.len()
+  }
 
   /// add content for ngram analysis, typically a paragraph or a line of text
   pub fn add_content(&mut self, content: &str) {
@@ -110,11 +109,15 @@ impl Ngrams {
     let mut words_since_anchor_seen = 0;
     let mut side = AnchorSide::Left;
 
-    for w in content.split_ascii_whitespace().filter(|&w| w.chars().next().unwrap().is_alphanumeric()) {
+    for w in content
+      .split_ascii_whitespace()
+      .filter(|&w| w.chars().next().unwrap().is_alphanumeric())
+    {
       // add the current word, potentially erasing the oldest word that falls outside the window
       context_window.push(w);
       let anchor = self.anchor.as_ref().unwrap();
-      if w == anchor { // we've hit an anchor word, the current content of the window should be analyzed
+      if w == anchor {
+        // we've hit an anchor word, the current content of the window should be analyzed
         words_since_anchor_seen = 0;
         side = AnchorSide::Right;
         // analyze whatever is in the buffer, and empty it
@@ -145,7 +148,11 @@ impl Ngrams {
     for w in words.into_iter() {
       gram_window.push(w);
       if gram_window.len() == self.n {
-        let key = gram_window.asc_iter().copied().collect::<Vec<_>>().join(" ");
+        let key = gram_window
+          .asc_iter()
+          .copied()
+          .collect::<Vec<_>>()
+          .join(" ");
         self.insert(key);
       }
     }

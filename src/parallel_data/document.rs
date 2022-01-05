@@ -132,7 +132,7 @@ impl<'d> Document<'d> {
 
   /// Associated function for `get_math_nodes`
   pub(crate) fn math_nodes(doc: &XmlDoc) -> Vec<RoNode> {
-    Document::xpath_nodes(&doc, "//*[local-name()='math']")
+    Document::xpath_nodes(doc, "//*[local-name()='math']")
   }
   /// Obtain the <span[class=ltx_ref]> nodes of a libxml `Document`
   pub fn get_ref_nodes(&self) -> Vec<RoNode> {
@@ -140,7 +140,7 @@ impl<'d> Document<'d> {
   }
   /// Associated function for `get_ref_nodes`
   pub(crate) fn ref_nodes(doc: &XmlDoc) -> Vec<RoNode> {
-    Document::xpath_nodes(&doc,
+    Document::xpath_nodes(doc,
     "//*[(local-name()='span' or local-name()='a') and (contains(@class,'ltx_ref ') or @class='ltx_ref')]")
   }
 

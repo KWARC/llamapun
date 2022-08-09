@@ -158,8 +158,8 @@ impl DNM {
     root.add_child(&mut body)?;
     let mut para = Node::new("div", None, &doc).unwrap();
     body.add_child(&mut para)?;
-    para.set_attribute("class", "ltx_para")?;
-    para.append_text(text)?;
+    para.set_attribute("class", "ltx_para").unwrap();
+    para.append_text(text).unwrap();
 
     // Now initialize a DNM as usual
     let dnm = DNM::new(

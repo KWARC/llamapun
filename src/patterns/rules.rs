@@ -291,7 +291,7 @@ pub enum SequencePattern {
  */
 
 /// A meta description of a rule/file
-#[derive(Clone)]
+#[derive(Debug, Clone)]
 pub struct MetaDescription {
   /// name of the rule/file
   name: String,
@@ -327,6 +327,10 @@ impl MetaDescription {
     }
     let summary = summary_opt.unwrap_or_default();
     Ok(MetaDescription { name, summary })
+  }
+
+  pub fn get_summary(&self) -> &str {
+    &self.summary
   }
 }
 

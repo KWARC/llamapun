@@ -28,7 +28,7 @@ pub fn has_markup_xmldoc(dom: &XmlDoc) -> bool {
 /// Note we are explicitly ignoring some of the very high-frequency environments, as they are not rich on textual content.
 /// Namely: references, appendix, pacs, subject; Which are rich in metadata and semi-structured content (figures, tables).
 #[allow(missing_docs)]
-#[derive(Copy, Clone, Debug, PartialEq)]
+#[derive(Copy, Clone, Debug, PartialEq, Eq)]
 pub enum StructuralEnv {
   Abstract,
   Acknowledgement,
@@ -203,7 +203,7 @@ impl fmt::Display for StructuralEnv {
 /// which are then transported in the HTML representation as `ltx_theorem_<env>`
 ///
 /// We shortlist 23 of the >20,000 variety of values present in the arXiv corpus
-#[derive(Copy, Clone, Debug, PartialEq)]
+#[derive(Copy, Clone, Debug, PartialEq, Eq)]
 pub enum AmsEnv {
   /// typically co-author support for a proof/paper (also "thanks")
   Acknowledgement,

@@ -349,7 +349,7 @@ impl<'s> Sentence<'s> {
   /// Parses the sentence using Senna. The parse options are set in the `Corpus`
   pub fn senna_parse(&'s mut self) -> &Self {
     self.senna_sentence = Some(self.document.corpus.senna.borrow_mut().parse(
-      (&self.range).get_plaintext(),
+      self.range.get_plaintext(),
       self.document.corpus.senna_options.get(),
     ));
     self

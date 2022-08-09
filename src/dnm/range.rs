@@ -183,11 +183,11 @@ impl<'dnmrange> DNMRange<'dnmrange> {
         if node.is_text_node() {
           let parent = node.get_parent().unwrap();
           let base = DNMRange::serialize_node(root_node, parent, false /* don't take next */);
-          return format!(
+          format!(
             "{}/text()[{}]",
             base,
             get_node_number(parent, node, &|n: RoNode| n.is_text_node()).unwrap()
-          );
+          )
         } else {
           let act = if is_end {
             get_next_sibling(root_node, node).unwrap_or(node)
@@ -196,7 +196,7 @@ impl<'dnmrange> DNMRange<'dnmrange> {
           };
           let parent = act.get_parent().unwrap();
           let base = DNMRange::serialize_node(root_node, parent, false /* don't take next */);
-          return format!(
+          format!(
             "{}/{}[{}]",
             base,
             if act.is_text_node() {
@@ -213,7 +213,7 @@ impl<'dnmrange> DNMRange<'dnmrange> {
               act.get_name()
             },
             get_node_number(parent, act, &|n: RoNode| n.get_name() == act.get_name()).unwrap()
-          );
+          )
         }
       }
       Some(x) => format!("//*[@id=\"{}\"]", x),

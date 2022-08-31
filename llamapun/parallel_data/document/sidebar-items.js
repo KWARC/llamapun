@@ -1,1 +1,1 @@
-initSidebarItems({"struct":[["Document","One of our math documents, thread-friendly"]]});
+window.SIDEBAR_ITEMS = {"struct":[["Document","One of our math documents, thread-friendly"]]};

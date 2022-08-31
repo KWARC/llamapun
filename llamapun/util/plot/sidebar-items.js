@@ -1,1 +1,1 @@
-initSidebarItems({"fn":[["plot_simple","A simple plot"]]});
+window.SIDEBAR_ITEMS = {"fn":[["plot_simple","A simple plot"]]};

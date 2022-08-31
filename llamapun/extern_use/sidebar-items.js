@@ -1,1 +1,1 @@
-initSidebarItems({"fn":[["word_tokenize_for_vec2doc","Interface function for vec2doc-expected word tokenization of a document path"]]});
+window.SIDEBAR_ITEMS = {"fn":[["word_tokenize_for_vec2doc","Interface function for vec2doc-expected word tokenization of a document path"]]};

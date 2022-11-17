@@ -26,20 +26,27 @@ impl Default for Tokenizer {
   }
 }
 
-fn wordlike_with_upper_next(peekable: &Peekable<Chars>) -> bool {
-  let new_iterator = peekable.clone();
-  let mut upper_found = false;
-  for c in new_iterator {
-    if c.is_alphabetic() {
-      if c.is_uppercase() {
-        upper_found = true;
-        break;
-      }
-    } else {
+// fn is_alphabetic_and_uppercase(c_opt: Option<&char>) -> bool {
+//   if let Some(c) = c_opt {
+//     c.is_alphabetic() && c.is_uppercase()
+//   } else {
+//     false
+//   }
+// }
+
+/// detects a wordlike sequence with *any* uppercase char, such as "foobaR"
+fn wordlike_with_upper_next (peekable: Peekable<Chars>) -> bool {
+  let mut detected = false;
+  for char in peekable {
+    if !char.is_alphabetic() {
+      break;
+    }
+    if char.is_uppercase() {
+      detected = true;
       break;
     }
   }
-  upper_found
+  detected
 }
 
 impl Tokenizer {
@@ -85,11 +92,11 @@ impl Tokenizer {
             let space_char = text_iterator.next().unwrap();
             end += space_char.len_utf8();
           }
-          if text_iterator.peek() == None {
+          if text_iterator.peek().is_none() {
             break;
           }
           // Uppercase next?
-          if wordlike_with_upper_next(&text_iterator) {
+          if wordlike_with_upper_next(text_iterator.clone()) {
             // Ok, uppercase, but is it a stopword? If so, we must ALWAYS break the
             // sentence:
             let (next_word_string, next_word_length) = next_word_with_length(&mut text_iterator);
@@ -201,7 +208,7 @@ impl Tokenizer {
               let space_char = text_iterator.next().unwrap();
               end += space_char.len_utf8();
             }
-            if text_iterator.peek() == None {
+            if text_iterator.peek().is_none() {
               break;
             }
             // Get the next word

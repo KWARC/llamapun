@@ -1089,28 +1089,28 @@ impl PatternFile {
       match cur.get_name().as_ref() {
         "meta" => {
           if meta_opt.is_some() {
-            return Err("pattern_file has multiple meta nodes".to_string()).map_err(&err_map);
+            return Err("pattern_file has multiple meta nodes".to_string()).map_err(err_map);
           }
           meta_opt =
-            Some(MetaDescription::load_from_node(cur, file_name.to_string()).map_err(&err_map)?);
+            Some(MetaDescription::load_from_node(cur, file_name.to_string()).map_err(err_map)?);
         },
         "pos_rule" => {
-          pctx.add_pos_rule(cur).map_err(&err_map)?;
+          pctx.add_pos_rule(cur).map_err(err_map)?;
         },
         "math_rule" => {
-          pctx.add_math_rule(cur).map_err(&err_map)?;
+          pctx.add_math_rule(cur).map_err(err_map)?;
         },
         "mtext_rule" => {
-          pctx.add_mtext_rule(cur).map_err(&err_map)?;
+          pctx.add_mtext_rule(cur).map_err(err_map)?;
         },
         "word_rule" => {
-          pctx.add_word_rule(cur).map_err(&err_map)?;
+          pctx.add_word_rule(cur).map_err(err_map)?;
         },
         "seq_rule" => {
-          pctx.add_sequence_rule(cur).map_err(&err_map)?;
+          pctx.add_sequence_rule(cur).map_err(err_map)?;
         },
         x => {
-          return Err(format!("Unexpected node \"{}\" in pattern_file", x)).map_err(&err_map);
+          return Err(format!("Unexpected node \"{}\" in pattern_file", x)).map_err(err_map);
         },
       }
     }
@@ -1121,7 +1121,7 @@ impl PatternFile {
       });
     }
 
-    pctx.verify().map_err(&err_map)?;
+    pctx.verify().map_err(err_map)?;
 
     Ok(PatternFile {
       description: meta_opt.unwrap(),

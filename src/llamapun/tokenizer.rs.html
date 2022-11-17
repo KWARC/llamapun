@@ -375,6 +375,21 @@
 <span id="375">375</span>
 <span id="376">376</span>
 <span id="377">377</span>
+<span id="378">378</span>
+<span id="379">379</span>
+<span id="380">380</span>
+<span id="381">381</span>
+<span id="382">382</span>
+<span id="383">383</span>
+<span id="384">384</span>
+<span id="385">385</span>
+<span id="386">386</span>
+<span id="387">387</span>
+<span id="388">388</span>
+<span id="389">389</span>
+<span id="390">390</span>
+<span id="391">391</span>
+<span id="392">392</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Provides functionality for tokenizing sentences and words
 </span><span class="kw">use </span><span class="kw">crate</span>::dnm::{DNMRange, DNM};
 <span class="kw">use </span><span class="kw">crate</span>::stopwords;
@@ -403,12 +418,27 @@
   }
 }
 
-<span class="kw">fn </span>is_alphabetic_and_uppercase(c_opt: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>char&gt;) -&gt; bool {
-  <span class="kw">if let </span><span class="prelude-val">Some</span>(c) = c_opt {
-    c.is_alphabetic() &amp;&amp; c.is_uppercase()
-  } <span class="kw">else </span>{
-    <span class="bool-val">false
-  </span>}
+<span class="comment">// fn is_alphabetic_and_uppercase(c_opt: Option&lt;&amp;char&gt;) -&gt; bool {
+//   if let Some(c) = c_opt {
+//     c.is_alphabetic() &amp;&amp; c.is_uppercase()
+//   } else {
+//     false
+//   }
+// }
+
+</span><span class="doccomment">/// detects a wordlike sequence with *any* uppercase char, such as &quot;foobaR&quot;
+</span><span class="kw">fn </span>wordlike_with_upper_next (peekable: Peekable&lt;Chars&gt;) -&gt; bool {
+  <span class="kw">let </span><span class="kw-2">mut </span>detected = <span class="bool-val">false</span>;
+  <span class="kw">for </span>char <span class="kw">in </span>peekable {
+    <span class="kw">if </span>!char.is_alphabetic() {
+      <span class="kw">break</span>;
+    }
+    <span class="kw">if </span>char.is_uppercase() {
+      detected = <span class="bool-val">true</span>;
+      <span class="kw">break</span>;
+    }
+  }
+  detected
 }
 
 <span class="kw">impl </span>Tokenizer {
@@ -458,7 +488,7 @@
             <span class="kw">break</span>;
           }
           <span class="comment">// Uppercase next?
-          </span><span class="kw">if </span>is_alphabetic_and_uppercase(text_iterator.peek()) {
+          </span><span class="kw">if </span>wordlike_with_upper_next(text_iterator.clone()) {
             <span class="comment">// Ok, uppercase, but is it a stopword? If so, we must ALWAYS break the
             // sentence:
             </span><span class="kw">let </span>(next_word_string, next_word_length) = next_word_with_length(<span class="kw-2">&amp;mut </span>text_iterator);

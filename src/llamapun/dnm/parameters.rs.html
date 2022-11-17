@@ -1,10 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/dnm/parameters.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>parameters.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../llamapun/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div>
-        </a><h2 class="location"></h2>
-    </nav>
-    <nav class="sidebar"><a class="sidebar-logo" href="../../../llamapun/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div>
-        </a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../llamapun/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><button type="button" id="help-button" title="help">?</button><div id="settings-menu" tabindex="-1">
-                                <a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div>
-                        </div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/dnm/parameters.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>parameters.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../llamapun/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../llamapun/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../llamapun/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -179,181 +173,180 @@
 <span id="173">173</span>
 <span id="174">174</span>
 <span id="175">175</span>
-</pre><pre class="rust"><code><span class="doccomment">//! The `dnm::parameters` submodule provides data structures for customizing</span>
-<span class="doccomment">//! and configuring a DNM&#39;s construction and use</span>
+</pre><pre class="rust"><code><span class="doccomment">//! The `dnm::parameters` submodule provides data structures for customizing
+//! and configuring a DNM&#39;s construction and use
 
-<span class="kw">use</span> <span class="ident">libxml::readonly::RoNode</span>;
-<span class="kw">use</span> <span class="ident">std::collections::HashMap</span>;
-<span class="kw">use</span> <span class="ident">std::fmt</span>;
-<span class="kw">use</span> <span class="ident">std::sync::Arc</span>;
+</span><span class="kw">use </span>libxml::readonly::RoNode;
+<span class="kw">use </span>std::collections::HashMap;
+<span class="kw">use </span>std::fmt;
+<span class="kw">use </span>std::sync::Arc;
 
-<span class="doccomment">/// Some temporary data for the parser</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">RuntimeParseData</span> {
-  <span class="doccomment">/// plaintext is currently terminated by some whitespace</span>
-  <span class="kw">pub</span> <span class="ident">had_whitespace</span>: <span class="ident">bool</span>,
-  <span class="doccomment">/// plaintext representation as vector of chars (to deal with UTF-8 mess)</span>
-  <span class="doccomment">/// TODO: Use plaintext/byte_offsets directly instead</span>
-  <span class="kw">pub</span> <span class="ident">chars</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">char</span><span class="op">&gt;</span>,
+<span class="doccomment">/// Some temporary data for the parser
+</span><span class="attribute">#[derive(Debug)]
+</span><span class="kw">pub struct </span>RuntimeParseData {
+  <span class="doccomment">/// plaintext is currently terminated by some whitespace
+  </span><span class="kw">pub </span>had_whitespace: bool,
+  <span class="doccomment">/// plaintext representation as vector of chars (to deal with UTF-8 mess)
+  /// TODO: Use plaintext/byte_offsets directly instead
+  </span><span class="kw">pub </span>chars: Vec&lt;char&gt;,
 }
-<span class="kw">impl</span> <span class="ident">Default</span> <span class="kw">for</span> <span class="ident">RuntimeParseData</span> {
-  <span class="kw">fn</span> <span class="ident">default</span>() -&gt; <span class="ident">RuntimeParseData</span> {
-    <span class="ident">RuntimeParseData</span> {
-      <span class="ident">had_whitespace</span>: <span class="bool-val">true</span>, <span class="comment">// skip leading whitespace</span>
-      <span class="ident">chars</span>: <span class="ident">Vec::new</span>(),
+<span class="kw">impl </span>Default <span class="kw">for </span>RuntimeParseData {
+  <span class="kw">fn </span>default() -&gt; RuntimeParseData {
+    RuntimeParseData {
+      had_whitespace: <span class="bool-val">true</span>, <span class="comment">// skip leading whitespace
+      </span>chars: Vec::new(),
     }
   }
 }
 
-<span class="doccomment">/// Specifies how to deal with a certain tag</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>)]</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">SpecialTagsOption</span> {
-  <span class="doccomment">/// Recurse into tag (default behaviour)</span>
-  <span class="ident">Enter</span>,
-  <span class="doccomment">/// Normalize tag, replacing it by some token</span>
-  <span class="ident">Normalize</span>(<span class="ident">String</span>),
-  <span class="doccomment">/// Normalize tag, obtain replacement string by function call</span>
-  <span class="ident">FunctionNormalize</span>(<span class="ident">Arc</span><span class="op">&lt;</span><span class="kw">fn</span>(<span class="ident">RoNode</span>) -&gt; <span class="ident">String</span><span class="op">&gt;</span>),
-  <span class="doccomment">/// Skip tag</span>
-  <span class="ident">Skip</span>,
+<span class="doccomment">/// Specifies how to deal with a certain tag
+</span><span class="attribute">#[derive(Clone)]
+</span><span class="kw">pub enum </span>SpecialTagsOption {
+  <span class="doccomment">/// Recurse into tag (default behaviour)
+  </span>Enter,
+  <span class="doccomment">/// Normalize tag, replacing it by some token
+  </span>Normalize(String),
+  <span class="doccomment">/// Normalize tag, obtain replacement string by function call
+  </span>FunctionNormalize(Arc&lt;<span class="kw">fn</span>(RoNode) -&gt; String&gt;),
+  <span class="doccomment">/// Skip tag
+  </span>Skip,
 }
 
-<span class="kw">impl</span> <span class="ident">fmt::Debug</span> <span class="kw">for</span> <span class="ident">SpecialTagsOption</span> {
-  <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;mut</span> <span class="ident">fmt::Formatter</span>) -&gt; <span class="ident">fmt::Result</span> {
-    <span class="kw">use</span> <span class="ident">SpecialTagsOption</span>::<span class="kw-2">*</span>;
-    <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;SpecialTagsOption {{&quot;</span>)<span class="question-mark">?</span>;
-    <span class="kw">match</span> <span class="self">self</span> {
-      <span class="ident">Enter</span> =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Enter&quot;</span>)<span class="question-mark">?</span>,
-      <span class="ident">Skip</span> =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Skip&quot;</span>)<span class="question-mark">?</span>,
-      <span class="ident">Normalize</span>(<span class="ident">v</span>) =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Normalize({})&quot;</span>, <span class="ident">v</span>)<span class="question-mark">?</span>,
-      <span class="ident">FunctionNormalize</span>(<span class="kw">_</span>) =&gt; <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;FunctionNormalize&quot;</span>)<span class="question-mark">?</span>,
+<span class="kw">impl </span>fmt::Debug <span class="kw">for </span>SpecialTagsOption {
+  <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>fmt::Formatter) -&gt; fmt::Result {
+    <span class="kw">use </span>SpecialTagsOption::<span class="kw-2">*</span>;
+    <span class="macro">write!</span>(f, <span class="string">&quot;SpecialTagsOption {{&quot;</span>)<span class="question-mark">?</span>;
+    <span class="kw">match </span><span class="self">self </span>{
+      Enter =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;Enter&quot;</span>)<span class="question-mark">?</span>,
+      Skip =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;Skip&quot;</span>)<span class="question-mark">?</span>,
+      Normalize(v) =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;Normalize({})&quot;</span>, v)<span class="question-mark">?</span>,
+      FunctionNormalize(<span class="kw">_</span>) =&gt; <span class="macro">write!</span>(f, <span class="string">&quot;FunctionNormalize&quot;</span>)<span class="question-mark">?</span>,
     };
-    <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;}}&quot;</span>)
+    <span class="macro">write!</span>(f, <span class="string">&quot;}}&quot;</span>)
   }
 }
 
-<span class="doccomment">/// Parameters for the DNM generation</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">DNMParameters</span> {
-  <span class="doccomment">/// How to deal with special tags (e.g. `&lt;math&gt;` tags)</span>
-  <span class="kw">pub</span> <span class="ident">special_tag_name_options</span>: <span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">SpecialTagsOption</span><span class="op">&gt;</span>,
-  <span class="doccomment">/// How to deal with tags with special class names (e.g. ltx_note_mark)</span>
-  <span class="doccomment">/// *Remark*: If both a tag name and a tag class match, the tag name rule</span>
-  <span class="doccomment">/// will be applied.</span>
-  <span class="kw">pub</span> <span class="ident">special_tag_class_options</span>: <span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">SpecialTagsOption</span><span class="op">&gt;</span>,
-  <span class="doccomment">/// merge sequences of whitespaces into a single &#39; &#39;.</span>
-  <span class="doccomment">/// *Doesn&#39;t affect tokens*</span>
-  <span class="kw">pub</span> <span class="ident">normalize_white_spaces</span>: <span class="ident">bool</span>,
-  <span class="doccomment">/// put spaces before and after tokens</span>
-  <span class="kw">pub</span> <span class="ident">wrap_tokens</span>: <span class="ident">bool</span>,
-  <span class="doccomment">/// Replace unicode characters by the ascii code representation</span>
-  <span class="kw">pub</span> <span class="ident">normalize_unicode</span>: <span class="ident">bool</span>,
-  <span class="doccomment">/// Apply the morpha stemmer once to the text nodes</span>
-  <span class="kw">pub</span> <span class="ident">stem_words_once</span>: <span class="ident">bool</span>,
-  <span class="doccomment">/// Apply the morpha stemmer to the text nodes</span>
-  <span class="doccomment">/// as often as it changes something</span>
-  <span class="kw">pub</span> <span class="ident">stem_words_full</span>: <span class="ident">bool</span>,
-  <span class="doccomment">/// Move to lowercase (remark: The stemmer does this automatically)</span>
-  <span class="kw">pub</span> <span class="ident">convert_to_lowercase</span>: <span class="ident">bool</span>,
-  <span class="doccomment">/// Support back mapping, i.e. mapping plaintext offsets back to the DOM</span>
-  <span class="kw">pub</span> <span class="ident">support_back_mapping</span>: <span class="ident">bool</span>,
+<span class="doccomment">/// Parameters for the DNM generation
+</span><span class="attribute">#[derive(Debug, Clone)]
+</span><span class="kw">pub struct </span>DNMParameters {
+  <span class="doccomment">/// How to deal with special tags (e.g. `&lt;math&gt;` tags)
+  </span><span class="kw">pub </span>special_tag_name_options: HashMap&lt;String, SpecialTagsOption&gt;,
+  <span class="doccomment">/// How to deal with tags with special class names (e.g. ltx_note_mark)
+  /// *Remark*: If both a tag name and a tag class match, the tag name rule
+  /// will be applied.
+  </span><span class="kw">pub </span>special_tag_class_options: HashMap&lt;String, SpecialTagsOption&gt;,
+  <span class="doccomment">/// merge sequences of whitespaces into a single &#39; &#39;.
+  /// *Doesn&#39;t affect tokens*
+  </span><span class="kw">pub </span>normalize_white_spaces: bool,
+  <span class="doccomment">/// put spaces before and after tokens
+  </span><span class="kw">pub </span>wrap_tokens: bool,
+  <span class="doccomment">/// Replace unicode characters by the ascii code representation
+  </span><span class="kw">pub </span>normalize_unicode: bool,
+  <span class="doccomment">/// Apply the morpha stemmer once to the text nodes
+  </span><span class="kw">pub </span>stem_words_once: bool,
+  <span class="doccomment">/// Apply the morpha stemmer to the text nodes
+  /// as often as it changes something
+  </span><span class="kw">pub </span>stem_words_full: bool,
+  <span class="doccomment">/// Move to lowercase (remark: The stemmer does this automatically)
+  </span><span class="kw">pub </span>convert_to_lowercase: bool,
+  <span class="doccomment">/// Support back mapping, i.e. mapping plaintext offsets back to the DOM
+  </span><span class="kw">pub </span>support_back_mapping: bool,
 }
 
-<span class="kw">impl</span> <span class="ident">Default</span> <span class="kw">for</span> <span class="ident">DNMParameters</span> {
-  <span class="doccomment">/// Don&#39;t do anything fancy and specific by default</span>
-  <span class="kw">fn</span> <span class="ident">default</span>() -&gt; <span class="ident">DNMParameters</span> {
-    <span class="ident">DNMParameters</span> {
-      <span class="ident">special_tag_name_options</span>: <span class="ident">HashMap::new</span>(),
-      <span class="ident">special_tag_class_options</span>: <span class="ident">HashMap::new</span>(),
-      <span class="ident">normalize_white_spaces</span>: <span class="bool-val">true</span>,
-      <span class="ident">wrap_tokens</span>: <span class="bool-val">false</span>,
-      <span class="ident">normalize_unicode</span>: <span class="bool-val">false</span>,
-      <span class="ident">stem_words_once</span>: <span class="bool-val">false</span>,
-      <span class="ident">stem_words_full</span>: <span class="bool-val">false</span>,
-      <span class="ident">convert_to_lowercase</span>: <span class="bool-val">false</span>,
-      <span class="ident">support_back_mapping</span>: <span class="bool-val">true</span>,
+<span class="kw">impl </span>Default <span class="kw">for </span>DNMParameters {
+  <span class="doccomment">/// Don&#39;t do anything fancy and specific by default
+  </span><span class="kw">fn </span>default() -&gt; DNMParameters {
+    DNMParameters {
+      special_tag_name_options: HashMap::new(),
+      special_tag_class_options: HashMap::new(),
+      normalize_white_spaces: <span class="bool-val">true</span>,
+      wrap_tokens: <span class="bool-val">false</span>,
+      normalize_unicode: <span class="bool-val">false</span>,
+      stem_words_once: <span class="bool-val">false</span>,
+      stem_words_full: <span class="bool-val">false</span>,
+      convert_to_lowercase: <span class="bool-val">false</span>,
+      support_back_mapping: <span class="bool-val">true</span>,
     }
   }
 }
 
-<span class="kw">impl</span> <span class="ident">DNMParameters</span> {
-  <span class="doccomment">/// Normalize in a reasonable way for our math documents</span>
-  <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">llamapun_normalization</span>() -&gt; <span class="ident">DNMParameters</span> {
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">name_options</span> <span class="op">=</span> <span class="ident">HashMap::new</span>();
-    <span class="ident">name_options</span>.<span class="ident">insert</span>(
-      <span class="string">&quot;math&quot;</span>.<span class="ident">to_string</span>(),
-      <span class="ident">SpecialTagsOption::Normalize</span>(<span class="string">&quot;mathformula&quot;</span>.<span class="ident">to_string</span>()),
+<span class="kw">impl </span>DNMParameters {
+  <span class="doccomment">/// Normalize in a reasonable way for our math documents
+  </span><span class="kw">pub fn </span>llamapun_normalization() -&gt; DNMParameters {
+    <span class="kw">let </span><span class="kw-2">mut </span>name_options = HashMap::new();
+    name_options.insert(
+      <span class="string">&quot;math&quot;</span>.to_string(),
+      SpecialTagsOption::Normalize(<span class="string">&quot;mathformula&quot;</span>.to_string()),
     );
-    <span class="ident">name_options</span>.<span class="ident">insert</span>(
-      <span class="string">&quot;cite&quot;</span>.<span class="ident">to_string</span>(),
-      <span class="ident">SpecialTagsOption::Normalize</span>(<span class="string">&quot;CitationElement&quot;</span>.<span class="ident">to_string</span>()),
+    name_options.insert(
+      <span class="string">&quot;cite&quot;</span>.to_string(),
+      SpecialTagsOption::Normalize(<span class="string">&quot;CitationElement&quot;</span>.to_string()),
     );
-    <span class="ident">name_options</span>.<span class="ident">insert</span>(<span class="string">&quot;img&quot;</span>.<span class="ident">to_string</span>(), <span class="ident">SpecialTagsOption::Skip</span>);
-    <span class="ident">name_options</span>.<span class="ident">insert</span>(<span class="string">&quot;table&quot;</span>.<span class="ident">to_string</span>(), <span class="ident">SpecialTagsOption::Skip</span>);
-    <span class="ident">name_options</span>.<span class="ident">insert</span>(<span class="string">&quot;head&quot;</span>.<span class="ident">to_string</span>(), <span class="ident">SpecialTagsOption::Skip</span>);
-    <span class="ident">name_options</span>.<span class="ident">insert</span>(<span class="string">&quot;footer&quot;</span>.<span class="ident">to_string</span>(), <span class="ident">SpecialTagsOption::Skip</span>);
+    name_options.insert(<span class="string">&quot;img&quot;</span>.to_string(), SpecialTagsOption::Skip);
+    name_options.insert(<span class="string">&quot;table&quot;</span>.to_string(), SpecialTagsOption::Skip);
+    name_options.insert(<span class="string">&quot;head&quot;</span>.to_string(), SpecialTagsOption::Skip);
+    name_options.insert(<span class="string">&quot;footer&quot;</span>.to_string(), SpecialTagsOption::Skip);
 
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">class_options</span> <span class="op">=</span> <span class="ident">HashMap::new</span>();
-    <span class="ident">class_options</span>.<span class="ident">insert</span>(
-      <span class="string">&quot;ltx_equation&quot;</span>.<span class="ident">to_string</span>(),
-      <span class="ident">SpecialTagsOption::Normalize</span>(<span class="string">&quot;\nmathformula\n&quot;</span>.<span class="ident">to_string</span>()),
+    <span class="kw">let </span><span class="kw-2">mut </span>class_options = HashMap::new();
+    class_options.insert(
+      <span class="string">&quot;ltx_equation&quot;</span>.to_string(),
+      SpecialTagsOption::Normalize(<span class="string">&quot;\nmathformula\n&quot;</span>.to_string()),
     );
-    <span class="ident">class_options</span>.<span class="ident">insert</span>(
-      <span class="string">&quot;ltx_equationgroup&quot;</span>.<span class="ident">to_string</span>(),
-      <span class="ident">SpecialTagsOption::Normalize</span>(<span class="string">&quot;\nmathformula\n&quot;</span>.<span class="ident">to_string</span>()),
+    class_options.insert(
+      <span class="string">&quot;ltx_equationgroup&quot;</span>.to_string(),
+      SpecialTagsOption::Normalize(<span class="string">&quot;\nmathformula\n&quot;</span>.to_string()),
     );
-    <span class="ident">class_options</span>.<span class="ident">insert</span>(
-      <span class="string">&quot;ltx_ref&quot;</span>.<span class="ident">to_string</span>(),
-      <span class="ident">SpecialTagsOption::Normalize</span>(<span class="string">&quot;REF&quot;</span>.<span class="ident">to_string</span>()),
+    class_options.insert(
+      <span class="string">&quot;ltx_ref&quot;</span>.to_string(),
+      SpecialTagsOption::Normalize(<span class="string">&quot;REF&quot;</span>.to_string()),
     );
-    <span class="ident">class_options</span>.<span class="ident">insert</span>(<span class="string">&quot;ltx_authors&quot;</span>.<span class="ident">to_string</span>(), <span class="ident">SpecialTagsOption::Skip</span>);
-    <span class="ident">class_options</span>.<span class="ident">insert</span>(<span class="string">&quot;ltx_TOC&quot;</span>.<span class="ident">to_string</span>(), <span class="ident">SpecialTagsOption::Skip</span>);
-    <span class="ident">class_options</span>.<span class="ident">insert</span>(<span class="string">&quot;ltx_note_mark&quot;</span>.<span class="ident">to_string</span>(), <span class="ident">SpecialTagsOption::Skip</span>);
-    <span class="ident">class_options</span>.<span class="ident">insert</span>(<span class="string">&quot;ltx_note_outer&quot;</span>.<span class="ident">to_string</span>(), <span class="ident">SpecialTagsOption::Skip</span>);
-    <span class="ident">class_options</span>.<span class="ident">insert</span>(<span class="string">&quot;ltx_bibliography&quot;</span>.<span class="ident">to_string</span>(), <span class="ident">SpecialTagsOption::Skip</span>);
-    <span class="comment">// Ignores all caption metadata tags, to avoid leaking artefacts into a pure language target</span>
-    <span class="comment">// TODO: Is there merit to extending this to ignoring all ltx_tag elements? leaving things as-is allows for some</span>
-    <span class="comment">// curious artefacts to sneak into the plain-text files, such as bullets/numbers from \item commands</span>
-    <span class="ident">class_options</span>.<span class="ident">insert</span>(<span class="string">&quot;ltx_tag_figure&quot;</span>.<span class="ident">to_string</span>(), <span class="ident">SpecialTagsOption::Skip</span>);
-    <span class="ident">class_options</span>.<span class="ident">insert</span>(<span class="string">&quot;ltx_tag_table&quot;</span>.<span class="ident">to_string</span>(), <span class="ident">SpecialTagsOption::Skip</span>);
+    class_options.insert(<span class="string">&quot;ltx_authors&quot;</span>.to_string(), SpecialTagsOption::Skip);
+    class_options.insert(<span class="string">&quot;ltx_TOC&quot;</span>.to_string(), SpecialTagsOption::Skip);
+    class_options.insert(<span class="string">&quot;ltx_note_mark&quot;</span>.to_string(), SpecialTagsOption::Skip);
+    class_options.insert(<span class="string">&quot;ltx_note_outer&quot;</span>.to_string(), SpecialTagsOption::Skip);
+    class_options.insert(<span class="string">&quot;ltx_bibliography&quot;</span>.to_string(), SpecialTagsOption::Skip);
+    <span class="comment">// Ignores all caption metadata tags, to avoid leaking artefacts into a pure language target
+    // TODO: Is there merit to extending this to ignoring all ltx_tag elements? leaving things as-is allows for some
+    // curious artefacts to sneak into the plain-text files, such as bullets/numbers from \item commands
+    </span>class_options.insert(<span class="string">&quot;ltx_tag_figure&quot;</span>.to_string(), SpecialTagsOption::Skip);
+    class_options.insert(<span class="string">&quot;ltx_tag_table&quot;</span>.to_string(), SpecialTagsOption::Skip);
 
-    <span class="ident">DNMParameters</span> {
-      <span class="ident">special_tag_name_options</span>: <span class="ident">name_options</span>,
-      <span class="ident">special_tag_class_options</span>: <span class="ident">class_options</span>,
-      <span class="ident">normalize_white_spaces</span>: <span class="bool-val">false</span>, <span class="comment">/* Keeping it raw for tokenization best results, newlines
-                                      * are meaningful */</span>
-      <span class="comment">/* important for cases where we have things like x$\prime\prime$, and risk creating a single word &quot;xmathformula&quot; instead of the lexical &quot;x mathformula&quot;
+    DNMParameters {
+      special_tag_name_options: name_options,
+      special_tag_class_options: class_options,
+      normalize_white_spaces: <span class="bool-val">false</span>, <span class="comment">/* Keeping it raw for tokenization best results, newlines
+                                      * are meaningful */
+      /* important for cases where we have things like x$\prime\prime$, and risk creating a single word &quot;xmathformula&quot; instead of the lexical &quot;x mathformula&quot;
         There may be better tokenization tricks to employ later on (in the word tokenizer), but for now wrapping seems necessary
-      */</span>
-      <span class="ident">wrap_tokens</span>: <span class="bool-val">true</span>,
-      <span class="ident">normalize_unicode</span>: <span class="bool-val">true</span>,
-      ..<span class="ident">Default::default</span>()
+      */
+      </span>wrap_tokens: <span class="bool-val">true</span>,
+      normalize_unicode: <span class="bool-val">true</span>,
+      ..Default::default()
     }
   }
 
-  <span class="doccomment">/// Prints warnings, if the parameter settings don&#39;t make sense.</span>
-  <span class="doccomment">/// Doesn&#39;t check for every possible stupidity</span>
-  <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">check</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) {
-    <span class="kw">if</span> <span class="self">self</span>.<span class="ident">stem_words_once</span> <span class="op">&amp;&amp;</span> <span class="self">self</span>.<span class="ident">stem_words_full</span> {
+  <span class="doccomment">/// Prints warnings, if the parameter settings don&#39;t make sense.
+  /// Doesn&#39;t check for every possible stupidity
+  </span><span class="kw">pub fn </span>check(<span class="kw-2">&amp;</span><span class="self">self</span>) {
+    <span class="kw">if </span><span class="self">self</span>.stem_words_once &amp;&amp; <span class="self">self</span>.stem_words_full {
       <span class="macro">dbg!</span>(
         <span class="string">&quot;llamapun::dnm: Parameter options stem_words_once\
-         and stem_words_full are both set&quot;</span>
-      );
+         and stem_words_full are both set&quot;
+      </span>);
     }
-    <span class="kw">if</span> (<span class="self">self</span>.<span class="ident">stem_words_once</span> <span class="op">|</span><span class="op">|</span> <span class="self">self</span>.<span class="ident">stem_words_full</span>) <span class="op">&amp;&amp;</span> <span class="self">self</span>.<span class="ident">convert_to_lowercase</span> {
+    <span class="kw">if </span>(<span class="self">self</span>.stem_words_once || <span class="self">self</span>.stem_words_full) &amp;&amp; <span class="self">self</span>.convert_to_lowercase {
       <span class="macro">dbg!</span>(
         <span class="string">&quot;llamapun::dnm: Parameter option convert_to_lowercase\
-         is redundant, because stemming converts to lowercase already&quot;</span>
-      );
+         is redundant, because stemming converts to lowercase already&quot;
+      </span>);
     }
-    <span class="kw">if</span> (<span class="self">self</span>.<span class="ident">stem_words_once</span> <span class="op">|</span><span class="op">|</span> <span class="self">self</span>.<span class="ident">stem_words_full</span>) <span class="op">&amp;&amp;</span> <span class="self">self</span>.<span class="ident">support_back_mapping</span> {
+    <span class="kw">if </span>(<span class="self">self</span>.stem_words_once || <span class="self">self</span>.stem_words_full) &amp;&amp; <span class="self">self</span>.support_back_mapping {
       <span class="macro">dbg!</span>(
         <span class="string">&quot;llamapun::dnm: Parameter option support_back_mapping\
-         does not work in combination with word stemming yet&quot;</span>
-      );
+         does not work in combination with word stemming yet&quot;
+      </span>);
     }
   }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="llamapun" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.63.0 (4b91a6ea7 2022-08-08)" ></div>
-</body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="llamapun" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0 (897e37553 2022-11-02)" ></div></body></html>

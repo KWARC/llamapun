@@ -1,10 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/parallel_data/document.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>document.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../llamapun/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div>
-        </a><h2 class="location"></h2>
-    </nav>
-    <nav class="sidebar"><a class="sidebar-logo" href="../../../llamapun/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div>
-        </a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../llamapun/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><button type="button" id="help-button" title="help">?</button><div id="settings-menu" tabindex="-1">
-                                <a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div>
-                        </div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/parallel_data/document.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>document.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../llamapun/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../llamapun/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../llamapun/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -231,233 +225,232 @@
 <span id="225">225</span>
 <span id="226">226</span>
 <span id="227">227</span>
-</pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">libxml::parser::XmlParseError</span>;
-<span class="kw">use</span> <span class="ident">libxml::readonly::RoNode</span>;
-<span class="kw">use</span> <span class="ident">libxml::tree::Document</span> <span class="kw">as</span> <span class="ident">XmlDoc</span>;
-<span class="kw">use</span> <span class="ident">libxml::xpath::Context</span>;
+</pre><pre class="rust"><code><span class="kw">use </span>libxml::parser::XmlParseError;
+<span class="kw">use </span>libxml::readonly::RoNode;
+<span class="kw">use </span>libxml::tree::Document <span class="kw">as </span>XmlDoc;
+<span class="kw">use </span>libxml::xpath::Context;
 
-<span class="kw">use</span> <span class="ident"><span class="kw">super</span>::corpus::Corpus</span>;
-<span class="kw">use</span> <span class="kw">super</span>::{<span class="ident">DNMRangeIterator</span>, <span class="ident">RoNodeIterator</span>};
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::dnm::DNM</span>;
+<span class="kw">use </span><span class="kw">super</span>::corpus::Corpus;
+<span class="kw">use super</span>::{DNMRangeIterator, RoNodeIterator};
+<span class="kw">use </span><span class="kw">crate</span>::dnm::DNM;
 
-<span class="doccomment">/// One of our math documents, thread-friendly</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Document</span><span class="op">&lt;</span><span class="lifetime">&#39;d</span><span class="op">&gt;</span> {
-  <span class="doccomment">/// The DOM of the document</span>
-  <span class="kw">pub</span> <span class="ident">dom</span>: <span class="ident">XmlDoc</span>,
-  <span class="doccomment">/// The file path of the document</span>
-  <span class="kw">pub</span> <span class="ident">path</span>: <span class="ident">String</span>,
-  <span class="doccomment">/// A reference to the corpus containing this document</span>
-  <span class="kw">pub</span> <span class="ident">corpus</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;d</span> <span class="ident">Corpus</span>,
-  <span class="doccomment">/// If it exists, the DNM corresponding to this document</span>
-  <span class="kw">pub</span> <span class="ident">dnm</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">DNM</span><span class="op">&gt;</span>,
+<span class="doccomment">/// One of our math documents, thread-friendly
+</span><span class="kw">pub struct </span>Document&lt;<span class="lifetime">&#39;d</span>&gt; {
+  <span class="doccomment">/// The DOM of the document
+  </span><span class="kw">pub </span>dom: XmlDoc,
+  <span class="doccomment">/// The file path of the document
+  </span><span class="kw">pub </span>path: String,
+  <span class="doccomment">/// A reference to the corpus containing this document
+  </span><span class="kw">pub </span>corpus: <span class="kw-2">&amp;</span><span class="lifetime">&#39;d </span>Corpus,
+  <span class="doccomment">/// If it exists, the DNM corresponding to this document
+  </span><span class="kw">pub </span>dnm: <span class="prelude-ty">Option</span>&lt;DNM&gt;,
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;d</span><span class="op">&gt;</span> <span class="ident">Document</span><span class="op">&lt;</span><span class="lifetime">&#39;d</span><span class="op">&gt;</span> {
-  <span class="doccomment">/// Load a new document</span>
-  <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">filepath</span>: <span class="ident">String</span>, <span class="ident">corpus</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;d</span> <span class="ident">Corpus</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span>, <span class="ident">XmlParseError</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="ident">dom</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">filepath</span>.<span class="ident">ends_with</span>(<span class="string">&quot;.xhtml&quot;</span>) {
-      <span class="ident">corpus</span>.<span class="ident">xml_parser</span>.<span class="ident">parse_file</span>(<span class="kw-2">&amp;</span><span class="ident">filepath</span>)<span class="question-mark">?</span>
-    } <span class="kw">else</span> {
-      <span class="ident">corpus</span>.<span class="ident">html_parser</span>.<span class="ident">parse_file</span>(<span class="kw-2">&amp;</span><span class="ident">filepath</span>)<span class="question-mark">?</span>
-    };
+<span class="kw">impl</span>&lt;<span class="lifetime">&#39;d</span>&gt; Document&lt;<span class="lifetime">&#39;d</span>&gt; {
+  <span class="doccomment">/// Load a new document
+  </span><span class="kw">pub fn </span>new(filepath: String, corpus: <span class="kw-2">&amp;</span><span class="lifetime">&#39;d </span>Corpus) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, XmlParseError&gt; {
+    <span class="kw">let </span>dom = <span class="kw">if </span>filepath.ends_with(<span class="string">&quot;.xhtml&quot;</span>) {
+      corpus.xml_parser.parse_file(<span class="kw-2">&amp;</span>filepath)<span class="question-mark">?
+    </span>} <span class="kw">else </span>{
+      corpus.html_parser.parse_file(<span class="kw-2">&amp;</span>filepath)<span class="question-mark">?
+    </span>};
 
-    <span class="prelude-val">Ok</span>(<span class="ident">Document</span> {
-      <span class="ident">path</span>: <span class="ident">filepath</span>,
-      <span class="ident">dom</span>,
-      <span class="ident">corpus</span>,
-      <span class="ident">dnm</span>: <span class="prelude-val">None</span>,
+    <span class="prelude-val">Ok</span>(Document {
+      path: filepath,
+      dom,
+      corpus,
+      dnm: <span class="prelude-val">None</span>,
     })
   }
 
-  <span class="doccomment">/// Obtain the problem-free logical headings of a libxml `Document`</span>
-  <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_heading_nodes</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">RoNode</span><span class="op">&gt;</span> {
-    <span class="ident">Document::heading_nodes</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">dom</span>)
+  <span class="doccomment">/// Obtain the problem-free logical headings of a libxml `Document`
+  </span><span class="kw">pub fn </span>get_heading_nodes(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Vec&lt;RoNode&gt; {
+    Document::heading_nodes(<span class="kw-2">&amp;</span><span class="self">self</span>.dom)
   }
-  <span class="doccomment">/// Associated function for `get_heading_nodes`</span>
-  <span class="kw">fn</span> <span class="ident">heading_nodes</span>(<span class="ident">doc</span>: <span class="kw-2">&amp;</span><span class="ident">XmlDoc</span>) -&gt; <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">RoNode</span><span class="op">&gt;</span> {
-    <span class="ident">Document::xpath_nodes</span>(<span class="ident">doc</span>,
+  <span class="doccomment">/// Associated function for `get_heading_nodes`
+  </span><span class="kw">fn </span>heading_nodes(doc: <span class="kw-2">&amp;</span>XmlDoc) -&gt; Vec&lt;RoNode&gt; {
+    Document::xpath_nodes(doc,
       <span class="string">&quot;//*[contains(@class,&#39;ltx_title&#39;) and not(contains(@class,&#39;ltx_title_document&#39;)) and (local-name()=&#39;h1&#39; or local-name()=&#39;h2&#39; or local-name()=&#39;h3&#39; or local-name()=&#39;h4&#39; or local-name()=&#39;h5&#39; or local-name()=&#39;h6&#39;) and not(descendant::*[contains(@class,&#39;ltx_ERROR&#39;)])]&quot;</span>,
     )
   }
-  <span class="doccomment">/// Get an iterator over the headings of the document</span>
-  <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">heading_iter</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">RoNodeIterator</span> {
-    <span class="ident">RoNodeIterator</span> {
-      <span class="ident">walker</span>: <span class="ident">Document::heading_nodes</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">dom</span>).<span class="ident">into_iter</span>(),
-      <span class="ident">document</span>: <span class="self">self</span>,
+  <span class="doccomment">/// Get an iterator over the headings of the document
+  </span><span class="kw">pub fn </span>heading_iter(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; RoNodeIterator {
+    RoNodeIterator {
+      walker: Document::heading_nodes(<span class="kw-2">&amp;</span><span class="self">self</span>.dom).into_iter(),
+      document: <span class="self">self</span>,
     }
   }
 
-  <span class="doccomment">/// Obtain the problem-free logical paragraphs of a libxml `Document`</span>
-  <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_paragraph_nodes</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">RoNode</span><span class="op">&gt;</span> {
-    <span class="ident">Document::paragraph_nodes</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">dom</span>)
+  <span class="doccomment">/// Obtain the problem-free logical paragraphs of a libxml `Document`
+  </span><span class="kw">pub fn </span>get_paragraph_nodes(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Vec&lt;RoNode&gt; {
+    Document::paragraph_nodes(<span class="kw-2">&amp;</span><span class="self">self</span>.dom)
   }
 
-  <span class="doccomment">/// Associated function for `get_paragraph_nodes`</span>
-  <span class="kw">fn</span> <span class="ident">paragraph_nodes</span>(<span class="ident">doc</span>: <span class="kw-2">&amp;</span><span class="ident">XmlDoc</span>) -&gt; <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">RoNode</span><span class="op">&gt;</span> {
-    <span class="ident">Document::xpath_nodes</span>(<span class="ident">doc</span>,
+  <span class="doccomment">/// Associated function for `get_paragraph_nodes`
+  </span><span class="kw">fn </span>paragraph_nodes(doc: <span class="kw-2">&amp;</span>XmlDoc) -&gt; Vec&lt;RoNode&gt; {
+    Document::xpath_nodes(doc,
       <span class="string">&quot;//*[local-name()=&#39;div&#39; and contains(@class,&#39;ltx_para&#39;) and not(descendant::*[contains(@class,&#39;ltx_ERROR&#39;)]) and not(preceding-sibling::*[contains(@class,&#39;ltx_ERROR&#39;)])]&quot;</span>,
     )
   }
 
-  <span class="doccomment">/// Get an iterator over the paragraphs of the document</span>
-  <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">paragraph_iter</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">RoNodeIterator</span> {
-    <span class="ident">RoNodeIterator</span> {
-      <span class="ident">walker</span>: <span class="ident">Document::paragraph_nodes</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">dom</span>).<span class="ident">into_iter</span>(),
-      <span class="ident">document</span>: <span class="self">self</span>,
+  <span class="doccomment">/// Get an iterator over the paragraphs of the document
+  </span><span class="kw">pub fn </span>paragraph_iter(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; RoNodeIterator {
+    RoNodeIterator {
+      walker: Document::paragraph_nodes(<span class="kw-2">&amp;</span><span class="self">self</span>.dom).into_iter(),
+      document: <span class="self">self</span>,
     }
   }
 
-  <span class="doccomment">/// Obtain the first paragraph of a marked up article abstract (&lt;div class=&quot;ltx_abstract&quot;&gt;&lt;p&gt;)</span>
-  <span class="kw">fn</span> <span class="ident">abstract_p_node</span>(<span class="ident">doc</span>: <span class="kw-2">&amp;</span><span class="ident">XmlDoc</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">RoNode</span><span class="op">&gt;</span> {
-    <span class="ident">Document::xpath_node</span>(<span class="ident">doc</span>,
+  <span class="doccomment">/// Obtain the first paragraph of a marked up article abstract (&lt;div class=&quot;ltx_abstract&quot;&gt;&lt;p&gt;)
+  </span><span class="kw">fn </span>abstract_p_node(doc: <span class="kw-2">&amp;</span>XmlDoc) -&gt; <span class="prelude-ty">Option</span>&lt;RoNode&gt; {
+    Document::xpath_node(doc,
       <span class="string">&quot;//*[local-name()=&#39;div&#39; and contains(@class,&#39;ltx_abstract&#39;) and not(descendant::*[contains(@class,&#39;ltx_ERROR&#39;)])]//*[local-name()=&#39;p&#39; and contains(@class,&#39;ltx_p&#39;)][1]&quot;</span>)
   }
 
-  <span class="doccomment">/// Obtain the first &lt;div class=&#39;ltx_keywords&#39;&gt;text content&lt;/div&gt;</span>
-  <span class="doccomment">/// which remains undetected by the regular paragraph selectors</span>
-  <span class="doccomment">/// as deposited by LaTeXML for the \keywords macro</span>
-  <span class="kw">fn</span> <span class="ident">keywords_node</span>(<span class="ident">doc</span>: <span class="kw-2">&amp;</span><span class="ident">XmlDoc</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">RoNode</span><span class="op">&gt;</span> {
-    <span class="ident">Document::xpath_node</span>(<span class="ident">doc</span>,
+  <span class="doccomment">/// Obtain the first &lt;div class=&#39;ltx_keywords&#39;&gt;text content&lt;/div&gt;
+  /// which remains undetected by the regular paragraph selectors
+  /// as deposited by LaTeXML for the \keywords macro
+  </span><span class="kw">fn </span>keywords_node(doc: <span class="kw-2">&amp;</span>XmlDoc) -&gt; <span class="prelude-ty">Option</span>&lt;RoNode&gt; {
+    Document::xpath_node(doc,
       <span class="string">&quot;//*[local-name()=&#39;div&#39; and contains(@class,&#39;ltx_keywords&#39;) and not(descendant::*[contains(@class,&#39;ltx_ERROR&#39;)])]&quot;</span>)
   }
 
-  <span class="doccomment">/// Obtain the first &lt;div class=&#39;ltx_acknowledgement&#39;&gt;text content&lt;/div&gt;</span>
-  <span class="doccomment">/// which remains undetected by the regular paragraph selectors</span>
-  <span class="doccomment">/// as deposited by LaTeXML for the \acknowledgements macro</span>
-  <span class="kw">fn</span> <span class="ident">acknowledgement_node</span>(<span class="ident">doc</span>: <span class="kw-2">&amp;</span><span class="ident">XmlDoc</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">RoNode</span><span class="op">&gt;</span> {
-    <span class="ident">Document::xpath_node</span>(<span class="ident">doc</span>,
+  <span class="doccomment">/// Obtain the first &lt;div class=&#39;ltx_acknowledgement&#39;&gt;text content&lt;/div&gt;
+  /// which remains undetected by the regular paragraph selectors
+  /// as deposited by LaTeXML for the \acknowledgements macro
+  </span><span class="kw">fn </span>acknowledgement_node(doc: <span class="kw-2">&amp;</span>XmlDoc) -&gt; <span class="prelude-ty">Option</span>&lt;RoNode&gt; {
+    Document::xpath_node(doc,
       <span class="string">&quot;//*[local-name()=&#39;div&#39; and contains(@class,&#39;ltx_acknowledgement&#39;) and not(descendant::*[contains(@class,&#39;ltx_ERROR&#39;)])]&quot;</span>)
   }
 
-  <span class="doccomment">/// Obtains all error-free marked captions (e.g. Figure and Table captions)</span>
-  <span class="kw">fn</span> <span class="ident">caption_nodes</span>(<span class="ident">doc</span>: <span class="kw-2">&amp;</span><span class="ident">XmlDoc</span>) -&gt; <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">RoNode</span><span class="op">&gt;</span> {
-    <span class="ident">Document::xpath_nodes</span>(<span class="ident">doc</span>,
+  <span class="doccomment">/// Obtains all error-free marked captions (e.g. Figure and Table captions)
+  </span><span class="kw">fn </span>caption_nodes(doc: <span class="kw-2">&amp;</span>XmlDoc) -&gt; Vec&lt;RoNode&gt; {
+    Document::xpath_nodes(doc,
     <span class="string">&quot;//*[local-name()=&#39;figcaption&#39; and contains(@class,&#39;ltx_caption&#39;) and not(descendant::*[contains(@class,&#39;ltx_ERROR&#39;)])]&quot;</span>)
   }
 
-  <span class="doccomment">/// Get an iterator over textual paragraphs of the document, in a loose sense,</span>
-  <span class="doccomment">/// contents: abstract (first p), keywords, logical paragraphs, acknowledgement, table/figure</span>
-  <span class="doccomment">/// captions</span>
-  <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">extended_paragraph_iter</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">RoNodeIterator</span> {
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">paras</span> <span class="op">=</span> <span class="ident">Vec::new</span>();
-    <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">anode</span>) <span class="op">=</span> <span class="ident">Document::abstract_p_node</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">dom</span>) {
-      <span class="ident">paras</span>.<span class="ident">push</span>(<span class="ident">anode</span>);
+  <span class="doccomment">/// Get an iterator over textual paragraphs of the document, in a loose sense,
+  /// contents: abstract (first p), keywords, logical paragraphs, acknowledgement, table/figure
+  /// captions
+  </span><span class="kw">pub fn </span>extended_paragraph_iter(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; RoNodeIterator {
+    <span class="kw">let </span><span class="kw-2">mut </span>paras = Vec::new();
+    <span class="kw">if let </span><span class="prelude-val">Some</span>(anode) = Document::abstract_p_node(<span class="kw-2">&amp;</span><span class="self">self</span>.dom) {
+      paras.push(anode);
     }
-    <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">keywords</span>) <span class="op">=</span> <span class="ident">Document::keywords_node</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">dom</span>) {
-      <span class="ident">paras</span>.<span class="ident">push</span>(<span class="ident">keywords</span>);
+    <span class="kw">if let </span><span class="prelude-val">Some</span>(keywords) = Document::keywords_node(<span class="kw-2">&amp;</span><span class="self">self</span>.dom) {
+      paras.push(keywords);
     }
-    <span class="ident">paras</span>.<span class="ident">extend</span>(<span class="ident">Document::paragraph_nodes</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">dom</span>));
-    <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">anode</span>) <span class="op">=</span> <span class="ident">Document::acknowledgement_node</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">dom</span>) {
-      <span class="ident">paras</span>.<span class="ident">push</span>(<span class="ident">anode</span>);
+    paras.extend(Document::paragraph_nodes(<span class="kw-2">&amp;</span><span class="self">self</span>.dom));
+    <span class="kw">if let </span><span class="prelude-val">Some</span>(anode) = Document::acknowledgement_node(<span class="kw-2">&amp;</span><span class="self">self</span>.dom) {
+      paras.push(anode);
     }
-    <span class="ident">paras</span>.<span class="ident">extend</span>(<span class="ident">Document::caption_nodes</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">dom</span>));
+    paras.extend(Document::caption_nodes(<span class="kw-2">&amp;</span><span class="self">self</span>.dom));
 
-    <span class="ident">RoNodeIterator</span> {
-      <span class="ident">walker</span>: <span class="ident">paras</span>.<span class="ident">into_iter</span>(),
-      <span class="ident">document</span>: <span class="self">self</span>,
+    RoNodeIterator {
+      walker: paras.into_iter(),
+      document: <span class="self">self</span>,
     }
-  }
-
-  <span class="doccomment">/// Obtain the MathML &lt;math&gt; nodes of a libxml `Document`</span>
-  <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_math_nodes</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">RoNode</span><span class="op">&gt;</span> {
-    <span class="ident">Document::math_nodes</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">dom</span>)
   }
 
-  <span class="doccomment">/// Associated function for `get_math_nodes`</span>
-  <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">math_nodes</span>(<span class="ident">doc</span>: <span class="kw-2">&amp;</span><span class="ident">XmlDoc</span>) -&gt; <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">RoNode</span><span class="op">&gt;</span> {
-    <span class="ident">Document::xpath_nodes</span>(<span class="ident">doc</span>, <span class="string">&quot;//*[local-name()=&#39;math&#39;]&quot;</span>)
+  <span class="doccomment">/// Obtain the MathML &lt;math&gt; nodes of a libxml `Document`
+  </span><span class="kw">pub fn </span>get_math_nodes(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Vec&lt;RoNode&gt; {
+    Document::math_nodes(<span class="kw-2">&amp;</span><span class="self">self</span>.dom)
   }
-  <span class="doccomment">/// Obtain the &lt;span[class=ltx_ref]&gt; nodes of a libxml `Document`</span>
-  <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_ref_nodes</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">RoNode</span><span class="op">&gt;</span> {
-    <span class="ident">Document::ref_nodes</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">dom</span>)
+
+  <span class="doccomment">/// Associated function for `get_math_nodes`
+  </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>math_nodes(doc: <span class="kw-2">&amp;</span>XmlDoc) -&gt; Vec&lt;RoNode&gt; {
+    Document::xpath_nodes(doc, <span class="string">&quot;//*[local-name()=&#39;math&#39;]&quot;</span>)
   }
-  <span class="doccomment">/// Associated function for `get_ref_nodes`</span>
-  <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">ref_nodes</span>(<span class="ident">doc</span>: <span class="kw-2">&amp;</span><span class="ident">XmlDoc</span>) -&gt; <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">RoNode</span><span class="op">&gt;</span> {
-    <span class="ident">Document::xpath_nodes</span>(<span class="ident">doc</span>,
+  <span class="doccomment">/// Obtain the &lt;span[class=ltx_ref]&gt; nodes of a libxml `Document`
+  </span><span class="kw">pub fn </span>get_ref_nodes(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Vec&lt;RoNode&gt; {
+    Document::ref_nodes(<span class="kw-2">&amp;</span><span class="self">self</span>.dom)
+  }
+  <span class="doccomment">/// Associated function for `get_ref_nodes`
+  </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>ref_nodes(doc: <span class="kw-2">&amp;</span>XmlDoc) -&gt; Vec&lt;RoNode&gt; {
+    Document::xpath_nodes(doc,
     <span class="string">&quot;//*[(local-name()=&#39;span&#39; or local-name()=&#39;a&#39;) and (contains(@class,&#39;ltx_ref &#39;) or @class=&#39;ltx_ref&#39;)]&quot;</span>)
   }
 
-  <span class="doccomment">/// Get an iterator over the sentences of the document</span>
-  <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">sentence_iter</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="ident">DNMRangeIterator</span> {
-    <span class="kw">if</span> <span class="self">self</span>.<span class="ident">dnm</span>.<span class="ident">is_none</span>() {
-      <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">root</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">dom</span>.<span class="ident">get_root_readonly</span>() {
-        <span class="self">self</span>.<span class="ident">dnm</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">DNM::new</span>(<span class="ident">root</span>, <span class="self">self</span>.<span class="ident">corpus</span>.<span class="ident">dnm_parameters</span>.<span class="ident">clone</span>()));
+  <span class="doccomment">/// Get an iterator over the sentences of the document
+  </span><span class="kw">pub fn </span>sentence_iter(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; DNMRangeIterator {
+    <span class="kw">if </span><span class="self">self</span>.dnm.is_none() {
+      <span class="kw">if let </span><span class="prelude-val">Some</span>(root) = <span class="self">self</span>.dom.get_root_readonly() {
+        <span class="self">self</span>.dnm = <span class="prelude-val">Some</span>(DNM::new(root, <span class="self">self</span>.corpus.dnm_parameters.clone()));
       }
     }
-    <span class="kw">let</span> <span class="ident">tokenizer</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">corpus</span>.<span class="ident">tokenizer</span>;
-    <span class="kw">let</span> <span class="ident">sentences</span> <span class="op">=</span> <span class="ident">tokenizer</span>.<span class="ident">sentences</span>(<span class="self">self</span>.<span class="ident">dnm</span>.<span class="ident">as_ref</span>().<span class="ident">unwrap</span>());
-    <span class="ident">DNMRangeIterator</span> {
-      <span class="ident">walker</span>: <span class="ident">sentences</span>.<span class="ident">into_iter</span>(),
-      <span class="ident">document</span>: <span class="self">self</span>,
+    <span class="kw">let </span>tokenizer = <span class="kw-2">&amp;</span><span class="self">self</span>.corpus.tokenizer;
+    <span class="kw">let </span>sentences = tokenizer.sentences(<span class="self">self</span>.dnm.as_ref().unwrap());
+    DNMRangeIterator {
+      walker: sentences.into_iter(),
+      document: <span class="self">self</span>,
     }
   }
 
-  <span class="doccomment">/// Obtain the nodes associated with the xpath evaluation over the underlying libxml `Document`</span>
-  <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_xpath_nodes</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">xpath_str</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) -&gt; <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">RoNode</span><span class="op">&gt;</span> {
-    <span class="ident">Document::xpath_nodes</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">dom</span>, <span class="ident">xpath_str</span>)
+  <span class="doccomment">/// Obtain the nodes associated with the xpath evaluation over the underlying libxml `Document`
+  </span><span class="kw">pub fn </span>get_xpath_nodes(<span class="kw-2">&amp;</span><span class="self">self</span>, xpath_str: <span class="kw-2">&amp;</span>str) -&gt; Vec&lt;RoNode&gt; {
+    Document::xpath_nodes(<span class="kw-2">&amp;</span><span class="self">self</span>.dom, xpath_str)
   }
 
-  <span class="doccomment">/// Associated function for `get_xpath_nodes`</span>
-  <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">xpath_nodes</span>(<span class="ident">doc</span>: <span class="kw-2">&amp;</span><span class="ident">XmlDoc</span>, <span class="ident">xpath_str</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) -&gt; <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">RoNode</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="ident">xpath_context</span> <span class="op">=</span> <span class="ident">Context::new</span>(<span class="ident">doc</span>).<span class="ident">unwrap</span>();
-    <span class="kw">match</span> <span class="ident">xpath_context</span>.<span class="ident">evaluate</span>(<span class="ident">xpath_str</span>) {
-      <span class="prelude-val">Ok</span>(<span class="ident">found_payload</span>) =&gt; <span class="ident">found_payload</span>.<span class="ident">get_readonly_nodes_as_vec</span>(),
-      <span class="kw">_</span> =&gt; <span class="ident">Vec::new</span>(),
+  <span class="doccomment">/// Associated function for `get_xpath_nodes`
+  </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>xpath_nodes(doc: <span class="kw-2">&amp;</span>XmlDoc, xpath_str: <span class="kw-2">&amp;</span>str) -&gt; Vec&lt;RoNode&gt; {
+    <span class="kw">let </span>xpath_context = Context::new(doc).unwrap();
+    <span class="kw">match </span>xpath_context.evaluate(xpath_str) {
+      <span class="prelude-val">Ok</span>(found_payload) =&gt; found_payload.get_readonly_nodes_as_vec(),
+      <span class="kw">_ </span>=&gt; Vec::new(),
     }
   }
 
-  <span class="doccomment">/// Obtain the first node associated with the xpath evaluation over the underlying libxml</span>
-  <span class="doccomment">/// `Document`</span>
-  <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_xpath_node</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">xpath_str</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">RoNode</span><span class="op">&gt;</span> {
-    <span class="ident">Document::xpath_node</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">dom</span>, <span class="ident">xpath_str</span>)
+  <span class="doccomment">/// Obtain the first node associated with the xpath evaluation over the underlying libxml
+  /// `Document`
+  </span><span class="kw">pub fn </span>get_xpath_node(<span class="kw-2">&amp;</span><span class="self">self</span>, xpath_str: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Option</span>&lt;RoNode&gt; {
+    Document::xpath_node(<span class="kw-2">&amp;</span><span class="self">self</span>.dom, xpath_str)
   }
 
-  <span class="doccomment">/// Associated function for `get_xpath_nodes`</span>
-  <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">xpath_node</span>(<span class="ident">doc</span>: <span class="kw-2">&amp;</span><span class="ident">XmlDoc</span>, <span class="ident">xpath_str</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">RoNode</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="ident">xpath_context</span> <span class="op">=</span> <span class="ident">Context::new</span>(<span class="ident">doc</span>).<span class="ident">unwrap</span>();
-    <span class="kw">match</span> <span class="ident">xpath_context</span>.<span class="ident">evaluate</span>(<span class="ident">xpath_str</span>) {
-      <span class="prelude-val">Ok</span>(<span class="ident">found_payload</span>) =&gt; {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">vec_nodes</span> <span class="op">=</span> <span class="ident">found_payload</span>.<span class="ident">get_readonly_nodes_as_vec</span>();
-        <span class="kw">if</span> <span class="op">!</span><span class="ident">vec_nodes</span>.<span class="ident">is_empty</span>() {
-          <span class="prelude-val">Some</span>(<span class="ident">vec_nodes</span>.<span class="ident">remove</span>(<span class="number">0</span>))
-        } <span class="kw">else</span> {
-          <span class="prelude-val">None</span>
-        }
+  <span class="doccomment">/// Associated function for `get_xpath_nodes`
+  </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>xpath_node(doc: <span class="kw-2">&amp;</span>XmlDoc, xpath_str: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Option</span>&lt;RoNode&gt; {
+    <span class="kw">let </span>xpath_context = Context::new(doc).unwrap();
+    <span class="kw">match </span>xpath_context.evaluate(xpath_str) {
+      <span class="prelude-val">Ok</span>(found_payload) =&gt; {
+        <span class="kw">let </span><span class="kw-2">mut </span>vec_nodes = found_payload.get_readonly_nodes_as_vec();
+        <span class="kw">if </span>!vec_nodes.is_empty() {
+          <span class="prelude-val">Some</span>(vec_nodes.remove(<span class="number">0</span>))
+        } <span class="kw">else </span>{
+          <span class="prelude-val">None
+        </span>}
       }
-      <span class="kw">_</span> =&gt; <span class="prelude-val">None</span>,
+      <span class="kw">_ </span>=&gt; <span class="prelude-val">None</span>,
     }
   }
 
-  <span class="doccomment">/// Get an iterator over a custom xpath selector over the document</span>
-  <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">xpath_selector_iter</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">xpath_str</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) -&gt; <span class="ident">RoNodeIterator</span> {
-    <span class="ident">RoNodeIterator</span> {
-      <span class="ident">walker</span>: <span class="ident">Document::xpath_nodes</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">dom</span>, <span class="ident">xpath_str</span>).<span class="ident">into_iter</span>(),
-      <span class="ident">document</span>: <span class="self">self</span>,
+  <span class="doccomment">/// Get an iterator over a custom xpath selector over the document
+  </span><span class="kw">pub fn </span>xpath_selector_iter(<span class="kw-2">&amp;</span><span class="self">self</span>, xpath_str: <span class="kw-2">&amp;</span>str) -&gt; RoNodeIterator {
+    RoNodeIterator {
+      walker: Document::xpath_nodes(<span class="kw-2">&amp;</span><span class="self">self</span>.dom, xpath_str).into_iter(),
+      document: <span class="self">self</span>,
     }
   }
 
-  <span class="doccomment">/// Associated function for `get_filtered_nodes`</span>
-  <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">dfs_filter_nodes</span>(<span class="ident">node</span>: <span class="ident">RoNode</span>, <span class="ident">filter</span>: <span class="kw-2">&amp;</span><span class="kw">dyn</span> <span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="ident">RoNode</span>) -&gt; <span class="ident">bool</span>) -&gt; <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">RoNode</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">found</span> <span class="op">=</span> <span class="ident">Vec::new</span>();
-    <span class="kw">if</span> <span class="ident">filter</span>(<span class="kw-2">&amp;</span><span class="ident">node</span>) {
-      <span class="ident">found</span>.<span class="ident">push</span>(<span class="ident">node</span>);
+  <span class="doccomment">/// Associated function for `get_filtered_nodes`
+  </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn </span>dfs_filter_nodes(node: RoNode, filter: <span class="kw-2">&amp;</span><span class="kw">dyn </span>Fn(<span class="kw-2">&amp;</span>RoNode) -&gt; bool) -&gt; Vec&lt;RoNode&gt; {
+    <span class="kw">let </span><span class="kw-2">mut </span>found = Vec::new();
+    <span class="kw">if </span>filter(<span class="kw-2">&amp;</span>node) {
+      found.push(node);
     }
-    <span class="kw">for</span> <span class="ident">child</span> <span class="kw">in</span> <span class="ident">node</span>.<span class="ident">get_child_nodes</span>().<span class="ident">into_iter</span>() {
-      <span class="ident">found</span>.<span class="ident">extend</span>(<span class="ident">Document::dfs_filter_nodes</span>(<span class="ident">child</span>, <span class="ident">filter</span>));
+    <span class="kw">for </span>child <span class="kw">in </span>node.get_child_nodes().into_iter() {
+      found.extend(Document::dfs_filter_nodes(child, filter));
     }
-    <span class="ident">found</span>
+    found
   }
 
-  <span class="doccomment">/// Get an iterator using a custom closure predicate filter over the document (depth-first</span>
-  <span class="doccomment">/// descent)</span>
-  <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">filter_iter</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">filter</span>: <span class="kw-2">&amp;</span><span class="kw">dyn</span> <span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="ident">RoNode</span>) -&gt; <span class="ident">bool</span>) -&gt; <span class="ident">RoNodeIterator</span> {
-    <span class="comment">// TODO: Can this be lazy? Eager for now...</span>
-    <span class="ident">RoNodeIterator</span> {
-      <span class="ident">walker</span>: <span class="ident">Document::dfs_filter_nodes</span>(<span class="self">self</span>.<span class="ident">dom</span>.<span class="ident">get_root_readonly</span>().<span class="ident">unwrap</span>(), <span class="ident">filter</span>).<span class="ident">into_iter</span>(),
-      <span class="ident">document</span>: <span class="self">self</span>,
+  <span class="doccomment">/// Get an iterator using a custom closure predicate filter over the document (depth-first
+  /// descent)
+  </span><span class="kw">pub fn </span>filter_iter(<span class="kw-2">&amp;</span><span class="self">self</span>, filter: <span class="kw-2">&amp;</span><span class="kw">dyn </span>Fn(<span class="kw-2">&amp;</span>RoNode) -&gt; bool) -&gt; RoNodeIterator {
+    <span class="comment">// TODO: Can this be lazy? Eager for now...
+    </span>RoNodeIterator {
+      walker: Document::dfs_filter_nodes(<span class="self">self</span>.dom.get_root_readonly().unwrap(), filter).into_iter(),
+      document: <span class="self">self</span>,
     }
   }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="llamapun" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.63.0 (4b91a6ea7 2022-08-08)" ></div>
-</body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="llamapun" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0 (897e37553 2022-11-02)" ></div></body></html>

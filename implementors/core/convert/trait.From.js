@@ -1,3 +1,3 @@
-(function() {var implementors = {};
-implementors["llamapun"] = [{"text":"impl <a class=\"trait\" href=\"https://doc.rust-lang.org/1.63.0/core/convert/trait.From.html\" title=\"trait core::convert::From\">From</a>&lt;&amp;<a class=\"primitive\" href=\"https://doc.rust-lang.org/1.63.0/std/primitive.str.html\">str</a>&gt; for <a class=\"enum\" href=\"llamapun/ams/enum.StructuralEnv.html\" title=\"enum llamapun::ams::StructuralEnv\">StructuralEnv</a>","synthetic":false,"types":["llamapun::ams::StructuralEnv"]}];
-if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()
+(function() {var implementors = {
+"llamapun":[["impl <a class=\"trait\" href=\"https://doc.rust-lang.org/1.65.0/core/convert/trait.From.html\" title=\"trait core::convert::From\">From</a>&lt;&amp;<a class=\"primitive\" href=\"https://doc.rust-lang.org/1.65.0/std/primitive.str.html\">str</a>&gt; for <a class=\"enum\" href=\"llamapun/ams/enum.StructuralEnv.html\" title=\"enum llamapun::ams::StructuralEnv\">StructuralEnv</a>"]]
+};if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()

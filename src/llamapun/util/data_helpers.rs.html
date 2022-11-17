@@ -1,10 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/util/data_helpers.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>data_helpers.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../llamapun/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div>
-        </a><h2 class="location"></h2>
-    </nav>
-    <nav class="sidebar"><a class="sidebar-logo" href="../../../llamapun/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div>
-        </a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../llamapun/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><button type="button" id="help-button" title="help">?</button><div id="settings-menu" tabindex="-1">
-                                <a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div>
-                        </div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/util/data_helpers.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>data_helpers.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../llamapun/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../llamapun/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../llamapun/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -287,289 +281,288 @@
 <span id="281">281</span>
 <span id="282">282</span>
 <span id="283">283</span>
-</pre><pre class="rust"><code><span class="doccomment">//! Helpers with transactional logic related to llamapun::data</span>
-<span class="doccomment">//! which doesn&#39;t fit with the main structs</span>
-<span class="doccomment">//! TODO: May be reorganized better with some more thought, same as path_helpers</span>
+</pre><pre class="rust"><code><span class="doccomment">//! Helpers with transactional logic related to llamapun::data
+//! which doesn&#39;t fit with the main structs
+//! TODO: May be reorganized better with some more thought, same as path_helpers
 
-<span class="kw">use</span> <span class="ident">lazy_static::lazy_static</span>;
-<span class="kw">use</span> <span class="ident">libxml::readonly::RoNode</span>;
-<span class="kw">use</span> <span class="ident">libxml::xpath::Context</span>;
-<span class="kw">use</span> <span class="ident">regex::Regex</span>;
-<span class="kw">use</span> <span class="ident">std::error::Error</span>;
-<span class="kw">use</span> <span class="ident">whatlang</span>::{<span class="ident">detect</span>, <span class="ident">Lang</span>, <span class="ident">Script</span>};
+</span><span class="kw">use </span>lazy_static::lazy_static;
+<span class="kw">use </span>libxml::readonly::RoNode;
+<span class="kw">use </span>libxml::xpath::Context;
+<span class="kw">use </span>regex::Regex;
+<span class="kw">use </span>std::error::Error;
+<span class="kw">use </span>whatlang::{detect, Lang, Script};
 
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::dnm</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::dnm</span>::{<span class="ident">DNMParameters</span>, <span class="ident">DNMRange</span>, <span class="ident">DNM</span>};
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::tokenizer::Tokenizer</span>;
+<span class="kw">use </span><span class="kw">crate</span>::dnm;
+<span class="kw">use </span><span class="kw">crate</span>::dnm::{DNMParameters, DNMRange, DNM};
+<span class="kw">use </span><span class="kw">crate</span>::tokenizer::Tokenizer;
 
-<span class="comment">// Integers, floats, subfigure numbers</span>
-<span class="macro">lazy_static!</span> {
-  <span class="kw">static</span> <span class="kw-2">ref</span> <span class="ident">IS_NUMERIC</span>: <span class="ident">Regex</span> <span class="op">=</span>
-    <span class="ident">Regex::new</span>(<span class="string">r&quot;^-?(?:\d+)(?:[a-k]|(?:\.\d+(?:[eE][+-]?\d+)?))?$&quot;</span>).<span class="ident">unwrap</span>();
-  <span class="kw">static</span> <span class="kw-2">ref</span> <span class="ident">IS_NUM</span>: <span class="ident">Regex</span> <span class="op">=</span> <span class="ident">Regex::new</span>(<span class="string">r&quot;\s*NUM\s*&quot;</span>).<span class="ident">unwrap</span>();
-  <span class="kw">static</span> <span class="kw-2">ref</span> <span class="ident">ROMAN_NUMERAL</span>: <span class="ident">Regex</span> <span class="op">=</span> <span class="ident">Regex::new</span>(<span class="string">r&quot;(^|\s)[xiv]*(\s|$)&quot;</span>).<span class="ident">unwrap</span>();
-  <span class="kw">static</span> <span class="kw-2">ref</span> <span class="ident">SINGLE_LEAD_LETTER</span>: <span class="ident">Regex</span> <span class="op">=</span> <span class="ident">Regex::new</span>(<span class="string">r&quot;(^|\s)[abcdefghijklmnop](\s|$)&quot;</span>).<span class="ident">unwrap</span>();
-  <span class="kw">static</span> <span class="kw-2">ref</span> <span class="ident">SINGLE_TRAIL_LETTER</span>: <span class="ident">Regex</span> <span class="op">=</span> <span class="ident">Regex::new</span>(<span class="string">r&quot;\s[abcdefghijklmnop]$&quot;</span>).<span class="ident">unwrap</span>();
-  <span class="kw">static</span> <span class="kw-2">ref</span> <span class="ident">LEAD_FIXED_PHRASE</span>: <span class="ident">Regex</span> <span class="op">=</span> <span class="ident">Regex::new</span>(<span class="string">r&quot;^(comparison with|(?:list|summary|outline|sketch|overview|start|end) of|general|other|additional|completion|finishing|first|second|third|new|alternative|chapter|section|some|basic|closely|an|our|the)\s&quot;</span>).<span class="ident">unwrap</span>();
-  <span class="kw">static</span> <span class="kw-2">ref</span> <span class="ident">TRAILING_FIXED_WORD</span>: <span class="ident">Regex</span> <span class="op">=</span> <span class="ident">Regex::new</span>(<span class="string">r&quot;\s(see|of|for|of the paper)$&quot;</span>).<span class="ident">unwrap</span>();
-  <span class="kw">static</span> <span class="kw-2">ref</span> <span class="ident">COMMON_PLURALS</span> : <span class="ident">Regex</span> <span class="op">=</span> <span class="ident">Regex::new</span>(
-    <span class="string">r&quot;(a(?:xiom|lgorithm|ssumption|pplication)|con(?:jecture|dition|clusion|tribution)|d(?:ata\s?set|efinition|iscussion)|e(?:xperiment|xample|xercise)|lemma|m(?:odel|ethod|otivation)|notation|observation|pr(?:oof|oposition|oblem)|question|re(?:sult|mark)|s(?:ubject|tep|imulation)|theorem|work)s(?:\s|$)&quot;</span>
-  ).<span class="ident">unwrap</span>();
+<span class="comment">// Integers, floats, subfigure numbers
+</span><span class="macro">lazy_static! </span>{
+  <span class="kw">static </span><span class="kw-2">ref </span>IS_NUMERIC: Regex =
+    Regex::new(<span class="string">r&quot;^-?(?:\d+)(?:[a-k]|(?:\.\d+(?:[eE][+-]?\d+)?))?$&quot;</span>).unwrap();
+  <span class="kw">static </span><span class="kw-2">ref </span>IS_NUM: Regex = Regex::new(<span class="string">r&quot;\s*NUM\s*&quot;</span>).unwrap();
+  <span class="kw">static </span><span class="kw-2">ref </span>ROMAN_NUMERAL: Regex = Regex::new(<span class="string">r&quot;(^|\s)[xiv]*(\s|$)&quot;</span>).unwrap();
+  <span class="kw">static </span><span class="kw-2">ref </span>SINGLE_LEAD_LETTER: Regex = Regex::new(<span class="string">r&quot;(^|\s)[abcdefghijklmnop](\s|$)&quot;</span>).unwrap();
+  <span class="kw">static </span><span class="kw-2">ref </span>SINGLE_TRAIL_LETTER: Regex = Regex::new(<span class="string">r&quot;\s[abcdefghijklmnop]$&quot;</span>).unwrap();
+  <span class="kw">static </span><span class="kw-2">ref </span>LEAD_FIXED_PHRASE: Regex = Regex::new(<span class="string">r&quot;^(comparison with|(?:list|summary|outline|sketch|overview|start|end) of|general|other|additional|completion|finishing|first|second|third|new|alternative|chapter|section|some|basic|closely|an|our|the)\s&quot;</span>).unwrap();
+  <span class="kw">static </span><span class="kw-2">ref </span>TRAILING_FIXED_WORD: Regex = Regex::new(<span class="string">r&quot;\s(see|of|for|of the paper)$&quot;</span>).unwrap();
+  <span class="kw">static </span><span class="kw-2">ref </span>COMMON_PLURALS : Regex = Regex::new(
+    <span class="string">r&quot;(a(?:xiom|lgorithm|ssumption|pplication)|con(?:jecture|dition|clusion|tribution)|d(?:ata\s?set|efinition|iscussion)|e(?:xperiment|xample|xercise)|lemma|m(?:odel|ethod|otivation)|notation|observation|pr(?:oof|oposition|oblem)|question|re(?:sult|mark)|s(?:ubject|tep|imulation)|theorem|work)s(?:\s|$)&quot;
+  </span>).unwrap();
 }
 
-<span class="kw">static</span> <span class="ident">MAX_WORD_LENGTH</span>: <span class="ident">usize</span> <span class="op">=</span> <span class="number">25</span>;
+<span class="kw">static </span>MAX_WORD_LENGTH: usize = <span class="number">25</span>;
 
-<span class="doccomment">/// Options for lexical normalization on an individual word</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">LexicalOptions</span> {
-  <span class="doccomment">/// math will be entirely omitted when set</span>
-  <span class="kw">pub</span> <span class="ident">discard_math</span>: <span class="ident">bool</span>,
-  <span class="doccomment">/// non-alphanumeric characters will be entirely omitted when set</span>
-  <span class="kw">pub</span> <span class="ident">discard_punct</span>: <span class="ident">bool</span>,
-  <span class="doccomment">/// all letters will be lowercased when set</span>
-  <span class="kw">pub</span> <span class="ident">discard_case</span>: <span class="ident">bool</span>,
+<span class="doccomment">/// Options for lexical normalization on an individual word
+</span><span class="kw">pub struct </span>LexicalOptions {
+  <span class="doccomment">/// math will be entirely omitted when set
+  </span><span class="kw">pub </span>discard_math: bool,
+  <span class="doccomment">/// non-alphanumeric characters will be entirely omitted when set
+  </span><span class="kw">pub </span>discard_punct: bool,
+  <span class="doccomment">/// all letters will be lowercased when set
+  </span><span class="kw">pub </span>discard_case: bool,
 }
-<span class="kw">impl</span> <span class="ident">Default</span> <span class="kw">for</span> <span class="ident">LexicalOptions</span> {
-  <span class="kw">fn</span> <span class="ident">default</span>() -&gt; <span class="self">Self</span> {
-    <span class="ident">LexicalOptions</span> {
-      <span class="ident">discard_math</span>: <span class="bool-val">false</span>,
-      <span class="ident">discard_punct</span>: <span class="bool-val">true</span>,
-      <span class="ident">discard_case</span>: <span class="bool-val">true</span>,
+<span class="kw">impl </span>Default <span class="kw">for </span>LexicalOptions {
+  <span class="kw">fn </span>default() -&gt; <span class="self">Self </span>{
+    LexicalOptions {
+      discard_math: <span class="bool-val">false</span>,
+      discard_punct: <span class="bool-val">true</span>,
+      discard_case: <span class="bool-val">true</span>,
     }
   }
 }
-<span class="doccomment">/// Normalization of word lexemes created for the &quot;AMS paragraph classification&quot; experiment</span>
-<span class="doccomment">/// operating on a DNMRange representation</span>
-<span class="doccomment">/// - numeric literals are replaced by NUM</span>
-<span class="doccomment">/// - citations become citationelement</span>
-<span class="doccomment">/// - math is replaced by its lexeme annotation (created by latexml), with a &quot;mathformula&quot; fallback</span>
-<span class="doccomment">/// - of the word is longer than the max length of 25, an error is returned</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">ams_normalize_word_range</span>(
-  <span class="ident">range</span>: <span class="kw-2">&amp;</span><span class="ident">DNMRange</span>,
-  <span class="ident">context</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Context</span>,
-  <span class="ident">options</span>: <span class="ident">LexicalOptions</span>,
-) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">Box</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">Error</span><span class="op">&gt;</span><span class="op">&gt;</span> {
-  <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">word_string</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">options</span>.<span class="ident">discard_punct</span> {
-    <span class="ident">range</span>
-      .<span class="ident">get_plaintext</span>()
-      .<span class="ident">to_lowercase</span>()
-      .<span class="ident">chars</span>()
-      .<span class="ident">filter</span>(<span class="op">|</span><span class="ident">c</span><span class="op">|</span> <span class="ident">c</span>.<span class="ident">is_alphanumeric</span>()) <span class="comment">// drop apostrophes, other noise?</span>
-      .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>()
-  } <span class="kw">else</span> {
-    <span class="ident">range</span>.<span class="ident">get_plaintext</span>().<span class="ident">to_lowercase</span>()
+<span class="doccomment">/// Normalization of word lexemes created for the &quot;AMS paragraph classification&quot; experiment
+/// operating on a DNMRange representation
+/// - numeric literals are replaced by NUM
+/// - citations become citationelement
+/// - math is replaced by its lexeme annotation (created by latexml), with a &quot;mathformula&quot; fallback
+/// - of the word is longer than the max length of 25, an error is returned
+</span><span class="kw">pub fn </span>ams_normalize_word_range(
+  range: <span class="kw-2">&amp;</span>DNMRange,
+  context: <span class="kw-2">&amp;mut </span>Context,
+  options: LexicalOptions,
+) -&gt; <span class="prelude-ty">Result</span>&lt;String, Box&lt;<span class="kw">dyn </span>Error&gt;&gt; {
+  <span class="kw">let </span><span class="kw-2">mut </span>word_string = <span class="kw">if </span>options.discard_punct {
+    range
+      .get_plaintext()
+      .to_lowercase()
+      .chars()
+      .filter(|c| c.is_alphanumeric()) <span class="comment">// drop apostrophes, other noise?
+      </span>.collect::&lt;String&gt;()
+  } <span class="kw">else </span>{
+    range.get_plaintext().to_lowercase()
   };
-  <span class="kw">if</span> <span class="ident">word_string</span>.<span class="ident">len</span>() <span class="op">&gt;</span> <span class="ident">MAX_WORD_LENGTH</span> {
-    <span class="comment">// Using a more aggressive normalization, large words tend to be conversion</span>
-    <span class="comment">// errors with lost whitespace - drop the entire paragraph when this occurs.</span>
-    <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="string">&quot;exceeded max length&quot;</span>.<span class="ident">into</span>());
+  <span class="kw">if </span>word_string.len() &gt; MAX_WORD_LENGTH {
+    <span class="comment">// Using a more aggressive normalization, large words tend to be conversion
+    // errors with lost whitespace - drop the entire paragraph when this occurs.
+    </span><span class="kw">return </span><span class="prelude-val">Err</span>(<span class="string">&quot;exceeded max length&quot;</span>.into());
   }
 
-  <span class="comment">// Note: the formula and citation counts are an approximate lower bound, as</span>
-  <span class="comment">// sometimes they are not cleanly tokenized, e.g. $k$-dimensional</span>
-  <span class="comment">// will be the word string &quot;mathformula-dimensional&quot;</span>
-  <span class="kw">if</span> <span class="ident">word_string</span>.<span class="ident">contains</span>(<span class="string">&quot;mathformula&quot;</span>) {
-    <span class="kw">if</span> <span class="ident">options</span>.<span class="ident">discard_math</span> {
-      <span class="ident">word_string</span> <span class="op">=</span> <span class="ident">String::new</span>();
-    } <span class="kw">else</span> {
-      <span class="ident">word_string</span> <span class="op">=</span> <span class="ident">dnm::node::lexematize_math</span>(<span class="ident">range</span>.<span class="ident">get_node</span>(), <span class="ident">context</span>);
+  <span class="comment">// Note: the formula and citation counts are an approximate lower bound, as
+  // sometimes they are not cleanly tokenized, e.g. $k$-dimensional
+  // will be the word string &quot;mathformula-dimensional&quot;
+  </span><span class="kw">if </span>word_string.contains(<span class="string">&quot;mathformula&quot;</span>) {
+    <span class="kw">if </span>options.discard_math {
+      word_string = String::new();
+    } <span class="kw">else </span>{
+      word_string = dnm::node::lexematize_math(range.get_node(), context);
     }
-  } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">word_string</span>.<span class="ident">contains</span>(<span class="string">&quot;citationelement&quot;</span>) {
-    <span class="ident">word_string</span> <span class="op">=</span> <span class="ident">String::from</span>(<span class="string">&quot;citationelement&quot;</span>);
-  } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">IS_NUMERIC</span>.<span class="ident">is_match</span>(<span class="kw-2">&amp;</span><span class="ident">word_string</span>) {
-    <span class="ident">word_string</span> <span class="op">=</span> <span class="ident">String::from</span>(<span class="string">&quot;NUM&quot;</span>);
+  } <span class="kw">else if </span>word_string.contains(<span class="string">&quot;citationelement&quot;</span>) {
+    word_string = String::from(<span class="string">&quot;citationelement&quot;</span>);
+  } <span class="kw">else if </span>IS_NUMERIC.is_match(<span class="kw-2">&amp;</span>word_string) {
+    word_string = String::from(<span class="string">&quot;NUM&quot;</span>);
   }
 
-  <span class="prelude-val">Ok</span>(<span class="ident">word_string</span>)
+  <span class="prelude-val">Ok</span>(word_string)
 }
 
-<span class="doccomment">/// Provides a string for a given heading node, using DNM-enabled word-tokenization</span>
-<span class="doccomment">/// TODO: This is a low-level auxiliary function, we may need to build more user-facing interfaces</span>
-<span class="doccomment">/// if it becomes more widely useful</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">heading_from_node_aux</span>(
-  <span class="ident">node</span>: <span class="ident">RoNode</span>,
-  <span class="ident">tokenizer</span>: <span class="kw-2">&amp;</span><span class="ident">Tokenizer</span>,
-  <span class="ident">context</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Context</span>,
-) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
-  <span class="kw">let</span> <span class="ident">heading_dnm</span> <span class="op">=</span> <span class="ident">DNM::new</span>(<span class="ident">node</span>, <span class="ident">DNMParameters::llamapun_normalization</span>());
-  <span class="kw">let</span> <span class="ident">heading_range</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">heading_dnm</span>.<span class="ident">get_range</span>() {
-    <span class="prelude-val">Ok</span>(<span class="ident">range</span>) =&gt; <span class="ident">range</span>,
-    <span class="kw">_</span> =&gt; <span class="kw">return</span> <span class="prelude-val">None</span>,
+<span class="doccomment">/// Provides a string for a given heading node, using DNM-enabled word-tokenization
+/// TODO: This is a low-level auxiliary function, we may need to build more user-facing interfaces
+/// if it becomes more widely useful
+</span><span class="kw">pub fn </span>heading_from_node_aux(
+  node: RoNode,
+  tokenizer: <span class="kw-2">&amp;</span>Tokenizer,
+  context: <span class="kw-2">&amp;mut </span>Context,
+) -&gt; <span class="prelude-ty">Option</span>&lt;String&gt; {
+  <span class="kw">let </span>heading_dnm = DNM::new(node, DNMParameters::llamapun_normalization());
+  <span class="kw">let </span>heading_range = <span class="kw">match </span>heading_dnm.get_range() {
+    <span class="prelude-val">Ok</span>(range) =&gt; range,
+    <span class="kw">_ </span>=&gt; <span class="kw">return </span><span class="prelude-val">None</span>,
   };
-  <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">heading_text</span> <span class="op">=</span> <span class="ident">String::new</span>();
-  <span class="kw">for</span> <span class="ident">word_range</span> <span class="kw">in</span> <span class="ident">tokenizer</span>.<span class="ident">words</span>(<span class="kw-2">&amp;</span><span class="ident">heading_range</span>) {
-    <span class="kw">if</span> <span class="ident">word_range</span>.<span class="ident">is_empty</span>() {
+  <span class="kw">let </span><span class="kw-2">mut </span>heading_text = String::new();
+  <span class="kw">for </span>word_range <span class="kw">in </span>tokenizer.words(<span class="kw-2">&amp;</span>heading_range) {
+    <span class="kw">if </span>word_range.is_empty() {
       <span class="kw">continue</span>;
     }
-    <span class="kw">let</span> <span class="ident">heading_word</span> <span class="op">=</span>
-      <span class="kw">match</span> <span class="ident">ams_normalize_word_range</span>(<span class="kw-2">&amp;</span><span class="ident">word_range</span>, <span class="ident">context</span>, <span class="ident">LexicalOptions::default</span>()) {
-        <span class="prelude-val">Ok</span>(<span class="ident">w</span>) =&gt; <span class="ident">w</span>,
-        <span class="prelude-val">Err</span>(<span class="kw">_</span>) =&gt; <span class="kw">return</span> <span class="prelude-val">None</span>,
+    <span class="kw">let </span>heading_word =
+      <span class="kw">match </span>ams_normalize_word_range(<span class="kw-2">&amp;</span>word_range, context, LexicalOptions::default()) {
+        <span class="prelude-val">Ok</span>(w) =&gt; w,
+        <span class="prelude-val">Err</span>(<span class="kw">_</span>) =&gt; <span class="kw">return </span><span class="prelude-val">None</span>,
       };
-    <span class="kw">if</span> <span class="op">!</span><span class="ident">heading_word</span>.<span class="ident">is_empty</span>() <span class="op">&amp;&amp;</span> <span class="ident">heading_word</span> <span class="op">!</span><span class="op">=</span> <span class="string">&quot;NUM&quot;</span> {
-      <span class="ident">heading_text</span>.<span class="ident">push_str</span>(<span class="kw-2">&amp;</span><span class="ident">heading_word</span>);
-      <span class="ident">heading_text</span>.<span class="ident">push</span>(<span class="string">&#39; &#39;</span>);
+    <span class="kw">if </span>!heading_word.is_empty() &amp;&amp; heading_word != <span class="string">&quot;NUM&quot; </span>{
+      heading_text.push_str(<span class="kw-2">&amp;</span>heading_word);
+      heading_text.push(<span class="string">&#39; &#39;</span>);
     }
   }
-  <span class="prelude-val">Some</span>(<span class="ident">heading_text</span>)
+  <span class="prelude-val">Some</span>(heading_text)
 }
 
-<span class="doccomment">/// Attempt to recover the &quot;type&quot; of a potentially specialized heading,</span>
-<span class="doccomment">/// e.g. &quot;definition xiii a&quot;-&gt;&quot;definition&quot;</span>
-<span class="attribute">#[<span class="ident">allow</span>(<span class="ident">clippy::cognitive_complexity</span>)]</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">normalize_heading_title</span>(<span class="ident">heading</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) -&gt; <span class="ident">String</span> {
-  <span class="kw">let</span> <span class="ident">simple_heading</span> <span class="op">=</span> <span class="ident">ROMAN_NUMERAL</span>.<span class="ident">replace_all</span>(<span class="ident">heading</span>.<span class="ident">trim</span>(), <span class="string">&quot;&quot;</span>);
-  <span class="kw">let</span> <span class="ident">simple_heading</span> <span class="op">=</span> <span class="ident">IS_NUM</span>.<span class="ident">replace_all</span>(<span class="ident">simple_heading</span>.<span class="ident">trim</span>(), <span class="string">&quot; &quot;</span>);
-  <span class="kw">let</span> <span class="ident">simple_heading</span> <span class="op">=</span> <span class="ident">SINGLE_LEAD_LETTER</span>.<span class="ident">replace_all</span>(<span class="ident">simple_heading</span>.<span class="ident">trim</span>(), <span class="string">&quot;&quot;</span>);
-  <span class="kw">let</span> <span class="ident">simple_heading</span> <span class="op">=</span> <span class="ident">SINGLE_TRAIL_LETTER</span>.<span class="ident">replace_all</span>(<span class="ident">simple_heading</span>.<span class="ident">trim</span>(), <span class="string">&quot;&quot;</span>);
-  <span class="kw">let</span> <span class="ident">simple_heading</span> <span class="op">=</span> <span class="ident">LEAD_FIXED_PHRASE</span>.<span class="ident">replace_all</span>(<span class="ident">simple_heading</span>.<span class="ident">trim</span>(), <span class="string">&quot;&quot;</span>);
-  <span class="kw">let</span> <span class="ident">simple_heading</span> <span class="op">=</span> <span class="ident">TRAILING_FIXED_WORD</span>.<span class="ident">replace_all</span>(<span class="ident">simple_heading</span>.<span class="ident">trim</span>(), <span class="string">&quot;&quot;</span>);
-  <span class="kw">let</span> <span class="ident">simple_heading</span> <span class="op">=</span> <span class="ident">COMMON_PLURALS</span>.<span class="ident">replace_all</span>(<span class="ident">simple_heading</span>.<span class="ident">trim</span>(), <span class="string">&quot;$1&quot;</span>);
-  <span class="kw">if</span> <span class="ident">simple_heading</span>.<span class="ident">is_empty</span>() {
-    <span class="comment">// quick exit if empty</span>
-    <span class="ident">String::new</span>()
-  } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">simple_heading</span> <span class="op">!</span><span class="op">=</span> <span class="ident">heading</span> {
-    <span class="comment">// if the individual regexes reduced the heading, try them again, since we may have intermixed cases</span>
-    <span class="ident">normalize_heading_title</span>(<span class="kw-2">&amp;</span><span class="ident">simple_heading</span>)
-  } <span class="kw">else</span> {
-    <span class="comment">// Otherwise, just look for simple variations of known cases, or return as-is:</span>
-    <span class="kw">match</span> <span class="ident">simple_heading</span>.<span class="ident">as_ref</span>() {
-      <span class="comment">// ignore non-English</span>
-      <span class="string">&quot;lemme&quot;</span> <span class="op">|</span> <span class="string">&quot;remarque&quot;</span> <span class="op">|</span> <span class="string">&quot;corollaire&quot;</span> <span class="op">|</span> <span class="string">&quot;dokazatelstvo&quot;</span> =&gt; <span class="string">&quot;&quot;</span>,
-      <span class="comment">// synonyms</span>
-      <span class="string">&quot;hypothesis&quot;</span> <span class="op">|</span> <span class="string">&quot;hypotheses&quot;</span> =&gt; <span class="string">&quot;conjecture&quot;</span>,
-      <span class="string">&quot;implementation details&quot;</span> =&gt; <span class="string">&quot;implementation&quot;</span>,
-      <span class="string">&quot;mathematics subject classification&quot;</span> <span class="op">|</span> <span class="string">&quot;subject headings&quot;</span> =&gt; <span class="string">&quot;subject&quot;</span>,
-      <span class="string">&quot;bibliography&quot;</span> =&gt; <span class="string">&quot;references&quot;</span>,
-      <span class="string">&quot;previous work&quot;</span> <span class="op">|</span> <span class="string">&quot;prior work&quot;</span> <span class="op">|</span> <span class="string">&quot;related literature&quot;</span> <span class="op">|</span> <span class="string">&quot;related research&quot;</span>
-      <span class="op">|</span> <span class="string">&quot;related studies&quot;</span> <span class="op">|</span> <span class="string">&quot;literature review&quot;</span> =&gt; <span class="string">&quot;related work&quot;</span>,
-      <span class="string">&quot;preliminary&quot;</span> =&gt; <span class="string">&quot;preliminaries&quot;</span>,
-      <span class="string">&quot;analyses&quot;</span> =&gt; <span class="string">&quot;analysis&quot;</span>,
-      <span class="string">&quot;theoretical background&quot;</span> =&gt; <span class="string">&quot;background&quot;</span>,
-      <span class="string">&quot;exemple&quot;</span> =&gt; <span class="string">&quot;example&quot;</span>,
-      <span class="string">&quot;exercise&quot;</span> =&gt; <span class="string">&quot;problem&quot;</span>,
-      <span class="comment">// starts are strong cueues than ends</span>
-      <span class="ident">h</span> <span class="kw">if</span> <span class="ident">h</span>.<span class="ident">starts_with</span>(<span class="string">&quot;demonstration &quot;</span>) =&gt; <span class="string">&quot;demonstration&quot;</span>,
-      <span class="ident">h</span> <span class="kw">if</span> <span class="ident">h</span>.<span class="ident">starts_with</span>(<span class="string">&quot;simulation result&quot;</span>) =&gt; <span class="string">&quot;result&quot;</span>,
-      <span class="ident">h</span> <span class="kw">if</span> <span class="ident">h</span>.<span class="ident">starts_with</span>(<span class="string">&quot;simulation &quot;</span>) =&gt; <span class="string">&quot;simulation&quot;</span>,
-      <span class="ident">h</span> <span class="kw">if</span> <span class="ident">h</span>.<span class="ident">starts_with</span>(<span class="string">&quot;acknowledg&quot;</span>) <span class="op">|</span><span class="op">|</span> <span class="ident">h</span>.<span class="ident">starts_with</span>(<span class="string">&quot;aknowledg&quot;</span>) =&gt; <span class="string">&quot;acknowledgement&quot;</span>,
-      <span class="ident">h</span> <span class="kw">if</span> <span class="ident">h</span>.<span class="ident">starts_with</span>(<span class="string">&quot;proof&quot;</span>) =&gt; <span class="string">&quot;proof&quot;</span>,
-      <span class="ident">h</span> <span class="kw">if</span> <span class="ident">h</span>.<span class="ident">starts_with</span>(<span class="string">&quot;remark &quot;</span>) =&gt; <span class="string">&quot;remark&quot;</span>,
-      <span class="ident">h</span> <span class="kw">if</span> <span class="ident">h</span>.<span class="ident">starts_with</span>(<span class="string">&quot;experiment&quot;</span>) =&gt; <span class="string">&quot;experiment&quot;</span>,
-      <span class="ident">h</span> <span class="kw">if</span> <span class="ident">h</span>.<span class="ident">starts_with</span>(<span class="string">&quot;key word&quot;</span>) <span class="op">|</span><span class="op">|</span> <span class="ident">h</span>.<span class="ident">starts_with</span>(<span class="string">&quot;keyword&quot;</span>) =&gt; <span class="string">&quot;keywords&quot;</span>,
-      <span class="ident">h</span> <span class="kw">if</span> <span class="ident">h</span>.<span class="ident">starts_with</span>(<span class="string">&quot;introduction&quot;</span>) =&gt; <span class="string">&quot;introduction&quot;</span>,
-      <span class="ident">h</span> <span class="kw">if</span> <span class="ident">h</span>.<span class="ident">starts_with</span>(<span class="string">&quot;related work&quot;</span>) =&gt; <span class="string">&quot;related work&quot;</span>,
-      <span class="ident">h</span> <span class="kw">if</span> <span class="ident">h</span>.<span class="ident">starts_with</span>(<span class="string">&quot;background &quot;</span>) =&gt; <span class="string">&quot;background&quot;</span>,
-      <span class="ident">h</span> <span class="kw">if</span> <span class="ident">h</span>.<span class="ident">starts_with</span>(<span class="string">&quot;appendi&quot;</span>) =&gt; <span class="string">&quot;appendix&quot;</span>,
-      <span class="ident">h</span> <span class="kw">if</span> <span class="ident">h</span>.<span class="ident">starts_with</span>(<span class="string">&quot;notation&quot;</span>) =&gt; <span class="string">&quot;notation&quot;</span>,
-      <span class="ident">h</span> <span class="kw">if</span> <span class="ident">h</span>.<span class="ident">starts_with</span>(<span class="string">&quot;theorem&quot;</span>) =&gt; <span class="string">&quot;theorem&quot;</span>,
-      <span class="ident">h</span> <span class="kw">if</span> <span class="ident">h</span>.<span class="ident">starts_with</span>(<span class="string">&quot;lemma&quot;</span>) =&gt; <span class="string">&quot;lemma&quot;</span>,
-      <span class="ident">h</span> <span class="kw">if</span> <span class="ident">h</span>.<span class="ident">starts_with</span>(<span class="string">&quot;corollary&quot;</span>) =&gt; <span class="string">&quot;corollary&quot;</span>,
-      <span class="ident">h</span> <span class="kw">if</span> <span class="ident">h</span>.<span class="ident">starts_with</span>(<span class="string">&quot;proposition&quot;</span>) =&gt; <span class="string">&quot;proposition&quot;</span>,
-      <span class="ident">h</span> <span class="kw">if</span> <span class="ident">h</span>.<span class="ident">starts_with</span>(<span class="string">&quot;definition&quot;</span>) =&gt; <span class="string">&quot;definition&quot;</span>,
-      <span class="ident">h</span> <span class="kw">if</span> <span class="ident">h</span>.<span class="ident">starts_with</span>(<span class="string">&quot;axiom&quot;</span>) =&gt; <span class="string">&quot;axiom&quot;</span>,
-      <span class="ident">h</span> <span class="kw">if</span> <span class="ident">h</span>.<span class="ident">starts_with</span>(<span class="string">&quot;conjecture&quot;</span>) <span class="op">|</span><span class="op">|</span> <span class="ident">h</span>.<span class="ident">starts_with</span>(<span class="string">&quot;hypothesis&quot;</span>) =&gt; <span class="string">&quot;conjecture&quot;</span>,
-      <span class="ident">h</span> <span class="kw">if</span> <span class="ident">h</span>.<span class="ident">starts_with</span>(<span class="string">&quot;fact &quot;</span>) =&gt; <span class="string">&quot;fact&quot;</span>,
-      <span class="ident">h</span> <span class="kw">if</span> <span class="ident">h</span>.<span class="ident">starts_with</span>(<span class="string">&quot;problem &quot;</span>) <span class="op">|</span><span class="op">|</span> <span class="ident">h</span>.<span class="ident">starts_with</span>(<span class="string">&quot;exercise &quot;</span>) =&gt; <span class="string">&quot;problem&quot;</span>,
-      <span class="ident">h</span> <span class="kw">if</span> <span class="ident">h</span>.<span class="ident">starts_with</span>(<span class="string">&quot;question &quot;</span>) =&gt; <span class="string">&quot;question&quot;</span>,
-      <span class="ident">h</span> <span class="kw">if</span> <span class="ident">h</span>.<span class="ident">starts_with</span>(<span class="string">&quot;result&quot;</span>) =&gt; <span class="string">&quot;result&quot;</span>,
-      <span class="ident">h</span> <span class="kw">if</span> <span class="ident">h</span>.<span class="ident">starts_with</span>(<span class="string">&quot;msc&quot;</span>) =&gt; <span class="string">&quot;subject&quot;</span>,
-      <span class="ident">h</span> <span class="kw">if</span> <span class="ident">h</span>.<span class="ident">starts_with</span>(<span class="string">&quot;conclusion&quot;</span>) <span class="op">|</span><span class="op">|</span> <span class="ident">h</span>.<span class="ident">starts_with</span>(<span class="string">&quot;concluding remarks&quot;</span>) =&gt; <span class="string">&quot;conclusion&quot;</span>,
-      <span class="ident">h</span> <span class="kw">if</span> <span class="ident">h</span>.<span class="ident">starts_with</span>(<span class="string">&quot;summary &quot;</span>) =&gt; <span class="string">&quot;summary&quot;</span>,
-      <span class="ident">h</span> <span class="kw">if</span> <span class="ident">h</span>.<span class="ident">starts_with</span>(<span class="string">&quot;observation&quot;</span>) =&gt; <span class="string">&quot;observation&quot;</span>,
-      <span class="ident">h</span> <span class="kw">if</span> <span class="ident">h</span>.<span class="ident">starts_with</span>(<span class="string">&quot;model&quot;</span>) =&gt; <span class="string">&quot;model&quot;</span>,
-      <span class="ident">h</span> <span class="kw">if</span> <span class="ident">h</span>.<span class="ident">starts_with</span>(<span class="string">&quot;method&quot;</span>) =&gt; <span class="string">&quot;methods&quot;</span>,
-      <span class="ident">h</span> <span class="kw">if</span> <span class="ident">h</span>.<span class="ident">starts_with</span>(<span class="string">&quot;future&quot;</span>) =&gt; <span class="string">&quot;future work&quot;</span>,
-      <span class="ident">h</span> <span class="kw">if</span> <span class="ident">h</span>.<span class="ident">starts_with</span>(<span class="string">&quot;description&quot;</span>) =&gt; <span class="string">&quot;description&quot;</span>,
-      <span class="ident">h</span> <span class="kw">if</span> <span class="ident">h</span>.<span class="ident">starts_with</span>(<span class="string">&quot;discussion&quot;</span>) =&gt; <span class="string">&quot;discussion&quot;</span>,
-      <span class="ident">h</span> <span class="kw">if</span> <span class="ident">h</span>.<span class="ident">starts_with</span>(<span class="string">&quot;example&quot;</span>) =&gt; <span class="string">&quot;example&quot;</span>,
-      <span class="ident">h</span> <span class="kw">if</span> <span class="ident">h</span>.<span class="ident">starts_with</span>(<span class="string">&quot;properties&quot;</span>) <span class="op">|</span><span class="op">|</span> <span class="ident">h</span>.<span class="ident">starts_with</span>(<span class="string">&quot;property &quot;</span>) =&gt; <span class="string">&quot;property&quot;</span>,
-      <span class="ident">h</span> <span class="kw">if</span> <span class="ident">h</span>.<span class="ident">starts_with</span>(<span class="string">&quot;preliminaries &quot;</span>) =&gt; <span class="string">&quot;preliminaries&quot;</span>,
-      <span class="ident">h</span> <span class="kw">if</span> <span class="ident">h</span>.<span class="ident">starts_with</span>(<span class="string">&quot;condition &quot;</span>) =&gt; <span class="string">&quot;condition&quot;</span>,
-      <span class="ident">h</span> <span class="kw">if</span> <span class="ident">h</span>.<span class="ident">starts_with</span>(<span class="string">&quot;contribution &quot;</span>) =&gt; <span class="string">&quot;contribution&quot;</span>,
-      <span class="ident">h</span> <span class="kw">if</span> <span class="ident">h</span>.<span class="ident">starts_with</span>(<span class="string">&quot;analaysis&quot;</span>) <span class="op">|</span><span class="op">|</span> <span class="ident">h</span>.<span class="ident">starts_with</span>(<span class="string">&quot;analysis &quot;</span>) =&gt; <span class="string">&quot;analysis&quot;</span>,
-      <span class="ident">h</span> <span class="kw">if</span> <span class="ident">h</span>.<span class="ident">starts_with</span>(<span class="string">&quot;motivation &quot;</span>) =&gt; <span class="string">&quot;motivation&quot;</span>,
-      <span class="comment">// ends are still usable clues</span>
-      <span class="ident">h</span> <span class="kw">if</span> <span class="ident">h</span>.<span class="ident">ends_with</span>(<span class="string">&quot; demonstration&quot;</span>) =&gt; <span class="string">&quot;demonstration&quot;</span>,
-      <span class="ident">h</span> <span class="kw">if</span> <span class="ident">h</span>.<span class="ident">ends_with</span>(<span class="string">&quot; simulation&quot;</span>) =&gt; <span class="string">&quot;simulation&quot;</span>,
-      <span class="ident">h</span> <span class="kw">if</span> <span class="ident">h</span>.<span class="ident">ends_with</span>(<span class="string">&quot; proof&quot;</span>) =&gt; <span class="string">&quot;proof&quot;</span>,
-      <span class="ident">h</span> <span class="kw">if</span> <span class="ident">h</span>.<span class="ident">ends_with</span>(<span class="string">&quot; remark&quot;</span>) =&gt; <span class="string">&quot;remark&quot;</span>,
-      <span class="ident">h</span> <span class="kw">if</span> <span class="ident">h</span>.<span class="ident">ends_with</span>(<span class="string">&quot; notation&quot;</span>) =&gt; <span class="string">&quot;notation&quot;</span>,
-      <span class="ident">h</span> <span class="kw">if</span> <span class="ident">h</span>.<span class="ident">ends_with</span>(<span class="string">&quot; experiment&quot;</span>) =&gt; <span class="string">&quot;experiment&quot;</span>,
-      <span class="ident">h</span> <span class="kw">if</span> <span class="ident">h</span>.<span class="ident">ends_with</span>(<span class="string">&quot; theorem&quot;</span>) =&gt; <span class="string">&quot;theorem&quot;</span>,
-      <span class="ident">h</span> <span class="kw">if</span> <span class="ident">h</span>.<span class="ident">ends_with</span>(<span class="string">&quot; lemma&quot;</span>) =&gt; <span class="string">&quot;lemma&quot;</span>,
-      <span class="ident">h</span> <span class="kw">if</span> <span class="ident">h</span>.<span class="ident">ends_with</span>(<span class="string">&quot; corollary&quot;</span>) =&gt; <span class="string">&quot;corollary&quot;</span>,
-      <span class="ident">h</span> <span class="kw">if</span> <span class="ident">h</span>.<span class="ident">ends_with</span>(<span class="string">&quot; proposition&quot;</span>) =&gt; <span class="string">&quot;proposition&quot;</span>,
-      <span class="ident">h</span> <span class="kw">if</span> <span class="ident">h</span>.<span class="ident">ends_with</span>(<span class="string">&quot; definition&quot;</span>) =&gt; <span class="string">&quot;definition&quot;</span>,
-      <span class="ident">h</span> <span class="kw">if</span> <span class="ident">h</span>.<span class="ident">ends_with</span>(<span class="string">&quot; axiom&quot;</span>) =&gt; <span class="string">&quot;axiom&quot;</span>,
-      <span class="ident">h</span> <span class="kw">if</span> <span class="ident">h</span>.<span class="ident">ends_with</span>(<span class="string">&quot; conjecture&quot;</span>) <span class="op">|</span><span class="op">|</span> <span class="ident">h</span>.<span class="ident">ends_with</span>(<span class="string">&quot; hypothesis&quot;</span>) =&gt; <span class="string">&quot;conjecture&quot;</span>,
-      <span class="ident">h</span> <span class="kw">if</span> <span class="ident">h</span>.<span class="ident">ends_with</span>(<span class="string">&quot; conclusion&quot;</span>) =&gt; <span class="string">&quot;conclusion&quot;</span>,
-      <span class="ident">h</span> <span class="kw">if</span> <span class="ident">h</span>.<span class="ident">ends_with</span>(<span class="string">&quot; summary&quot;</span>) =&gt; <span class="string">&quot;summary&quot;</span>,
-      <span class="ident">h</span> <span class="kw">if</span> <span class="ident">h</span>.<span class="ident">ends_with</span>(<span class="string">&quot; problem&quot;</span>) <span class="op">|</span><span class="op">|</span> <span class="ident">h</span>.<span class="ident">ends_with</span>(<span class="string">&quot;exercise&quot;</span>) =&gt; <span class="string">&quot;problem&quot;</span>,
-      <span class="ident">h</span> <span class="kw">if</span> <span class="ident">h</span>.<span class="ident">ends_with</span>(<span class="string">&quot; question&quot;</span>) =&gt; <span class="string">&quot;question&quot;</span>,
-      <span class="ident">h</span> <span class="kw">if</span> <span class="ident">h</span>.<span class="ident">ends_with</span>(<span class="string">&quot; result&quot;</span>) =&gt; <span class="string">&quot;result&quot;</span>,
-      <span class="ident">h</span> <span class="kw">if</span> <span class="ident">h</span>.<span class="ident">ends_with</span>(<span class="string">&quot; method&quot;</span>) =&gt; <span class="string">&quot;methods&quot;</span>,
-      <span class="ident">h</span> <span class="kw">if</span> <span class="ident">h</span>.<span class="ident">ends_with</span>(<span class="string">&quot; model&quot;</span>) =&gt; <span class="string">&quot;model&quot;</span>,
-      <span class="ident">h</span> <span class="kw">if</span> <span class="ident">h</span>.<span class="ident">ends_with</span>(<span class="string">&quot; description&quot;</span>) =&gt; <span class="string">&quot;description&quot;</span>,
-      <span class="ident">h</span> <span class="kw">if</span> <span class="ident">h</span>.<span class="ident">ends_with</span>(<span class="string">&quot; discussion&quot;</span>) =&gt; <span class="string">&quot;discussion&quot;</span>,
-      <span class="ident">h</span> <span class="kw">if</span> <span class="ident">h</span>.<span class="ident">ends_with</span>(<span class="string">&quot; example&quot;</span>) =&gt; <span class="string">&quot;example&quot;</span>,
-      <span class="ident">h</span> <span class="kw">if</span> <span class="ident">h</span>.<span class="ident">ends_with</span>(<span class="string">&quot; property&quot;</span>) <span class="op">|</span><span class="op">|</span> <span class="ident">h</span>.<span class="ident">ends_with</span>(<span class="string">&quot; properties&quot;</span>) =&gt; <span class="string">&quot;property&quot;</span>,
-      <span class="ident">h</span> <span class="kw">if</span> <span class="ident">h</span>.<span class="ident">ends_with</span>(<span class="string">&quot; preliminaries&quot;</span>) =&gt; <span class="string">&quot;preliminaries&quot;</span>,
-      <span class="ident">h</span> <span class="kw">if</span> <span class="ident">h</span>.<span class="ident">ends_with</span>(<span class="string">&quot; condition&quot;</span>) =&gt; <span class="string">&quot;condition&quot;</span>,
-      <span class="ident">h</span> <span class="kw">if</span> <span class="ident">h</span>.<span class="ident">ends_with</span>(<span class="string">&quot; contribution&quot;</span>) =&gt; <span class="string">&quot;contribution&quot;</span>,
-      <span class="ident">h</span> <span class="kw">if</span> <span class="ident">h</span>.<span class="ident">ends_with</span>(<span class="string">&quot; analysis&quot;</span>) =&gt; <span class="string">&quot;analysis&quot;</span>,
-      <span class="ident">h</span> <span class="kw">if</span> <span class="ident">h</span>.<span class="ident">ends_with</span>(<span class="string">&quot; motivation&quot;</span>) =&gt; <span class="string">&quot;motivation&quot;</span>,
-      <span class="comment">// self if no known case</span>
-      <span class="ident">any</span> =&gt; <span class="ident">any</span>,
+<span class="doccomment">/// Attempt to recover the &quot;type&quot; of a potentially specialized heading,
+/// e.g. &quot;definition xiii a&quot;-&gt;&quot;definition&quot;
+</span><span class="attribute">#[allow(clippy::cognitive_complexity)]
+</span><span class="kw">pub fn </span>normalize_heading_title(heading: <span class="kw-2">&amp;</span>str) -&gt; String {
+  <span class="kw">let </span>simple_heading = ROMAN_NUMERAL.replace_all(heading.trim(), <span class="string">&quot;&quot;</span>);
+  <span class="kw">let </span>simple_heading = IS_NUM.replace_all(simple_heading.trim(), <span class="string">&quot; &quot;</span>);
+  <span class="kw">let </span>simple_heading = SINGLE_LEAD_LETTER.replace_all(simple_heading.trim(), <span class="string">&quot;&quot;</span>);
+  <span class="kw">let </span>simple_heading = SINGLE_TRAIL_LETTER.replace_all(simple_heading.trim(), <span class="string">&quot;&quot;</span>);
+  <span class="kw">let </span>simple_heading = LEAD_FIXED_PHRASE.replace_all(simple_heading.trim(), <span class="string">&quot;&quot;</span>);
+  <span class="kw">let </span>simple_heading = TRAILING_FIXED_WORD.replace_all(simple_heading.trim(), <span class="string">&quot;&quot;</span>);
+  <span class="kw">let </span>simple_heading = COMMON_PLURALS.replace_all(simple_heading.trim(), <span class="string">&quot;$1&quot;</span>);
+  <span class="kw">if </span>simple_heading.is_empty() {
+    <span class="comment">// quick exit if empty
+    </span>String::new()
+  } <span class="kw">else if </span>simple_heading != heading {
+    <span class="comment">// if the individual regexes reduced the heading, try them again, since we may have intermixed cases
+    </span>normalize_heading_title(<span class="kw-2">&amp;</span>simple_heading)
+  } <span class="kw">else </span>{
+    <span class="comment">// Otherwise, just look for simple variations of known cases, or return as-is:
+    </span><span class="kw">match </span>simple_heading.as_ref() {
+      <span class="comment">// ignore non-English
+      </span><span class="string">&quot;lemme&quot; </span>| <span class="string">&quot;remarque&quot; </span>| <span class="string">&quot;corollaire&quot; </span>| <span class="string">&quot;dokazatelstvo&quot; </span>=&gt; <span class="string">&quot;&quot;</span>,
+      <span class="comment">// synonyms
+      </span><span class="string">&quot;hypothesis&quot; </span>| <span class="string">&quot;hypotheses&quot; </span>=&gt; <span class="string">&quot;conjecture&quot;</span>,
+      <span class="string">&quot;implementation details&quot; </span>=&gt; <span class="string">&quot;implementation&quot;</span>,
+      <span class="string">&quot;mathematics subject classification&quot; </span>| <span class="string">&quot;subject headings&quot; </span>=&gt; <span class="string">&quot;subject&quot;</span>,
+      <span class="string">&quot;bibliography&quot; </span>=&gt; <span class="string">&quot;references&quot;</span>,
+      <span class="string">&quot;previous work&quot; </span>| <span class="string">&quot;prior work&quot; </span>| <span class="string">&quot;related literature&quot; </span>| <span class="string">&quot;related research&quot;
+      </span>| <span class="string">&quot;related studies&quot; </span>| <span class="string">&quot;literature review&quot; </span>=&gt; <span class="string">&quot;related work&quot;</span>,
+      <span class="string">&quot;preliminary&quot; </span>=&gt; <span class="string">&quot;preliminaries&quot;</span>,
+      <span class="string">&quot;analyses&quot; </span>=&gt; <span class="string">&quot;analysis&quot;</span>,
+      <span class="string">&quot;theoretical background&quot; </span>=&gt; <span class="string">&quot;background&quot;</span>,
+      <span class="string">&quot;exemple&quot; </span>=&gt; <span class="string">&quot;example&quot;</span>,
+      <span class="string">&quot;exercise&quot; </span>=&gt; <span class="string">&quot;problem&quot;</span>,
+      <span class="comment">// starts are strong cueues than ends
+      </span>h <span class="kw">if </span>h.starts_with(<span class="string">&quot;demonstration &quot;</span>) =&gt; <span class="string">&quot;demonstration&quot;</span>,
+      h <span class="kw">if </span>h.starts_with(<span class="string">&quot;simulation result&quot;</span>) =&gt; <span class="string">&quot;result&quot;</span>,
+      h <span class="kw">if </span>h.starts_with(<span class="string">&quot;simulation &quot;</span>) =&gt; <span class="string">&quot;simulation&quot;</span>,
+      h <span class="kw">if </span>h.starts_with(<span class="string">&quot;acknowledg&quot;</span>) || h.starts_with(<span class="string">&quot;aknowledg&quot;</span>) =&gt; <span class="string">&quot;acknowledgement&quot;</span>,
+      h <span class="kw">if </span>h.starts_with(<span class="string">&quot;proof&quot;</span>) =&gt; <span class="string">&quot;proof&quot;</span>,
+      h <span class="kw">if </span>h.starts_with(<span class="string">&quot;remark &quot;</span>) =&gt; <span class="string">&quot;remark&quot;</span>,
+      h <span class="kw">if </span>h.starts_with(<span class="string">&quot;experiment&quot;</span>) =&gt; <span class="string">&quot;experiment&quot;</span>,
+      h <span class="kw">if </span>h.starts_with(<span class="string">&quot;key word&quot;</span>) || h.starts_with(<span class="string">&quot;keyword&quot;</span>) =&gt; <span class="string">&quot;keywords&quot;</span>,
+      h <span class="kw">if </span>h.starts_with(<span class="string">&quot;introduction&quot;</span>) =&gt; <span class="string">&quot;introduction&quot;</span>,
+      h <span class="kw">if </span>h.starts_with(<span class="string">&quot;related work&quot;</span>) =&gt; <span class="string">&quot;related work&quot;</span>,
+      h <span class="kw">if </span>h.starts_with(<span class="string">&quot;background &quot;</span>) =&gt; <span class="string">&quot;background&quot;</span>,
+      h <span class="kw">if </span>h.starts_with(<span class="string">&quot;appendi&quot;</span>) =&gt; <span class="string">&quot;appendix&quot;</span>,
+      h <span class="kw">if </span>h.starts_with(<span class="string">&quot;notation&quot;</span>) =&gt; <span class="string">&quot;notation&quot;</span>,
+      h <span class="kw">if </span>h.starts_with(<span class="string">&quot;theorem&quot;</span>) =&gt; <span class="string">&quot;theorem&quot;</span>,
+      h <span class="kw">if </span>h.starts_with(<span class="string">&quot;lemma&quot;</span>) =&gt; <span class="string">&quot;lemma&quot;</span>,
+      h <span class="kw">if </span>h.starts_with(<span class="string">&quot;corollary&quot;</span>) =&gt; <span class="string">&quot;corollary&quot;</span>,
+      h <span class="kw">if </span>h.starts_with(<span class="string">&quot;proposition&quot;</span>) =&gt; <span class="string">&quot;proposition&quot;</span>,
+      h <span class="kw">if </span>h.starts_with(<span class="string">&quot;definition&quot;</span>) =&gt; <span class="string">&quot;definition&quot;</span>,
+      h <span class="kw">if </span>h.starts_with(<span class="string">&quot;axiom&quot;</span>) =&gt; <span class="string">&quot;axiom&quot;</span>,
+      h <span class="kw">if </span>h.starts_with(<span class="string">&quot;conjecture&quot;</span>) || h.starts_with(<span class="string">&quot;hypothesis&quot;</span>) =&gt; <span class="string">&quot;conjecture&quot;</span>,
+      h <span class="kw">if </span>h.starts_with(<span class="string">&quot;fact &quot;</span>) =&gt; <span class="string">&quot;fact&quot;</span>,
+      h <span class="kw">if </span>h.starts_with(<span class="string">&quot;problem &quot;</span>) || h.starts_with(<span class="string">&quot;exercise &quot;</span>) =&gt; <span class="string">&quot;problem&quot;</span>,
+      h <span class="kw">if </span>h.starts_with(<span class="string">&quot;question &quot;</span>) =&gt; <span class="string">&quot;question&quot;</span>,
+      h <span class="kw">if </span>h.starts_with(<span class="string">&quot;result&quot;</span>) =&gt; <span class="string">&quot;result&quot;</span>,
+      h <span class="kw">if </span>h.starts_with(<span class="string">&quot;msc&quot;</span>) =&gt; <span class="string">&quot;subject&quot;</span>,
+      h <span class="kw">if </span>h.starts_with(<span class="string">&quot;conclusion&quot;</span>) || h.starts_with(<span class="string">&quot;concluding remarks&quot;</span>) =&gt; <span class="string">&quot;conclusion&quot;</span>,
+      h <span class="kw">if </span>h.starts_with(<span class="string">&quot;summary &quot;</span>) =&gt; <span class="string">&quot;summary&quot;</span>,
+      h <span class="kw">if </span>h.starts_with(<span class="string">&quot;observation&quot;</span>) =&gt; <span class="string">&quot;observation&quot;</span>,
+      h <span class="kw">if </span>h.starts_with(<span class="string">&quot;model&quot;</span>) =&gt; <span class="string">&quot;model&quot;</span>,
+      h <span class="kw">if </span>h.starts_with(<span class="string">&quot;method&quot;</span>) =&gt; <span class="string">&quot;methods&quot;</span>,
+      h <span class="kw">if </span>h.starts_with(<span class="string">&quot;future&quot;</span>) =&gt; <span class="string">&quot;future work&quot;</span>,
+      h <span class="kw">if </span>h.starts_with(<span class="string">&quot;description&quot;</span>) =&gt; <span class="string">&quot;description&quot;</span>,
+      h <span class="kw">if </span>h.starts_with(<span class="string">&quot;discussion&quot;</span>) =&gt; <span class="string">&quot;discussion&quot;</span>,
+      h <span class="kw">if </span>h.starts_with(<span class="string">&quot;example&quot;</span>) =&gt; <span class="string">&quot;example&quot;</span>,
+      h <span class="kw">if </span>h.starts_with(<span class="string">&quot;properties&quot;</span>) || h.starts_with(<span class="string">&quot;property &quot;</span>) =&gt; <span class="string">&quot;property&quot;</span>,
+      h <span class="kw">if </span>h.starts_with(<span class="string">&quot;preliminaries &quot;</span>) =&gt; <span class="string">&quot;preliminaries&quot;</span>,
+      h <span class="kw">if </span>h.starts_with(<span class="string">&quot;condition &quot;</span>) =&gt; <span class="string">&quot;condition&quot;</span>,
+      h <span class="kw">if </span>h.starts_with(<span class="string">&quot;contribution &quot;</span>) =&gt; <span class="string">&quot;contribution&quot;</span>,
+      h <span class="kw">if </span>h.starts_with(<span class="string">&quot;analaysis&quot;</span>) || h.starts_with(<span class="string">&quot;analysis &quot;</span>) =&gt; <span class="string">&quot;analysis&quot;</span>,
+      h <span class="kw">if </span>h.starts_with(<span class="string">&quot;motivation &quot;</span>) =&gt; <span class="string">&quot;motivation&quot;</span>,
+      <span class="comment">// ends are still usable clues
+      </span>h <span class="kw">if </span>h.ends_with(<span class="string">&quot; demonstration&quot;</span>) =&gt; <span class="string">&quot;demonstration&quot;</span>,
+      h <span class="kw">if </span>h.ends_with(<span class="string">&quot; simulation&quot;</span>) =&gt; <span class="string">&quot;simulation&quot;</span>,
+      h <span class="kw">if </span>h.ends_with(<span class="string">&quot; proof&quot;</span>) =&gt; <span class="string">&quot;proof&quot;</span>,
+      h <span class="kw">if </span>h.ends_with(<span class="string">&quot; remark&quot;</span>) =&gt; <span class="string">&quot;remark&quot;</span>,
+      h <span class="kw">if </span>h.ends_with(<span class="string">&quot; notation&quot;</span>) =&gt; <span class="string">&quot;notation&quot;</span>,
+      h <span class="kw">if </span>h.ends_with(<span class="string">&quot; experiment&quot;</span>) =&gt; <span class="string">&quot;experiment&quot;</span>,
+      h <span class="kw">if </span>h.ends_with(<span class="string">&quot; theorem&quot;</span>) =&gt; <span class="string">&quot;theorem&quot;</span>,
+      h <span class="kw">if </span>h.ends_with(<span class="string">&quot; lemma&quot;</span>) =&gt; <span class="string">&quot;lemma&quot;</span>,
+      h <span class="kw">if </span>h.ends_with(<span class="string">&quot; corollary&quot;</span>) =&gt; <span class="string">&quot;corollary&quot;</span>,
+      h <span class="kw">if </span>h.ends_with(<span class="string">&quot; proposition&quot;</span>) =&gt; <span class="string">&quot;proposition&quot;</span>,
+      h <span class="kw">if </span>h.ends_with(<span class="string">&quot; definition&quot;</span>) =&gt; <span class="string">&quot;definition&quot;</span>,
+      h <span class="kw">if </span>h.ends_with(<span class="string">&quot; axiom&quot;</span>) =&gt; <span class="string">&quot;axiom&quot;</span>,
+      h <span class="kw">if </span>h.ends_with(<span class="string">&quot; conjecture&quot;</span>) || h.ends_with(<span class="string">&quot; hypothesis&quot;</span>) =&gt; <span class="string">&quot;conjecture&quot;</span>,
+      h <span class="kw">if </span>h.ends_with(<span class="string">&quot; conclusion&quot;</span>) =&gt; <span class="string">&quot;conclusion&quot;</span>,
+      h <span class="kw">if </span>h.ends_with(<span class="string">&quot; summary&quot;</span>) =&gt; <span class="string">&quot;summary&quot;</span>,
+      h <span class="kw">if </span>h.ends_with(<span class="string">&quot; problem&quot;</span>) || h.ends_with(<span class="string">&quot;exercise&quot;</span>) =&gt; <span class="string">&quot;problem&quot;</span>,
+      h <span class="kw">if </span>h.ends_with(<span class="string">&quot; question&quot;</span>) =&gt; <span class="string">&quot;question&quot;</span>,
+      h <span class="kw">if </span>h.ends_with(<span class="string">&quot; result&quot;</span>) =&gt; <span class="string">&quot;result&quot;</span>,
+      h <span class="kw">if </span>h.ends_with(<span class="string">&quot; method&quot;</span>) =&gt; <span class="string">&quot;methods&quot;</span>,
+      h <span class="kw">if </span>h.ends_with(<span class="string">&quot; model&quot;</span>) =&gt; <span class="string">&quot;model&quot;</span>,
+      h <span class="kw">if </span>h.ends_with(<span class="string">&quot; description&quot;</span>) =&gt; <span class="string">&quot;description&quot;</span>,
+      h <span class="kw">if </span>h.ends_with(<span class="string">&quot; discussion&quot;</span>) =&gt; <span class="string">&quot;discussion&quot;</span>,
+      h <span class="kw">if </span>h.ends_with(<span class="string">&quot; example&quot;</span>) =&gt; <span class="string">&quot;example&quot;</span>,
+      h <span class="kw">if </span>h.ends_with(<span class="string">&quot; property&quot;</span>) || h.ends_with(<span class="string">&quot; properties&quot;</span>) =&gt; <span class="string">&quot;property&quot;</span>,
+      h <span class="kw">if </span>h.ends_with(<span class="string">&quot; preliminaries&quot;</span>) =&gt; <span class="string">&quot;preliminaries&quot;</span>,
+      h <span class="kw">if </span>h.ends_with(<span class="string">&quot; condition&quot;</span>) =&gt; <span class="string">&quot;condition&quot;</span>,
+      h <span class="kw">if </span>h.ends_with(<span class="string">&quot; contribution&quot;</span>) =&gt; <span class="string">&quot;contribution&quot;</span>,
+      h <span class="kw">if </span>h.ends_with(<span class="string">&quot; analysis&quot;</span>) =&gt; <span class="string">&quot;analysis&quot;</span>,
+      h <span class="kw">if </span>h.ends_with(<span class="string">&quot; motivation&quot;</span>) =&gt; <span class="string">&quot;motivation&quot;</span>,
+      <span class="comment">// self if no known case
+      </span>any =&gt; any,
     }
-    .<span class="ident">to_string</span>()
+    .to_string()
   }
 }
 
-<span class="comment">// Analysis is a can of worms... there are many more, and they seem to be varying from extremely narrow to extremely broad discussions</span>
-<span class="comment">// some are even false friends, such as method names &quot;principal component analysis&quot;</span>
-<span class="comment">//</span>
-<span class="comment">// there may be other cans of worms out there, normalization may end up a lot more aggressive than desired...</span>
-<span class="comment">// but best to start somewhere</span>
-<span class="comment">//</span>
-<span class="comment">// &quot;spectral analysis&quot; | //= result</span>
-<span class="comment">// &quot;data analysis&quot; | //= result (broad)</span>
-<span class="comment">// &quot;numerical analysis&quot; | // result</span>
-<span class="comment">// &quot;convergence analysis&quot; | // result</span>
-<span class="comment">// &quot;error analysis&quot; | // result (broad)</span>
-<span class="comment">// &quot;performance analysis&quot; | // result (broad)</span>
-<span class="comment">// &quot;principal component analysis&quot; | // technique</span>
-<span class="comment">// &quot;stability analysis&quot; | // result</span>
-<span class="comment">// &quot;theoretical analysis&quot; | // result (broad)</span>
-<span class="comment">// &quot;complexity analysis&quot; | // result</span>
-<span class="comment">// &quot;timing analysis&quot; |</span>
-<span class="comment">// &quot;statistical analysis&quot; |</span>
-<span class="comment">// &quot;qualitative analysis&quot; |</span>
-<span class="comment">// &quot;sensitivity analysis&quot; |</span>
-<span class="comment">// &quot;data and analysis&quot; |</span>
-<span class="comment">// &quot;linear stability analysis&quot; |</span>
-<span class="comment">// &quot;asymptotic analysis&quot; |</span>
-<span class="comment">// &quot;security analysis&quot; |</span>
-<span class="comment">// &quot;data reduction and analysis&quot; |</span>
-<span class="comment">// &quot;abundance analysis&quot; |</span>
-<span class="comment">// &quot;image analysis&quot; |</span>
-<span class="comment">// &quot;real data analysis&quot; |</span>
-<span class="comment">// &quot;light curve analysis&quot; |</span>
-<span class="comment">// &quot;spectroscopic analysis&quot;  =&gt; &quot;analysis&quot;,</span>
+<span class="comment">// Analysis is a can of worms... there are many more, and they seem to be varying from extremely narrow to extremely broad discussions
+// some are even false friends, such as method names &quot;principal component analysis&quot;
+//
+// there may be other cans of worms out there, normalization may end up a lot more aggressive than desired...
+// but best to start somewhere
+//
+// &quot;spectral analysis&quot; | //= result
+// &quot;data analysis&quot; | //= result (broad)
+// &quot;numerical analysis&quot; | // result
+// &quot;convergence analysis&quot; | // result
+// &quot;error analysis&quot; | // result (broad)
+// &quot;performance analysis&quot; | // result (broad)
+// &quot;principal component analysis&quot; | // technique
+// &quot;stability analysis&quot; | // result
+// &quot;theoretical analysis&quot; | // result (broad)
+// &quot;complexity analysis&quot; | // result
+// &quot;timing analysis&quot; |
+// &quot;statistical analysis&quot; |
+// &quot;qualitative analysis&quot; |
+// &quot;sensitivity analysis&quot; |
+// &quot;data and analysis&quot; |
+// &quot;linear stability analysis&quot; |
+// &quot;asymptotic analysis&quot; |
+// &quot;security analysis&quot; |
+// &quot;data reduction and analysis&quot; |
+// &quot;abundance analysis&quot; |
+// &quot;image analysis&quot; |
+// &quot;real data analysis&quot; |
+// &quot;light curve analysis&quot; |
+// &quot;spectroscopic analysis&quot;  =&gt; &quot;analysis&quot;,
 
-<span class="doccomment">/// Check if the given DNM contains valid English+Latin content</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">invalid_for_english_latin</span>(<span class="ident">dnm</span>: <span class="kw-2">&amp;</span><span class="ident">DNM</span>) -&gt; <span class="ident">bool</span> {
-  <span class="kw">let</span> <span class="ident">detectable_with_spaces</span> <span class="op">=</span> <span class="ident">dnm</span>
-    .<span class="ident">plaintext</span>
-    .<span class="ident">replace</span>(<span class="string">&quot;mathformula&quot;</span>, <span class="string">&quot; &quot;</span>)
-    .<span class="ident">replace</span>(<span class="string">&quot;CitationElement&quot;</span>, <span class="string">&quot; &quot;</span>)
-    .<span class="ident">replace</span>(<span class="string">&quot;REF&quot;</span>, <span class="string">&quot; &quot;</span>);
-  <span class="kw">let</span> <span class="ident">detectable</span> <span class="op">=</span> <span class="ident">detectable_with_spaces</span>.<span class="ident">trim</span>();
-  <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">info</span>) <span class="op">=</span> <span class="ident">detect</span>(<span class="ident">detectable</span>) {
-    <span class="ident">info</span>.<span class="ident">script</span>() <span class="op">!</span><span class="op">=</span> <span class="ident">Script::Latin</span> <span class="op">|</span><span class="op">|</span> (<span class="ident">info</span>.<span class="ident">lang</span>() <span class="op">!</span><span class="op">=</span> <span class="ident">Lang::Eng</span> <span class="op">&amp;&amp;</span> <span class="ident">info</span>.<span class="ident">confidence</span>() <span class="op">&gt;</span> <span class="number">0.93</span>)
-  } <span class="kw">else</span> {
-    <span class="bool-val">false</span>
-  }
+</span><span class="doccomment">/// Check if the given DNM contains valid English+Latin content
+</span><span class="kw">pub fn </span>invalid_for_english_latin(dnm: <span class="kw-2">&amp;</span>DNM) -&gt; bool {
+  <span class="kw">let </span>detectable_with_spaces = dnm
+    .plaintext
+    .replace(<span class="string">&quot;mathformula&quot;</span>, <span class="string">&quot; &quot;</span>)
+    .replace(<span class="string">&quot;CitationElement&quot;</span>, <span class="string">&quot; &quot;</span>)
+    .replace(<span class="string">&quot;REF&quot;</span>, <span class="string">&quot; &quot;</span>);
+  <span class="kw">let </span>detectable = detectable_with_spaces.trim();
+  <span class="kw">if let </span><span class="prelude-val">Some</span>(info) = detect(detectable) {
+    info.script() != Script::Latin || (info.lang() != Lang::Eng &amp;&amp; info.confidence() &gt; <span class="number">0.93</span>)
+  } <span class="kw">else </span>{
+    <span class="bool-val">false
+  </span>}
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="llamapun" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.63.0 (4b91a6ea7 2022-08-08)" ></div>
-</body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="llamapun" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0 (897e37553 2022-11-02)" ></div></body></html>

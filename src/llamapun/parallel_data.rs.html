@@ -1,10 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/parallel_data.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>parallel_data.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../llamapun/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div>
-        </a><h2 class="location"></h2>
-    </nav>
-    <nav class="sidebar"><a class="sidebar-logo" href="../../llamapun/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div>
-        </a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../llamapun/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><button type="button" id="help-button" title="help">?</button><div id="settings-menu" tabindex="-1">
-                                <a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div>
-                        </div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/parallel_data.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>parallel_data.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../normalize.css"><link rel="stylesheet" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../ayu.css" disabled><link rel="stylesheet" href="../../dark.css" disabled><link rel="stylesheet" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../llamapun/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../llamapun/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../llamapun/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -161,163 +155,162 @@
 <span id="155">155</span>
 <span id="156">156</span>
 <span id="157">157</span>
-</pre><pre class="rust"><code><span class="doccomment">//! Data structures and Iterators for rayon-enabled parallel processing</span>
-<span class="doccomment">//! including parallel I/O in walking a corpus</span>
-<span class="doccomment">//! as well as DOM primitives that allow parallel iterators on XPath results, etc</span>
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::dnm</span>::{<span class="ident">DNMParameters</span>, <span class="ident">DNMRange</span>, <span class="ident">DNM</span>};
-<span class="kw">use</span> <span class="ident">libxml::readonly::RoNode</span>;
-<span class="kw">use</span> <span class="ident">std::vec::IntoIter</span>;
+</pre><pre class="rust"><code><span class="doccomment">//! Data structures and Iterators for rayon-enabled parallel processing
+//! including parallel I/O in walking a corpus
+//! as well as DOM primitives that allow parallel iterators on XPath results, etc
+</span><span class="kw">use </span><span class="kw">crate</span>::dnm::{DNMParameters, DNMRange, DNM};
+<span class="kw">use </span>libxml::readonly::RoNode;
+<span class="kw">use </span>std::vec::IntoIter;
 
-<span class="comment">/* ---- Containers ----- */</span>
-<span class="doccomment">/// container and API for a Corpus capable of parallel walks over its documents</span>
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">corpus</span>;
-<span class="doccomment">/// container and API for a Document yielded during a parallel corpus walk</span>
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">document</span>;
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="self">self</span>::corpus::Corpus</span>;
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="self">self</span>::document::Document</span>;
+<span class="comment">/* ---- Containers ----- */
+</span><span class="doccomment">/// container and API for a Corpus capable of parallel walks over its documents
+</span><span class="kw">pub mod </span>corpus;
+<span class="doccomment">/// container and API for a Document yielded during a parallel corpus walk
+</span><span class="kw">pub mod </span>document;
+<span class="kw">pub use </span><span class="self">self</span>::corpus::Corpus;
+<span class="kw">pub use </span><span class="self">self</span>::document::Document;
 
-<span class="doccomment">/// A DNM with associated document parent (e.g. for paragraphs, headings)</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ItemDNM</span><span class="op">&lt;</span><span class="lifetime">&#39;p</span><span class="op">&gt;</span> {
-  <span class="doccomment">/// The payload of the item</span>
-  <span class="kw">pub</span> <span class="ident">dnm</span>: <span class="ident">DNM</span>,
-  <span class="doccomment">/// A reference to the parent document</span>
-  <span class="kw">pub</span> <span class="ident">document</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;p</span> <span class="ident">Document</span><span class="op">&lt;</span><span class="lifetime">&#39;p</span><span class="op">&gt;</span>,
+<span class="doccomment">/// A DNM with associated document parent (e.g. for paragraphs, headings)
+</span><span class="kw">pub struct </span>ItemDNM&lt;<span class="lifetime">&#39;p</span>&gt; {
+  <span class="doccomment">/// The payload of the item
+  </span><span class="kw">pub </span>dnm: DNM,
+  <span class="doccomment">/// A reference to the parent document
+  </span><span class="kw">pub </span>document: <span class="kw-2">&amp;</span><span class="lifetime">&#39;p </span>Document&lt;<span class="lifetime">&#39;p</span>&gt;,
 }
 
-<span class="doccomment">/// A DNMRange with associated document</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ItemDNMRange</span><span class="op">&lt;</span><span class="lifetime">&#39;s</span><span class="op">&gt;</span> {
-  <span class="doccomment">/// The range of the sentence</span>
-  <span class="kw">pub</span> <span class="ident">range</span>: <span class="ident">DNMRange</span><span class="op">&lt;</span><span class="lifetime">&#39;s</span><span class="op">&gt;</span>,
-  <span class="doccomment">/// The document containing this sentence</span>
-  <span class="kw">pub</span> <span class="ident">document</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;s</span> <span class="ident">Document</span><span class="op">&lt;</span><span class="lifetime">&#39;s</span><span class="op">&gt;</span>,
+<span class="doccomment">/// A DNMRange with associated document
+</span><span class="kw">pub struct </span>ItemDNMRange&lt;<span class="lifetime">&#39;s</span>&gt; {
+  <span class="doccomment">/// The range of the sentence
+  </span><span class="kw">pub </span>range: DNMRange&lt;<span class="lifetime">&#39;s</span>&gt;,
+  <span class="doccomment">/// The document containing this sentence
+  </span><span class="kw">pub </span>document: <span class="kw-2">&amp;</span><span class="lifetime">&#39;s </span>Document&lt;<span class="lifetime">&#39;s</span>&gt;,
 }
 
-<span class="comment">/* ---- Iterators ----- */</span>
+<span class="comment">/* ---- Iterators ----- */
 
-<span class="doccomment">/// Generic iterater over read-only xml nodes. It is the responsibility of the abstraction returning</span>
-<span class="doccomment">/// `NodeIterator` to specify the grouping principle for collecting the nodes</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">RoNodeIterator</span><span class="op">&lt;</span><span class="lifetime">&#39;iter</span><span class="op">&gt;</span> {
-  <span class="doccomment">/// A walker over read-only nodes</span>
-  <span class="ident">walker</span>: <span class="ident">IntoIter</span><span class="op">&lt;</span><span class="ident">RoNode</span><span class="op">&gt;</span>,
-  <span class="doccomment">/// A reference to the owner document</span>
-  <span class="kw">pub</span> <span class="ident">document</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;iter</span> <span class="ident">Document</span><span class="op">&lt;</span><span class="lifetime">&#39;iter</span><span class="op">&gt;</span>,
+</span><span class="doccomment">/// Generic iterater over read-only xml nodes. It is the responsibility of the abstraction returning
+/// `NodeIterator` to specify the grouping principle for collecting the nodes
+</span><span class="kw">pub struct </span>RoNodeIterator&lt;<span class="lifetime">&#39;iter</span>&gt; {
+  <span class="doccomment">/// A walker over read-only nodes
+  </span>walker: IntoIter&lt;RoNode&gt;,
+  <span class="doccomment">/// A reference to the owner document
+  </span><span class="kw">pub </span>document: <span class="kw-2">&amp;</span><span class="lifetime">&#39;iter </span>Document&lt;<span class="lifetime">&#39;iter</span>&gt;,
 }
 
-<span class="doccomment">/// A generic iterator over DNMRanges with their associated document (e.g. for sentences)</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">DNMRangeIterator</span><span class="op">&lt;</span><span class="lifetime">&#39;iter</span><span class="op">&gt;</span> {
-  <span class="doccomment">/// The walker over the sentence ranges</span>
-  <span class="ident">walker</span>: <span class="ident">IntoIter</span><span class="op">&lt;</span><span class="ident">DNMRange</span><span class="op">&lt;</span><span class="lifetime">&#39;iter</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-  <span class="doccomment">/// A reference to the document we are working on</span>
-  <span class="kw">pub</span> <span class="ident">document</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;iter</span> <span class="ident">Document</span><span class="op">&lt;</span><span class="lifetime">&#39;iter</span><span class="op">&gt;</span>,
+<span class="doccomment">/// A generic iterator over DNMRanges with their associated document (e.g. for sentences)
+</span><span class="kw">pub struct </span>DNMRangeIterator&lt;<span class="lifetime">&#39;iter</span>&gt; {
+  <span class="doccomment">/// The walker over the sentence ranges
+  </span>walker: IntoIter&lt;DNMRange&lt;<span class="lifetime">&#39;iter</span>&gt;&gt;,
+  <span class="doccomment">/// A reference to the document we are working on
+  </span><span class="kw">pub </span>document: <span class="kw-2">&amp;</span><span class="lifetime">&#39;iter </span>Document&lt;<span class="lifetime">&#39;iter</span>&gt;,
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;iter</span><span class="op">&gt;</span> <span class="ident">Iterator</span> <span class="kw">for</span> <span class="ident">RoNodeIterator</span><span class="op">&lt;</span><span class="lifetime">&#39;iter</span><span class="op">&gt;</span> {
-  <span class="kw">type</span> <span class="ident">Item</span> <span class="op">=</span> <span class="ident">ItemDNM</span><span class="op">&lt;</span><span class="lifetime">&#39;iter</span><span class="op">&gt;</span>;
-  <span class="kw">fn</span> <span class="ident">next</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ItemDNM</span><span class="op">&lt;</span><span class="lifetime">&#39;iter</span><span class="op">&gt;</span><span class="op">&gt;</span> {
-    <span class="kw">match</span> <span class="self">self</span>.<span class="ident">walker</span>.<span class="ident">next</span>() {
-      <span class="prelude-val">None</span> =&gt; <span class="prelude-val">None</span>,
-      <span class="prelude-val">Some</span>(<span class="ident">node</span>) =&gt; {
-        <span class="comment">// Create a DNM for the current ItemDNM</span>
-        <span class="kw">let</span> <span class="ident">dnm</span> <span class="op">=</span> <span class="ident">DNM::new</span>(<span class="ident">node</span>, <span class="ident">DNMParameters::llamapun_normalization</span>());
-        <span class="prelude-val">Some</span>(<span class="ident">ItemDNM</span> {
-          <span class="ident">dnm</span>,
-          <span class="ident">document</span>: <span class="self">self</span>.<span class="ident">document</span>,
+<span class="kw">impl</span>&lt;<span class="lifetime">&#39;iter</span>&gt; Iterator <span class="kw">for </span>RoNodeIterator&lt;<span class="lifetime">&#39;iter</span>&gt; {
+  <span class="kw">type </span>Item = ItemDNM&lt;<span class="lifetime">&#39;iter</span>&gt;;
+  <span class="kw">fn </span>next(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;ItemDNM&lt;<span class="lifetime">&#39;iter</span>&gt;&gt; {
+    <span class="kw">match </span><span class="self">self</span>.walker.next() {
+      <span class="prelude-val">None </span>=&gt; <span class="prelude-val">None</span>,
+      <span class="prelude-val">Some</span>(node) =&gt; {
+        <span class="comment">// Create a DNM for the current ItemDNM
+        </span><span class="kw">let </span>dnm = DNM::new(node, DNMParameters::llamapun_normalization());
+        <span class="prelude-val">Some</span>(ItemDNM {
+          dnm,
+          document: <span class="self">self</span>.document,
         })
       }
     }
   }
 }
 
-<span class="doccomment">/// An iterator adaptor for filtered selections over a document</span>
-<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">XPathFilteredIterator</span><span class="op">&lt;</span><span class="lifetime">&#39;p</span><span class="op">&gt;</span> {
-  <span class="doccomment">/// the sentences for the resulting selection</span>
-  <span class="kw">fn</span> <span class="ident">to_sentences</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;p</span> <span class="self">self</span>) -&gt; <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">DNMRange</span><span class="op">&lt;</span><span class="lifetime">&#39;p</span><span class="op">&gt;</span><span class="op">&gt;</span>;
-  <span class="doccomment">/// the owner document being selected over</span>
-  <span class="kw">fn</span> <span class="ident">get_document</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;p</span> <span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="lifetime">&#39;p</span> <span class="ident">Document</span>;
+<span class="doccomment">/// An iterator adaptor for filtered selections over a document
+</span><span class="kw">pub trait </span>XPathFilteredIterator&lt;<span class="lifetime">&#39;p</span>&gt; {
+  <span class="doccomment">/// the sentences for the resulting selection
+  </span><span class="kw">fn </span>to_sentences(<span class="kw-2">&amp;</span><span class="lifetime">&#39;p </span><span class="self">self</span>) -&gt; Vec&lt;DNMRange&lt;<span class="lifetime">&#39;p</span>&gt;&gt;;
+  <span class="doccomment">/// the owner document being selected over
+  </span><span class="kw">fn </span>get_document(<span class="kw-2">&amp;</span><span class="lifetime">&#39;p </span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="lifetime">&#39;p </span>Document;
 
-  <span class="doccomment">/// Get an iterator over the sentences in this paragraph</span>
-  <span class="kw">fn</span> <span class="ident">iter</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;p</span> <span class="kw-2">mut</span> <span class="self">self</span>) -&gt; <span class="ident">DNMRangeIterator</span><span class="op">&lt;</span><span class="lifetime">&#39;p</span><span class="op">&gt;</span> {
-    <span class="ident">DNMRangeIterator</span> {
-      <span class="ident">walker</span>: <span class="self">self</span>.<span class="ident">to_sentences</span>().<span class="ident">into_iter</span>(),
-      <span class="ident">document</span>: <span class="self">self</span>.<span class="ident">get_document</span>(),
+  <span class="doccomment">/// Get an iterator over the sentences in this paragraph
+  </span><span class="kw">fn </span>iter(<span class="kw-2">&amp;</span><span class="lifetime">&#39;p </span><span class="kw-2">mut </span><span class="self">self</span>) -&gt; DNMRangeIterator&lt;<span class="lifetime">&#39;p</span>&gt; {
+    DNMRangeIterator {
+      walker: <span class="self">self</span>.to_sentences().into_iter(),
+      document: <span class="self">self</span>.get_document(),
     }
   }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;p</span><span class="op">&gt;</span> <span class="ident">XPathFilteredIterator</span><span class="op">&lt;</span><span class="lifetime">&#39;p</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ItemDNM</span><span class="op">&lt;</span><span class="lifetime">&#39;p</span><span class="op">&gt;</span> {
-  <span class="kw">fn</span> <span class="ident">get_document</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;p</span> <span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="ident">Document</span> {
-    <span class="self">self</span>.<span class="ident">document</span>
+<span class="kw">impl</span>&lt;<span class="lifetime">&#39;p</span>&gt; XPathFilteredIterator&lt;<span class="lifetime">&#39;p</span>&gt; <span class="kw">for </span>ItemDNM&lt;<span class="lifetime">&#39;p</span>&gt; {
+  <span class="kw">fn </span>get_document(<span class="kw-2">&amp;</span><span class="lifetime">&#39;p </span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>Document {
+    <span class="self">self</span>.document
   }
-  <span class="kw">fn</span> <span class="ident">to_sentences</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;p</span> <span class="self">self</span>) -&gt; <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">DNMRange</span><span class="op">&lt;</span><span class="lifetime">&#39;p</span><span class="op">&gt;</span><span class="op">&gt;</span> {
-    <span class="self">self</span>.<span class="ident">document</span>.<span class="ident">corpus</span>.<span class="ident">tokenizer</span>.<span class="ident">sentences</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">dnm</span>)
+  <span class="kw">fn </span>to_sentences(<span class="kw-2">&amp;</span><span class="lifetime">&#39;p </span><span class="self">self</span>) -&gt; Vec&lt;DNMRange&lt;<span class="lifetime">&#39;p</span>&gt;&gt; {
+    <span class="self">self</span>.document.corpus.tokenizer.sentences(<span class="kw-2">&amp;</span><span class="self">self</span>.dnm)
   }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;iter</span><span class="op">&gt;</span> <span class="ident">Iterator</span> <span class="kw">for</span> <span class="ident">DNMRangeIterator</span><span class="op">&lt;</span><span class="lifetime">&#39;iter</span><span class="op">&gt;</span> {
-  <span class="kw">type</span> <span class="ident">Item</span> <span class="op">=</span> <span class="ident">ItemDNMRange</span><span class="op">&lt;</span><span class="lifetime">&#39;iter</span><span class="op">&gt;</span>;
-  <span class="kw">fn</span> <span class="ident">next</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ItemDNMRange</span><span class="op">&lt;</span><span class="lifetime">&#39;iter</span><span class="op">&gt;</span><span class="op">&gt;</span> {
-    <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">range</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">walker</span>.<span class="ident">next</span>() {
-      <span class="kw">if</span> <span class="ident">range</span>.<span class="ident">is_empty</span>() {
-        <span class="self">self</span>.<span class="ident">next</span>()
-      } <span class="kw">else</span> {
-        <span class="prelude-val">Some</span>(<span class="ident">ItemDNMRange</span> {
-          <span class="ident">range</span>,
-          <span class="ident">document</span>: <span class="self">self</span>.<span class="ident">document</span>,
+<span class="kw">impl</span>&lt;<span class="lifetime">&#39;iter</span>&gt; Iterator <span class="kw">for </span>DNMRangeIterator&lt;<span class="lifetime">&#39;iter</span>&gt; {
+  <span class="kw">type </span>Item = ItemDNMRange&lt;<span class="lifetime">&#39;iter</span>&gt;;
+  <span class="kw">fn </span>next(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;ItemDNMRange&lt;<span class="lifetime">&#39;iter</span>&gt;&gt; {
+    <span class="kw">if let </span><span class="prelude-val">Some</span>(range) = <span class="self">self</span>.walker.next() {
+      <span class="kw">if </span>range.is_empty() {
+        <span class="self">self</span>.next()
+      } <span class="kw">else </span>{
+        <span class="prelude-val">Some</span>(ItemDNMRange {
+          range,
+          document: <span class="self">self</span>.document,
         })
       }
-    } <span class="kw">else</span> {
-      <span class="prelude-val">None</span>
+    } <span class="kw">else </span>{
+      <span class="prelude-val">None
+    </span>}
+  }
+}
+
+<span class="kw">impl</span>&lt;<span class="lifetime">&#39;s</span>&gt; ItemDNMRange&lt;<span class="lifetime">&#39;s</span>&gt; {
+  <span class="doccomment">/// Get an iterator over the words (using rudimentary heuristics)
+  </span><span class="kw">pub fn </span>word_iter(<span class="kw-2">&amp;</span><span class="lifetime">&#39;s </span><span class="kw-2">mut </span><span class="self">self</span>) -&gt; DNMRangeIterator&lt;<span class="lifetime">&#39;s</span>&gt; {
+    <span class="kw">let </span>tokenizer = <span class="kw-2">&amp;</span><span class="self">self</span>.document.corpus.tokenizer;
+    <span class="kw">let </span>words = tokenizer.words(<span class="kw-2">&amp;</span><span class="self">self</span>.range);
+    DNMRangeIterator {
+      walker: words.into_iter(),
+      document: <span class="self">self</span>.document,
+    }
+  }
+  <span class="doccomment">/// Get an iterator over the words and punctuation (using rudimentary heuristics)
+  </span><span class="kw">pub fn </span>word_and_punct_iter(<span class="kw-2">&amp;</span><span class="lifetime">&#39;s </span><span class="kw-2">mut </span><span class="self">self</span>) -&gt; DNMRangeIterator&lt;<span class="lifetime">&#39;s</span>&gt; {
+    <span class="kw">let </span>tokenizer = <span class="kw-2">&amp;</span><span class="self">self</span>.document.corpus.tokenizer;
+    <span class="kw">let </span>words = tokenizer.words_and_punct(<span class="kw-2">&amp;</span><span class="self">self</span>.range);
+    DNMRangeIterator {
+      walker: words.into_iter(),
+      document: <span class="self">self</span>.document,
     }
   }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;s</span><span class="op">&gt;</span> <span class="ident">ItemDNMRange</span><span class="op">&lt;</span><span class="lifetime">&#39;s</span><span class="op">&gt;</span> {
-  <span class="doccomment">/// Get an iterator over the words (using rudimentary heuristics)</span>
-  <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">word_iter</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;s</span> <span class="kw-2">mut</span> <span class="self">self</span>) -&gt; <span class="ident">DNMRangeIterator</span><span class="op">&lt;</span><span class="lifetime">&#39;s</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="ident">tokenizer</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">document</span>.<span class="ident">corpus</span>.<span class="ident">tokenizer</span>;
-    <span class="kw">let</span> <span class="ident">words</span> <span class="op">=</span> <span class="ident">tokenizer</span>.<span class="ident">words</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">range</span>);
-    <span class="ident">DNMRangeIterator</span> {
-      <span class="ident">walker</span>: <span class="ident">words</span>.<span class="ident">into_iter</span>(),
-      <span class="ident">document</span>: <span class="self">self</span>.<span class="ident">document</span>,
-    }
-  }
-  <span class="doccomment">/// Get an iterator over the words and punctuation (using rudimentary heuristics)</span>
-  <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">word_and_punct_iter</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;s</span> <span class="kw-2">mut</span> <span class="self">self</span>) -&gt; <span class="ident">DNMRangeIterator</span><span class="op">&lt;</span><span class="lifetime">&#39;s</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="ident">tokenizer</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">document</span>.<span class="ident">corpus</span>.<span class="ident">tokenizer</span>;
-    <span class="kw">let</span> <span class="ident">words</span> <span class="op">=</span> <span class="ident">tokenizer</span>.<span class="ident">words_and_punct</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">range</span>);
-    <span class="ident">DNMRangeIterator</span> {
-      <span class="ident">walker</span>: <span class="ident">words</span>.<span class="ident">into_iter</span>(),
-      <span class="ident">document</span>: <span class="self">self</span>.<span class="ident">document</span>,
-    }
-  }
-}
-
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;s</span><span class="op">&gt;</span> <span class="ident">ItemDNM</span><span class="op">&lt;</span><span class="lifetime">&#39;s</span><span class="op">&gt;</span> {
-  <span class="doccomment">/// Get an iterator over the words (using rudimentary heuristics)</span>
-  <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">word_iter</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;s</span> <span class="kw-2">mut</span> <span class="self">self</span>) -&gt; <span class="ident">DNMRangeIterator</span><span class="op">&lt;</span><span class="lifetime">&#39;s</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="ident">tokenizer</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">document</span>.<span class="ident">corpus</span>.<span class="ident">tokenizer</span>;
-    <span class="kw">let</span> <span class="ident">words</span> <span class="op">=</span> <span class="kw">match</span> <span class="self">self</span>.<span class="ident">dnm</span>.<span class="ident">get_range</span>() {
-      <span class="prelude-val">Ok</span>(<span class="ident">range</span>) =&gt; <span class="ident">tokenizer</span>.<span class="ident">words</span>(<span class="kw-2">&amp;</span><span class="ident">range</span>),
-      <span class="kw">_</span> =&gt; <span class="ident">Vec::new</span>(),
+<span class="kw">impl</span>&lt;<span class="lifetime">&#39;s</span>&gt; ItemDNM&lt;<span class="lifetime">&#39;s</span>&gt; {
+  <span class="doccomment">/// Get an iterator over the words (using rudimentary heuristics)
+  </span><span class="kw">pub fn </span>word_iter(<span class="kw-2">&amp;</span><span class="lifetime">&#39;s </span><span class="kw-2">mut </span><span class="self">self</span>) -&gt; DNMRangeIterator&lt;<span class="lifetime">&#39;s</span>&gt; {
+    <span class="kw">let </span>tokenizer = <span class="kw-2">&amp;</span><span class="self">self</span>.document.corpus.tokenizer;
+    <span class="kw">let </span>words = <span class="kw">match </span><span class="self">self</span>.dnm.get_range() {
+      <span class="prelude-val">Ok</span>(range) =&gt; tokenizer.words(<span class="kw-2">&amp;</span>range),
+      <span class="kw">_ </span>=&gt; Vec::new(),
     };
-    <span class="ident">DNMRangeIterator</span> {
-      <span class="ident">walker</span>: <span class="ident">words</span>.<span class="ident">into_iter</span>(),
-      <span class="ident">document</span>: <span class="self">self</span>.<span class="ident">document</span>,
+    DNMRangeIterator {
+      walker: words.into_iter(),
+      document: <span class="self">self</span>.document,
     }
   }
-  <span class="doccomment">/// Get an iterator over the words and punctuation (using rudimentary heuristics)</span>
-  <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">word_and_punct_iter</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;s</span> <span class="kw-2">mut</span> <span class="self">self</span>) -&gt; <span class="ident">DNMRangeIterator</span><span class="op">&lt;</span><span class="lifetime">&#39;s</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="ident">tokenizer</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">document</span>.<span class="ident">corpus</span>.<span class="ident">tokenizer</span>;
-    <span class="kw">let</span> <span class="ident">words</span> <span class="op">=</span> <span class="kw">match</span> <span class="self">self</span>.<span class="ident">dnm</span>.<span class="ident">get_range</span>() {
-      <span class="prelude-val">Ok</span>(<span class="ident">range</span>) =&gt; <span class="ident">tokenizer</span>.<span class="ident">words_and_punct</span>(<span class="kw-2">&amp;</span><span class="ident">range</span>),
-      <span class="kw">_</span> =&gt; <span class="ident">Vec::new</span>(),
+  <span class="doccomment">/// Get an iterator over the words and punctuation (using rudimentary heuristics)
+  </span><span class="kw">pub fn </span>word_and_punct_iter(<span class="kw-2">&amp;</span><span class="lifetime">&#39;s </span><span class="kw-2">mut </span><span class="self">self</span>) -&gt; DNMRangeIterator&lt;<span class="lifetime">&#39;s</span>&gt; {
+    <span class="kw">let </span>tokenizer = <span class="kw-2">&amp;</span><span class="self">self</span>.document.corpus.tokenizer;
+    <span class="kw">let </span>words = <span class="kw">match </span><span class="self">self</span>.dnm.get_range() {
+      <span class="prelude-val">Ok</span>(range) =&gt; tokenizer.words_and_punct(<span class="kw-2">&amp;</span>range),
+      <span class="kw">_ </span>=&gt; Vec::new(),
     };
-    <span class="ident">DNMRangeIterator</span> {
-      <span class="ident">walker</span>: <span class="ident">words</span>.<span class="ident">into_iter</span>(),
-      <span class="ident">document</span>: <span class="self">self</span>.<span class="ident">document</span>,
+    DNMRangeIterator {
+      walker: words.into_iter(),
+      document: <span class="self">self</span>.document,
     }
   }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="llamapun" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.63.0 (4b91a6ea7 2022-08-08)" ></div>
-</body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="llamapun" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0 (897e37553 2022-11-02)" ></div></body></html>

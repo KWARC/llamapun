@@ -1,10 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/ngrams.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>ngrams.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../llamapun/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div>
-        </a><h2 class="location"></h2>
-    </nav>
-    <nav class="sidebar"><a class="sidebar-logo" href="../../llamapun/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div>
-        </a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../llamapun/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><button type="button" id="help-button" title="help">?</button><div id="settings-menu" tabindex="-1">
-                                <a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div>
-                        </div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/ngrams.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>ngrams.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../normalize.css"><link rel="stylesheet" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../ayu.css" disabled><link rel="stylesheet" href="../../dark.css" disabled><link rel="stylesheet" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../llamapun/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../llamapun/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../llamapun/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -164,166 +158,165 @@
 <span id="158">158</span>
 <span id="159">159</span>
 <span id="160">160</span>
-</pre><pre class="rust"><code><span class="doccomment">//! A small ngram library</span>
-<span class="doccomment">//! ngrams are sequences of n consecutive words</span>
-<span class="kw">use</span> <span class="ident">circular_queue::CircularQueue</span>;
-<span class="kw">use</span> <span class="ident">std::collections::HashMap</span>;
+</pre><pre class="rust"><code><span class="doccomment">//! A small ngram library
+//! ngrams are sequences of n consecutive words
+</span><span class="kw">use </span>circular_queue::CircularQueue;
+<span class="kw">use </span>std::collections::HashMap;
 
-<span class="doccomment">/// Records single words, in order of appearance</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Default</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Dictionary</span> {
-  <span class="doccomment">/// hashmap for the records</span>
-  <span class="kw">pub</span> <span class="ident">map</span>: <span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">usize</span><span class="op">&gt;</span>,
-  <span class="doccomment">/// index of the next word</span>
-  <span class="ident">index</span>: <span class="ident">usize</span>,
+<span class="doccomment">/// Records single words, in order of appearance
+</span><span class="attribute">#[derive(Debug, Default)]
+</span><span class="kw">pub struct </span>Dictionary {
+  <span class="doccomment">/// hashmap for the records
+  </span><span class="kw">pub </span>map: HashMap&lt;String, usize&gt;,
+  <span class="doccomment">/// index of the next word
+  </span>index: usize,
 }
-<span class="kw">impl</span> <span class="ident">Dictionary</span> {
-  <span class="doccomment">/// create a new dictionary</span>
-  <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() -&gt; <span class="self">Self</span> {
-    <span class="ident">Dictionary::default</span>()
+<span class="kw">impl </span>Dictionary {
+  <span class="doccomment">/// create a new dictionary
+  </span><span class="kw">pub fn </span>new() -&gt; <span class="self">Self </span>{
+    Dictionary::default()
   }
-  <span class="doccomment">/// insert a new word into the dictionary (if it hasn&#39;t been inserted yet)</span>
-  <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">insert</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">word</span>: <span class="ident">String</span>) {
-    <span class="kw">let</span> <span class="ident">map</span> <span class="op">=</span> <span class="kw-2">&amp;mut</span> <span class="self">self</span>.<span class="ident">map</span>;
-    <span class="comment">// Only record if new</span>
-    <span class="kw">let</span> <span class="ident">word_index</span> <span class="op">=</span> <span class="ident">map</span>.<span class="ident">entry</span>(<span class="ident">word</span>).<span class="ident">or_insert</span>(<span class="self">self</span>.<span class="ident">index</span> <span class="op">+</span> <span class="number">1</span>);
-    <span class="kw">if</span> <span class="kw-2">*</span><span class="ident">word_index</span> <span class="op">&gt;</span> <span class="self">self</span>.<span class="ident">index</span> {
-      <span class="self">self</span>.<span class="ident">index</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
+  <span class="doccomment">/// insert a new word into the dictionary (if it hasn&#39;t been inserted yet)
+  </span><span class="kw">pub fn </span>insert(<span class="kw-2">&amp;mut </span><span class="self">self</span>, word: String) {
+    <span class="kw">let </span>map = <span class="kw-2">&amp;mut </span><span class="self">self</span>.map;
+    <span class="comment">// Only record if new
+    </span><span class="kw">let </span>word_index = map.entry(word).or_insert(<span class="self">self</span>.index + <span class="number">1</span>);
+    <span class="kw">if </span><span class="kw-2">*</span>word_index &gt; <span class="self">self</span>.index {
+      <span class="self">self</span>.index += <span class="number">1</span>;
     }
   }
-  <span class="doccomment">/// get the entries of the dictionary sorted by occurence</span>
-  <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">sorted</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">Vec</span><span class="op">&lt;</span>(<span class="kw-2">&amp;</span><span class="ident">String</span>, <span class="ident">usize</span>)<span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">as_vec</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">map</span>.<span class="ident">iter</span>().<span class="ident">map</span>(<span class="op">|</span>(<span class="ident">x</span>, <span class="ident">y</span>)<span class="op">|</span> (<span class="ident">x</span>, <span class="kw-2">*</span><span class="ident">y</span>)).<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>();
-    <span class="ident">as_vec</span>.<span class="ident">sort_by</span>(<span class="op">|</span><span class="ident">a</span>, <span class="ident">b</span><span class="op">|</span> <span class="ident">b</span>.<span class="number">1</span>.<span class="ident">cmp</span>(<span class="kw-2">&amp;</span><span class="ident">a</span>.<span class="number">1</span>));
-    <span class="ident">as_vec</span>
+  <span class="doccomment">/// get the entries of the dictionary sorted by occurence
+  </span><span class="kw">pub fn </span>sorted(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Vec&lt;(<span class="kw-2">&amp;</span>String, usize)&gt; {
+    <span class="kw">let </span><span class="kw-2">mut </span>as_vec = <span class="self">self</span>.map.iter().map(|(x, y)| (x, <span class="kw-2">*</span>y)).collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;();
+    as_vec.sort_by(|a, b| b.<span class="number">1</span>.cmp(<span class="kw-2">&amp;</span>a.<span class="number">1</span>));
+    as_vec
   }
-  <span class="doccomment">/// get the number of entries in the dictionary</span>
-  <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">count</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">usize</span> {
-    <span class="self">self</span>.<span class="ident">index</span>
+  <span class="doccomment">/// get the number of entries in the dictionary
+  </span><span class="kw">pub fn </span>count(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; usize {
+    <span class="self">self</span>.index
   }
 }
 
-<span class="doccomment">/// Ngrams are dictionaries with</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Ngrams</span> {
-  <span class="doccomment">/// anchor word that must be present in all ngram contexts (in their window)</span>
-  <span class="kw">pub</span> <span class="ident">anchor</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
-  <span class="doccomment">/// if an anchor word is given, word window size, applied to the left and to the right of the anchor word</span>
-  <span class="kw">pub</span> <span class="ident">window_size</span>: <span class="ident">usize</span>,
-  <span class="doccomment">/// n-grams for a sequence of n words</span>
-  <span class="kw">pub</span> <span class="ident">n</span>: <span class="ident">usize</span>,
-  <span class="doccomment">/// statistics hashmap for the occurence counts</span>
-  <span class="kw">pub</span> <span class="ident">counts</span>: <span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">usize</span><span class="op">&gt;</span>,
+<span class="doccomment">/// Ngrams are dictionaries with
+</span><span class="kw">pub struct </span>Ngrams {
+  <span class="doccomment">/// anchor word that must be present in all ngram contexts (in their window)
+  </span><span class="kw">pub </span>anchor: <span class="prelude-ty">Option</span>&lt;String&gt;,
+  <span class="doccomment">/// if an anchor word is given, word window size, applied to the left and to the right of the anchor word
+  </span><span class="kw">pub </span>window_size: usize,
+  <span class="doccomment">/// n-grams for a sequence of n words
+  </span><span class="kw">pub </span>n: usize,
+  <span class="doccomment">/// statistics hashmap for the occurence counts
+  </span><span class="kw">pub </span>counts: HashMap&lt;String, usize&gt;,
 }
-<span class="kw">impl</span> <span class="ident">Default</span> <span class="kw">for</span> <span class="ident">Ngrams</span> {
-  <span class="kw">fn</span> <span class="ident">default</span>() -&gt; <span class="ident">Ngrams</span> {
-    <span class="ident">Ngrams</span> {
-      <span class="ident">anchor</span>: <span class="prelude-val">None</span>,
-      <span class="ident">window_size</span>: <span class="number">0</span>,
-      <span class="ident">n</span>: <span class="number">1</span>,
-      <span class="ident">counts</span>: <span class="ident">HashMap::new</span>(),
+<span class="kw">impl </span>Default <span class="kw">for </span>Ngrams {
+  <span class="kw">fn </span>default() -&gt; Ngrams {
+    Ngrams {
+      anchor: <span class="prelude-val">None</span>,
+      window_size: <span class="number">0</span>,
+      n: <span class="number">1</span>,
+      counts: HashMap::new(),
     }
   }
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Copy</span>, <span class="ident">Clone</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">enum</span> <span class="ident">AnchorSide</span> {
-  <span class="ident">Left</span>,
-  <span class="ident">Right</span>,
+<span class="attribute">#[derive(Debug, Copy, Clone, PartialEq)]
+</span><span class="kw">enum </span>AnchorSide {
+  Left,
+  Right,
 }
 
-<span class="kw">impl</span> <span class="ident">Ngrams</span> {
-  <span class="doccomment">/// Get the word count</span>
-  <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">word</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) -&gt; <span class="ident">usize</span> {
-    <span class="kw">match</span> <span class="self">self</span>.<span class="ident">counts</span>.<span class="ident">get</span>(<span class="ident">word</span>) {
-      <span class="prelude-val">Some</span>(<span class="ident">count</span>) =&gt; <span class="kw-2">*</span><span class="ident">count</span>,
-      <span class="prelude-val">None</span> =&gt; <span class="number">0</span>,
+<span class="kw">impl </span>Ngrams {
+  <span class="doccomment">/// Get the word count
+  </span><span class="kw">pub fn </span>get(<span class="kw-2">&amp;</span><span class="self">self</span>, word: <span class="kw-2">&amp;</span>str) -&gt; usize {
+    <span class="kw">match </span><span class="self">self</span>.counts.get(word) {
+      <span class="prelude-val">Some</span>(count) =&gt; <span class="kw-2">*</span>count,
+      <span class="prelude-val">None </span>=&gt; <span class="number">0</span>,
     }
   }
-  <span class="doccomment">/// count a newly seen ngram phrase</span>
-  <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">insert</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">phrase</span>: <span class="ident">String</span>) {
-    <span class="kw">let</span> <span class="ident">counter</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">counts</span>.<span class="ident">entry</span>(<span class="ident">phrase</span>).<span class="ident">or_insert</span>(<span class="number">0</span>);
-    <span class="kw-2">*</span><span class="ident">counter</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
+  <span class="doccomment">/// count a newly seen ngram phrase
+  </span><span class="kw">pub fn </span>insert(<span class="kw-2">&amp;mut </span><span class="self">self</span>, phrase: String) {
+    <span class="kw">let </span>counter = <span class="self">self</span>.counts.entry(phrase).or_insert(<span class="number">0</span>);
+    <span class="kw-2">*</span>counter += <span class="number">1</span>;
   }
-  <span class="doccomment">/// obtain the ngram report, sorted by descending frequency</span>
-  <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">sorted</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">Vec</span><span class="op">&lt;</span>(<span class="kw-2">&amp;</span><span class="ident">String</span>, <span class="ident">usize</span>)<span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">as_vec</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">counts</span>.<span class="ident">iter</span>().<span class="ident">map</span>(<span class="op">|</span>(<span class="ident">x</span>, <span class="ident">y</span>)<span class="op">|</span> (<span class="ident">x</span>, <span class="kw-2">*</span><span class="ident">y</span>)).<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>();
-    <span class="ident">as_vec</span>.<span class="ident">sort_by</span>(<span class="op">|</span><span class="ident">a</span>, <span class="ident">b</span><span class="op">|</span> <span class="ident">b</span>.<span class="number">1</span>.<span class="ident">cmp</span>(<span class="kw-2">&amp;</span><span class="ident">a</span>.<span class="number">1</span>));
-    <span class="ident">as_vec</span>
+  <span class="doccomment">/// obtain the ngram report, sorted by descending frequency
+  </span><span class="kw">pub fn </span>sorted(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Vec&lt;(<span class="kw-2">&amp;</span>String, usize)&gt; {
+    <span class="kw">let </span><span class="kw-2">mut </span>as_vec = <span class="self">self</span>.counts.iter().map(|(x, y)| (x, <span class="kw-2">*</span>y)).collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;();
+    as_vec.sort_by(|a, b| b.<span class="number">1</span>.cmp(<span class="kw-2">&amp;</span>a.<span class="number">1</span>));
+    as_vec
   }
-  <span class="doccomment">/// get the number of distinct ngrams recorded</span>
-  <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">distinct_count</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">usize</span> {
-    <span class="self">self</span>.<span class="ident">counts</span>.<span class="ident">len</span>()
-  }
-
-  <span class="doccomment">/// add content for ngram analysis, typically a paragraph or a line of text</span>
-  <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">add_content</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">content</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) {
-    <span class="kw">if</span> <span class="self">self</span>.<span class="ident">anchor</span>.<span class="ident">is_some</span>() <span class="op">&amp;&amp;</span> <span class="self">self</span>.<span class="ident">window_size</span> <span class="op">&gt;</span> <span class="number">0</span> {
-      <span class="self">self</span>.<span class="ident">add_anchored_content</span>(<span class="ident">content</span>)
-    } <span class="kw">else</span> {
-      <span class="macro">unimplemented!</span>(); <span class="comment">// TODO: the basic ngram case</span>
-    }
+  <span class="doccomment">/// get the number of distinct ngrams recorded
+  </span><span class="kw">pub fn </span>distinct_count(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; usize {
+    <span class="self">self</span>.counts.len()
   }
 
-  <span class="doccomment">/// In essence, for a given window size W, a word at index i is justified to participate in the ngrams</span>
-  <span class="doccomment">/// if there is an instance of an anchor word in the range of words [i-W, i+W].</span>
-  <span class="doccomment">/// this can be highly irregular e.g. &quot;word word anchor word anchor word word&quot;, so we record flexibly</span>
-  <span class="doccomment">/// looking for no-justification cutoffs, where a continuous word sequence is recorded for ngram counts</span>
-  <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">add_anchored_content</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">content</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) {
-    <span class="comment">// content to add through the ngram builder</span>
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">continuous_buffer</span> <span class="op">=</span> <span class="ident">Vec::new</span>();
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">context_window</span> <span class="op">=</span> <span class="ident">CircularQueue::with_capacity</span>(<span class="self">self</span>.<span class="ident">window_size</span>);
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">words_since_anchor_seen</span> <span class="op">=</span> <span class="number">0</span>;
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">side</span> <span class="op">=</span> <span class="ident">AnchorSide::Left</span>;
+  <span class="doccomment">/// add content for ngram analysis, typically a paragraph or a line of text
+  </span><span class="kw">pub fn </span>add_content(<span class="kw-2">&amp;mut </span><span class="self">self</span>, content: <span class="kw-2">&amp;</span>str) {
+    <span class="kw">if </span><span class="self">self</span>.anchor.is_some() &amp;&amp; <span class="self">self</span>.window_size &gt; <span class="number">0 </span>{
+      <span class="self">self</span>.add_anchored_content(content)
+    } <span class="kw">else </span>{
+      <span class="macro">unimplemented!</span>(); <span class="comment">// TODO: the basic ngram case
+    </span>}
+  }
 
-    <span class="kw">for</span> <span class="ident">w</span> <span class="kw">in</span> <span class="ident">content</span>
-      .<span class="ident">split_ascii_whitespace</span>()
-      .<span class="ident">filter</span>(<span class="op">|</span><span class="kw-2">&amp;</span><span class="ident">w</span><span class="op">|</span> <span class="ident">w</span>.<span class="ident">chars</span>().<span class="ident">next</span>().<span class="ident">unwrap</span>().<span class="ident">is_alphanumeric</span>())
+  <span class="doccomment">/// In essence, for a given window size W, a word at index i is justified to participate in the ngrams
+  /// if there is an instance of an anchor word in the range of words [i-W, i+W].
+  /// this can be highly irregular e.g. &quot;word word anchor word anchor word word&quot;, so we record flexibly
+  /// looking for no-justification cutoffs, where a continuous word sequence is recorded for ngram counts
+  </span><span class="kw">pub fn </span>add_anchored_content(<span class="kw-2">&amp;mut </span><span class="self">self</span>, content: <span class="kw-2">&amp;</span>str) {
+    <span class="comment">// content to add through the ngram builder
+    </span><span class="kw">let </span><span class="kw-2">mut </span>continuous_buffer = Vec::new();
+    <span class="kw">let </span><span class="kw-2">mut </span>context_window = CircularQueue::with_capacity(<span class="self">self</span>.window_size);
+    <span class="kw">let </span><span class="kw-2">mut </span>words_since_anchor_seen = <span class="number">0</span>;
+    <span class="kw">let </span><span class="kw-2">mut </span>side = AnchorSide::Left;
+
+    <span class="kw">for </span>w <span class="kw">in </span>content
+      .split_ascii_whitespace()
+      .filter(|<span class="kw-2">&amp;</span>w| w.chars().next().unwrap().is_alphanumeric())
     {
-      <span class="comment">// add the current word, potentially erasing the oldest word that falls outside the window</span>
-      <span class="ident">context_window</span>.<span class="ident">push</span>(<span class="ident">w</span>);
-      <span class="kw">let</span> <span class="ident">anchor</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">anchor</span>.<span class="ident">as_ref</span>().<span class="ident">unwrap</span>();
-      <span class="kw">if</span> <span class="ident">w</span> <span class="op">==</span> <span class="ident">anchor</span> {
-        <span class="comment">// we&#39;ve hit an anchor word, the current content of the window should be analyzed</span>
-        <span class="ident">words_since_anchor_seen</span> <span class="op">=</span> <span class="number">0</span>;
-        <span class="ident">side</span> <span class="op">=</span> <span class="ident">AnchorSide::Right</span>;
-        <span class="comment">// analyze whatever is in the buffer, and empty it</span>
-        <span class="ident">continuous_buffer</span> <span class="op">=</span> <span class="ident">context_window</span>.<span class="ident">asc_iter</span>().<span class="ident">copied</span>().<span class="ident">collect</span>();
-        <span class="ident">context_window</span>.<span class="ident">clear</span>();
-      } <span class="kw">else</span> {
-        <span class="ident">words_since_anchor_seen</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
-        <span class="kw">if</span> <span class="ident">words_since_anchor_seen</span> <span class="op">==</span> <span class="self">self</span>.<span class="ident">window_size</span> <span class="op">&amp;&amp;</span> <span class="ident">side</span> <span class="op">==</span> <span class="ident">AnchorSide::Right</span> {
-          <span class="comment">// it has been too long since we saw an anchor, add to the current buffer, record and reset</span>
-          <span class="self">self</span>.<span class="ident">record_words</span>(<span class="ident">continuous_buffer</span>.<span class="ident">drain</span>(..).<span class="ident">collect</span>());
-          <span class="ident">context_window</span>.<span class="ident">clear</span>();
-          <span class="ident">side</span> <span class="op">=</span> <span class="ident">AnchorSide::Left</span>;
+      <span class="comment">// add the current word, potentially erasing the oldest word that falls outside the window
+      </span>context_window.push(w);
+      <span class="kw">let </span>anchor = <span class="self">self</span>.anchor.as_ref().unwrap();
+      <span class="kw">if </span>w == anchor {
+        <span class="comment">// we&#39;ve hit an anchor word, the current content of the window should be analyzed
+        </span>words_since_anchor_seen = <span class="number">0</span>;
+        side = AnchorSide::Right;
+        <span class="comment">// analyze whatever is in the buffer, and empty it
+        </span>continuous_buffer = context_window.asc_iter().copied().collect();
+        context_window.clear();
+      } <span class="kw">else </span>{
+        words_since_anchor_seen += <span class="number">1</span>;
+        <span class="kw">if </span>words_since_anchor_seen == <span class="self">self</span>.window_size &amp;&amp; side == AnchorSide::Right {
+          <span class="comment">// it has been too long since we saw an anchor, add to the current buffer, record and reset
+          </span><span class="self">self</span>.record_words(continuous_buffer.drain(..).collect());
+          context_window.clear();
+          side = AnchorSide::Left;
         }
       }
     }
-    <span class="comment">// Any remaining content should be added</span>
-    <span class="ident">continuous_buffer</span>.<span class="ident">extend</span>(<span class="ident">context_window</span>.<span class="ident">asc_iter</span>().<span class="ident">copied</span>());
-    <span class="self">self</span>.<span class="ident">record_words</span>(<span class="ident">continuous_buffer</span>.<span class="ident">drain</span>(..).<span class="ident">collect</span>());
+    <span class="comment">// Any remaining content should be added
+    </span>continuous_buffer.extend(context_window.asc_iter().copied());
+    <span class="self">self</span>.record_words(continuous_buffer.drain(..).collect());
   }
 
-  <span class="doccomment">/// Take an arbitrarily long vector of words, and record all (overlapping) ngrams obtainable from it</span>
-  <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">record_words</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">words</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">str</span><span class="op">&gt;</span>) {
-    <span class="kw">if</span> <span class="ident">words</span>.<span class="ident">len</span>() <span class="op">&lt;</span> <span class="self">self</span>.<span class="ident">n</span> {
-      <span class="comment">// nothing to do unless we have at least n words</span>
-      <span class="kw">return</span>;
+  <span class="doccomment">/// Take an arbitrarily long vector of words, and record all (overlapping) ngrams obtainable from it
+  </span><span class="kw">pub fn </span>record_words(<span class="kw-2">&amp;mut </span><span class="self">self</span>, words: Vec&lt;<span class="kw-2">&amp;</span>str&gt;) {
+    <span class="kw">if </span>words.len() &lt; <span class="self">self</span>.n {
+      <span class="comment">// nothing to do unless we have at least n words
+      </span><span class="kw">return</span>;
     }
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">gram_window</span> <span class="op">=</span> <span class="ident">CircularQueue::with_capacity</span>(<span class="self">self</span>.<span class="ident">n</span>);
-    <span class="kw">for</span> <span class="ident">w</span> <span class="kw">in</span> <span class="ident">words</span>.<span class="ident">into_iter</span>() {
-      <span class="ident">gram_window</span>.<span class="ident">push</span>(<span class="ident">w</span>);
-      <span class="kw">if</span> <span class="ident">gram_window</span>.<span class="ident">len</span>() <span class="op">==</span> <span class="self">self</span>.<span class="ident">n</span> {
-        <span class="kw">let</span> <span class="ident">key</span> <span class="op">=</span> <span class="ident">gram_window</span>
-          .<span class="ident">asc_iter</span>()
-          .<span class="ident">copied</span>()
-          .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>()
-          .<span class="ident">join</span>(<span class="string">&quot; &quot;</span>);
-        <span class="self">self</span>.<span class="ident">insert</span>(<span class="ident">key</span>);
+    <span class="kw">let </span><span class="kw-2">mut </span>gram_window = CircularQueue::with_capacity(<span class="self">self</span>.n);
+    <span class="kw">for </span>w <span class="kw">in </span>words.into_iter() {
+      gram_window.push(w);
+      <span class="kw">if </span>gram_window.len() == <span class="self">self</span>.n {
+        <span class="kw">let </span>key = gram_window
+          .asc_iter()
+          .copied()
+          .collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;()
+          .join(<span class="string">&quot; &quot;</span>);
+        <span class="self">self</span>.insert(key);
       }
     }
   }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="llamapun" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.63.0 (4b91a6ea7 2022-08-08)" ></div>
-</body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="llamapun" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0 (897e37553 2022-11-02)" ></div></body></html>

@@ -1,10 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/patterns/matching.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>matching.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../llamapun/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div>
-        </a><h2 class="location"></h2>
-    </nav>
-    <nav class="sidebar"><a class="sidebar-logo" href="../../../llamapun/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div>
-        </a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../llamapun/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><button type="button" id="help-button" title="help">?</button><div id="settings-menu" tabindex="-1">
-                                <a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div>
-                        </div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/patterns/matching.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>matching.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../llamapun/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../llamapun/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../llamapun/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -636,638 +630,637 @@
 <span id="630">630</span>
 <span id="631">631</span>
 <span id="632">632</span>
-</pre><pre class="rust"><code><span class="doccomment">//! The code for the actual matching</span>
-<span class="kw">use</span> <span class="ident">libxml::readonly::RoNode</span>;
-<span class="kw">use</span> <span class="ident">std::cmp::Ordering</span>;
+</pre><pre class="rust"><code><span class="doccomment">//! The code for the actual matching
+</span><span class="kw">use </span>libxml::readonly::RoNode;
+<span class="kw">use </span>std::cmp::Ordering;
 
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::patterns::rules</span>::<span class="kw-2">*</span>;
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::patterns::utils</span>::<span class="kw-2">*</span>;
+<span class="kw">use </span><span class="kw">crate</span>::patterns::rules::<span class="kw-2">*</span>;
+<span class="kw">use </span><span class="kw">crate</span>::patterns::utils::<span class="kw-2">*</span>;
 
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::dnm</span>::<span class="kw-2">*</span>;
+<span class="kw">use </span><span class="kw">crate</span>::dnm::<span class="kw-2">*</span>;
 
-<span class="kw">use</span> <span class="ident">senna::phrase::Phrase</span>;
-<span class="kw">use</span> <span class="ident">senna::pos::POS</span>;
-<span class="kw">use</span> <span class="ident">senna::sentence</span>::<span class="kw-2">*</span>;
+<span class="kw">use </span>senna::phrase::Phrase;
+<span class="kw">use </span>senna::pos::POS;
+<span class="kw">use </span>senna::sentence::<span class="kw-2">*</span>;
 
 <span class="comment">/*
  * MATCH TYPES
- */</span>
+ */
 
-<span class="doccomment">/// A `Match`. Note that matches are represented in a tree structure, following the structure of</span>
-<span class="doccomment">/// the patterns</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Match</span><span class="op">&lt;</span><span class="lifetime">&#39;t</span><span class="op">&gt;</span> {
-  <span class="doccomment">/// The marker associated with this match</span>
-  <span class="kw">pub</span> <span class="ident">marker</span>: <span class="ident">MarkerEnum</span><span class="op">&lt;</span><span class="lifetime">&#39;t</span><span class="op">&gt;</span>,
-  <span class="doccomment">/// The sub-matches</span>
-  <span class="kw">pub</span> <span class="ident">sub_matches</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Match</span><span class="op">&lt;</span><span class="lifetime">&#39;t</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+</span><span class="doccomment">/// A `Match`. Note that matches are represented in a tree structure, following the structure of
+/// the patterns
+</span><span class="attribute">#[derive(Clone)]
+</span><span class="kw">pub struct </span>Match&lt;<span class="lifetime">&#39;t</span>&gt; {
+  <span class="doccomment">/// The marker associated with this match
+  </span><span class="kw">pub </span>marker: MarkerEnum&lt;<span class="lifetime">&#39;t</span>&gt;,
+  <span class="doccomment">/// The sub-matches
+  </span><span class="kw">pub </span>sub_matches: Vec&lt;Match&lt;<span class="lifetime">&#39;t</span>&gt;&gt;,
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;t</span><span class="op">&gt;</span> <span class="ident">Match</span><span class="op">&lt;</span><span class="lifetime">&#39;t</span><span class="op">&gt;</span> {
-  <span class="doccomment">/// returns a list of all markers</span>
-  <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_marker_list</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;t</span> <span class="self">self</span>) -&gt; <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">MarkerEnum</span><span class="op">&lt;</span><span class="lifetime">&#39;t</span><span class="op">&gt;</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">markers</span> <span class="op">=</span> <span class="macro">vec!</span>[<span class="self">self</span>.<span class="ident">marker</span>.<span class="ident">clone</span>()];
-    <span class="kw">for</span> <span class="ident">m</span> <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">sub_matches</span> {
-      <span class="ident">markers</span>.<span class="ident">extend_from_slice</span>(<span class="kw-2">&amp;</span><span class="ident">m</span>.<span class="ident">get_marker_list</span>()[..]);
+<span class="kw">impl</span>&lt;<span class="lifetime">&#39;t</span>&gt; Match&lt;<span class="lifetime">&#39;t</span>&gt; {
+  <span class="doccomment">/// returns a list of all markers
+  </span><span class="kw">pub fn </span>get_marker_list(<span class="kw-2">&amp;</span><span class="lifetime">&#39;t </span><span class="self">self</span>) -&gt; Vec&lt;MarkerEnum&lt;<span class="lifetime">&#39;t</span>&gt;&gt; {
+    <span class="kw">let </span><span class="kw-2">mut </span>markers = <span class="macro">vec!</span>[<span class="self">self</span>.marker.clone()];
+    <span class="kw">for </span>m <span class="kw">in </span><span class="kw-2">&amp;</span><span class="self">self</span>.sub_matches {
+      markers.extend_from_slice(<span class="kw-2">&amp;</span>m.get_marker_list()[..]);
     }
-    <span class="ident">markers</span>
+    markers
   }
 }
 
-<span class="doccomment">/// used internally for matching of math nodes</span>
-<span class="kw">struct</span> <span class="ident">InternalMathMatch</span><span class="op">&lt;</span><span class="lifetime">&#39;t</span><span class="op">&gt;</span> {
-  <span class="ident">_matches</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Match</span><span class="op">&lt;</span><span class="lifetime">&#39;t</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-  <span class="ident">matched</span>: <span class="ident">bool</span>,
+<span class="doccomment">/// used internally for matching of math nodes
+</span><span class="kw">struct </span>InternalMathMatch&lt;<span class="lifetime">&#39;t</span>&gt; {
+  _matches: Vec&lt;Match&lt;<span class="lifetime">&#39;t</span>&gt;&gt;,
+  matched: bool,
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;t</span><span class="op">&gt;</span> <span class="ident">InternalMathMatch</span><span class="op">&lt;</span><span class="lifetime">&#39;t</span><span class="op">&gt;</span> {
-  <span class="doccomment">/// indicates that no match was found</span>
-  <span class="kw">fn</span> <span class="ident">no_match</span>() -&gt; <span class="ident">InternalMathMatch</span><span class="op">&lt;</span><span class="lifetime">&#39;t</span><span class="op">&gt;</span> {
-    <span class="ident">InternalMathMatch</span> {
-      <span class="ident">_matches</span>: <span class="ident">Vec::new</span>(),
-      <span class="ident">matched</span>: <span class="bool-val">false</span>,
-    }
-  }
-}
-
-<span class="doccomment">/// used internally for matching sequences</span>
-<span class="kw">struct</span> <span class="ident">InternalSeqMatch</span><span class="op">&lt;</span><span class="lifetime">&#39;t</span><span class="op">&gt;</span> {
-  <span class="ident">_matches</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Match</span><span class="op">&lt;</span><span class="lifetime">&#39;t</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-  <span class="comment">// start : usize,</span>
-  <span class="ident">end</span>: <span class="ident">usize</span>,
-  <span class="ident">matched</span>: <span class="ident">bool</span>,
-}
-
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;t</span><span class="op">&gt;</span> <span class="ident">InternalSeqMatch</span><span class="op">&lt;</span><span class="lifetime">&#39;t</span><span class="op">&gt;</span> {
-  <span class="doccomment">/// indicates that no match was found</span>
-  <span class="kw">fn</span> <span class="ident">no_match</span>() -&gt; <span class="ident">InternalSeqMatch</span><span class="op">&lt;</span><span class="lifetime">&#39;t</span><span class="op">&gt;</span> {
-    <span class="ident">InternalSeqMatch</span> {
-      <span class="ident">_matches</span>: <span class="ident">Vec::new</span>(),
-      <span class="comment">// start : 0,</span>
-      <span class="ident">end</span>: <span class="number">0</span>,
-      <span class="ident">matched</span>: <span class="bool-val">false</span>,
+<span class="kw">impl</span>&lt;<span class="lifetime">&#39;t</span>&gt; InternalMathMatch&lt;<span class="lifetime">&#39;t</span>&gt; {
+  <span class="doccomment">/// indicates that no match was found
+  </span><span class="kw">fn </span>no_match() -&gt; InternalMathMatch&lt;<span class="lifetime">&#39;t</span>&gt; {
+    InternalMathMatch {
+      _matches: Vec::new(),
+      matched: <span class="bool-val">false</span>,
     }
   }
 }
 
-<span class="doccomment">/// used internally for matching words</span>
-<span class="kw">struct</span> <span class="ident">InternalWordMatch</span><span class="op">&lt;</span><span class="lifetime">&#39;t</span><span class="op">&gt;</span> {
-  <span class="ident">_matches</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Match</span><span class="op">&lt;</span><span class="lifetime">&#39;t</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-  <span class="ident">matched</span>: <span class="ident">bool</span>,
+<span class="doccomment">/// used internally for matching sequences
+</span><span class="kw">struct </span>InternalSeqMatch&lt;<span class="lifetime">&#39;t</span>&gt; {
+  _matches: Vec&lt;Match&lt;<span class="lifetime">&#39;t</span>&gt;&gt;,
+  <span class="comment">// start : usize,
+  </span>end: usize,
+  matched: bool,
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;t</span><span class="op">&gt;</span> <span class="ident">InternalWordMatch</span><span class="op">&lt;</span><span class="lifetime">&#39;t</span><span class="op">&gt;</span> {
-  <span class="doccomment">/// indicates that no match was found</span>
-  <span class="kw">fn</span> <span class="ident">no_match</span>() -&gt; <span class="ident">InternalWordMatch</span><span class="op">&lt;</span><span class="lifetime">&#39;t</span><span class="op">&gt;</span> {
-    <span class="ident">InternalWordMatch</span> {
-      <span class="ident">_matches</span>: <span class="ident">Vec::new</span>(),
-      <span class="ident">matched</span>: <span class="bool-val">false</span>,
+<span class="kw">impl</span>&lt;<span class="lifetime">&#39;t</span>&gt; InternalSeqMatch&lt;<span class="lifetime">&#39;t</span>&gt; {
+  <span class="doccomment">/// indicates that no match was found
+  </span><span class="kw">fn </span>no_match() -&gt; InternalSeqMatch&lt;<span class="lifetime">&#39;t</span>&gt; {
+    InternalSeqMatch {
+      _matches: Vec::new(),
+      <span class="comment">// start : 0,
+      </span>end: <span class="number">0</span>,
+      matched: <span class="bool-val">false</span>,
+    }
+  }
+}
+
+<span class="doccomment">/// used internally for matching words
+</span><span class="kw">struct </span>InternalWordMatch&lt;<span class="lifetime">&#39;t</span>&gt; {
+  _matches: Vec&lt;Match&lt;<span class="lifetime">&#39;t</span>&gt;&gt;,
+  matched: bool,
+}
+
+<span class="kw">impl</span>&lt;<span class="lifetime">&#39;t</span>&gt; InternalWordMatch&lt;<span class="lifetime">&#39;t</span>&gt; {
+  <span class="doccomment">/// indicates that no match was found
+  </span><span class="kw">fn </span>no_match() -&gt; InternalWordMatch&lt;<span class="lifetime">&#39;t</span>&gt; {
+    InternalWordMatch {
+      _matches: Vec::new(),
+      matched: <span class="bool-val">false</span>,
     }
   }
 }
 
 <span class="comment">/*
  * PHRASE MATCHING UTILS
- */</span>
+ */
 
-<span class="doccomment">/// internal representation of the phrase tree for faster processing</span>
-<span class="kw">struct</span> <span class="ident">PhraseTree</span> {
-  <span class="ident">phrase</span>: <span class="ident">Phrase</span>,
-  <span class="ident">start</span>: <span class="ident">usize</span>,
-  <span class="ident">end</span>: <span class="ident">usize</span>,
-  <span class="ident">children</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">PhraseTree</span><span class="op">&gt;</span>,
+</span><span class="doccomment">/// internal representation of the phrase tree for faster processing
+</span><span class="kw">struct </span>PhraseTree {
+  phrase: Phrase,
+  start: usize,
+  end: usize,
+  children: Vec&lt;PhraseTree&gt;,
 }
 
-<span class="kw">impl</span> <span class="ident">PhraseTree</span> {
-  <span class="doccomment">/// load the `PhraseTree` from senna&#39;s representation</span>
-  <span class="kw">fn</span> <span class="ident">from_psg</span>(<span class="ident">root</span>: <span class="kw-2">&amp;</span><span class="ident">PSGNode</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">PhraseTree</span>, <span class="ident">usize</span><span class="op">&gt;</span> {
-    <span class="kw">match</span> <span class="kw-2">*</span><span class="ident">root</span> {
-      <span class="ident">PSGNode::Leaf</span>(<span class="ident">pos</span>) =&gt; <span class="prelude-val">Err</span>(<span class="ident">pos</span>),
-      <span class="ident">PSGNode::Parent</span>(<span class="kw-2">ref</span> <span class="ident">content</span>) =&gt; {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">child_trees</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">PhraseTree</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">Vec::new</span>();
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">start_opt</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span> <span class="op">=</span> <span class="prelude-val">None</span>;
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">end</span> <span class="op">=</span> <span class="number">0</span>;
-        <span class="kw">for</span> <span class="ident">child</span> <span class="kw">in</span> <span class="ident">content</span>.<span class="ident">get_children</span>() {
-          <span class="kw">match</span> <span class="ident">PhraseTree::from_psg</span>(<span class="ident">child</span>) {
-            <span class="prelude-val">Err</span>(<span class="ident">p</span>) =&gt; {
-              <span class="kw">if</span> <span class="ident">start_opt</span>.<span class="ident">is_none</span>() {
-                <span class="ident">start_opt</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">p</span>);
+<span class="kw">impl </span>PhraseTree {
+  <span class="doccomment">/// load the `PhraseTree` from senna&#39;s representation
+  </span><span class="kw">fn </span>from_psg(root: <span class="kw-2">&amp;</span>PSGNode) -&gt; <span class="prelude-ty">Result</span>&lt;PhraseTree, usize&gt; {
+    <span class="kw">match </span><span class="kw-2">*</span>root {
+      PSGNode::Leaf(pos) =&gt; <span class="prelude-val">Err</span>(pos),
+      PSGNode::Parent(<span class="kw-2">ref </span>content) =&gt; {
+        <span class="kw">let </span><span class="kw-2">mut </span>child_trees: Vec&lt;PhraseTree&gt; = Vec::new();
+        <span class="kw">let </span><span class="kw-2">mut </span>start_opt: <span class="prelude-ty">Option</span>&lt;usize&gt; = <span class="prelude-val">None</span>;
+        <span class="kw">let </span><span class="kw-2">mut </span>end = <span class="number">0</span>;
+        <span class="kw">for </span>child <span class="kw">in </span>content.get_children() {
+          <span class="kw">match </span>PhraseTree::from_psg(child) {
+            <span class="prelude-val">Err</span>(p) =&gt; {
+              <span class="kw">if </span>start_opt.is_none() {
+                start_opt = <span class="prelude-val">Some</span>(p);
               }
-              <span class="ident">end</span> <span class="op">=</span> <span class="ident">p</span>;
+              end = p;
             }
-            <span class="prelude-val">Ok</span>(<span class="ident">t</span>) =&gt; {
-              <span class="kw">if</span> <span class="ident">start_opt</span>.<span class="ident">is_none</span>() {
-                <span class="ident">start_opt</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">t</span>.<span class="ident">start</span>);
+            <span class="prelude-val">Ok</span>(t) =&gt; {
+              <span class="kw">if </span>start_opt.is_none() {
+                start_opt = <span class="prelude-val">Some</span>(t.start);
               }
-              <span class="ident">end</span> <span class="op">=</span> <span class="ident">t</span>.<span class="ident">end</span>;
-              <span class="ident">child_trees</span>.<span class="ident">push</span>(<span class="ident">t</span>);
+              end = t.end;
+              child_trees.push(t);
             }
           }
         }
-        <span class="kw">let</span> <span class="ident">start</span> <span class="op">=</span> <span class="ident">start_opt</span>.<span class="ident">unwrap_or_default</span>();
-        <span class="prelude-val">Ok</span>(<span class="ident">PhraseTree</span> {
-          <span class="ident">phrase</span>: <span class="ident">content</span>.<span class="ident">get_label</span>(),
-          <span class="ident">start</span>,
-          <span class="ident">end</span>,
-          <span class="ident">children</span>: <span class="ident">child_trees</span>,
+        <span class="kw">let </span>start = start_opt.unwrap_or_default();
+        <span class="prelude-val">Ok</span>(PhraseTree {
+          phrase: content.get_label(),
+          start,
+          end,
+          children: child_trees,
         })
       }
     }
   }
 }
 
-<span class="kw">fn</span> <span class="ident">get_phrase_matches</span>(<span class="ident">root</span>: <span class="kw-2">&amp;</span><span class="ident">PhraseTree</span>, <span class="ident">start_pos</span>: <span class="ident">usize</span>, <span class="ident">target</span>: <span class="ident">Phrase</span>) -&gt; <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span> {
-  <span class="kw">match</span> <span class="ident">root</span>.<span class="ident">start</span>.<span class="ident">cmp</span>(<span class="kw-2">&amp;</span><span class="ident">start_pos</span>) {
-    <span class="ident">Ordering::Equal</span> =&gt; {
-      <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">v</span> <span class="op">=</span> <span class="kw">if</span> <span class="op">!</span><span class="ident">root</span>.<span class="ident">children</span>.<span class="ident">is_empty</span>() {
-        <span class="ident">get_phrase_matches</span>(<span class="kw-2">&amp;</span><span class="ident">root</span>.<span class="ident">children</span>[<span class="number">0</span>], <span class="ident">start_pos</span>, <span class="ident">target</span>)
-      } <span class="kw">else</span> {
-        <span class="ident">Vec::new</span>()
+<span class="kw">fn </span>get_phrase_matches(root: <span class="kw-2">&amp;</span>PhraseTree, start_pos: usize, target: Phrase) -&gt; Vec&lt;usize&gt; {
+  <span class="kw">match </span>root.start.cmp(<span class="kw-2">&amp;</span>start_pos) {
+    Ordering::Equal =&gt; {
+      <span class="kw">let </span><span class="kw-2">mut </span>v = <span class="kw">if </span>!root.children.is_empty() {
+        get_phrase_matches(<span class="kw-2">&amp;</span>root.children[<span class="number">0</span>], start_pos, target)
+      } <span class="kw">else </span>{
+        Vec::new()
       };
-      <span class="kw">if</span> <span class="ident">root</span>.<span class="ident">phrase</span> <span class="op">==</span> <span class="ident">target</span> {
-        <span class="ident">v</span>.<span class="ident">push</span>(<span class="ident">root</span>.<span class="ident">end</span> <span class="op">+</span> <span class="number">1</span>);
+      <span class="kw">if </span>root.phrase == target {
+        v.push(root.end + <span class="number">1</span>);
       }
-      <span class="ident">v</span>
+      v
     }
-    <span class="ident">Ordering::Less</span> =&gt; {
-      <span class="kw">for</span> <span class="ident">child</span> <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="ident">root</span>.<span class="ident">children</span> {
-        <span class="kw">if</span> <span class="ident">child</span>.<span class="ident">start</span> <span class="op">&lt;</span><span class="op">=</span> <span class="ident">start_pos</span> <span class="op">&amp;&amp;</span> <span class="ident">child</span>.<span class="ident">end</span> <span class="op">&gt;</span><span class="op">=</span> <span class="ident">start_pos</span> {
-          <span class="kw">return</span> <span class="ident">get_phrase_matches</span>(<span class="ident">child</span>, <span class="ident">start_pos</span>, <span class="ident">target</span>);
+    Ordering::Less =&gt; {
+      <span class="kw">for </span>child <span class="kw">in </span><span class="kw-2">&amp;</span>root.children {
+        <span class="kw">if </span>child.start &lt;= start_pos &amp;&amp; child.end &gt;= start_pos {
+          <span class="kw">return </span>get_phrase_matches(child, start_pos, target);
         }
       }
-      <span class="ident">Vec::new</span>()
+      Vec::new()
     }
-    <span class="kw">_</span> =&gt; <span class="ident">Vec::new</span>(),
+    <span class="kw">_ </span>=&gt; Vec::new(),
   }
 }
 
 <span class="comment">/*
  * MATCHING FUNCTIONS
- */</span>
+ */
 
-<span class="doccomment">/// returns the matches in a sentence</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">match_sentence</span><span class="op">&lt;</span><span class="lifetime">&#39;t</span><span class="op">&gt;</span>(
-  <span class="ident">pf</span>: <span class="kw-2">&amp;</span><span class="ident">PatternFile</span>,
-  <span class="ident">sentence</span>: <span class="kw-2">&amp;</span><span class="ident">Sentence</span>,
-  <span class="ident">range</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;t</span> <span class="ident">DNMRange</span>,
-  <span class="ident">rule</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>,
-) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Match</span><span class="op">&lt;</span><span class="lifetime">&#39;t</span><span class="op">&gt;</span><span class="op">&gt;</span>, <span class="ident">String</span><span class="op">&gt;</span> {
+</span><span class="doccomment">/// returns the matches in a sentence
+</span><span class="kw">pub fn </span>match_sentence&lt;<span class="lifetime">&#39;t</span>&gt;(
+  pf: <span class="kw-2">&amp;</span>PatternFile,
+  sentence: <span class="kw-2">&amp;</span>Sentence,
+  range: <span class="kw-2">&amp;</span><span class="lifetime">&#39;t </span>DNMRange,
+  rule: <span class="kw-2">&amp;</span>str,
+) -&gt; <span class="prelude-ty">Result</span>&lt;Vec&lt;Match&lt;<span class="lifetime">&#39;t</span>&gt;&gt;, String&gt; {
   <span class="comment">/* if !range.dnm.parameters.support_back_mapping {
   return Err(&quot;DNM of sentence does not support back mapping&quot;.to_string());
-  } */</span>
+  } */
 
-  <span class="kw">let</span> <span class="ident">rule_pos</span> <span class="op">=</span> <span class="ident">pf</span>
-    .<span class="ident">sequence_rule_names</span>
-    .<span class="ident">get</span>(<span class="ident">rule</span>)
-    .<span class="ident">ok_or_else</span>(<span class="op">|</span><span class="op">|</span> <span class="macro">format!</span>(<span class="string">&quot;Could not find sequence rule \&quot;{}\&quot;&quot;</span>, <span class="ident">rule</span>))<span class="question-mark">?</span>;
-  <span class="kw">let</span> <span class="ident">actual_rule</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">pf</span>.<span class="ident">sequence_rules</span>[<span class="kw-2">*</span><span class="ident">rule_pos</span>];
-  <span class="kw">let</span> <span class="ident">words</span> <span class="op">=</span> <span class="ident">sentence</span>.<span class="ident">get_words</span>();
-  <span class="kw">let</span> <span class="ident">psg</span> <span class="op">=</span> <span class="ident">sentence</span>
-    .<span class="ident">get_psgroot</span>()
-    .<span class="ident">ok_or_else</span>(<span class="op">|</span><span class="op">|</span> <span class="string">&quot;PSG required for pattern matching&quot;</span>.<span class="ident">to_string</span>())<span class="question-mark">?</span>;
-  <span class="kw">let</span> <span class="ident">phrase_tree</span> <span class="op">=</span>
-    <span class="ident">PhraseTree::from_psg</span>(<span class="ident">psg</span>).<span class="ident">map_err</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="string">&quot;Invalid PSG: Contains only leaf&quot;</span>.<span class="ident">to_string</span>())<span class="question-mark">?</span>;
+  </span><span class="kw">let </span>rule_pos = pf
+    .sequence_rule_names
+    .get(rule)
+    .ok_or_else(|| <span class="macro">format!</span>(<span class="string">&quot;Could not find sequence rule \&quot;{}\&quot;&quot;</span>, rule))<span class="question-mark">?</span>;
+  <span class="kw">let </span>actual_rule = <span class="kw-2">&amp;</span>pf.sequence_rules[<span class="kw-2">*</span>rule_pos];
+  <span class="kw">let </span>words = sentence.get_words();
+  <span class="kw">let </span>psg = sentence
+    .get_psgroot()
+    .ok_or_else(|| <span class="string">&quot;PSG required for pattern matching&quot;</span>.to_string())<span class="question-mark">?</span>;
+  <span class="kw">let </span>phrase_tree =
+    PhraseTree::from_psg(psg).map_err(|<span class="kw">_</span>| <span class="string">&quot;Invalid PSG: Contains only leaf&quot;</span>.to_string())<span class="question-mark">?</span>;
 
-  <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">matches</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Match</span><span class="op">&lt;</span><span class="lifetime">&#39;t</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">Vec::new</span>();
+  <span class="kw">let </span><span class="kw-2">mut </span>matches: Vec&lt;Match&lt;<span class="lifetime">&#39;t</span>&gt;&gt; = Vec::new();
 
-  <span class="kw">for</span> <span class="ident">start_pos</span> <span class="kw">in</span> <span class="number">0</span>..<span class="ident">words</span>.<span class="ident">len</span>() {
-    <span class="kw">let</span> <span class="ident">m</span> <span class="op">=</span> <span class="ident">match_seq</span>(
-      <span class="ident">pf</span>,
-      <span class="kw-2">&amp;</span><span class="ident">actual_rule</span>.<span class="ident">pattern</span>,
-      <span class="ident">sentence</span>,
-      <span class="kw-2">&amp;</span><span class="ident">phrase_tree</span>,
-      <span class="ident">range</span>,
-      <span class="ident">start_pos</span>,
+  <span class="kw">for </span>start_pos <span class="kw">in </span><span class="number">0</span>..words.len() {
+    <span class="kw">let </span>m = match_seq(
+      pf,
+      <span class="kw-2">&amp;</span>actual_rule.pattern,
+      sentence,
+      <span class="kw-2">&amp;</span>phrase_tree,
+      range,
+      start_pos,
     );
-    <span class="ident">matches</span>.<span class="ident">extend_from_slice</span>(<span class="kw-2">&amp;</span><span class="ident">m</span>.<span class="ident">_matches</span>[..]);
+    matches.extend_from_slice(<span class="kw-2">&amp;</span>m._matches[..]);
   }
 
-  <span class="prelude-val">Ok</span>(<span class="ident">matches</span>)
+  <span class="prelude-val">Ok</span>(matches)
 }
 
-<span class="kw">fn</span> <span class="ident">match_seq</span><span class="op">&lt;</span><span class="lifetime">&#39;t</span><span class="op">&gt;</span>(
-  <span class="ident">pf</span>: <span class="kw-2">&amp;</span><span class="ident">PatternFile</span>,
-  <span class="ident">rule</span>: <span class="kw-2">&amp;</span><span class="ident">SequencePattern</span>,
-  <span class="ident">sentence</span>: <span class="kw-2">&amp;</span><span class="ident">Sentence</span>,
-  <span class="ident">phrase_tree</span>: <span class="kw-2">&amp;</span><span class="ident">PhraseTree</span>,
-  <span class="ident">range</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;t</span> <span class="ident">DNMRange</span>,
-  <span class="ident">pos</span>: <span class="ident">usize</span>,
-) -&gt; <span class="ident">InternalSeqMatch</span><span class="op">&lt;</span><span class="lifetime">&#39;t</span><span class="op">&gt;</span> {
-  <span class="kw">match</span> <span class="kw-2">*</span><span class="ident">rule</span> {
-    <span class="ident">SequencePattern::SeqRef</span>(<span class="ident">p</span>) =&gt; <span class="ident">match_seq</span>(
-      <span class="ident">pf</span>,
-      <span class="kw-2">&amp;</span><span class="ident">pf</span>.<span class="ident">sequence_rules</span>[<span class="ident">p</span>].<span class="ident">pattern</span>,
-      <span class="ident">sentence</span>,
-      <span class="ident">phrase_tree</span>,
-      <span class="ident">range</span>,
-      <span class="ident">pos</span>,
+<span class="kw">fn </span>match_seq&lt;<span class="lifetime">&#39;t</span>&gt;(
+  pf: <span class="kw-2">&amp;</span>PatternFile,
+  rule: <span class="kw-2">&amp;</span>SequencePattern,
+  sentence: <span class="kw-2">&amp;</span>Sentence,
+  phrase_tree: <span class="kw-2">&amp;</span>PhraseTree,
+  range: <span class="kw-2">&amp;</span><span class="lifetime">&#39;t </span>DNMRange,
+  pos: usize,
+) -&gt; InternalSeqMatch&lt;<span class="lifetime">&#39;t</span>&gt; {
+  <span class="kw">match </span><span class="kw-2">*</span>rule {
+    SequencePattern::SeqRef(p) =&gt; match_seq(
+      pf,
+      <span class="kw-2">&amp;</span>pf.sequence_rules[p].pattern,
+      sentence,
+      phrase_tree,
+      range,
+      pos,
     ),
-    <span class="ident">SequencePattern::SeqFromWord</span>(<span class="kw-2">ref</span> <span class="ident">wp</span>) =&gt; {
-      <span class="kw">if</span> <span class="ident">pos</span> <span class="op">&gt;</span><span class="op">=</span> <span class="ident">sentence</span>.<span class="ident">get_words</span>().<span class="ident">len</span>() {
-        <span class="kw">return</span> <span class="ident">InternalSeqMatch::no_match</span>();
+    SequencePattern::SeqFromWord(<span class="kw-2">ref </span>wp) =&gt; {
+      <span class="kw">if </span>pos &gt;= sentence.get_words().len() {
+        <span class="kw">return </span>InternalSeqMatch::no_match();
       }
-      <span class="kw">let</span> <span class="ident">m</span> <span class="op">=</span> <span class="ident">match_word</span>(<span class="ident">pf</span>, <span class="ident">wp</span>, <span class="kw-2">&amp;</span><span class="ident">sentence</span>.<span class="ident">get_words</span>()[<span class="ident">pos</span>], <span class="ident">range</span>);
-      <span class="kw">if</span> <span class="op">!</span><span class="ident">m</span>.<span class="ident">matched</span> {
-        <span class="kw">return</span> <span class="ident">InternalSeqMatch::no_match</span>();
+      <span class="kw">let </span>m = match_word(pf, wp, <span class="kw-2">&amp;</span>sentence.get_words()[pos], range);
+      <span class="kw">if </span>!m.matched {
+        <span class="kw">return </span>InternalSeqMatch::no_match();
       }
-      <span class="ident">InternalSeqMatch</span> {
-        <span class="ident">_matches</span>: <span class="ident">m</span>.<span class="ident">_matches</span>,
-        <span class="comment">// start : pos,</span>
-        <span class="ident">end</span>: <span class="ident">pos</span> <span class="op">+</span> <span class="number">1</span>,
-        <span class="ident">matched</span>: <span class="bool-val">true</span>,
-      }
-    }
-    <span class="ident">SequencePattern::SeqOfSeq</span>(<span class="kw-2">ref</span> <span class="ident">patterns</span>) =&gt; {
-      <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">matches</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Match</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">Vec::new</span>();
-      <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">cur_pos</span> <span class="op">=</span> <span class="ident">pos</span>;
-      <span class="kw">for</span> <span class="ident">p</span> <span class="kw">in</span> <span class="ident">patterns</span> {
-        <span class="kw">let</span> <span class="ident">m</span> <span class="op">=</span> <span class="ident">match_seq</span>(<span class="ident">pf</span>, <span class="ident">p</span>, <span class="ident">sentence</span>, <span class="ident">phrase_tree</span>, <span class="ident">range</span>, <span class="ident">cur_pos</span>);
-        <span class="kw">if</span> <span class="op">!</span><span class="ident">m</span>.<span class="ident">matched</span> {
-          <span class="kw">return</span> <span class="ident">InternalSeqMatch::no_match</span>();
-        }
-        <span class="ident">cur_pos</span> <span class="op">=</span> <span class="ident">m</span>.<span class="ident">end</span>;
-        <span class="ident">matches</span>.<span class="ident">extend_from_slice</span>(<span class="kw-2">&amp;</span><span class="ident">m</span>.<span class="ident">_matches</span>[..]);
-      }
-      <span class="ident">InternalSeqMatch</span> {
-        <span class="ident">_matches</span>: <span class="ident">matches</span>,
-        <span class="comment">// start : pos,</span>
-        <span class="ident">end</span>: <span class="ident">cur_pos</span>,
-        <span class="ident">matched</span>: <span class="bool-val">true</span>,
+      InternalSeqMatch {
+        _matches: m._matches,
+        <span class="comment">// start : pos,
+        </span>end: pos + <span class="number">1</span>,
+        matched: <span class="bool-val">true</span>,
       }
     }
-    <span class="ident">SequencePattern::Phrase</span>(<span class="ident">phrase</span>, <span class="kw-2">ref</span> <span class="ident">match_type</span>, <span class="kw-2">ref</span> <span class="ident">start_condition</span>, <span class="kw-2">ref</span> <span class="ident">end_condition</span>) =&gt; {
-      <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">phrase_ends</span> <span class="op">=</span> <span class="ident">get_phrase_matches</span>(<span class="ident">phrase_tree</span>, <span class="ident">pos</span>, <span class="ident">phrase</span>);
-      <span class="kw">if</span> <span class="ident">match_type</span> <span class="op">==</span> <span class="kw-2">&amp;</span><span class="ident">PhraseMatchType::Longest</span> {
-        <span class="ident">phrase_ends</span>.<span class="ident">reverse</span>(); <span class="comment">// were sorted ascendingly</span>
-      }
-
-      <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">matches</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Match</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">Vec::new</span>();
-
-      <span class="kw">for</span> <span class="ident">end_pos</span> <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="ident">phrase_ends</span> {
-        <span class="ident">matches</span>.<span class="ident">clear</span>();
-        <span class="kw">if</span> <span class="ident">start_condition</span>.<span class="ident">is_some</span>() {
-          <span class="comment">// check start_condition</span>
-          <span class="kw">let</span> <span class="kw-2">&amp;</span>(<span class="kw-2">ref</span> <span class="ident">rule</span>, <span class="kw-2">ref</span> <span class="ident">containment</span>) <span class="op">=</span> <span class="ident">start_condition</span>.<span class="ident">as_ref</span>().<span class="ident">unwrap</span>();
-          <span class="kw">let</span> <span class="ident">m</span> <span class="op">=</span> <span class="ident">match_seq</span>(<span class="ident">pf</span>, <span class="ident">rule</span>, <span class="ident">sentence</span>, <span class="ident">phrase_tree</span>, <span class="ident">range</span>, <span class="ident">pos</span>);
-          <span class="kw">if</span> <span class="op">!</span><span class="ident">m</span>.<span class="ident">matched</span> {
-            <span class="kw">continue</span>;
-          }
-          <span class="kw">if</span> <span class="ident">containment</span> <span class="op">==</span> <span class="kw-2">&amp;</span><span class="ident">SequenceContainment::LessOrEqual</span> <span class="op">&amp;&amp;</span> <span class="ident">m</span>.<span class="ident">end</span> <span class="op">&gt;</span> <span class="kw-2">*</span><span class="ident">end_pos</span> {
-            <span class="kw">continue</span>;
-          }
-          <span class="ident">matches</span>.<span class="ident">extend_from_slice</span>(<span class="kw-2">&amp;</span><span class="ident">m</span>.<span class="ident">_matches</span>[..]);
+    SequencePattern::SeqOfSeq(<span class="kw-2">ref </span>patterns) =&gt; {
+      <span class="kw">let </span><span class="kw-2">mut </span>matches: Vec&lt;Match&gt; = Vec::new();
+      <span class="kw">let </span><span class="kw-2">mut </span>cur_pos = pos;
+      <span class="kw">for </span>p <span class="kw">in </span>patterns {
+        <span class="kw">let </span>m = match_seq(pf, p, sentence, phrase_tree, range, cur_pos);
+        <span class="kw">if </span>!m.matched {
+          <span class="kw">return </span>InternalSeqMatch::no_match();
         }
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">rule</span>) <span class="op">=</span> <span class="ident">end_condition</span> {
-          <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">matched</span> <span class="op">=</span> <span class="bool-val">false</span>;
-          <span class="kw">for</span> <span class="ident">end_start_pos</span> <span class="kw">in</span> <span class="ident">pos</span>..<span class="kw-2">*</span><span class="ident">end_pos</span> {
-            <span class="kw">let</span> <span class="ident">m</span> <span class="op">=</span> <span class="ident">match_seq</span>(<span class="ident">pf</span>, <span class="ident">rule</span>, <span class="ident">sentence</span>, <span class="ident">phrase_tree</span>, <span class="ident">range</span>, <span class="ident">end_start_pos</span>);
-            <span class="kw">if</span> <span class="op">!</span><span class="ident">m</span>.<span class="ident">matched</span> {
+        cur_pos = m.end;
+        matches.extend_from_slice(<span class="kw-2">&amp;</span>m._matches[..]);
+      }
+      InternalSeqMatch {
+        _matches: matches,
+        <span class="comment">// start : pos,
+        </span>end: cur_pos,
+        matched: <span class="bool-val">true</span>,
+      }
+    }
+    SequencePattern::Phrase(phrase, <span class="kw-2">ref </span>match_type, <span class="kw-2">ref </span>start_condition, <span class="kw-2">ref </span>end_condition) =&gt; {
+      <span class="kw">let </span><span class="kw-2">mut </span>phrase_ends = get_phrase_matches(phrase_tree, pos, phrase);
+      <span class="kw">if </span>match_type == <span class="kw-2">&amp;</span>PhraseMatchType::Longest {
+        phrase_ends.reverse(); <span class="comment">// were sorted ascendingly
+      </span>}
+
+      <span class="kw">let </span><span class="kw-2">mut </span>matches: Vec&lt;Match&gt; = Vec::new();
+
+      <span class="kw">for </span>end_pos <span class="kw">in </span><span class="kw-2">&amp;</span>phrase_ends {
+        matches.clear();
+        <span class="kw">if </span>start_condition.is_some() {
+          <span class="comment">// check start_condition
+          </span><span class="kw">let </span><span class="kw-2">&amp;</span>(<span class="kw-2">ref </span>rule, <span class="kw-2">ref </span>containment) = start_condition.as_ref().unwrap();
+          <span class="kw">let </span>m = match_seq(pf, rule, sentence, phrase_tree, range, pos);
+          <span class="kw">if </span>!m.matched {
+            <span class="kw">continue</span>;
+          }
+          <span class="kw">if </span>containment == <span class="kw-2">&amp;</span>SequenceContainment::LessOrEqual &amp;&amp; m.end &gt; <span class="kw-2">*</span>end_pos {
+            <span class="kw">continue</span>;
+          }
+          matches.extend_from_slice(<span class="kw-2">&amp;</span>m._matches[..]);
+        }
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(rule) = end_condition {
+          <span class="kw">let </span><span class="kw-2">mut </span>matched = <span class="bool-val">false</span>;
+          <span class="kw">for </span>end_start_pos <span class="kw">in </span>pos..<span class="kw-2">*</span>end_pos {
+            <span class="kw">let </span>m = match_seq(pf, rule, sentence, phrase_tree, range, end_start_pos);
+            <span class="kw">if </span>!m.matched {
               <span class="kw">continue</span>;
             }
-            <span class="kw">if</span> <span class="ident">m</span>.<span class="ident">end</span> <span class="op">!</span><span class="op">=</span> <span class="kw-2">*</span><span class="ident">end_pos</span> {
+            <span class="kw">if </span>m.end != <span class="kw-2">*</span>end_pos {
               <span class="kw">continue</span>;
             }
-            <span class="ident">matched</span> <span class="op">=</span> <span class="bool-val">true</span>;
-            <span class="ident">matches</span>.<span class="ident">extend_from_slice</span>(<span class="kw-2">&amp;</span><span class="ident">m</span>.<span class="ident">_matches</span>[..]);
+            matched = <span class="bool-val">true</span>;
+            matches.extend_from_slice(<span class="kw-2">&amp;</span>m._matches[..]);
             <span class="kw">break</span>;
           }
-          <span class="kw">if</span> <span class="op">!</span><span class="ident">matched</span> {
+          <span class="kw">if </span>!matched {
             <span class="kw">continue</span>;
           }
         }
-        <span class="kw">return</span> <span class="ident">InternalSeqMatch</span> {
-          <span class="ident">_matches</span>: <span class="ident">matches</span>,
-          <span class="comment">// start : pos,</span>
-          <span class="ident">end</span>: <span class="kw-2">*</span><span class="ident">end_pos</span>,
-          <span class="ident">matched</span>: <span class="bool-val">true</span>,
+        <span class="kw">return </span>InternalSeqMatch {
+          _matches: matches,
+          <span class="comment">// start : pos,
+          </span>end: <span class="kw-2">*</span>end_pos,
+          matched: <span class="bool-val">true</span>,
         };
       }
 
-      <span class="comment">// no phrase match satisfied all conditions:</span>
-      <span class="ident">InternalSeqMatch::no_match</span>()
+      <span class="comment">// no phrase match satisfied all conditions:
+      </span>InternalSeqMatch::no_match()
     }
-    <span class="ident">SequencePattern::Marked</span>(<span class="kw-2">ref</span> <span class="ident">pattern</span>, <span class="kw-2">ref</span> <span class="ident">marker</span>) =&gt; {
-      <span class="kw">let</span> <span class="ident">m</span> <span class="op">=</span> <span class="ident">match_seq</span>(<span class="ident">pf</span>, <span class="ident">pattern</span>, <span class="ident">sentence</span>, <span class="ident">phrase_tree</span>, <span class="ident">range</span>, <span class="ident">pos</span>);
-      <span class="kw">if</span> <span class="ident">m</span>.<span class="ident">matched</span> {
-        <span class="ident">InternalSeqMatch</span> {
-          <span class="ident">_matches</span>: <span class="macro">vec!</span>[<span class="ident">Match</span> {
-            <span class="ident">marker</span>: <span class="ident">MarkerEnum::Text</span>(<span class="ident">TextMarker</span> {
-              <span class="ident">marker</span>: <span class="ident">marker</span>.<span class="ident">clone</span>(),
-              <span class="ident">range</span>: <span class="ident">range</span>.<span class="ident">get_subrange</span>(
-                <span class="ident">sentence</span>.<span class="ident">get_words</span>()[<span class="ident">pos</span>].<span class="ident">get_offset_start</span>(),
-                <span class="ident">sentence</span>.<span class="ident">get_words</span>()[<span class="ident">m</span>.<span class="ident">end</span> <span class="op">-</span> <span class="number">1</span>].<span class="ident">get_offset_end</span>(),
+    SequencePattern::Marked(<span class="kw-2">ref </span>pattern, <span class="kw-2">ref </span>marker) =&gt; {
+      <span class="kw">let </span>m = match_seq(pf, pattern, sentence, phrase_tree, range, pos);
+      <span class="kw">if </span>m.matched {
+        InternalSeqMatch {
+          _matches: <span class="macro">vec!</span>[Match {
+            marker: MarkerEnum::Text(TextMarker {
+              marker: marker.clone(),
+              range: range.get_subrange(
+                sentence.get_words()[pos].get_offset_start(),
+                sentence.get_words()[m.end - <span class="number">1</span>].get_offset_end(),
               ),
             }),
-            <span class="ident">sub_matches</span>: <span class="ident">m</span>.<span class="ident">_matches</span>,
+            sub_matches: m._matches,
           }],
-          <span class="comment">// start : pos,</span>
-          <span class="ident">end</span>: <span class="ident">m</span>.<span class="ident">end</span>,
-          <span class="ident">matched</span>: <span class="bool-val">true</span>,
+          <span class="comment">// start : pos,
+          </span>end: m.end,
+          matched: <span class="bool-val">true</span>,
         }
-      } <span class="kw">else</span> {
-        <span class="ident">InternalSeqMatch::no_match</span>()
+      } <span class="kw">else </span>{
+        InternalSeqMatch::no_match()
       }
     }
-    <span class="ident">SequencePattern::SeqOr</span>(<span class="kw-2">ref</span> <span class="ident">patterns</span>, <span class="kw-2">ref</span> <span class="ident">match_type</span>) =&gt; {
-      <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">matches</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Match</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">Vec::new</span>();
-      <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">matched</span> <span class="op">=</span> <span class="bool-val">false</span>;
-      <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">longest</span> <span class="op">=</span> <span class="ident">pos</span>;
-      <span class="kw">for</span> <span class="ident">p</span> <span class="kw">in</span> <span class="ident">patterns</span> {
-        <span class="kw">let</span> <span class="ident">m</span> <span class="op">=</span> <span class="ident">match_seq</span>(<span class="ident">pf</span>, <span class="ident">p</span>, <span class="ident">sentence</span>, <span class="ident">phrase_tree</span>, <span class="ident">range</span>, <span class="ident">pos</span>);
-        <span class="kw">if</span> <span class="ident">m</span>.<span class="ident">matched</span> {
-          <span class="ident">matched</span> <span class="op">=</span> <span class="bool-val">true</span>;
-          <span class="kw">match</span> <span class="kw-2">*</span><span class="ident">match_type</span> {
-            <span class="ident">SequenceMatchType::First</span> =&gt; {
-              <span class="ident">matches</span> <span class="op">=</span> <span class="ident">m</span>.<span class="ident">_matches</span>;
-              <span class="kw">if</span> <span class="ident">m</span>.<span class="ident">end</span> <span class="op">&gt;</span> <span class="ident">longest</span> {
-                <span class="ident">longest</span> <span class="op">=</span> <span class="ident">m</span>.<span class="ident">end</span>;
+    SequencePattern::SeqOr(<span class="kw-2">ref </span>patterns, <span class="kw-2">ref </span>match_type) =&gt; {
+      <span class="kw">let </span><span class="kw-2">mut </span>matches: Vec&lt;Match&gt; = Vec::new();
+      <span class="kw">let </span><span class="kw-2">mut </span>matched = <span class="bool-val">false</span>;
+      <span class="kw">let </span><span class="kw-2">mut </span>longest = pos;
+      <span class="kw">for </span>p <span class="kw">in </span>patterns {
+        <span class="kw">let </span>m = match_seq(pf, p, sentence, phrase_tree, range, pos);
+        <span class="kw">if </span>m.matched {
+          matched = <span class="bool-val">true</span>;
+          <span class="kw">match </span><span class="kw-2">*</span>match_type {
+            SequenceMatchType::First =&gt; {
+              matches = m._matches;
+              <span class="kw">if </span>m.end &gt; longest {
+                longest = m.end;
               }
               <span class="kw">break</span>;
             }
-            <span class="ident">SequenceMatchType::AtLeastOne</span> <span class="op">|</span> <span class="ident">SequenceMatchType::Any</span> =&gt; {
-              <span class="kw">if</span> <span class="ident">m</span>.<span class="ident">end</span> <span class="op">&gt;</span> <span class="ident">longest</span> {
-                <span class="ident">longest</span> <span class="op">=</span> <span class="ident">m</span>.<span class="ident">end</span>;
+            SequenceMatchType::AtLeastOne | SequenceMatchType::Any =&gt; {
+              <span class="kw">if </span>m.end &gt; longest {
+                longest = m.end;
               }
-              <span class="ident">matches</span>.<span class="ident">extend_from_slice</span>(<span class="kw-2">&amp;</span><span class="ident">m</span>.<span class="ident">_matches</span>);
+              matches.extend_from_slice(<span class="kw-2">&amp;</span>m._matches);
             }
-            <span class="ident">SequenceMatchType::Longest</span> =&gt; {
-              <span class="kw">if</span> <span class="ident">m</span>.<span class="ident">end</span> <span class="op">&gt;</span> <span class="ident">longest</span> {
-                <span class="ident">longest</span> <span class="op">=</span> <span class="ident">m</span>.<span class="ident">end</span>;
-                <span class="ident">matches</span> <span class="op">=</span> <span class="ident">m</span>.<span class="ident">_matches</span>;
+            SequenceMatchType::Longest =&gt; {
+              <span class="kw">if </span>m.end &gt; longest {
+                longest = m.end;
+                matches = m._matches;
               }
             }
           }
         }
       }
-      <span class="kw">if</span> <span class="op">!</span><span class="ident">matched</span> <span class="op">&amp;&amp;</span> <span class="ident">match_type</span> <span class="op">!</span><span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">SequenceMatchType::Any</span> {
-        <span class="ident">InternalSeqMatch::no_match</span>()
-      } <span class="kw">else</span> {
-        <span class="ident">InternalSeqMatch</span> {
-          <span class="ident">_matches</span>: <span class="ident">matches</span>,
-          <span class="comment">// start : pos,</span>
-          <span class="ident">end</span>: <span class="ident">longest</span>,
-          <span class="ident">matched</span>: <span class="bool-val">true</span>, <span class="comment">// don&#39;t use `matched` (because SequenceMatchType::Any matches always)</span>
-        }
+      <span class="kw">if </span>!matched &amp;&amp; match_type != <span class="kw-2">&amp;</span>SequenceMatchType::Any {
+        InternalSeqMatch::no_match()
+      } <span class="kw">else </span>{
+        InternalSeqMatch {
+          _matches: matches,
+          <span class="comment">// start : pos,
+          </span>end: longest,
+          matched: <span class="bool-val">true</span>, <span class="comment">// don&#39;t use `matched` (because SequenceMatchType::Any matches always)
+        </span>}
       }
     }
   }
 }
 
-<span class="kw">fn</span> <span class="ident">match_word</span><span class="op">&lt;</span><span class="lifetime">&#39;t</span><span class="op">&gt;</span>(
-  <span class="ident">pf</span>: <span class="kw-2">&amp;</span><span class="ident">PatternFile</span>,
-  <span class="ident">rule</span>: <span class="kw-2">&amp;</span><span class="ident">WordPattern</span>,
-  <span class="ident">word</span>: <span class="kw-2">&amp;</span><span class="ident">Word</span>,
-  <span class="ident">range</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;t</span> <span class="ident">DNMRange</span>,
-) -&gt; <span class="ident">InternalWordMatch</span><span class="op">&lt;</span><span class="lifetime">&#39;t</span><span class="op">&gt;</span> {
-  <span class="kw">match</span> <span class="kw-2">*</span><span class="ident">rule</span> {
-    <span class="ident">WordPattern::WordRef</span>(<span class="ident">rule_pos</span>) =&gt; <span class="ident">match_word</span>(<span class="ident">pf</span>, <span class="kw-2">&amp;</span><span class="ident">pf</span>.<span class="ident">word_rules</span>[<span class="ident">rule_pos</span>].<span class="ident">pattern</span>, <span class="ident">word</span>, <span class="ident">range</span>),
-    <span class="ident">WordPattern::WordOr</span>(<span class="kw-2">ref</span> <span class="ident">word_patterns</span>) =&gt; {
-      <span class="kw">for</span> <span class="ident">pattern</span> <span class="kw">in</span> <span class="ident">word_patterns</span> {
-        <span class="kw">let</span> <span class="ident">m</span> <span class="op">=</span> <span class="ident">match_word</span>(<span class="ident">pf</span>, <span class="ident">pattern</span>, <span class="ident">word</span>, <span class="ident">range</span>);
-        <span class="kw">if</span> <span class="ident">m</span>.<span class="ident">matched</span> {
-          <span class="kw">return</span> <span class="ident">m</span>;
+<span class="kw">fn </span>match_word&lt;<span class="lifetime">&#39;t</span>&gt;(
+  pf: <span class="kw-2">&amp;</span>PatternFile,
+  rule: <span class="kw-2">&amp;</span>WordPattern,
+  word: <span class="kw-2">&amp;</span>Word,
+  range: <span class="kw-2">&amp;</span><span class="lifetime">&#39;t </span>DNMRange,
+) -&gt; InternalWordMatch&lt;<span class="lifetime">&#39;t</span>&gt; {
+  <span class="kw">match </span><span class="kw-2">*</span>rule {
+    WordPattern::WordRef(rule_pos) =&gt; match_word(pf, <span class="kw-2">&amp;</span>pf.word_rules[rule_pos].pattern, word, range),
+    WordPattern::WordOr(<span class="kw-2">ref </span>word_patterns) =&gt; {
+      <span class="kw">for </span>pattern <span class="kw">in </span>word_patterns {
+        <span class="kw">let </span>m = match_word(pf, pattern, word, range);
+        <span class="kw">if </span>m.matched {
+          <span class="kw">return </span>m;
         }
       }
-      <span class="ident">InternalWordMatch::no_match</span>()
+      InternalWordMatch::no_match()
     }
-    <span class="ident">WordPattern::Word</span>(<span class="kw-2">ref</span> <span class="ident">word_str</span>) =&gt; {
-      <span class="kw">if</span> <span class="ident">word_str</span> <span class="op">==</span> <span class="ident">word</span>.<span class="ident">get_string</span>() {
-        <span class="ident">InternalWordMatch</span> {
-          <span class="ident">_matches</span>: <span class="ident">Vec::new</span>(),
-          <span class="ident">matched</span>: <span class="bool-val">true</span>,
+    WordPattern::Word(<span class="kw-2">ref </span>word_str) =&gt; {
+      <span class="kw">if </span>word_str == word.get_string() {
+        InternalWordMatch {
+          _matches: Vec::new(),
+          matched: <span class="bool-val">true</span>,
         }
-      } <span class="kw">else</span> {
-        <span class="ident">InternalWordMatch::no_match</span>()
+      } <span class="kw">else </span>{
+        InternalWordMatch::no_match()
       }
     }
-    <span class="ident">WordPattern::WordPos</span>(<span class="kw-2">ref</span> <span class="ident">pos_pattern</span>, <span class="kw-2">ref</span> <span class="ident">word_pattern</span>) =&gt; {
-      <span class="kw">if</span> <span class="ident">match_pos</span>(<span class="ident">pf</span>, <span class="ident">pos_pattern</span>, <span class="ident">word</span>.<span class="ident">get_pos</span>()) {
-        <span class="ident">match_word</span>(<span class="ident">pf</span>, <span class="ident">word_pattern</span>, <span class="ident">word</span>, <span class="ident">range</span>)
-      } <span class="kw">else</span> {
-        <span class="ident">InternalWordMatch::no_match</span>()
+    WordPattern::WordPos(<span class="kw-2">ref </span>pos_pattern, <span class="kw-2">ref </span>word_pattern) =&gt; {
+      <span class="kw">if </span>match_pos(pf, pos_pattern, word.get_pos()) {
+        match_word(pf, word_pattern, word, range)
+      } <span class="kw">else </span>{
+        InternalWordMatch::no_match()
       }
     }
-    <span class="ident">WordPattern::MathWord</span>(<span class="kw-2">ref</span> <span class="ident">math_pattern</span>) =&gt; {
-      <span class="kw">let</span> <span class="ident">node</span> <span class="op">=</span> <span class="ident">range</span>.<span class="ident">dnm</span>.<span class="ident">back_map</span>[<span class="ident">range</span>.<span class="ident">start</span> <span class="op">+</span> <span class="ident">word</span>.<span class="ident">get_offset_start</span>()].<span class="number">0</span>;
-      <span class="kw">if</span> <span class="ident">node</span>.<span class="ident">get_name</span>() <span class="op">!</span><span class="op">=</span> <span class="string">&quot;math&quot;</span> {
-        <span class="kw">return</span> <span class="ident">InternalWordMatch::no_match</span>();
+    WordPattern::MathWord(<span class="kw-2">ref </span>math_pattern) =&gt; {
+      <span class="kw">let </span>node = range.dnm.back_map[range.start + word.get_offset_start()].<span class="number">0</span>;
+      <span class="kw">if </span>node.get_name() != <span class="string">&quot;math&quot; </span>{
+        <span class="kw">return </span>InternalWordMatch::no_match();
       }
-      <span class="kw">let</span> <span class="ident">children</span> <span class="op">=</span> <span class="ident">fast_get_non_text_children</span>(<span class="ident">node</span>);
-      <span class="kw">if</span> <span class="ident">children</span>.<span class="ident">is_empty</span>() {
-        <span class="kw">return</span> <span class="ident">InternalWordMatch::no_match</span>();
+      <span class="kw">let </span>children = fast_get_non_text_children(node);
+      <span class="kw">if </span>children.is_empty() {
+        <span class="kw">return </span>InternalWordMatch::no_match();
       }
 
-      <span class="comment">// TODO: Make the following code work in the general case!!!</span>
-      <span class="kw">let</span> <span class="ident">m</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">children</span>[<span class="number">0</span>].<span class="ident">get_name</span>() <span class="op">==</span> <span class="string">&quot;semantics&quot;</span> {
-        <span class="kw">let</span> <span class="ident">c</span> <span class="op">=</span> <span class="ident">fast_get_non_text_children</span>(<span class="ident">children</span>[<span class="number">0</span>]);
-        <span class="kw">if</span> <span class="ident">c</span>.<span class="ident">is_empty</span>() {
-          <span class="kw">return</span> <span class="ident">InternalWordMatch::no_match</span>();
+      <span class="comment">// TODO: Make the following code work in the general case!!!
+      </span><span class="kw">let </span>m = <span class="kw">if </span>children[<span class="number">0</span>].get_name() == <span class="string">&quot;semantics&quot; </span>{
+        <span class="kw">let </span>c = fast_get_non_text_children(children[<span class="number">0</span>]);
+        <span class="kw">if </span>c.is_empty() {
+          <span class="kw">return </span>InternalWordMatch::no_match();
         }
-        <span class="ident">match_math</span>(<span class="ident">pf</span>, <span class="ident">math_pattern</span>, <span class="ident">c</span>[<span class="number">0</span>])
-      } <span class="kw">else</span> {
-        <span class="ident">match_math</span>(<span class="ident">pf</span>, <span class="ident">math_pattern</span>, <span class="ident">children</span>[<span class="number">0</span>])
+        match_math(pf, math_pattern, c[<span class="number">0</span>])
+      } <span class="kw">else </span>{
+        match_math(pf, math_pattern, children[<span class="number">0</span>])
       };
-      <span class="kw">if</span> <span class="ident">m</span>.<span class="ident">matched</span> {
-        <span class="ident">InternalWordMatch</span> {
-          <span class="ident">_matches</span>: <span class="ident">m</span>.<span class="ident">_matches</span>,
-          <span class="ident">matched</span>: <span class="bool-val">true</span>,
+      <span class="kw">if </span>m.matched {
+        InternalWordMatch {
+          _matches: m._matches,
+          matched: <span class="bool-val">true</span>,
         }
-      } <span class="kw">else</span> {
-        <span class="ident">InternalWordMatch::no_match</span>()
+      } <span class="kw">else </span>{
+        InternalWordMatch::no_match()
       }
     }
-    <span class="ident">WordPattern::AnyWord</span> =&gt; <span class="ident">InternalWordMatch</span> {
-      <span class="ident">_matches</span>: <span class="ident">Vec::new</span>(),
-      <span class="ident">matched</span>: <span class="bool-val">true</span>,
+    WordPattern::AnyWord =&gt; InternalWordMatch {
+      _matches: Vec::new(),
+      matched: <span class="bool-val">true</span>,
     },
-    <span class="ident">WordPattern::WordNot</span>(<span class="kw-2">ref</span> <span class="ident">p</span>) =&gt; {
-      <span class="kw">let</span> <span class="ident">m</span> <span class="op">=</span> <span class="ident">match_word</span>(<span class="ident">pf</span>, <span class="ident">p</span>, <span class="ident">word</span>, <span class="ident">range</span>);
-      <span class="kw">if</span> <span class="ident">m</span>.<span class="ident">matched</span> {
-        <span class="ident">m</span>
-      } <span class="kw">else</span> {
-        <span class="ident">InternalWordMatch::no_match</span>()
+    WordPattern::WordNot(<span class="kw-2">ref </span>p) =&gt; {
+      <span class="kw">let </span>m = match_word(pf, p, word, range);
+      <span class="kw">if </span>m.matched {
+        m
+      } <span class="kw">else </span>{
+        InternalWordMatch::no_match()
       }
     }
-    <span class="ident">WordPattern::Marked</span>(<span class="kw-2">ref</span> <span class="ident">p</span>, <span class="kw-2">ref</span> <span class="ident">marker</span>) =&gt; {
-      <span class="kw">let</span> <span class="ident">m</span> <span class="op">=</span> <span class="ident">match_word</span>(<span class="ident">pf</span>, <span class="ident">p</span>, <span class="ident">word</span>, <span class="ident">range</span>);
-      <span class="kw">if</span> <span class="ident">m</span>.<span class="ident">matched</span> {
-        <span class="ident">InternalWordMatch</span> {
-          <span class="ident">_matches</span>: <span class="macro">vec!</span>[<span class="ident">Match</span> {
-            <span class="ident">marker</span>: <span class="ident">MarkerEnum::Text</span>(<span class="ident">TextMarker</span> {
-              <span class="ident">range</span>: <span class="ident">range</span>.<span class="ident">get_subrange</span>(<span class="ident">word</span>.<span class="ident">get_offset_start</span>(), <span class="ident">word</span>.<span class="ident">get_offset_end</span>()),
-              <span class="ident">marker</span>: <span class="ident">marker</span>.<span class="ident">clone</span>(),
+    WordPattern::Marked(<span class="kw-2">ref </span>p, <span class="kw-2">ref </span>marker) =&gt; {
+      <span class="kw">let </span>m = match_word(pf, p, word, range);
+      <span class="kw">if </span>m.matched {
+        InternalWordMatch {
+          _matches: <span class="macro">vec!</span>[Match {
+            marker: MarkerEnum::Text(TextMarker {
+              range: range.get_subrange(word.get_offset_start(), word.get_offset_end()),
+              marker: marker.clone(),
             }),
-            <span class="ident">sub_matches</span>: <span class="ident">m</span>.<span class="ident">_matches</span>,
+            sub_matches: m._matches,
           }],
-          <span class="ident">matched</span>: <span class="bool-val">true</span>,
+          matched: <span class="bool-val">true</span>,
         }
-      } <span class="kw">else</span> {
-        <span class="ident">InternalWordMatch::no_match</span>()
+      } <span class="kw">else </span>{
+        InternalWordMatch::no_match()
       }
     }
   }
 }
 
-<span class="kw">fn</span> <span class="ident">match_math</span><span class="op">&lt;</span><span class="lifetime">&#39;t</span><span class="op">&gt;</span>(<span class="ident">pf</span>: <span class="kw-2">&amp;</span><span class="ident">PatternFile</span>, <span class="ident">rule</span>: <span class="kw-2">&amp;</span><span class="ident">MathPattern</span>, <span class="ident">node</span>: <span class="ident">RoNode</span>) -&gt; <span class="ident">InternalMathMatch</span><span class="op">&lt;</span><span class="lifetime">&#39;t</span><span class="op">&gt;</span> {
-  <span class="kw">match</span> <span class="kw-2">*</span><span class="ident">rule</span> {
-    <span class="ident">MathPattern::AnyMath</span> =&gt; <span class="ident">InternalMathMatch</span> {
-      <span class="ident">_matches</span>: <span class="ident">Vec::new</span>(),
-      <span class="ident">matched</span>: <span class="bool-val">true</span>,
+<span class="kw">fn </span>match_math&lt;<span class="lifetime">&#39;t</span>&gt;(pf: <span class="kw-2">&amp;</span>PatternFile, rule: <span class="kw-2">&amp;</span>MathPattern, node: RoNode) -&gt; InternalMathMatch&lt;<span class="lifetime">&#39;t</span>&gt; {
+  <span class="kw">match </span><span class="kw-2">*</span>rule {
+    MathPattern::AnyMath =&gt; InternalMathMatch {
+      _matches: Vec::new(),
+      matched: <span class="bool-val">true</span>,
     },
-    <span class="ident">MathPattern::MathRef</span>(<span class="ident">o</span>) =&gt; <span class="ident">match_math</span>(<span class="ident">pf</span>, <span class="kw-2">&amp;</span><span class="ident">pf</span>.<span class="ident">math_rules</span>[<span class="ident">o</span>].<span class="ident">pattern</span>, <span class="ident">node</span>),
-    <span class="ident">MathPattern::Marked</span>(<span class="kw-2">ref</span> <span class="ident">pattern</span>, <span class="kw-2">ref</span> <span class="ident">marker</span>) =&gt; {
-      <span class="kw">let</span> <span class="ident">m</span> <span class="op">=</span> <span class="ident">match_math</span>(<span class="ident">pf</span>, <span class="ident">pattern</span>, <span class="ident">node</span>);
-      <span class="kw">if</span> <span class="ident">m</span>.<span class="ident">matched</span> {
-        <span class="ident">InternalMathMatch</span> {
-          <span class="ident">_matches</span>: <span class="macro">vec!</span>[<span class="ident">Match</span> {
-            <span class="ident">marker</span>: <span class="ident">MarkerEnum::Math</span>(<span class="ident">MathMarker</span> {
-              <span class="ident">node</span>,
-              <span class="ident">marker</span>: <span class="ident">marker</span>.<span class="ident">clone</span>(),
+    MathPattern::MathRef(o) =&gt; match_math(pf, <span class="kw-2">&amp;</span>pf.math_rules[o].pattern, node),
+    MathPattern::Marked(<span class="kw-2">ref </span>pattern, <span class="kw-2">ref </span>marker) =&gt; {
+      <span class="kw">let </span>m = match_math(pf, pattern, node);
+      <span class="kw">if </span>m.matched {
+        InternalMathMatch {
+          _matches: <span class="macro">vec!</span>[Match {
+            marker: MarkerEnum::Math(MathMarker {
+              node,
+              marker: marker.clone(),
             }),
-            <span class="ident">sub_matches</span>: <span class="ident">m</span>.<span class="ident">_matches</span>,
+            sub_matches: m._matches,
           }],
-          <span class="ident">matched</span>: <span class="bool-val">true</span>,
+          matched: <span class="bool-val">true</span>,
         }
-      } <span class="kw">else</span> {
-        <span class="ident">InternalMathMatch::no_match</span>()
+      } <span class="kw">else </span>{
+        InternalMathMatch::no_match()
       }
     }
-    <span class="ident">MathPattern::MathOr</span>(<span class="kw-2">ref</span> <span class="ident">patterns</span>) =&gt; {
-      <span class="kw">for</span> <span class="ident">pattern</span> <span class="kw">in</span> <span class="ident">patterns</span> {
-        <span class="kw">let</span> <span class="ident">m</span> <span class="op">=</span> <span class="ident">match_math</span>(<span class="ident">pf</span>, <span class="ident">pattern</span>, <span class="ident">node</span>);
-        <span class="kw">if</span> <span class="ident">m</span>.<span class="ident">matched</span> {
-          <span class="kw">return</span> <span class="ident">m</span>;
+    MathPattern::MathOr(<span class="kw-2">ref </span>patterns) =&gt; {
+      <span class="kw">for </span>pattern <span class="kw">in </span>patterns {
+        <span class="kw">let </span>m = match_math(pf, pattern, node);
+        <span class="kw">if </span>m.matched {
+          <span class="kw">return </span>m;
         }
       }
-      <span class="ident">InternalMathMatch::no_match</span>()
+      InternalMathMatch::no_match()
     }
-    <span class="ident">MathPattern::MathNode</span>(<span class="kw-2">ref</span> <span class="ident">name</span>, <span class="kw-2">ref</span> <span class="ident">mtext</span>, <span class="kw-2">ref</span> <span class="ident">children</span>) =&gt; {
-      <span class="comment">// Here we will use that each MathPattern matches exactly one node for</span>
-      <span class="comment">// optimization purposes</span>
+    MathPattern::MathNode(<span class="kw-2">ref </span>name, <span class="kw-2">ref </span>mtext, <span class="kw-2">ref </span>children) =&gt; {
+      <span class="comment">// Here we will use that each MathPattern matches exactly one node for
+      // optimization purposes
 
-      <span class="kw">if</span> <span class="ident">name</span>.<span class="ident">is_some</span>() <span class="op">&amp;&amp;</span> <span class="ident">name</span>.<span class="ident">as_ref</span>().<span class="ident">unwrap</span>() <span class="op">!</span><span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">node</span>.<span class="ident">get_name</span>() {
-        <span class="kw">return</span> <span class="ident">InternalMathMatch::no_match</span>();
+      </span><span class="kw">if </span>name.is_some() &amp;&amp; name.as_ref().unwrap() != <span class="kw-2">&amp;</span>node.get_name() {
+        <span class="kw">return </span>InternalMathMatch::no_match();
       }
 
-      <span class="kw">if</span> <span class="ident">mtext</span>.<span class="ident">is_some</span>() {
-        <span class="kw">let</span> <span class="ident">content</span> <span class="op">=</span> <span class="ident">get_simple_node_content</span>(<span class="ident">node</span>, <span class="bool-val">false</span>);
-        <span class="kw">if</span> <span class="ident">content</span>.<span class="ident">is_err</span>() {
-          <span class="kw">return</span> <span class="ident">InternalMathMatch::no_match</span>();
+      <span class="kw">if </span>mtext.is_some() {
+        <span class="kw">let </span>content = get_simple_node_content(node, <span class="bool-val">false</span>);
+        <span class="kw">if </span>content.is_err() {
+          <span class="kw">return </span>InternalMathMatch::no_match();
         }
-        <span class="kw">if</span> <span class="op">!</span><span class="ident">match_mtext</span>(
-          <span class="ident">pf</span>,
-          <span class="kw-2">&amp;</span><span class="ident">pf</span>.<span class="ident">mtext_rules</span>[<span class="ident">mtext</span>.<span class="ident">unwrap</span>()].<span class="ident">pattern</span>,
-          <span class="kw-2">&amp;</span><span class="ident">content</span>.<span class="ident">unwrap</span>(),
+        <span class="kw">if </span>!match_mtext(
+          pf,
+          <span class="kw-2">&amp;</span>pf.mtext_rules[mtext.unwrap()].pattern,
+          <span class="kw-2">&amp;</span>content.unwrap(),
         ) {
-          <span class="kw">return</span> <span class="ident">InternalMathMatch::no_match</span>();
+          <span class="kw">return </span>InternalMathMatch::no_match();
         }
       }
 
-      <span class="kw">if</span> <span class="ident">children</span>.<span class="ident">is_some</span>() {
-        <span class="kw">let</span> <span class="kw-2">&amp;</span>(<span class="kw-2">ref</span> <span class="ident">child_rules</span>, <span class="kw-2">ref</span> <span class="ident">match_type</span>) <span class="op">=</span> <span class="ident">children</span>.<span class="ident">as_ref</span>().<span class="ident">unwrap</span>();
-        <span class="kw">let</span> <span class="ident">c_nodes</span> <span class="op">=</span> <span class="ident">fast_get_non_text_children</span>(<span class="ident">node</span>);
+      <span class="kw">if </span>children.is_some() {
+        <span class="kw">let </span><span class="kw-2">&amp;</span>(<span class="kw-2">ref </span>child_rules, <span class="kw-2">ref </span>match_type) = children.as_ref().unwrap();
+        <span class="kw">let </span>c_nodes = fast_get_non_text_children(node);
 
-        <span class="kw">if</span> <span class="ident">c_nodes</span>.<span class="ident">len</span>() <span class="op">&lt;</span> <span class="ident">child_rules</span>.<span class="ident">len</span>() {
-          <span class="kw">return</span> <span class="ident">InternalMathMatch::no_match</span>();
+        <span class="kw">if </span>c_nodes.len() &lt; child_rules.len() {
+          <span class="kw">return </span>InternalMathMatch::no_match();
         }
 
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">start_pos</span> <span class="op">=</span> <span class="number">0usize</span>;
-        <span class="kw">if</span> <span class="ident">match_type</span> <span class="op">==</span> <span class="kw-2">&amp;</span><span class="ident">MathChildrenMatchType::MatchesExactly</span>
-          <span class="op">&amp;&amp;</span> <span class="ident">c_nodes</span>.<span class="ident">len</span>() <span class="op">!</span><span class="op">=</span> <span class="ident">child_rules</span>.<span class="ident">len</span>()
+        <span class="kw">let </span><span class="kw-2">mut </span>start_pos = <span class="number">0usize</span>;
+        <span class="kw">if </span>match_type == <span class="kw-2">&amp;</span>MathChildrenMatchType::MatchesExactly
+          &amp;&amp; c_nodes.len() != child_rules.len()
         {
-          <span class="kw">return</span> <span class="ident">InternalMathMatch::no_match</span>();
+          <span class="kw">return </span>InternalMathMatch::no_match();
         }
-        <span class="kw">if</span> <span class="ident">match_type</span> <span class="op">==</span> <span class="kw-2">&amp;</span><span class="ident">MathChildrenMatchType::EndsWith</span> {
-          <span class="ident">start_pos</span> <span class="op">=</span> <span class="ident">c_nodes</span>.<span class="ident">len</span>() <span class="op">-</span> <span class="ident">child_rules</span>.<span class="ident">len</span>();
+        <span class="kw">if </span>match_type == <span class="kw-2">&amp;</span>MathChildrenMatchType::EndsWith {
+          start_pos = c_nodes.len() - child_rules.len();
         }
 
-        <span class="kw">loop</span> {
-          <span class="comment">// try to match all children</span>
-          <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">matches</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Match</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">Vec::new</span>();
-          <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">matched</span> <span class="op">=</span> <span class="bool-val">true</span>;
-          <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="ident">child_rules</span>.<span class="ident">len</span>() {
-            <span class="kw">let</span> <span class="ident">m</span> <span class="op">=</span> <span class="ident">match_math</span>(<span class="ident">pf</span>, <span class="kw-2">&amp;</span><span class="ident">child_rules</span>[<span class="ident">i</span>], <span class="ident">c_nodes</span>[<span class="ident">start_pos</span> <span class="op">+</span> <span class="ident">i</span>]);
-            <span class="kw">if</span> <span class="ident">m</span>.<span class="ident">matched</span> {
-              <span class="ident">matches</span>.<span class="ident">extend_from_slice</span>(<span class="kw-2">&amp;</span><span class="ident">m</span>.<span class="ident">_matches</span>[..]);
-            } <span class="kw">else</span> {
-              <span class="ident">matched</span> <span class="op">=</span> <span class="bool-val">false</span>;
+        <span class="kw">loop </span>{
+          <span class="comment">// try to match all children
+          </span><span class="kw">let </span><span class="kw-2">mut </span>matches: Vec&lt;Match&gt; = Vec::new();
+          <span class="kw">let </span><span class="kw-2">mut </span>matched = <span class="bool-val">true</span>;
+          <span class="kw">for </span>i <span class="kw">in </span><span class="number">0</span>..child_rules.len() {
+            <span class="kw">let </span>m = match_math(pf, <span class="kw-2">&amp;</span>child_rules[i], c_nodes[start_pos + i]);
+            <span class="kw">if </span>m.matched {
+              matches.extend_from_slice(<span class="kw-2">&amp;</span>m._matches[..]);
+            } <span class="kw">else </span>{
+              matched = <span class="bool-val">false</span>;
               <span class="kw">break</span>;
             }
           }
-          <span class="kw">if</span> <span class="ident">matched</span> {
-            <span class="kw">return</span> <span class="ident">InternalMathMatch</span> {
-              <span class="ident">_matches</span>: <span class="ident">matches</span>,
-              <span class="ident">matched</span>: <span class="bool-val">true</span>,
+          <span class="kw">if </span>matched {
+            <span class="kw">return </span>InternalMathMatch {
+              _matches: matches,
+              matched: <span class="bool-val">true</span>,
             };
           }
-          <span class="kw">if</span> <span class="ident">match_type</span> <span class="op">!</span><span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">MathChildrenMatchType::Arbitrary</span> {
+          <span class="kw">if </span>match_type != <span class="kw-2">&amp;</span>MathChildrenMatchType::Arbitrary {
             <span class="kw">break</span>;
           }
-          <span class="ident">start_pos</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
-          <span class="kw">if</span> <span class="ident">c_nodes</span>.<span class="ident">len</span>() <span class="op">&lt;</span> <span class="ident">child_rules</span>.<span class="ident">len</span>() <span class="op">+</span> <span class="ident">start_pos</span> {
+          start_pos += <span class="number">1</span>;
+          <span class="kw">if </span>c_nodes.len() &lt; child_rules.len() + start_pos {
             <span class="kw">break</span>;
           }
         }
-        <span class="kw">return</span> <span class="ident">InternalMathMatch::no_match</span>();
+        <span class="kw">return </span>InternalMathMatch::no_match();
       }
 
-      <span class="ident">InternalMathMatch</span> {
-        <span class="ident">_matches</span>: <span class="ident">Vec::new</span>(),
-        <span class="ident">matched</span>: <span class="bool-val">true</span>,
-      } <span class="comment">// no child matches required</span>
-    }
-    <span class="ident">MathPattern::MathDescendant</span>(<span class="kw-2">ref</span> <span class="ident">pattern</span>, <span class="kw-2">ref</span> <span class="ident">match_type</span>) =&gt; {
-      <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">matches</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Match</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">Vec::new</span>();
-      <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">matched</span> <span class="op">=</span> <span class="bool-val">false</span>;
-      <span class="kw">let</span> <span class="ident">m</span> <span class="op">=</span> <span class="ident">match_math</span>(<span class="ident">pf</span>, <span class="ident">pattern</span>, <span class="ident">node</span>);
-      <span class="kw">if</span> <span class="ident">m</span>.<span class="ident">matched</span> {
-        <span class="ident">matched</span> <span class="op">=</span> <span class="bool-val">true</span>;
-        <span class="ident">matches</span>.<span class="ident">extend_from_slice</span>(<span class="kw-2">&amp;</span><span class="ident">m</span>.<span class="ident">_matches</span>[..]);
+      InternalMathMatch {
+        _matches: Vec::new(),
+        matched: <span class="bool-val">true</span>,
+      } <span class="comment">// no child matches required
+    </span>}
+    MathPattern::MathDescendant(<span class="kw-2">ref </span>pattern, <span class="kw-2">ref </span>match_type) =&gt; {
+      <span class="kw">let </span><span class="kw-2">mut </span>matches: Vec&lt;Match&gt; = Vec::new();
+      <span class="kw">let </span><span class="kw-2">mut </span>matched = <span class="bool-val">false</span>;
+      <span class="kw">let </span>m = match_math(pf, pattern, node);
+      <span class="kw">if </span>m.matched {
+        matched = <span class="bool-val">true</span>;
+        matches.extend_from_slice(<span class="kw-2">&amp;</span>m._matches[..]);
       }
-      <span class="kw">for</span> <span class="ident">child</span> <span class="kw">in</span> <span class="ident">fast_get_non_text_children</span>(<span class="ident">node</span>).<span class="ident">into_iter</span>() {
-        <span class="kw">if</span> <span class="ident">matched</span> <span class="op">&amp;&amp;</span> <span class="ident">match_type</span> <span class="op">==</span> <span class="kw-2">&amp;</span><span class="ident">MathDescendantMatchType::First</span> {
-          <span class="kw">return</span> <span class="ident">InternalMathMatch</span> {
-            <span class="ident">_matches</span>: <span class="ident">matches</span>,
-            <span class="ident">matched</span>: <span class="bool-val">true</span>,
+      <span class="kw">for </span>child <span class="kw">in </span>fast_get_non_text_children(node).into_iter() {
+        <span class="kw">if </span>matched &amp;&amp; match_type == <span class="kw-2">&amp;</span>MathDescendantMatchType::First {
+          <span class="kw">return </span>InternalMathMatch {
+            _matches: matches,
+            matched: <span class="bool-val">true</span>,
           };
         }
-        <span class="kw">let</span> <span class="ident">m</span> <span class="op">=</span> <span class="ident">match_math</span>(<span class="ident">pf</span>, <span class="ident">pattern</span>, <span class="ident">child</span>);
-        <span class="kw">if</span> <span class="ident">m</span>.<span class="ident">matched</span> {
-          <span class="ident">matched</span> <span class="op">=</span> <span class="bool-val">true</span>;
-          <span class="ident">matches</span>.<span class="ident">extend_from_slice</span>(<span class="kw-2">&amp;</span><span class="ident">m</span>.<span class="ident">_matches</span>[..]);
+        <span class="kw">let </span>m = match_math(pf, pattern, child);
+        <span class="kw">if </span>m.matched {
+          matched = <span class="bool-val">true</span>;
+          matches.extend_from_slice(<span class="kw-2">&amp;</span>m._matches[..]);
         }
       }
 
-      <span class="kw">if</span> <span class="ident">matched</span> <span class="op">|</span><span class="op">|</span> <span class="ident">match_type</span> <span class="op">==</span> <span class="kw-2">&amp;</span><span class="ident">MathDescendantMatchType::Arbitrary</span> {
-        <span class="ident">InternalMathMatch</span> {
-          <span class="ident">_matches</span>: <span class="ident">matches</span>,
-          <span class="ident">matched</span>: <span class="bool-val">true</span>,
+      <span class="kw">if </span>matched || match_type == <span class="kw-2">&amp;</span>MathDescendantMatchType::Arbitrary {
+        InternalMathMatch {
+          _matches: matches,
+          matched: <span class="bool-val">true</span>,
         }
-      } <span class="kw">else</span> {
-        <span class="ident">InternalMathMatch::no_match</span>()
+      } <span class="kw">else </span>{
+        InternalMathMatch::no_match()
       }
     }
   }
 }
 
-<span class="kw">fn</span> <span class="ident">match_mtext</span>(<span class="ident">pf</span>: <span class="kw-2">&amp;</span><span class="ident">PatternFile</span>, <span class="ident">rule</span>: <span class="kw-2">&amp;</span><span class="ident">MTextPattern</span>, <span class="ident">string</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) -&gt; <span class="ident">bool</span> {
-  <span class="kw">match</span> <span class="kw-2">*</span><span class="ident">rule</span> {
-    <span class="ident">MTextPattern::AnyMText</span> =&gt; <span class="bool-val">true</span>,
-    <span class="ident">MTextPattern::MTextOr</span>(<span class="kw-2">ref</span> <span class="ident">ps</span>) =&gt; <span class="ident">ps</span>.<span class="ident">iter</span>().<span class="ident">any</span>(<span class="op">|</span><span class="ident">p</span><span class="op">|</span> <span class="ident">match_mtext</span>(<span class="ident">pf</span>, <span class="ident">p</span>, <span class="ident">string</span>)),
-    <span class="ident">MTextPattern::MTextLit</span>(<span class="kw-2">ref</span> <span class="ident">s</span>) =&gt; <span class="ident">s</span> <span class="op">==</span> <span class="ident">string</span>,
-    <span class="ident">MTextPattern::MTextNot</span>(<span class="kw-2">ref</span> <span class="ident">p</span>) =&gt; <span class="op">!</span><span class="ident">match_mtext</span>(<span class="ident">pf</span>, <span class="ident">p</span>, <span class="ident">string</span>),
-    <span class="ident">MTextPattern::MTextRef</span>(<span class="ident">o</span>) =&gt; <span class="ident">match_mtext</span>(<span class="ident">pf</span>, <span class="kw-2">&amp;</span><span class="ident">pf</span>.<span class="ident">mtext_rules</span>[<span class="ident">o</span>].<span class="ident">pattern</span>, <span class="ident">string</span>),
+<span class="kw">fn </span>match_mtext(pf: <span class="kw-2">&amp;</span>PatternFile, rule: <span class="kw-2">&amp;</span>MTextPattern, string: <span class="kw-2">&amp;</span>str) -&gt; bool {
+  <span class="kw">match </span><span class="kw-2">*</span>rule {
+    MTextPattern::AnyMText =&gt; <span class="bool-val">true</span>,
+    MTextPattern::MTextOr(<span class="kw-2">ref </span>ps) =&gt; ps.iter().any(|p| match_mtext(pf, p, string)),
+    MTextPattern::MTextLit(<span class="kw-2">ref </span>s) =&gt; s == string,
+    MTextPattern::MTextNot(<span class="kw-2">ref </span>p) =&gt; !match_mtext(pf, p, string),
+    MTextPattern::MTextRef(o) =&gt; match_mtext(pf, <span class="kw-2">&amp;</span>pf.mtext_rules[o].pattern, string),
   }
 }
 
-<span class="kw">fn</span> <span class="ident">match_pos</span>(<span class="ident">pf</span>: <span class="kw-2">&amp;</span><span class="ident">PatternFile</span>, <span class="ident">rule</span>: <span class="kw-2">&amp;</span><span class="ident">PosPattern</span>, <span class="ident">pos</span>: <span class="ident">POS</span>) -&gt; <span class="ident">bool</span> {
-  <span class="kw">match</span> <span class="kw-2">*</span><span class="ident">rule</span> {
-    <span class="ident">PosPattern::Pos</span>(<span class="ident">p</span>) =&gt; <span class="ident">p</span> <span class="op">==</span> <span class="ident">pos</span>,
-    <span class="ident">PosPattern::PosNot</span>(<span class="kw-2">ref</span> <span class="ident">r</span>) =&gt; <span class="op">!</span><span class="ident">match_pos</span>(<span class="ident">pf</span>, <span class="ident">r</span>, <span class="ident">pos</span>),
-    <span class="ident">PosPattern::PosOr</span>(<span class="kw-2">ref</span> <span class="ident">ps</span>) =&gt; <span class="ident">ps</span>.<span class="ident">iter</span>().<span class="ident">any</span>(<span class="op">|</span><span class="ident">p</span><span class="op">|</span> <span class="ident">match_pos</span>(<span class="ident">pf</span>, <span class="ident">p</span>, <span class="ident">pos</span>)),
-    <span class="ident">PosPattern::PosRef</span>(<span class="ident">o</span>) =&gt; <span class="ident">match_pos</span>(<span class="ident">pf</span>, <span class="kw-2">&amp;</span><span class="ident">pf</span>.<span class="ident">pos_rules</span>[<span class="ident">o</span>].<span class="ident">pattern</span>, <span class="ident">pos</span>),
+<span class="kw">fn </span>match_pos(pf: <span class="kw-2">&amp;</span>PatternFile, rule: <span class="kw-2">&amp;</span>PosPattern, pos: POS) -&gt; bool {
+  <span class="kw">match </span><span class="kw-2">*</span>rule {
+    PosPattern::Pos(p) =&gt; p == pos,
+    PosPattern::PosNot(<span class="kw-2">ref </span>r) =&gt; !match_pos(pf, r, pos),
+    PosPattern::PosOr(<span class="kw-2">ref </span>ps) =&gt; ps.iter().any(|p| match_pos(pf, p, pos)),
+    PosPattern::PosRef(o) =&gt; match_pos(pf, <span class="kw-2">&amp;</span>pf.pos_rules[o].pattern, pos),
   }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="llamapun" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.63.0 (4b91a6ea7 2022-08-08)" ></div>
-</body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="llamapun" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0 (897e37553 2022-11-02)" ></div></body></html>

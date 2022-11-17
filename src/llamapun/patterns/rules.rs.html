@@ -1,10 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/patterns/rules.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>rules.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../llamapun/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div>
-        </a><h2 class="location"></h2>
-    </nav>
-    <nav class="sidebar"><a class="sidebar-logo" href="../../../llamapun/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div>
-        </a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../llamapun/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><button type="button" id="help-button" title="help">?</button><div id="settings-menu" tabindex="-1">
-                                <a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div>
-                        </div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/patterns/rules.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>rules.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../llamapun/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../llamapun/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../llamapun/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -1166,1068 +1160,1068 @@
 <span id="1160">1160</span>
 <span id="1161">1161</span>
 <span id="1162">1162</span>
-</pre><pre class="rust"><code><span class="doccomment">//! The definitions of patterns and rules, and the code for loading them</span>
+</pre><pre class="rust"><code><span class="doccomment">//! The definitions of patterns and rules, and the code for loading them
 
-<span class="kw">use</span> <span class="ident">libxml::parser::Parser</span>;
-<span class="kw">use</span> <span class="ident">libxml::readonly::RoNode</span>;
+</span><span class="kw">use </span>libxml::parser::Parser;
+<span class="kw">use </span>libxml::readonly::RoNode;
 
-<span class="kw">use</span> <span class="ident">senna::phrase::Phrase</span>;
-<span class="kw">use</span> <span class="ident">senna::pos::POS</span>;
+<span class="kw">use </span>senna::phrase::Phrase;
+<span class="kw">use </span>senna::pos::POS;
 
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::dnm</span>::<span class="kw-2">*</span>;
+<span class="kw">use </span><span class="kw">crate</span>::dnm::<span class="kw-2">*</span>;
 
-<span class="kw">use</span> <span class="ident">std::collections::HashMap</span>;
+<span class="kw">use </span>std::collections::HashMap;
 
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::patterns::utils</span>::<span class="kw-2">*</span>;
+<span class="kw">use </span><span class="kw">crate</span>::patterns::utils::<span class="kw-2">*</span>;
 
 <span class="comment">/*
  * MARKERS
- */</span>
+ */
 
-<span class="doccomment">/// The marker used for marking patterns.</span>
-<span class="doccomment">/// If a match was found, this marker will be returned (along with the marked range).</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">PatternMarker</span> {
-  <span class="doccomment">/// name of the marker</span>
-  <span class="kw">pub</span> <span class="ident">name</span>: <span class="ident">String</span>,
-  <span class="doccomment">/// tags of the marker</span>
-  <span class="kw">pub</span> <span class="ident">tags</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
+</span><span class="doccomment">/// The marker used for marking patterns.
+/// If a match was found, this marker will be returned (along with the marked range).
+</span><span class="attribute">#[derive(Clone)]
+</span><span class="kw">pub struct </span>PatternMarker {
+  <span class="doccomment">/// name of the marker
+  </span><span class="kw">pub </span>name: String,
+  <span class="doccomment">/// tags of the marker
+  </span><span class="kw">pub </span>tags: Vec&lt;String&gt;,
 }
 
-<span class="kw">impl</span> <span class="ident">PatternMarker</span> {
-  <span class="doccomment">/// loads a `PatternMarker` from a node</span>
-  <span class="kw">fn</span> <span class="ident">load_from_node</span>(<span class="ident">node</span>: <span class="ident">RoNode</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">PatternMarker</span>, <span class="ident">String</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="ident">name</span> <span class="op">=</span> <span class="ident">require_node_property</span>(<span class="ident">node</span>, <span class="string">&quot;name&quot;</span>)<span class="question-mark">?</span>;
-    <span class="kw">let</span> <span class="ident">tags</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">node</span>.<span class="ident">get_property</span>(<span class="string">&quot;tags&quot;</span>) {
-      <span class="comment">// TODO: Add regex: [a-zA-Z0-9_]+(,[a-zA-Z0-9_]+)*</span>
-      <span class="prelude-val">None</span> =&gt; <span class="ident">Vec::new</span>(),
-      <span class="prelude-val">Some</span>(<span class="ident">value</span>) =&gt; <span class="ident">value</span>.<span class="ident">split</span>(<span class="string">&#39;,&#39;</span>).<span class="ident">map</span>(<span class="op">|</span><span class="ident">s</span><span class="op">|</span> <span class="ident">s</span>.<span class="ident">trim</span>().<span class="ident">to_string</span>()).<span class="ident">collect</span>(),
+<span class="kw">impl </span>PatternMarker {
+  <span class="doccomment">/// loads a `PatternMarker` from a node
+  </span><span class="kw">fn </span>load_from_node(node: RoNode) -&gt; <span class="prelude-ty">Result</span>&lt;PatternMarker, String&gt; {
+    <span class="kw">let </span>name = require_node_property(node, <span class="string">&quot;name&quot;</span>)<span class="question-mark">?</span>;
+    <span class="kw">let </span>tags = <span class="kw">match </span>node.get_property(<span class="string">&quot;tags&quot;</span>) {
+      <span class="comment">// TODO: Add regex: [a-zA-Z0-9_]+(,[a-zA-Z0-9_]+)*
+      </span><span class="prelude-val">None </span>=&gt; Vec::new(),
+      <span class="prelude-val">Some</span>(value) =&gt; value.split(<span class="string">&#39;,&#39;</span>).map(|s| s.trim().to_string()).collect(),
     };
-    <span class="prelude-val">Ok</span>(<span class="ident">PatternMarker</span> { <span class="ident">name</span>, <span class="ident">tags</span> })
+    <span class="prelude-val">Ok</span>(PatternMarker { name, tags })
   }
 }
 
-<span class="doccomment">/// A marked math node</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">MathMarker</span> {
-  <span class="doccomment">/// the marked math node</span>
-  <span class="kw">pub</span> <span class="ident">node</span>: <span class="ident">RoNode</span>,
-  <span class="doccomment">/// the marker</span>
-  <span class="kw">pub</span> <span class="ident">marker</span>: <span class="ident">PatternMarker</span>,
+<span class="doccomment">/// A marked math node
+</span><span class="attribute">#[derive(Clone)]
+</span><span class="kw">pub struct </span>MathMarker {
+  <span class="doccomment">/// the marked math node
+  </span><span class="kw">pub </span>node: RoNode,
+  <span class="doccomment">/// the marker
+  </span><span class="kw">pub </span>marker: PatternMarker,
 }
 
-<span class="doccomment">/// A marked text range</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">TextMarker</span><span class="op">&lt;</span><span class="lifetime">&#39;t</span><span class="op">&gt;</span> {
-  <span class="doccomment">/// the marked range</span>
-  <span class="kw">pub</span> <span class="ident">range</span>: <span class="ident">DNMRange</span><span class="op">&lt;</span><span class="lifetime">&#39;t</span><span class="op">&gt;</span>,
-  <span class="doccomment">/// the marker</span>
-  <span class="kw">pub</span> <span class="ident">marker</span>: <span class="ident">PatternMarker</span>,
+<span class="doccomment">/// A marked text range
+</span><span class="attribute">#[derive(Clone)]
+</span><span class="kw">pub struct </span>TextMarker&lt;<span class="lifetime">&#39;t</span>&gt; {
+  <span class="doccomment">/// the marked range
+  </span><span class="kw">pub </span>range: DNMRange&lt;<span class="lifetime">&#39;t</span>&gt;,
+  <span class="doccomment">/// the marker
+  </span><span class="kw">pub </span>marker: PatternMarker,
 }
 
-<span class="doccomment">/// Any marked result</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>)]</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">MarkerEnum</span><span class="op">&lt;</span><span class="lifetime">&#39;t</span><span class="op">&gt;</span> {
-  <span class="doccomment">/// a marked text range</span>
-  <span class="ident">Text</span>(<span class="ident">TextMarker</span><span class="op">&lt;</span><span class="lifetime">&#39;t</span><span class="op">&gt;</span>),
-  <span class="doccomment">/// a marked math node</span>
-  <span class="ident">Math</span>(<span class="ident">MathMarker</span>),
+<span class="doccomment">/// Any marked result
+</span><span class="attribute">#[derive(Clone)]
+</span><span class="kw">pub enum </span>MarkerEnum&lt;<span class="lifetime">&#39;t</span>&gt; {
+  <span class="doccomment">/// a marked text range
+  </span>Text(TextMarker&lt;<span class="lifetime">&#39;t</span>&gt;),
+  <span class="doccomment">/// a marked math node
+  </span>Math(MathMarker),
 }
 
 <span class="comment">/*
  * MATCH TYPES FOR PATTERNS
- */</span>
+ */
 
-<span class="doccomment">/// Describes the ways of matching the children of a math node</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>)]</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">MathChildrenMatchType</span> {
-  <span class="doccomment">/// The patterns for the children have to match at the beginning,</span>
-  <span class="doccomment">/// i.e. the first children</span>
-  <span class="ident">StartsWith</span>,
-  <span class="doccomment">/// The patterns for the children have to match all the children</span>
-  <span class="ident">MatchesExactly</span>,
-  <span class="doccomment">/// The patterns for the children have to match the last children</span>
-  <span class="ident">EndsWith</span>,
-  <span class="doccomment">/// Any kind of matching is acceptable, but only the first match will be used.</span>
-  <span class="ident">Arbitrary</span>,
+</span><span class="doccomment">/// Describes the ways of matching the children of a math node
+</span><span class="attribute">#[derive(Clone, PartialEq, Eq)]
+</span><span class="kw">pub enum </span>MathChildrenMatchType {
+  <span class="doccomment">/// The patterns for the children have to match at the beginning,
+  /// i.e. the first children
+  </span>StartsWith,
+  <span class="doccomment">/// The patterns for the children have to match all the children
+  </span>MatchesExactly,
+  <span class="doccomment">/// The patterns for the children have to match the last children
+  </span>EndsWith,
+  <span class="doccomment">/// Any kind of matching is acceptable, but only the first match will be used.
+  </span>Arbitrary,
 }
 
-<span class="kw">impl</span> <span class="ident">MathChildrenMatchType</span> {
-  <span class="doccomment">/// loads a `MathChildrenMatchType` from a string</span>
-  <span class="kw">fn</span> <span class="ident">from_str</span>(<span class="ident">string</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">MathChildrenMatchType</span>, <span class="ident">String</span><span class="op">&gt;</span> {
-    <span class="kw">match</span> <span class="ident">string</span> {
-      <span class="string">&quot;starts_with&quot;</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident">MathChildrenMatchType::StartsWith</span>),
-      <span class="string">&quot;exact&quot;</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident">MathChildrenMatchType::MatchesExactly</span>),
-      <span class="string">&quot;ends_with&quot;</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident">MathChildrenMatchType::EndsWith</span>),
-      <span class="string">&quot;arbitrary&quot;</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident">MathChildrenMatchType::Arbitrary</span>),
-      <span class="ident">other</span> =&gt; <span class="prelude-val">Err</span>(<span class="macro">format!</span>(
+<span class="kw">impl </span>MathChildrenMatchType {
+  <span class="doccomment">/// loads a `MathChildrenMatchType` from a string
+  </span><span class="kw">fn </span>from_str(string: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;MathChildrenMatchType, String&gt; {
+    <span class="kw">match </span>string {
+      <span class="string">&quot;starts_with&quot; </span>=&gt; <span class="prelude-val">Ok</span>(MathChildrenMatchType::StartsWith),
+      <span class="string">&quot;exact&quot; </span>=&gt; <span class="prelude-val">Ok</span>(MathChildrenMatchType::MatchesExactly),
+      <span class="string">&quot;ends_with&quot; </span>=&gt; <span class="prelude-val">Ok</span>(MathChildrenMatchType::EndsWith),
+      <span class="string">&quot;arbitrary&quot; </span>=&gt; <span class="prelude-val">Ok</span>(MathChildrenMatchType::Arbitrary),
+      other =&gt; <span class="prelude-val">Err</span>(<span class="macro">format!</span>(
         <span class="string">&quot;Unknown match_type for match_children \&quot;{}\&quot;&quot;</span>,
-        <span class="ident">other</span>
+        other
       )),
     }
   }
 }
 
-<span class="doccomment">/// The ways of matching the descendants of a math node</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>)]</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">MathDescendantMatchType</span> {
-  <span class="doccomment">/// Take the first match only (DFS)</span>
-  <span class="ident">First</span>,
-  <span class="doccomment">/// Require at least one matching descending</span>
-  <span class="ident">AtLeastOne</span>,
-  <span class="doccomment">/// Take all matching descendants</span>
-  <span class="ident">Arbitrary</span>,
+<span class="doccomment">/// The ways of matching the descendants of a math node
+</span><span class="attribute">#[derive(Clone, PartialEq, Eq)]
+</span><span class="kw">pub enum </span>MathDescendantMatchType {
+  <span class="doccomment">/// Take the first match only (DFS)
+  </span>First,
+  <span class="doccomment">/// Require at least one matching descending
+  </span>AtLeastOne,
+  <span class="doccomment">/// Take all matching descendants
+  </span>Arbitrary,
 }
 
-<span class="kw">impl</span> <span class="ident">MathDescendantMatchType</span> {
-  <span class="doccomment">/// loads a `MathDescendantMatchType` from a string</span>
-  <span class="kw">fn</span> <span class="ident">from_str</span>(<span class="ident">string</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">MathDescendantMatchType</span>, <span class="ident">String</span><span class="op">&gt;</span> {
-    <span class="kw">match</span> <span class="ident">string</span> {
-      <span class="string">&quot;first&quot;</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident">MathDescendantMatchType::First</span>),
-      <span class="string">&quot;at_least_one&quot;</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident">MathDescendantMatchType::AtLeastOne</span>),
-      <span class="string">&quot;arbitrary&quot;</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident">MathDescendantMatchType::Arbitrary</span>),
-      <span class="ident">other</span> =&gt; <span class="prelude-val">Err</span>(<span class="macro">format!</span>(
+<span class="kw">impl </span>MathDescendantMatchType {
+  <span class="doccomment">/// loads a `MathDescendantMatchType` from a string
+  </span><span class="kw">fn </span>from_str(string: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;MathDescendantMatchType, String&gt; {
+    <span class="kw">match </span>string {
+      <span class="string">&quot;first&quot; </span>=&gt; <span class="prelude-val">Ok</span>(MathDescendantMatchType::First),
+      <span class="string">&quot;at_least_one&quot; </span>=&gt; <span class="prelude-val">Ok</span>(MathDescendantMatchType::AtLeastOne),
+      <span class="string">&quot;arbitrary&quot; </span>=&gt; <span class="prelude-val">Ok</span>(MathDescendantMatchType::Arbitrary),
+      other =&gt; <span class="prelude-val">Err</span>(<span class="macro">format!</span>(
         <span class="string">&quot;Unknon match_type for math_descendant \&quot;{}\&quot;&quot;</span>,
-        <span class="ident">other</span>
+        other
       )),
     }
   }
 }
 
-<span class="doccomment">/// Describes how a phrase should be matched</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>)]</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">PhraseMatchType</span> {
-  <span class="doccomment">/// Take the shortest phrase fulfilling the requirements</span>
-  <span class="ident">Shortest</span>,
-  <span class="doccomment">/// Take the longest phrase fulfilling the requirements</span>
-  <span class="ident">Longest</span>,
+<span class="doccomment">/// Describes how a phrase should be matched
+</span><span class="attribute">#[derive(Clone, PartialEq, Eq)]
+</span><span class="kw">pub enum </span>PhraseMatchType {
+  <span class="doccomment">/// Take the shortest phrase fulfilling the requirements
+  </span>Shortest,
+  <span class="doccomment">/// Take the longest phrase fulfilling the requirements
+  </span>Longest,
 }
 
-<span class="kw">impl</span> <span class="ident">PhraseMatchType</span> {
-  <span class="doccomment">/// loads a `PhraseMatchType` from a string</span>
-  <span class="kw">fn</span> <span class="ident">from_str</span>(<span class="ident">string</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">PhraseMatchType</span>, <span class="ident">String</span><span class="op">&gt;</span> {
-    <span class="kw">match</span> <span class="ident">string</span> {
-      <span class="string">&quot;shortest&quot;</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident">PhraseMatchType::Shortest</span>),
-      <span class="string">&quot;longest&quot;</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident">PhraseMatchType::Longest</span>),
-      <span class="ident">unknown</span> =&gt; <span class="prelude-val">Err</span>(<span class="macro">format!</span>(<span class="string">&quot;Unknown match_type \&quot;{}\&quot;&quot;</span>, <span class="ident">unknown</span>)),
+<span class="kw">impl </span>PhraseMatchType {
+  <span class="doccomment">/// loads a `PhraseMatchType` from a string
+  </span><span class="kw">fn </span>from_str(string: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;PhraseMatchType, String&gt; {
+    <span class="kw">match </span>string {
+      <span class="string">&quot;shortest&quot; </span>=&gt; <span class="prelude-val">Ok</span>(PhraseMatchType::Shortest),
+      <span class="string">&quot;longest&quot; </span>=&gt; <span class="prelude-val">Ok</span>(PhraseMatchType::Longest),
+      unknown =&gt; <span class="prelude-val">Err</span>(<span class="macro">format!</span>(<span class="string">&quot;Unknown match_type \&quot;{}\&quot;&quot;</span>, unknown)),
     }
   }
 }
 
-<span class="doccomment">/// Describes how a sequence should be contained in another sequence</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>)]</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">SequenceContainment</span> {
-  <span class="doccomment">/// The sequence should not be longer</span>
-  <span class="ident">LessOrEqual</span>,
-  <span class="doccomment">/// Any containment is acceptable (including if the sequence is not</span>
-  <span class="doccomment">/// contained, i.e. longer)</span>
-  <span class="ident">Any</span>,
+<span class="doccomment">/// Describes how a sequence should be contained in another sequence
+</span><span class="attribute">#[derive(Clone, PartialEq, Eq)]
+</span><span class="kw">pub enum </span>SequenceContainment {
+  <span class="doccomment">/// The sequence should not be longer
+  </span>LessOrEqual,
+  <span class="doccomment">/// Any containment is acceptable (including if the sequence is not
+  /// contained, i.e. longer)
+  </span>Any,
 }
 
-<span class="kw">impl</span> <span class="ident">SequenceContainment</span> {
-  <span class="doccomment">/// loads a `SequenceContainment` from a string</span>
-  <span class="kw">fn</span> <span class="ident">from_node</span>(<span class="ident">node</span>: <span class="ident">RoNode</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">SequenceContainment</span>, <span class="ident">String</span><span class="op">&gt;</span> {
-    <span class="kw">match</span> <span class="ident">node</span>.<span class="ident">get_property</span>(<span class="string">&quot;containment&quot;</span>) {
-      <span class="prelude-val">None</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident">SequenceContainment::Any</span>),
-      <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">x</span>) =&gt; <span class="kw">match</span> <span class="ident">x</span>.<span class="ident">as_ref</span>() {
-        <span class="string">&quot;lessorequal&quot;</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident">SequenceContainment::LessOrEqual</span>),
-        <span class="string">&quot;any&quot;</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident">SequenceContainment::Any</span>),
-        <span class="ident">unknown</span> =&gt; <span class="prelude-val">Err</span>(<span class="macro">format!</span>(<span class="string">&quot;Unknown containment \&quot;{}\&quot;&quot;</span>, <span class="ident">unknown</span>)),
+<span class="kw">impl </span>SequenceContainment {
+  <span class="doccomment">/// loads a `SequenceContainment` from a string
+  </span><span class="kw">fn </span>from_node(node: RoNode) -&gt; <span class="prelude-ty">Result</span>&lt;SequenceContainment, String&gt; {
+    <span class="kw">match </span>node.get_property(<span class="string">&quot;containment&quot;</span>) {
+      <span class="prelude-val">None </span>=&gt; <span class="prelude-val">Ok</span>(SequenceContainment::Any),
+      <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>x) =&gt; <span class="kw">match </span>x.as_ref() {
+        <span class="string">&quot;lessorequal&quot; </span>=&gt; <span class="prelude-val">Ok</span>(SequenceContainment::LessOrEqual),
+        <span class="string">&quot;any&quot; </span>=&gt; <span class="prelude-val">Ok</span>(SequenceContainment::Any),
+        unknown =&gt; <span class="prelude-val">Err</span>(<span class="macro">format!</span>(<span class="string">&quot;Unknown containment \&quot;{}\&quot;&quot;</span>, unknown)),
       },
     }
   }
 }
 
-<span class="doccomment">/// Describes how the sequences in a `seq_or` listing should be matched</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>)]</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">SequenceMatchType</span> {
-  <span class="doccomment">/// Take only the first sequence that matches</span>
-  <span class="ident">First</span>,
-  <span class="doccomment">/// Try to match all and require at least one to match</span>
-  <span class="ident">AtLeastOne</span>,
-  <span class="doccomment">/// Try to match all</span>
-  <span class="ident">Any</span>,
-  <span class="doccomment">/// Take only the longest matching sequence</span>
-  <span class="ident">Longest</span>,
+<span class="doccomment">/// Describes how the sequences in a `seq_or` listing should be matched
+</span><span class="attribute">#[derive(Clone, PartialEq, Eq)]
+</span><span class="kw">pub enum </span>SequenceMatchType {
+  <span class="doccomment">/// Take only the first sequence that matches
+  </span>First,
+  <span class="doccomment">/// Try to match all and require at least one to match
+  </span>AtLeastOne,
+  <span class="doccomment">/// Try to match all
+  </span>Any,
+  <span class="doccomment">/// Take only the longest matching sequence
+  </span>Longest,
 }
 
 <span class="comment">/*
  * PATTERNS
- */</span>
+ */
 
-<span class="doccomment">/// A pattern for matching math nodes</span>
-<span class="doccomment">/// Currently, only nodes, not ranges of nodes can be matched</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>)]</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">MathPattern</span> {
-  <span class="doccomment">/// Matches any math node</span>
-  <span class="ident">AnyMath</span>,
-  <span class="doccomment">/// Reference to another math node</span>
-  <span class="ident">MathRef</span>(<span class="ident">usize</span>),
-  <span class="doccomment">/// A `MathPattern` with a marker</span>
-  <span class="ident">Marked</span>(<span class="ident">Box</span><span class="op">&lt;</span><span class="ident">MathPattern</span><span class="op">&gt;</span>, <span class="ident">PatternMarker</span>),
-  <span class="doccomment">/// Matches the first matching pattern in the vector</span>
-  <span class="ident">MathOr</span>(<span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">MathPattern</span><span class="op">&gt;</span>),
-  <span class="doccomment">/// Pattern to match a math node with optional restrictions on the</span>
-  <span class="doccomment">/// * Name of the node (e.g. `mi`)</span>
-  <span class="doccomment">/// * Text content (if it has only one text node as a child), by passing a reference to an</span>
-  <span class="doccomment">/// `MTextPattern`</span>
-  <span class="doccomment">/// * The children it has</span>
-  <span class="ident">MathNode</span>(
-    <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,                                    <span class="comment">/* node name */</span>
-    <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>,                                     <span class="comment">/* m_text_ref */</span>
-    <span class="prelude-ty">Option</span><span class="op">&lt;</span>(<span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">MathPattern</span><span class="op">&gt;</span>, <span class="ident">MathChildrenMatchType</span>)<span class="op">&gt;</span>, <span class="comment">/* children */</span>
+</span><span class="doccomment">/// A pattern for matching math nodes
+/// Currently, only nodes, not ranges of nodes can be matched
+</span><span class="attribute">#[derive(Clone)]
+</span><span class="kw">pub enum </span>MathPattern {
+  <span class="doccomment">/// Matches any math node
+  </span>AnyMath,
+  <span class="doccomment">/// Reference to another math node
+  </span>MathRef(usize),
+  <span class="doccomment">/// A `MathPattern` with a marker
+  </span>Marked(Box&lt;MathPattern&gt;, PatternMarker),
+  <span class="doccomment">/// Matches the first matching pattern in the vector
+  </span>MathOr(Vec&lt;MathPattern&gt;),
+  <span class="doccomment">/// Pattern to match a math node with optional restrictions on the
+  /// * Name of the node (e.g. `mi`)
+  /// * Text content (if it has only one text node as a child), by passing a reference to an
+  /// `MTextPattern`
+  /// * The children it has
+  </span>MathNode(
+    <span class="prelude-ty">Option</span>&lt;String&gt;,                                    <span class="comment">/* node name */
+    </span><span class="prelude-ty">Option</span>&lt;usize&gt;,                                     <span class="comment">/* m_text_ref */
+    </span><span class="prelude-ty">Option</span>&lt;(Vec&lt;MathPattern&gt;, MathChildrenMatchType)&gt;, <span class="comment">/* children */
+  </span>),
+  <span class="doccomment">/// Pattern to match descendants in a DFS-like way
+  </span>MathDescendant(Box&lt;MathPattern&gt;, MathDescendantMatchType),
+}
+
+<span class="doccomment">/// A pattern for the text (symbols) contained in math nodes
+</span><span class="attribute">#[derive(Clone)]
+</span><span class="kw">pub enum </span>MTextPattern {
+  <span class="doccomment">/// Matches any symbol
+  </span>AnyMText,
+  <span class="doccomment">/// Matches if any of the `MTextPattern`s in the vector match
+  </span>MTextOr(Vec&lt;MTextPattern&gt;),
+  <span class="doccomment">/// Matches, if a symbol matches the string
+  </span>MTextLit(String),
+  <span class="doccomment">/// Matches, if the referenced pattern does not match
+  </span>MTextNot(Box&lt;MTextPattern&gt;),
+  <span class="doccomment">/// Reference to another `MTextPattern`
+  </span>MTextRef(usize),
+}
+
+<span class="doccomment">/// Pattern for matching POS tags
+</span><span class="attribute">#[derive(Clone)]
+</span><span class="kw">pub enum </span>PosPattern {
+  <span class="doccomment">/// Matches a particular POS tag
+  </span>Pos(POS),
+  <span class="doccomment">/// Matches if the referenced pattern does not match
+  </span>PosNot(Box&lt;PosPattern&gt;),
+  <span class="doccomment">/// Matches, if any of the patterns in the vector match
+  </span>PosOr(Vec&lt;PosPattern&gt;),
+  <span class="doccomment">/// Matches a referenced `PosPattern`
+  </span>PosRef(usize),
+}
+
+<span class="doccomment">/// Pattern for matching words
+</span><span class="attribute">#[derive(Clone)]
+</span><span class="kw">pub enum </span>WordPattern {
+  <span class="doccomment">/// Matches a referenced `WordPattern`
+  </span>WordRef(usize),
+  <span class="doccomment">/// Matches, if one of the patterns in the vector match
+  </span>WordOr(Vec&lt;WordPattern&gt;),
+  <span class="doccomment">/// Matches, if a word corresponds to the string
+  </span>Word(String),
+  <span class="doccomment">/// Restricts the word by a `PosPattern`
+  </span>WordPos(PosPattern, Box&lt;WordPattern&gt;),
+  <span class="doccomment">/// Matches, if the word corresponds to a math node matching the `MathPattern`
+  </span>MathWord(MathPattern),
+  <span class="doccomment">/// Matches any word
+  </span>AnyWord,
+  <span class="doccomment">/// Matches any word not matching the referenced `WordPattern`
+  </span>WordNot(Box&lt;WordPattern&gt;),
+  <span class="doccomment">/// A `WordPattern` with a marker
+  </span>Marked(Box&lt;WordPattern&gt;, PatternMarker),
+}
+
+<span class="doccomment">/// Pattern for matching sequences of words
+</span><span class="attribute">#[derive(Clone)]
+</span><span class="kw">pub enum </span>SequencePattern {
+  <span class="doccomment">/// reference to another sequence
+  </span>SeqRef(usize),
+  <span class="doccomment">/// Transforms a word into a sequence (of length 1 of course)
+  </span>SeqFromWord(WordPattern),
+  <span class="doccomment">/// A sequence of sequences
+  </span>SeqOfSeq(Vec&lt;SequencePattern&gt;),
+  <span class="doccomment">/// Matches a phrase, with optional restrictions on the beginning and end of
+  /// the sequence
+  </span>Phrase(
+    Phrase,
+    PhraseMatchType,
+    <span class="prelude-ty">Option</span>&lt;(Box&lt;SequencePattern&gt;, SequenceContainment)&gt;,
+    <span class="prelude-ty">Option</span>&lt;Box&lt;SequencePattern&gt;&gt;,
   ),
-  <span class="doccomment">/// Pattern to match descendants in a DFS-like way</span>
-  <span class="ident">MathDescendant</span>(<span class="ident">Box</span><span class="op">&lt;</span><span class="ident">MathPattern</span><span class="op">&gt;</span>, <span class="ident">MathDescendantMatchType</span>),
-}
-
-<span class="doccomment">/// A pattern for the text (symbols) contained in math nodes</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>)]</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">MTextPattern</span> {
-  <span class="doccomment">/// Matches any symbol</span>
-  <span class="ident">AnyMText</span>,
-  <span class="doccomment">/// Matches if any of the `MTextPattern`s in the vector match</span>
-  <span class="ident">MTextOr</span>(<span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">MTextPattern</span><span class="op">&gt;</span>),
-  <span class="doccomment">/// Matches, if a symbol matches the string</span>
-  <span class="ident">MTextLit</span>(<span class="ident">String</span>),
-  <span class="doccomment">/// Matches, if the referenced pattern does not match</span>
-  <span class="ident">MTextNot</span>(<span class="ident">Box</span><span class="op">&lt;</span><span class="ident">MTextPattern</span><span class="op">&gt;</span>),
-  <span class="doccomment">/// Reference to another `MTextPattern`</span>
-  <span class="ident">MTextRef</span>(<span class="ident">usize</span>),
-}
-
-<span class="doccomment">/// Pattern for matching POS tags</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>)]</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">PosPattern</span> {
-  <span class="doccomment">/// Matches a particular POS tag</span>
-  <span class="ident">Pos</span>(<span class="ident">POS</span>),
-  <span class="doccomment">/// Matches if the referenced pattern does not match</span>
-  <span class="ident">PosNot</span>(<span class="ident">Box</span><span class="op">&lt;</span><span class="ident">PosPattern</span><span class="op">&gt;</span>),
-  <span class="doccomment">/// Matches, if any of the patterns in the vector match</span>
-  <span class="ident">PosOr</span>(<span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">PosPattern</span><span class="op">&gt;</span>),
-  <span class="doccomment">/// Matches a referenced `PosPattern`</span>
-  <span class="ident">PosRef</span>(<span class="ident">usize</span>),
-}
-
-<span class="doccomment">/// Pattern for matching words</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>)]</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">WordPattern</span> {
-  <span class="doccomment">/// Matches a referenced `WordPattern`</span>
-  <span class="ident">WordRef</span>(<span class="ident">usize</span>),
-  <span class="doccomment">/// Matches, if one of the patterns in the vector match</span>
-  <span class="ident">WordOr</span>(<span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">WordPattern</span><span class="op">&gt;</span>),
-  <span class="doccomment">/// Matches, if a word corresponds to the string</span>
-  <span class="ident">Word</span>(<span class="ident">String</span>),
-  <span class="doccomment">/// Restricts the word by a `PosPattern`</span>
-  <span class="ident">WordPos</span>(<span class="ident">PosPattern</span>, <span class="ident">Box</span><span class="op">&lt;</span><span class="ident">WordPattern</span><span class="op">&gt;</span>),
-  <span class="doccomment">/// Matches, if the word corresponds to a math node matching the `MathPattern`</span>
-  <span class="ident">MathWord</span>(<span class="ident">MathPattern</span>),
-  <span class="doccomment">/// Matches any word</span>
-  <span class="ident">AnyWord</span>,
-  <span class="doccomment">/// Matches any word not matching the referenced `WordPattern`</span>
-  <span class="ident">WordNot</span>(<span class="ident">Box</span><span class="op">&lt;</span><span class="ident">WordPattern</span><span class="op">&gt;</span>),
-  <span class="doccomment">/// A `WordPattern` with a marker</span>
-  <span class="ident">Marked</span>(<span class="ident">Box</span><span class="op">&lt;</span><span class="ident">WordPattern</span><span class="op">&gt;</span>, <span class="ident">PatternMarker</span>),
-}
-
-<span class="doccomment">/// Pattern for matching sequences of words</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>)]</span>
-<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">SequencePattern</span> {
-  <span class="doccomment">/// reference to another sequence</span>
-  <span class="ident">SeqRef</span>(<span class="ident">usize</span>),
-  <span class="doccomment">/// Transforms a word into a sequence (of length 1 of course)</span>
-  <span class="ident">SeqFromWord</span>(<span class="ident">WordPattern</span>),
-  <span class="doccomment">/// A sequence of sequences</span>
-  <span class="ident">SeqOfSeq</span>(<span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">SequencePattern</span><span class="op">&gt;</span>),
-  <span class="doccomment">/// Matches a phrase, with optional restrictions on the beginning and end of</span>
-  <span class="doccomment">/// the sequence</span>
-  <span class="ident">Phrase</span>(
-    <span class="ident">Phrase</span>,
-    <span class="ident">PhraseMatchType</span>,
-    <span class="prelude-ty">Option</span><span class="op">&lt;</span>(<span class="ident">Box</span><span class="op">&lt;</span><span class="ident">SequencePattern</span><span class="op">&gt;</span>, <span class="ident">SequenceContainment</span>)<span class="op">&gt;</span>,
-    <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Box</span><span class="op">&lt;</span><span class="ident">SequencePattern</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-  ),
-  <span class="doccomment">/// A `SequencePattern` with a marker</span>
-  <span class="ident">Marked</span>(<span class="ident">Box</span><span class="op">&lt;</span><span class="ident">SequencePattern</span><span class="op">&gt;</span>, <span class="ident">PatternMarker</span>),
-  <span class="doccomment">/// Matches the `SequencePattern`s in the vector following the</span>
-  <span class="doccomment">/// `SequenceMatchType`</span>
-  <span class="ident">SeqOr</span>(<span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">SequencePattern</span><span class="op">&gt;</span>, <span class="ident">SequenceMatchType</span>),
+  <span class="doccomment">/// A `SequencePattern` with a marker
+  </span>Marked(Box&lt;SequencePattern&gt;, PatternMarker),
+  <span class="doccomment">/// Matches the `SequencePattern`s in the vector following the
+  /// `SequenceMatchType`
+  </span>SeqOr(Vec&lt;SequencePattern&gt;, SequenceMatchType),
 }
 
 <span class="comment">/*
  * RULES
- */</span>
+ */
 
-<span class="doccomment">/// A meta description of a rule/file</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">MetaDescription</span> {
-  <span class="doccomment">/// name of the rule/file</span>
-  <span class="ident">name</span>: <span class="ident">String</span>,
-  <span class="doccomment">/// summary about the purpose/functioning of the rule/file</span>
-  <span class="ident">summary</span>: <span class="ident">String</span>,
+</span><span class="doccomment">/// A meta description of a rule/file
+</span><span class="attribute">#[derive(Debug, Clone)]
+</span><span class="kw">pub struct </span>MetaDescription {
+  <span class="doccomment">/// name of the rule/file
+  </span>name: String,
+  <span class="doccomment">/// summary about the purpose/functioning of the rule/file
+  </span>summary: String,
 }
 
-<span class="kw">impl</span> <span class="ident">MetaDescription</span> {
-  <span class="doccomment">/// Loads a `MetaDescription` from a `&lt;meta&gt;` node</span>
-  <span class="kw">fn</span> <span class="ident">load_from_node</span>(<span class="ident">node</span>: <span class="ident">RoNode</span>, <span class="ident">name</span>: <span class="ident">String</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">MetaDescription</span>, <span class="ident">String</span><span class="op">&gt;</span> {
-    <span class="kw">if</span> <span class="ident">node</span>.<span class="ident">get_name</span>().<span class="ident">ne</span>(<span class="string">&quot;meta&quot;</span>) {
-      <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="macro">format!</span>(<span class="string">&quot;expected meta node, found \&quot;{}\&quot;&quot;</span>, <span class="ident">node</span>.<span class="ident">get_name</span>()));
+<span class="kw">impl </span>MetaDescription {
+  <span class="doccomment">/// Loads a `MetaDescription` from a `&lt;meta&gt;` node
+  </span><span class="kw">fn </span>load_from_node(node: RoNode, name: String) -&gt; <span class="prelude-ty">Result</span>&lt;MetaDescription, String&gt; {
+    <span class="kw">if </span>node.get_name().ne(<span class="string">&quot;meta&quot;</span>) {
+      <span class="kw">return </span><span class="prelude-val">Err</span>(<span class="macro">format!</span>(<span class="string">&quot;expected meta node, found \&quot;{}\&quot;&quot;</span>, node.get_name()));
     }
 
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">summary_opt</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> <span class="op">=</span> <span class="prelude-val">None</span>;
+    <span class="kw">let </span><span class="kw-2">mut </span>summary_opt: <span class="prelude-ty">Option</span>&lt;String&gt; = <span class="prelude-val">None</span>;
 
-    <span class="kw">for</span> <span class="ident">cur</span> <span class="kw">in</span> <span class="ident">get_non_text_children</span>(<span class="ident">node</span>)<span class="question-mark">?</span>.<span class="ident">into_iter</span>() {
-      <span class="kw">match</span> <span class="ident">cur</span>.<span class="ident">get_name</span>().<span class="ident">as_ref</span>() {
-        <span class="string">&quot;description&quot;</span> =&gt; {
-          <span class="ident">check_found_property_already</span>(<span class="kw-2">&amp;</span><span class="ident">summary_opt</span>, <span class="string">&quot;description&quot;</span>, <span class="string">&quot;meta&quot;</span>)<span class="question-mark">?</span>;
-          <span class="ident">summary_opt</span> <span class="op">=</span> <span class="prelude-val">Some</span>(
-            <span class="ident">get_simple_node_content</span>(<span class="ident">cur</span>, <span class="bool-val">true</span>)
-              .<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> <span class="macro">format!</span>(<span class="string">&quot;error in meta node:\n{}&quot;</span>, <span class="ident">e</span>))<span class="question-mark">?</span>,
+    <span class="kw">for </span>cur <span class="kw">in </span>get_non_text_children(node)<span class="question-mark">?</span>.into_iter() {
+      <span class="kw">match </span>cur.get_name().as_ref() {
+        <span class="string">&quot;description&quot; </span>=&gt; {
+          check_found_property_already(<span class="kw-2">&amp;</span>summary_opt, <span class="string">&quot;description&quot;</span>, <span class="string">&quot;meta&quot;</span>)<span class="question-mark">?</span>;
+          summary_opt = <span class="prelude-val">Some</span>(
+            get_simple_node_content(cur, <span class="bool-val">true</span>)
+              .map_err(|e| <span class="macro">format!</span>(<span class="string">&quot;error in meta node:\n{}&quot;</span>, e))<span class="question-mark">?</span>,
           );
         },
-        <span class="kw-2">&amp;</span><span class="kw">_</span> =&gt; {
-          <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="macro">format!</span>(
+        <span class="kw-2">&amp;</span><span class="kw">_ </span>=&gt; {
+          <span class="kw">return </span><span class="prelude-val">Err</span>(<span class="macro">format!</span>(
             <span class="string">&quot;unexpected node in meta node: \&quot;{}\&quot;&quot;</span>,
-            <span class="ident">cur</span>.<span class="ident">get_name</span>()
+            cur.get_name()
           ));
         },
       }
     }
-    <span class="kw">let</span> <span class="ident">summary</span> <span class="op">=</span> <span class="ident">summary_opt</span>.<span class="ident">unwrap_or_default</span>();
-    <span class="prelude-val">Ok</span>(<span class="ident">MetaDescription</span> { <span class="ident">name</span>, <span class="ident">summary</span> })
+    <span class="kw">let </span>summary = summary_opt.unwrap_or_default();
+    <span class="prelude-val">Ok</span>(MetaDescription { name, summary })
   }
 
-  <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_summary</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="ident">str</span> {
-    <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">summary</span>
+  <span class="kw">pub fn </span>get_summary(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span>str {
+    <span class="kw-2">&amp;</span><span class="self">self</span>.summary
   }
 }
 
-<span class="doccomment">/// A rule for matching words</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">WordRule</span> {
-  <span class="doccomment">/// description of the rule</span>
-  <span class="kw">pub</span> <span class="ident">description</span>: <span class="ident">MetaDescription</span>,
-  <span class="doccomment">/// the pattern</span>
-  <span class="kw">pub</span> <span class="ident">pattern</span>: <span class="ident">WordPattern</span>,
+<span class="doccomment">/// A rule for matching words
+</span><span class="attribute">#[derive(Clone)]
+</span><span class="kw">pub struct </span>WordRule {
+  <span class="doccomment">/// description of the rule
+  </span><span class="kw">pub </span>description: MetaDescription,
+  <span class="doccomment">/// the pattern
+  </span><span class="kw">pub </span>pattern: WordPattern,
 }
 
-<span class="doccomment">/// A rule for matching POS tags</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">PosRule</span> {
-  <span class="doccomment">/// description of the rule</span>
-  <span class="kw">pub</span> <span class="ident">description</span>: <span class="ident">MetaDescription</span>,
-  <span class="doccomment">/// the pattern</span>
-  <span class="kw">pub</span> <span class="ident">pattern</span>: <span class="ident">PosPattern</span>,
+<span class="doccomment">/// A rule for matching POS tags
+</span><span class="attribute">#[derive(Clone)]
+</span><span class="kw">pub struct </span>PosRule {
+  <span class="doccomment">/// description of the rule
+  </span><span class="kw">pub </span>description: MetaDescription,
+  <span class="doccomment">/// the pattern
+  </span><span class="kw">pub </span>pattern: PosPattern,
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">MathRule</span> {
-  <span class="doccomment">/// description of the rule</span>
-  <span class="kw">pub</span> <span class="ident">description</span>: <span class="ident">MetaDescription</span>,
-  <span class="doccomment">/// the pattern</span>
-  <span class="kw">pub</span> <span class="ident">pattern</span>: <span class="ident">MathPattern</span>,
+<span class="attribute">#[derive(Clone)]
+</span><span class="kw">pub struct </span>MathRule {
+  <span class="doccomment">/// description of the rule
+  </span><span class="kw">pub </span>description: MetaDescription,
+  <span class="doccomment">/// the pattern
+  </span><span class="kw">pub </span>pattern: MathPattern,
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">MTextRule</span> {
-  <span class="doccomment">/// description of the rule</span>
-  <span class="kw">pub</span> <span class="ident">description</span>: <span class="ident">MetaDescription</span>,
-  <span class="doccomment">/// the pattern</span>
-  <span class="kw">pub</span> <span class="ident">pattern</span>: <span class="ident">MTextPattern</span>,
+<span class="attribute">#[derive(Clone)]
+</span><span class="kw">pub struct </span>MTextRule {
+  <span class="doccomment">/// description of the rule
+  </span><span class="kw">pub </span>description: MetaDescription,
+  <span class="doccomment">/// the pattern
+  </span><span class="kw">pub </span>pattern: MTextPattern,
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">SequenceRule</span> {
-  <span class="doccomment">/// description of the rule</span>
-  <span class="kw">pub</span> <span class="ident">description</span>: <span class="ident">MetaDescription</span>,
-  <span class="doccomment">/// the pattern</span>
-  <span class="kw">pub</span> <span class="ident">pattern</span>: <span class="ident">SequencePattern</span>,
+<span class="attribute">#[derive(Clone)]
+</span><span class="kw">pub struct </span>SequenceRule {
+  <span class="doccomment">/// description of the rule
+  </span><span class="kw">pub </span>description: MetaDescription,
+  <span class="doccomment">/// the pattern
+  </span><span class="kw">pub </span>pattern: SequencePattern,
 }
 
-<span class="doccomment">/// Pattern Loading Context</span>
-<span class="doccomment">/// (internal data structure for loading the patterns from a file)</span>
-<span class="doccomment">/// it keep tracks of loaded and referenced rules</span>
-<span class="kw">struct</span> <span class="ident">PCtx</span><span class="op">&lt;</span><span class="lifetime">&#39;t</span><span class="op">&gt;</span> {
-  <span class="ident">pos_map</span>: <span class="ident">HashMap</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;t</span> <span class="ident">str</span>, <span class="ident">POS</span><span class="op">&gt;</span>,
-  <span class="ident">phrase_map</span>: <span class="ident">HashMap</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;t</span> <span class="ident">str</span>, <span class="ident">Phrase</span><span class="op">&gt;</span>,
-  <span class="ident">word_rules</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">WordRule</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-  <span class="ident">seq_rules</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">SequenceRule</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-  <span class="ident">math_rules</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">MathRule</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-  <span class="ident">mtext_rules</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">MTextRule</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-  <span class="ident">pos_rules</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">PosRule</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-  <span class="ident">word_name_map</span>: <span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">usize</span><span class="op">&gt;</span>,
-  <span class="ident">seq_name_map</span>: <span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">usize</span><span class="op">&gt;</span>,
-  <span class="ident">math_name_map</span>: <span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">usize</span><span class="op">&gt;</span>,
-  <span class="ident">mtext_name_map</span>: <span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">usize</span><span class="op">&gt;</span>,
-  <span class="ident">pos_name_map</span>: <span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">usize</span><span class="op">&gt;</span>,
+<span class="doccomment">/// Pattern Loading Context
+/// (internal data structure for loading the patterns from a file)
+/// it keep tracks of loaded and referenced rules
+</span><span class="kw">struct </span>PCtx&lt;<span class="lifetime">&#39;t</span>&gt; {
+  pos_map: HashMap&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;t </span>str, POS&gt;,
+  phrase_map: HashMap&lt;<span class="kw-2">&amp;</span><span class="lifetime">&#39;t </span>str, Phrase&gt;,
+  word_rules: Vec&lt;<span class="prelude-ty">Option</span>&lt;WordRule&gt;&gt;,
+  seq_rules: Vec&lt;<span class="prelude-ty">Option</span>&lt;SequenceRule&gt;&gt;,
+  math_rules: Vec&lt;<span class="prelude-ty">Option</span>&lt;MathRule&gt;&gt;,
+  mtext_rules: Vec&lt;<span class="prelude-ty">Option</span>&lt;MTextRule&gt;&gt;,
+  pos_rules: Vec&lt;<span class="prelude-ty">Option</span>&lt;PosRule&gt;&gt;,
+  word_name_map: HashMap&lt;String, usize&gt;,
+  seq_name_map: HashMap&lt;String, usize&gt;,
+  math_name_map: HashMap&lt;String, usize&gt;,
+  mtext_name_map: HashMap&lt;String, usize&gt;,
+  pos_name_map: HashMap&lt;String, usize&gt;,
 }
 
-<span class="doccomment">/// Contains rules loaded from a pattern file</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">PatternFile</span> {
-  <span class="doccomment">/// description of the file</span>
-  <span class="kw">pub</span> <span class="ident">description</span>: <span class="ident">MetaDescription</span>,
+<span class="doccomment">/// Contains rules loaded from a pattern file
+</span><span class="kw">pub struct </span>PatternFile {
+  <span class="doccomment">/// description of the file
+  </span><span class="kw">pub </span>description: MetaDescription,
 
-  <span class="doccomment">/// the word rules</span>
-  <span class="kw">pub</span> <span class="ident">word_rules</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">WordRule</span><span class="op">&gt;</span>,
-  <span class="doccomment">/// the POS rules</span>
-  <span class="kw">pub</span> <span class="ident">pos_rules</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">PosRule</span><span class="op">&gt;</span>,
-  <span class="doccomment">/// the math rules</span>
-  <span class="kw">pub</span> <span class="ident">math_rules</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">MathRule</span><span class="op">&gt;</span>,
-  <span class="doccomment">/// the mtext rules (math symbols)</span>
-  <span class="kw">pub</span> <span class="ident">mtext_rules</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">MTextRule</span><span class="op">&gt;</span>,
-  <span class="doccomment">/// the sequence rules</span>
-  <span class="kw">pub</span> <span class="ident">sequence_rules</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">SequenceRule</span><span class="op">&gt;</span>,
+  <span class="doccomment">/// the word rules
+  </span><span class="kw">pub </span>word_rules: Vec&lt;WordRule&gt;,
+  <span class="doccomment">/// the POS rules
+  </span><span class="kw">pub </span>pos_rules: Vec&lt;PosRule&gt;,
+  <span class="doccomment">/// the math rules
+  </span><span class="kw">pub </span>math_rules: Vec&lt;MathRule&gt;,
+  <span class="doccomment">/// the mtext rules (math symbols)
+  </span><span class="kw">pub </span>mtext_rules: Vec&lt;MTextRule&gt;,
+  <span class="doccomment">/// the sequence rules
+  </span><span class="kw">pub </span>sequence_rules: Vec&lt;SequenceRule&gt;,
 
-  <span class="doccomment">/// matches names of word rules to their offsets</span>
-  <span class="kw">pub</span> <span class="ident">word_rule_names</span>: <span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">usize</span><span class="op">&gt;</span>,
-  <span class="doccomment">/// matches names of POS rules to their offsets</span>
-  <span class="kw">pub</span> <span class="ident">pos_rule_names</span>: <span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">usize</span><span class="op">&gt;</span>,
-  <span class="doccomment">/// matches names of math rules to their offsets</span>
-  <span class="kw">pub</span> <span class="ident">math_rule_names</span>: <span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">usize</span><span class="op">&gt;</span>,
-  <span class="doccomment">/// matches names of mtext rules to their offsets</span>
-  <span class="kw">pub</span> <span class="ident">mtext_rule_names</span>: <span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">usize</span><span class="op">&gt;</span>,
-  <span class="doccomment">/// matches names of sequence rules to their offsets</span>
-  <span class="kw">pub</span> <span class="ident">sequence_rule_names</span>: <span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">usize</span><span class="op">&gt;</span>,
+  <span class="doccomment">/// matches names of word rules to their offsets
+  </span><span class="kw">pub </span>word_rule_names: HashMap&lt;String, usize&gt;,
+  <span class="doccomment">/// matches names of POS rules to their offsets
+  </span><span class="kw">pub </span>pos_rule_names: HashMap&lt;String, usize&gt;,
+  <span class="doccomment">/// matches names of math rules to their offsets
+  </span><span class="kw">pub </span>math_rule_names: HashMap&lt;String, usize&gt;,
+  <span class="doccomment">/// matches names of mtext rules to their offsets
+  </span><span class="kw">pub </span>mtext_rule_names: HashMap&lt;String, usize&gt;,
+  <span class="doccomment">/// matches names of sequence rules to their offsets
+  </span><span class="kw">pub </span>sequence_rule_names: HashMap&lt;String, usize&gt;,
 }
 
 <span class="comment">/*
  * IMPLEMENTATIONS FOR PATTERN LOADING
- */</span>
+ */
 
-<span class="kw">impl</span> <span class="ident">MathPattern</span> {
-  <span class="doccomment">/// loads a `MathPattern` from a node</span>
-  <span class="kw">fn</span> <span class="ident">load_from_node</span>(<span class="ident">node</span>: <span class="ident">RoNode</span>, <span class="ident">pctx</span>: <span class="kw-2">&amp;mut</span> <span class="ident">PCtx</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">MathPattern</span>, <span class="ident">String</span><span class="op">&gt;</span> {
-    <span class="kw">match</span> <span class="ident">node</span>.<span class="ident">get_name</span>().<span class="ident">as_ref</span>() {
-      <span class="string">&quot;math_any&quot;</span> =&gt; {
-        <span class="ident">assert_no_child</span>(<span class="ident">node</span>)<span class="question-mark">?</span>;
-        <span class="prelude-val">Ok</span>(<span class="ident">MathPattern::AnyMath</span>)
+</span><span class="kw">impl </span>MathPattern {
+  <span class="doccomment">/// loads a `MathPattern` from a node
+  </span><span class="kw">fn </span>load_from_node(node: RoNode, pctx: <span class="kw-2">&amp;mut </span>PCtx) -&gt; <span class="prelude-ty">Result</span>&lt;MathPattern, String&gt; {
+    <span class="kw">match </span>node.get_name().as_ref() {
+      <span class="string">&quot;math_any&quot; </span>=&gt; {
+        assert_no_child(node)<span class="question-mark">?</span>;
+        <span class="prelude-val">Ok</span>(MathPattern::AnyMath)
       },
-      <span class="string">&quot;math_marker&quot;</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident">MathPattern::Marked</span>(
-        <span class="ident">Box::new</span>(<span class="ident">MathPattern::load_from_node</span>(<span class="ident">get_only_child</span>(<span class="ident">node</span>)<span class="question-mark">?</span>, <span class="ident">pctx</span>)<span class="question-mark">?</span>),
-        <span class="ident">PatternMarker::load_from_node</span>(<span class="ident">node</span>)<span class="question-mark">?</span>,
+      <span class="string">&quot;math_marker&quot; </span>=&gt; <span class="prelude-val">Ok</span>(MathPattern::Marked(
+        Box::new(MathPattern::load_from_node(get_only_child(node)<span class="question-mark">?</span>, pctx)<span class="question-mark">?</span>),
+        PatternMarker::load_from_node(node)<span class="question-mark">?</span>,
       )),
-      <span class="string">&quot;math_ref&quot;</span> =&gt; {
-        <span class="ident">assert_no_child</span>(<span class="ident">node</span>)<span class="question-mark">?</span>;
-        <span class="kw">let</span> <span class="ident">ref_str</span> <span class="op">=</span> <span class="ident">require_node_property</span>(<span class="ident">node</span>, <span class="string">&quot;ref&quot;</span>)<span class="question-mark">?</span>;
-        <span class="prelude-val">Ok</span>(<span class="ident">MathPattern::MathRef</span>(<span class="ident">pctx</span>.<span class="ident">get_math_rule</span>(<span class="kw-2">&amp;</span><span class="ident">ref_str</span>)))
+      <span class="string">&quot;math_ref&quot; </span>=&gt; {
+        assert_no_child(node)<span class="question-mark">?</span>;
+        <span class="kw">let </span>ref_str = require_node_property(node, <span class="string">&quot;ref&quot;</span>)<span class="question-mark">?</span>;
+        <span class="prelude-val">Ok</span>(MathPattern::MathRef(pctx.get_math_rule(<span class="kw-2">&amp;</span>ref_str)))
       },
-      <span class="string">&quot;math_or&quot;</span> =&gt; {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">options</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">MathPattern</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">Vec::new</span>();
-        <span class="kw">for</span> <span class="ident">cur</span> <span class="kw">in</span> <span class="ident">get_non_text_children</span>(<span class="ident">node</span>)<span class="question-mark">?</span>.<span class="ident">into_iter</span>() {
-          <span class="ident">options</span>.<span class="ident">push</span>(<span class="ident">MathPattern::load_from_node</span>(<span class="ident">cur</span>, <span class="ident">pctx</span>)<span class="question-mark">?</span>);
+      <span class="string">&quot;math_or&quot; </span>=&gt; {
+        <span class="kw">let </span><span class="kw-2">mut </span>options: Vec&lt;MathPattern&gt; = Vec::new();
+        <span class="kw">for </span>cur <span class="kw">in </span>get_non_text_children(node)<span class="question-mark">?</span>.into_iter() {
+          options.push(MathPattern::load_from_node(cur, pctx)<span class="question-mark">?</span>);
         }
-        <span class="prelude-val">Ok</span>(<span class="ident">MathPattern::MathOr</span>(<span class="ident">options</span>))
+        <span class="prelude-val">Ok</span>(MathPattern::MathOr(options))
       },
-      <span class="string">&quot;math_node&quot;</span> =&gt; {
-        <span class="kw">let</span> <span class="ident">node_name</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">node</span>.<span class="ident">get_property</span>(<span class="string">&quot;name&quot;</span>);
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">mtextref</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span> <span class="op">=</span> <span class="prelude-val">None</span>;
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">children</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span>(<span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">MathPattern</span><span class="op">&gt;</span>, <span class="ident">MathChildrenMatchType</span>)<span class="op">&gt;</span> <span class="op">=</span> <span class="prelude-val">None</span>;
-        <span class="kw">for</span> <span class="ident">cur</span> <span class="kw">in</span> <span class="ident">get_non_text_children</span>(<span class="ident">node</span>)<span class="question-mark">?</span>.<span class="ident">into_iter</span>() {
-          <span class="kw">match</span> <span class="ident">cur</span>.<span class="ident">get_name</span>().<span class="ident">as_ref</span>() {
-            <span class="string">&quot;math_children&quot;</span> =&gt; {
-              <span class="kw">if</span> <span class="ident">children</span>.<span class="ident">is_some</span>() {
-                <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="string">&quot;\&quot;math_node\&quot; had multiple children \&quot;math_children\&quot;&quot;</span>.<span class="ident">to_string</span>());
+      <span class="string">&quot;math_node&quot; </span>=&gt; {
+        <span class="kw">let </span>node_name: <span class="prelude-ty">Option</span>&lt;String&gt; = node.get_property(<span class="string">&quot;name&quot;</span>);
+        <span class="kw">let </span><span class="kw-2">mut </span>mtextref: <span class="prelude-ty">Option</span>&lt;usize&gt; = <span class="prelude-val">None</span>;
+        <span class="kw">let </span><span class="kw-2">mut </span>children: <span class="prelude-ty">Option</span>&lt;(Vec&lt;MathPattern&gt;, MathChildrenMatchType)&gt; = <span class="prelude-val">None</span>;
+        <span class="kw">for </span>cur <span class="kw">in </span>get_non_text_children(node)<span class="question-mark">?</span>.into_iter() {
+          <span class="kw">match </span>cur.get_name().as_ref() {
+            <span class="string">&quot;math_children&quot; </span>=&gt; {
+              <span class="kw">if </span>children.is_some() {
+                <span class="kw">return </span><span class="prelude-val">Err</span>(<span class="string">&quot;\&quot;math_node\&quot; had multiple children \&quot;math_children\&quot;&quot;</span>.to_string());
               }
-              <span class="kw">let</span> <span class="ident">match_type</span> <span class="op">=</span>
-                <span class="ident">MathChildrenMatchType::from_str</span>(<span class="kw-2">&amp;</span><span class="ident">require_node_property</span>(<span class="ident">cur</span>, <span class="string">&quot;match_type&quot;</span>)<span class="question-mark">?</span>)<span class="question-mark">?</span>;
-              <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">child_nodes</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">MathPattern</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">Vec::new</span>();
-              <span class="kw">for</span> <span class="ident">cur_cur</span> <span class="kw">in</span> <span class="ident">get_non_text_children</span>(<span class="ident">cur</span>)<span class="question-mark">?</span>.<span class="ident">into_iter</span>() {
-                <span class="ident">child_nodes</span>.<span class="ident">push</span>(<span class="ident">MathPattern::load_from_node</span>(<span class="ident">cur_cur</span>, <span class="ident">pctx</span>)<span class="question-mark">?</span>);
+              <span class="kw">let </span>match_type =
+                MathChildrenMatchType::from_str(<span class="kw-2">&amp;</span>require_node_property(cur, <span class="string">&quot;match_type&quot;</span>)<span class="question-mark">?</span>)<span class="question-mark">?</span>;
+              <span class="kw">let </span><span class="kw-2">mut </span>child_nodes: Vec&lt;MathPattern&gt; = Vec::new();
+              <span class="kw">for </span>cur_cur <span class="kw">in </span>get_non_text_children(cur)<span class="question-mark">?</span>.into_iter() {
+                child_nodes.push(MathPattern::load_from_node(cur_cur, pctx)<span class="question-mark">?</span>);
               }
-              <span class="kw">if</span> <span class="ident">child_nodes</span>.<span class="ident">is_empty</span>() {
-                <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="string">&quot;\&quot;math_children\&quot; is emty&quot;</span>.<span class="ident">to_string</span>()); <span class="comment">// would cause problems later</span>
-              }
-              <span class="ident">children</span> <span class="op">=</span> <span class="prelude-val">Some</span>((<span class="ident">child_nodes</span>, <span class="ident">match_type</span>));
+              <span class="kw">if </span>child_nodes.is_empty() {
+                <span class="kw">return </span><span class="prelude-val">Err</span>(<span class="string">&quot;\&quot;math_children\&quot; is emty&quot;</span>.to_string()); <span class="comment">// would cause problems later
+              </span>}
+              children = <span class="prelude-val">Some</span>((child_nodes, match_type));
             },
-            <span class="string">&quot;mtext_ref&quot;</span> =&gt; {
-              <span class="kw">if</span> <span class="ident">mtextref</span>.<span class="ident">is_some</span>() {
-                <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="string">&quot;\&quot;math_node\&quot; had multiple children \&quot;mtext_ref\&quot;&quot;</span>.<span class="ident">to_string</span>());
+            <span class="string">&quot;mtext_ref&quot; </span>=&gt; {
+              <span class="kw">if </span>mtextref.is_some() {
+                <span class="kw">return </span><span class="prelude-val">Err</span>(<span class="string">&quot;\&quot;math_node\&quot; had multiple children \&quot;mtext_ref\&quot;&quot;</span>.to_string());
               }
-              <span class="ident">assert_no_child</span>(<span class="ident">cur</span>)<span class="question-mark">?</span>;
-              <span class="kw">let</span> <span class="ident">ref_str</span> <span class="op">=</span> <span class="ident">require_node_property</span>(<span class="ident">cur</span>, <span class="string">&quot;ref&quot;</span>)<span class="question-mark">?</span>;
-              <span class="ident">mtextref</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">pctx</span>.<span class="ident">get_mtext_rule</span>(<span class="kw-2">&amp;</span><span class="ident">ref_str</span>));
+              assert_no_child(cur)<span class="question-mark">?</span>;
+              <span class="kw">let </span>ref_str = require_node_property(cur, <span class="string">&quot;ref&quot;</span>)<span class="question-mark">?</span>;
+              mtextref = <span class="prelude-val">Some</span>(pctx.get_mtext_rule(<span class="kw-2">&amp;</span>ref_str));
             },
-            <span class="ident">other</span> =&gt; {
-              <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="macro">format!</span>(
+            other =&gt; {
+              <span class="kw">return </span><span class="prelude-val">Err</span>(<span class="macro">format!</span>(
                 <span class="string">&quot;Expected \&quot;mtext_ref\&quot; or \&quot;math_children\&quot;, but found \&quot;{}\&quot;&quot;</span>,
-                <span class="ident">other</span>
+                other
               ));
             },
           }
         }
-        <span class="prelude-val">Ok</span>(<span class="ident">MathPattern::MathNode</span>(<span class="ident">node_name</span>, <span class="ident">mtextref</span>, <span class="ident">children</span>))
+        <span class="prelude-val">Ok</span>(MathPattern::MathNode(node_name, mtextref, children))
       },
-      <span class="string">&quot;math_descendant&quot;</span> =&gt; {
-        <span class="kw">let</span> <span class="ident">match_type</span> <span class="op">=</span>
-          <span class="ident">MathDescendantMatchType::from_str</span>(<span class="kw-2">&amp;</span><span class="ident">require_node_property</span>(<span class="ident">node</span>, <span class="string">&quot;match_type&quot;</span>)<span class="question-mark">?</span>)<span class="question-mark">?</span>;
-        <span class="kw">let</span> <span class="ident">child</span> <span class="op">=</span> <span class="ident">Box::new</span>(<span class="ident">MathPattern::load_from_node</span>(<span class="ident">get_only_child</span>(<span class="ident">node</span>)<span class="question-mark">?</span>, <span class="ident">pctx</span>)<span class="question-mark">?</span>);
-        <span class="prelude-val">Ok</span>(<span class="ident">MathPattern::MathDescendant</span>(<span class="ident">child</span>, <span class="ident">match_type</span>))
+      <span class="string">&quot;math_descendant&quot; </span>=&gt; {
+        <span class="kw">let </span>match_type =
+          MathDescendantMatchType::from_str(<span class="kw-2">&amp;</span>require_node_property(node, <span class="string">&quot;match_type&quot;</span>)<span class="question-mark">?</span>)<span class="question-mark">?</span>;
+        <span class="kw">let </span>child = Box::new(MathPattern::load_from_node(get_only_child(node)<span class="question-mark">?</span>, pctx)<span class="question-mark">?</span>);
+        <span class="prelude-val">Ok</span>(MathPattern::MathDescendant(child, match_type))
       },
-      <span class="ident">unknown</span> =&gt; <span class="prelude-val">Err</span>(<span class="macro">format!</span>(<span class="string">&quot;Expected math node, found \&quot;{}\&quot;&quot;</span>, <span class="ident">unknown</span>)),
+      unknown =&gt; <span class="prelude-val">Err</span>(<span class="macro">format!</span>(<span class="string">&quot;Expected math node, found \&quot;{}\&quot;&quot;</span>, unknown)),
     }
   }
 }
 
-<span class="kw">impl</span> <span class="ident">SequencePattern</span> {
-  <span class="doccomment">/// loads a `SequencePattern` from a node</span>
-  <span class="kw">fn</span> <span class="ident">load_from_node</span>(<span class="ident">node</span>: <span class="ident">RoNode</span>, <span class="ident">pctx</span>: <span class="kw-2">&amp;mut</span> <span class="ident">PCtx</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">SequencePattern</span>, <span class="ident">String</span><span class="op">&gt;</span> {
-    <span class="kw">match</span> <span class="ident">node</span>.<span class="ident">get_name</span>().<span class="ident">as_ref</span>() {
-      <span class="string">&quot;seq_ref&quot;</span> =&gt; {
-        <span class="ident">assert_no_child</span>(<span class="ident">node</span>)<span class="question-mark">?</span>;
-        <span class="kw">let</span> <span class="ident">ref_str</span> <span class="op">=</span> <span class="ident">require_node_property</span>(<span class="ident">node</span>, <span class="string">&quot;ref&quot;</span>)<span class="question-mark">?</span>;
-        <span class="prelude-val">Ok</span>(<span class="ident">SequencePattern::SeqRef</span>(<span class="ident">pctx</span>.<span class="ident">get_sequence_rule</span>(<span class="kw-2">&amp;</span><span class="ident">ref_str</span>)))
+<span class="kw">impl </span>SequencePattern {
+  <span class="doccomment">/// loads a `SequencePattern` from a node
+  </span><span class="kw">fn </span>load_from_node(node: RoNode, pctx: <span class="kw-2">&amp;mut </span>PCtx) -&gt; <span class="prelude-ty">Result</span>&lt;SequencePattern, String&gt; {
+    <span class="kw">match </span>node.get_name().as_ref() {
+      <span class="string">&quot;seq_ref&quot; </span>=&gt; {
+        assert_no_child(node)<span class="question-mark">?</span>;
+        <span class="kw">let </span>ref_str = require_node_property(node, <span class="string">&quot;ref&quot;</span>)<span class="question-mark">?</span>;
+        <span class="prelude-val">Ok</span>(SequencePattern::SeqRef(pctx.get_sequence_rule(<span class="kw-2">&amp;</span>ref_str)))
       },
-      <span class="string">&quot;seq_word&quot;</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident">SequencePattern::SeqFromWord</span>(<span class="ident">WordPattern::load_from_node</span>(
-        <span class="ident">get_only_child</span>(<span class="ident">node</span>)<span class="question-mark">?</span>,
-        <span class="ident">pctx</span>,
+      <span class="string">&quot;seq_word&quot; </span>=&gt; <span class="prelude-val">Ok</span>(SequencePattern::SeqFromWord(WordPattern::load_from_node(
+        get_only_child(node)<span class="question-mark">?</span>,
+        pctx,
       )<span class="question-mark">?</span>)),
-      <span class="string">&quot;seq_seq&quot;</span> =&gt; {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">elements</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">SequencePattern</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">Vec::new</span>();
-        <span class="kw">for</span> <span class="ident">cur</span> <span class="kw">in</span> <span class="ident">get_non_text_children</span>(<span class="ident">node</span>)<span class="question-mark">?</span>.<span class="ident">into_iter</span>() {
-          <span class="ident">elements</span>.<span class="ident">push</span>(<span class="ident">SequencePattern::load_from_node</span>(<span class="ident">cur</span>, <span class="ident">pctx</span>)<span class="question-mark">?</span>);
+      <span class="string">&quot;seq_seq&quot; </span>=&gt; {
+        <span class="kw">let </span><span class="kw-2">mut </span>elements: Vec&lt;SequencePattern&gt; = Vec::new();
+        <span class="kw">for </span>cur <span class="kw">in </span>get_non_text_children(node)<span class="question-mark">?</span>.into_iter() {
+          elements.push(SequencePattern::load_from_node(cur, pctx)<span class="question-mark">?</span>);
         }
-        <span class="prelude-val">Ok</span>(<span class="ident">SequencePattern::SeqOfSeq</span>(<span class="ident">elements</span>))
+        <span class="prelude-val">Ok</span>(SequencePattern::SeqOfSeq(elements))
       },
-      <span class="string">&quot;phrase&quot;</span> =&gt; {
-        <span class="kw">let</span> <span class="ident">tag_str</span>: <span class="kw-2">&amp;</span><span class="ident">str</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">require_node_property</span>(<span class="ident">node</span>, <span class="string">&quot;tag&quot;</span>)<span class="question-mark">?</span>;
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">match_type</span>: <span class="ident">PhraseMatchType</span> <span class="op">=</span> <span class="ident">PhraseMatchType::Longest</span>; <span class="comment">// TODO: Is this a good default?</span>
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">start</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span>(<span class="ident">Box</span><span class="op">&lt;</span><span class="ident">SequencePattern</span><span class="op">&gt;</span>, <span class="ident">SequenceContainment</span>)<span class="op">&gt;</span> <span class="op">=</span> <span class="prelude-val">None</span>;
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">end</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Box</span><span class="op">&lt;</span><span class="ident">SequencePattern</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">=</span> <span class="prelude-val">None</span>;
+      <span class="string">&quot;phrase&quot; </span>=&gt; {
+        <span class="kw">let </span>tag_str: <span class="kw-2">&amp;</span>str = <span class="kw-2">&amp;</span>require_node_property(node, <span class="string">&quot;tag&quot;</span>)<span class="question-mark">?</span>;
+        <span class="kw">let </span><span class="kw-2">mut </span>match_type: PhraseMatchType = PhraseMatchType::Longest; <span class="comment">// TODO: Is this a good default?
+        </span><span class="kw">let </span><span class="kw-2">mut </span>start: <span class="prelude-ty">Option</span>&lt;(Box&lt;SequencePattern&gt;, SequenceContainment)&gt; = <span class="prelude-val">None</span>;
+        <span class="kw">let </span><span class="kw-2">mut </span>end: <span class="prelude-ty">Option</span>&lt;Box&lt;SequencePattern&gt;&gt; = <span class="prelude-val">None</span>;
 
-        <span class="kw">for</span> <span class="ident">cur</span> <span class="kw">in</span> <span class="ident">get_non_text_children</span>(<span class="ident">node</span>)<span class="question-mark">?</span>.<span class="ident">into_iter</span>() {
-          <span class="kw">match</span> <span class="ident">cur</span>.<span class="ident">get_name</span>().<span class="ident">as_ref</span>() {
-            <span class="string">&quot;match_type&quot;</span> =&gt; {
-              <span class="ident">match_type</span> <span class="op">=</span> <span class="ident">PhraseMatchType::from_str</span>(<span class="kw-2">&amp;</span><span class="ident">get_simple_node_content</span>(<span class="ident">cur</span>, <span class="bool-val">true</span>)<span class="question-mark">?</span>)<span class="question-mark">?</span>;
+        <span class="kw">for </span>cur <span class="kw">in </span>get_non_text_children(node)<span class="question-mark">?</span>.into_iter() {
+          <span class="kw">match </span>cur.get_name().as_ref() {
+            <span class="string">&quot;match_type&quot; </span>=&gt; {
+              match_type = PhraseMatchType::from_str(<span class="kw-2">&amp;</span>get_simple_node_content(cur, <span class="bool-val">true</span>)<span class="question-mark">?</span>)<span class="question-mark">?</span>;
             },
-            <span class="string">&quot;starts_with_seq&quot;</span> =&gt; {
-              <span class="kw">if</span> <span class="ident">start</span>.<span class="ident">is_some</span>() {
-                <span class="kw">return</span> <span class="prelude-val">Err</span>(
-                  <span class="string">&quot;Cannot have multipe start_with_seq nodes in a phrase node&quot;</span>.<span class="ident">to_string</span>(),
+            <span class="string">&quot;starts_with_seq&quot; </span>=&gt; {
+              <span class="kw">if </span>start.is_some() {
+                <span class="kw">return </span><span class="prelude-val">Err</span>(
+                  <span class="string">&quot;Cannot have multipe start_with_seq nodes in a phrase node&quot;</span>.to_string(),
                 );
               }
-              <span class="ident">start</span> <span class="op">=</span> <span class="prelude-val">Some</span>((
-                <span class="ident">Box::new</span>(<span class="ident">SequencePattern::load_from_node</span>(<span class="ident">get_only_child</span>(<span class="ident">cur</span>)<span class="question-mark">?</span>, <span class="ident">pctx</span>)<span class="question-mark">?</span>),
-                <span class="ident">SequenceContainment::from_node</span>(<span class="ident">cur</span>)<span class="question-mark">?</span>,
+              start = <span class="prelude-val">Some</span>((
+                Box::new(SequencePattern::load_from_node(get_only_child(cur)<span class="question-mark">?</span>, pctx)<span class="question-mark">?</span>),
+                SequenceContainment::from_node(cur)<span class="question-mark">?</span>,
               ));
             },
-            <span class="string">&quot;ends_with_seq&quot;</span> =&gt; {
-              <span class="kw">if</span> <span class="ident">end</span>.<span class="ident">is_some</span>() {
-                <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="string">&quot;Cannot have multipe end_with_seq nodes in a phrase node&quot;</span>.<span class="ident">to_string</span>());
+            <span class="string">&quot;ends_with_seq&quot; </span>=&gt; {
+              <span class="kw">if </span>end.is_some() {
+                <span class="kw">return </span><span class="prelude-val">Err</span>(<span class="string">&quot;Cannot have multipe end_with_seq nodes in a phrase node&quot;</span>.to_string());
               }
-              <span class="ident">end</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">Box::new</span>(<span class="ident">SequencePattern::load_from_node</span>(
-                <span class="ident">get_only_child</span>(<span class="ident">cur</span>)<span class="question-mark">?</span>,
-                <span class="ident">pctx</span>,
+              end = <span class="prelude-val">Some</span>(Box::new(SequencePattern::load_from_node(
+                get_only_child(cur)<span class="question-mark">?</span>,
+                pctx,
               )<span class="question-mark">?</span>));
             },
-            <span class="ident">unknown</span> =&gt; {
-              <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="macro">format!</span>(<span class="string">&quot;Unexpected node \&quot;{}\&quot; in phrase node&quot;</span>, <span class="ident">unknown</span>));
+            unknown =&gt; {
+              <span class="kw">return </span><span class="prelude-val">Err</span>(<span class="macro">format!</span>(<span class="string">&quot;Unexpected node \&quot;{}\&quot; in phrase node&quot;</span>, unknown));
             },
           }
         }
-        <span class="kw">let</span> <span class="ident">tag_opt</span> <span class="op">=</span> <span class="ident">pctx</span>.<span class="ident">phrase_map</span>.<span class="ident">get</span>(<span class="kw-2">&amp;</span><span class="ident">tag_str</span>);
-        <span class="kw">if</span> <span class="ident">tag_opt</span>.<span class="ident">is_none</span>() {
-          <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="macro">format!</span>(<span class="string">&quot;unknow Phrase type \&quot;{}\&quot;&quot;</span>, <span class="ident">tag_str</span>));
+        <span class="kw">let </span>tag_opt = pctx.phrase_map.get(<span class="kw-2">&amp;</span>tag_str);
+        <span class="kw">if </span>tag_opt.is_none() {
+          <span class="kw">return </span><span class="prelude-val">Err</span>(<span class="macro">format!</span>(<span class="string">&quot;unknow Phrase type \&quot;{}\&quot;&quot;</span>, tag_str));
         }
-        <span class="prelude-val">Ok</span>(<span class="ident">SequencePattern::Phrase</span>(
-          <span class="kw-2">*</span><span class="ident">tag_opt</span>.<span class="ident">unwrap</span>(),
-          <span class="ident">match_type</span>,
-          <span class="ident">start</span>,
-          <span class="ident">end</span>,
+        <span class="prelude-val">Ok</span>(SequencePattern::Phrase(
+          <span class="kw-2">*</span>tag_opt.unwrap(),
+          match_type,
+          start,
+          end,
         ))
       },
-      <span class="string">&quot;seq_marker&quot;</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident">SequencePattern::Marked</span>(
-        <span class="ident">Box::new</span>(<span class="ident">SequencePattern::load_from_node</span>(
-          <span class="ident">get_only_child</span>(<span class="ident">node</span>)<span class="question-mark">?</span>,
-          <span class="ident">pctx</span>,
+      <span class="string">&quot;seq_marker&quot; </span>=&gt; <span class="prelude-val">Ok</span>(SequencePattern::Marked(
+        Box::new(SequencePattern::load_from_node(
+          get_only_child(node)<span class="question-mark">?</span>,
+          pctx,
         )<span class="question-mark">?</span>),
-        <span class="ident">PatternMarker::load_from_node</span>(<span class="ident">node</span>)<span class="question-mark">?</span>,
+        PatternMarker::load_from_node(node)<span class="question-mark">?</span>,
       )),
-      <span class="string">&quot;seq_or&quot;</span> =&gt; {
-        <span class="kw">let</span> <span class="ident">match_type</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">node</span>.<span class="ident">get_property</span>(<span class="string">&quot;match_type&quot;</span>) {
-          <span class="prelude-val">None</span> =&gt; <span class="ident">SequenceMatchType::First</span>,
-          <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">m</span>) =&gt; <span class="kw">match</span> <span class="ident">m</span>.<span class="ident">as_ref</span>() {
-            <span class="string">&quot;first&quot;</span> =&gt; <span class="ident">SequenceMatchType::First</span>,
-            <span class="string">&quot;atleastone&quot;</span> =&gt; <span class="ident">SequenceMatchType::AtLeastOne</span>,
-            <span class="string">&quot;any&quot;</span> =&gt; <span class="ident">SequenceMatchType::Any</span>,
-            <span class="string">&quot;longest&quot;</span> =&gt; <span class="ident">SequenceMatchType::Longest</span>,
-            <span class="ident">unknown</span> =&gt; <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="macro">format!</span>(<span class="string">&quot;Unknown sequence match_type \&quot;{}\&quot;&quot;</span>, <span class="ident">unknown</span>)),
+      <span class="string">&quot;seq_or&quot; </span>=&gt; {
+        <span class="kw">let </span>match_type = <span class="kw">match </span>node.get_property(<span class="string">&quot;match_type&quot;</span>) {
+          <span class="prelude-val">None </span>=&gt; SequenceMatchType::First,
+          <span class="prelude-val">Some</span>(<span class="kw-2">ref </span>m) =&gt; <span class="kw">match </span>m.as_ref() {
+            <span class="string">&quot;first&quot; </span>=&gt; SequenceMatchType::First,
+            <span class="string">&quot;atleastone&quot; </span>=&gt; SequenceMatchType::AtLeastOne,
+            <span class="string">&quot;any&quot; </span>=&gt; SequenceMatchType::Any,
+            <span class="string">&quot;longest&quot; </span>=&gt; SequenceMatchType::Longest,
+            unknown =&gt; <span class="kw">return </span><span class="prelude-val">Err</span>(<span class="macro">format!</span>(<span class="string">&quot;Unknown sequence match_type \&quot;{}\&quot;&quot;</span>, unknown)),
           },
         };
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">elements</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">SequencePattern</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">Vec::new</span>();
-        <span class="kw">for</span> <span class="ident">cur</span> <span class="kw">in</span> <span class="ident">get_non_text_children</span>(<span class="ident">node</span>)<span class="question-mark">?</span>.<span class="ident">into_iter</span>() {
-          <span class="ident">elements</span>.<span class="ident">push</span>(<span class="ident">SequencePattern::load_from_node</span>(<span class="ident">cur</span>, <span class="ident">pctx</span>)<span class="question-mark">?</span>);
+        <span class="kw">let </span><span class="kw-2">mut </span>elements: Vec&lt;SequencePattern&gt; = Vec::new();
+        <span class="kw">for </span>cur <span class="kw">in </span>get_non_text_children(node)<span class="question-mark">?</span>.into_iter() {
+          elements.push(SequencePattern::load_from_node(cur, pctx)<span class="question-mark">?</span>);
         }
-        <span class="prelude-val">Ok</span>(<span class="ident">SequencePattern::SeqOr</span>(<span class="ident">elements</span>, <span class="ident">match_type</span>))
+        <span class="prelude-val">Ok</span>(SequencePattern::SeqOr(elements, match_type))
       },
-      <span class="ident">unknown</span> =&gt; <span class="prelude-val">Err</span>(<span class="macro">format!</span>(<span class="string">&quot;Expected sequence node, found \&quot;{}\&quot;&quot;</span>, <span class="ident">unknown</span>)),
+      unknown =&gt; <span class="prelude-val">Err</span>(<span class="macro">format!</span>(<span class="string">&quot;Expected sequence node, found \&quot;{}\&quot;&quot;</span>, unknown)),
     }
   }
 }
 
-<span class="kw">impl</span> <span class="ident">WordPattern</span> {
-  <span class="doccomment">/// loads a `WordPattern` from a node</span>
-  <span class="kw">fn</span> <span class="ident">load_from_node</span>(<span class="ident">node</span>: <span class="ident">RoNode</span>, <span class="ident">pctx</span>: <span class="kw-2">&amp;mut</span> <span class="ident">PCtx</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">WordPattern</span>, <span class="ident">String</span><span class="op">&gt;</span> {
-    <span class="kw">match</span> <span class="ident">node</span>.<span class="ident">get_name</span>().<span class="ident">as_ref</span>() {
-      <span class="string">&quot;word_ref&quot;</span> =&gt; {
-        <span class="ident">assert_no_child</span>(<span class="ident">node</span>)<span class="question-mark">?</span>;
-        <span class="kw">let</span> <span class="ident">ref_str</span> <span class="op">=</span> <span class="ident">require_node_property</span>(<span class="ident">node</span>, <span class="string">&quot;ref&quot;</span>)<span class="question-mark">?</span>;
-        <span class="prelude-val">Ok</span>(<span class="ident">WordPattern::WordRef</span>(<span class="ident">pctx</span>.<span class="ident">get_word_rule</span>(<span class="kw-2">&amp;</span><span class="ident">ref_str</span>)))
+<span class="kw">impl </span>WordPattern {
+  <span class="doccomment">/// loads a `WordPattern` from a node
+  </span><span class="kw">fn </span>load_from_node(node: RoNode, pctx: <span class="kw-2">&amp;mut </span>PCtx) -&gt; <span class="prelude-ty">Result</span>&lt;WordPattern, String&gt; {
+    <span class="kw">match </span>node.get_name().as_ref() {
+      <span class="string">&quot;word_ref&quot; </span>=&gt; {
+        assert_no_child(node)<span class="question-mark">?</span>;
+        <span class="kw">let </span>ref_str = require_node_property(node, <span class="string">&quot;ref&quot;</span>)<span class="question-mark">?</span>;
+        <span class="prelude-val">Ok</span>(WordPattern::WordRef(pctx.get_word_rule(<span class="kw-2">&amp;</span>ref_str)))
       },
-      <span class="string">&quot;word_or&quot;</span> =&gt; {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">options</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">WordPattern</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">Vec::new</span>();
-        <span class="kw">for</span> <span class="ident">cur</span> <span class="kw">in</span> <span class="ident">get_non_text_children</span>(<span class="ident">node</span>)<span class="question-mark">?</span>.<span class="ident">into_iter</span>() {
-          <span class="ident">options</span>.<span class="ident">push</span>(<span class="ident">WordPattern::load_from_node</span>(<span class="ident">cur</span>, <span class="ident">pctx</span>)<span class="question-mark">?</span>);
+      <span class="string">&quot;word_or&quot; </span>=&gt; {
+        <span class="kw">let </span><span class="kw-2">mut </span>options: Vec&lt;WordPattern&gt; = Vec::new();
+        <span class="kw">for </span>cur <span class="kw">in </span>get_non_text_children(node)<span class="question-mark">?</span>.into_iter() {
+          options.push(WordPattern::load_from_node(cur, pctx)<span class="question-mark">?</span>);
         }
-        <span class="prelude-val">Ok</span>(<span class="ident">WordPattern::WordOr</span>(<span class="ident">options</span>))
+        <span class="prelude-val">Ok</span>(WordPattern::WordOr(options))
       },
-      <span class="string">&quot;word&quot;</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident">WordPattern::Word</span>(<span class="ident">get_simple_node_content</span>(<span class="ident">node</span>, <span class="bool-val">true</span>)<span class="question-mark">?</span>)),
-      <span class="string">&quot;word_math&quot;</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident">WordPattern::MathWord</span>(<span class="ident">MathPattern::load_from_node</span>(
-        <span class="ident">get_only_child</span>(<span class="ident">node</span>)<span class="question-mark">?</span>,
-        <span class="ident">pctx</span>,
+      <span class="string">&quot;word&quot; </span>=&gt; <span class="prelude-val">Ok</span>(WordPattern::Word(get_simple_node_content(node, <span class="bool-val">true</span>)<span class="question-mark">?</span>)),
+      <span class="string">&quot;word_math&quot; </span>=&gt; <span class="prelude-val">Ok</span>(WordPattern::MathWord(MathPattern::load_from_node(
+        get_only_child(node)<span class="question-mark">?</span>,
+        pctx,
       )<span class="question-mark">?</span>)),
-      <span class="string">&quot;word_any&quot;</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident">WordPattern::AnyWord</span>),
-      <span class="string">&quot;word_not&quot;</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident">WordPattern::WordNot</span>(<span class="ident">Box::new</span>(<span class="ident">WordPattern::load_from_node</span>(
-        <span class="ident">get_only_child</span>(<span class="ident">node</span>)<span class="question-mark">?</span>,
-        <span class="ident">pctx</span>,
+      <span class="string">&quot;word_any&quot; </span>=&gt; <span class="prelude-val">Ok</span>(WordPattern::AnyWord),
+      <span class="string">&quot;word_not&quot; </span>=&gt; <span class="prelude-val">Ok</span>(WordPattern::WordNot(Box::new(WordPattern::load_from_node(
+        get_only_child(node)<span class="question-mark">?</span>,
+        pctx,
       )<span class="question-mark">?</span>))),
-      <span class="string">&quot;word_marker&quot;</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident">WordPattern::Marked</span>(
-        <span class="ident">Box::new</span>(<span class="ident">WordPattern::load_from_node</span>(<span class="ident">get_only_child</span>(<span class="ident">node</span>)<span class="question-mark">?</span>, <span class="ident">pctx</span>)<span class="question-mark">?</span>),
-        <span class="ident">PatternMarker::load_from_node</span>(<span class="ident">node</span>)<span class="question-mark">?</span>,
+      <span class="string">&quot;word_marker&quot; </span>=&gt; <span class="prelude-val">Ok</span>(WordPattern::Marked(
+        Box::new(WordPattern::load_from_node(get_only_child(node)<span class="question-mark">?</span>, pctx)<span class="question-mark">?</span>),
+        PatternMarker::load_from_node(node)<span class="question-mark">?</span>,
       )),
-      <span class="string">&quot;word_pos&quot;</span> =&gt; {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">word_pattern</span> <span class="op">=</span> <span class="prelude-val">None</span>;
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">pos_pattern</span> <span class="op">=</span> <span class="prelude-val">None</span>;
+      <span class="string">&quot;word_pos&quot; </span>=&gt; {
+        <span class="kw">let </span><span class="kw-2">mut </span>word_pattern = <span class="prelude-val">None</span>;
+        <span class="kw">let </span><span class="kw-2">mut </span>pos_pattern = <span class="prelude-val">None</span>;
 
-        <span class="kw">for</span> <span class="ident">cur</span> <span class="kw">in</span> <span class="ident">get_non_text_children</span>(<span class="ident">node</span>)<span class="question-mark">?</span>.<span class="ident">into_iter</span>() {
-          <span class="kw">match</span> <span class="ident">cur</span>.<span class="ident">get_name</span>().<span class="ident">as_ref</span>() {
-            <span class="string">&quot;pos&quot;</span> =&gt; {
-              <span class="kw">if</span> <span class="ident">pos_pattern</span>.<span class="ident">is_some</span>() {
-                <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="string">&quot;Cannot have multiple &#39;pos&#39; nodes in a &#39;word_pos&#39; node&quot;</span>.<span class="ident">to_string</span>());
+        <span class="kw">for </span>cur <span class="kw">in </span>get_non_text_children(node)<span class="question-mark">?</span>.into_iter() {
+          <span class="kw">match </span>cur.get_name().as_ref() {
+            <span class="string">&quot;pos&quot; </span>=&gt; {
+              <span class="kw">if </span>pos_pattern.is_some() {
+                <span class="kw">return </span><span class="prelude-val">Err</span>(<span class="string">&quot;Cannot have multiple &#39;pos&#39; nodes in a &#39;word_pos&#39; node&quot;</span>.to_string());
               }
-              <span class="ident">pos_pattern</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">PosPattern::load_from_node</span>(<span class="ident">get_only_child</span>(<span class="ident">cur</span>)<span class="question-mark">?</span>, <span class="ident">pctx</span>)<span class="question-mark">?</span>);
+              pos_pattern = <span class="prelude-val">Some</span>(PosPattern::load_from_node(get_only_child(cur)<span class="question-mark">?</span>, pctx)<span class="question-mark">?</span>);
             },
-            <span class="kw">_</span> =&gt; {
-              <span class="kw">if</span> <span class="ident">word_pattern</span>.<span class="ident">is_some</span>() {
-                <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="string">&quot;Cannot have multiple word pattern in a &#39;word_pos&#39; node&quot;</span>.<span class="ident">to_string</span>());
+            <span class="kw">_ </span>=&gt; {
+              <span class="kw">if </span>word_pattern.is_some() {
+                <span class="kw">return </span><span class="prelude-val">Err</span>(<span class="string">&quot;Cannot have multiple word pattern in a &#39;word_pos&#39; node&quot;</span>.to_string());
               }
-              <span class="ident">word_pattern</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">WordPattern::load_from_node</span>(<span class="ident">cur</span>, <span class="ident">pctx</span>)<span class="question-mark">?</span>);
+              word_pattern = <span class="prelude-val">Some</span>(WordPattern::load_from_node(cur, pctx)<span class="question-mark">?</span>);
             },
           }
         }
 
-        <span class="kw">if</span> <span class="ident">word_pattern</span>.<span class="ident">is_none</span>() {
-          <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="string">&quot;&#39;word_pos&#39; node does not contain a word pattern&quot;</span>.<span class="ident">to_string</span>());
+        <span class="kw">if </span>word_pattern.is_none() {
+          <span class="kw">return </span><span class="prelude-val">Err</span>(<span class="string">&quot;&#39;word_pos&#39; node does not contain a word pattern&quot;</span>.to_string());
         }
 
-        <span class="kw">if</span> <span class="ident">pos_pattern</span>.<span class="ident">is_none</span>() {
-          <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="string">&quot;&#39;word_pos&#39; node does not contain a &#39;pos&#39; node&quot;</span>.<span class="ident">to_string</span>());
+        <span class="kw">if </span>pos_pattern.is_none() {
+          <span class="kw">return </span><span class="prelude-val">Err</span>(<span class="string">&quot;&#39;word_pos&#39; node does not contain a &#39;pos&#39; node&quot;</span>.to_string());
         }
 
-        <span class="prelude-val">Ok</span>(<span class="ident">WordPattern::WordPos</span>(
-          <span class="ident">pos_pattern</span>.<span class="ident">unwrap</span>(),
-          <span class="ident">Box::new</span>(<span class="ident">word_pattern</span>.<span class="ident">unwrap</span>()),
+        <span class="prelude-val">Ok</span>(WordPattern::WordPos(
+          pos_pattern.unwrap(),
+          Box::new(word_pattern.unwrap()),
         ))
       },
-      <span class="ident">unknown</span> =&gt; <span class="prelude-val">Err</span>(<span class="macro">format!</span>(<span class="string">&quot;Expected word node, found \&quot;{}\&quot;&quot;</span>, <span class="ident">unknown</span>)),
+      unknown =&gt; <span class="prelude-val">Err</span>(<span class="macro">format!</span>(<span class="string">&quot;Expected word node, found \&quot;{}\&quot;&quot;</span>, unknown)),
     }
   }
 }
 
-<span class="kw">impl</span> <span class="ident">PosPattern</span> {
-  <span class="doccomment">/// loads a `PosPattern` from a node</span>
-  <span class="kw">fn</span> <span class="ident">load_from_node</span>(<span class="ident">node</span>: <span class="ident">RoNode</span>, <span class="ident">pctx</span>: <span class="kw-2">&amp;mut</span> <span class="ident">PCtx</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">PosPattern</span>, <span class="ident">String</span><span class="op">&gt;</span> {
-    <span class="kw">match</span> <span class="ident">node</span>.<span class="ident">get_name</span>().<span class="ident">as_ref</span>() {
-      <span class="string">&quot;pos&quot;</span> =&gt; {
-        <span class="ident">assert_no_child</span>(<span class="ident">node</span>)<span class="question-mark">?</span>;
-        <span class="kw">let</span> <span class="ident">pos_str</span>: <span class="kw-2">&amp;</span><span class="ident">str</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">require_node_property</span>(<span class="ident">node</span>, <span class="string">&quot;tag&quot;</span>)<span class="question-mark">?</span>;
-        <span class="kw">match</span> <span class="ident">pctx</span>.<span class="ident">pos_map</span>.<span class="ident">get</span>(<span class="ident">pos_str</span>) {
-          <span class="prelude-val">None</span> =&gt; <span class="prelude-val">Err</span>(<span class="macro">format!</span>(<span class="string">&quot;unknown POS tag \&quot;{}\&quot;&quot;</span>, <span class="ident">pos_str</span>)),
-          <span class="prelude-val">Some</span>(<span class="ident">pos</span>) =&gt; <span class="prelude-val">Ok</span>(<span class="ident">PosPattern::Pos</span>(<span class="kw-2">*</span><span class="ident">pos</span>)),
+<span class="kw">impl </span>PosPattern {
+  <span class="doccomment">/// loads a `PosPattern` from a node
+  </span><span class="kw">fn </span>load_from_node(node: RoNode, pctx: <span class="kw-2">&amp;mut </span>PCtx) -&gt; <span class="prelude-ty">Result</span>&lt;PosPattern, String&gt; {
+    <span class="kw">match </span>node.get_name().as_ref() {
+      <span class="string">&quot;pos&quot; </span>=&gt; {
+        assert_no_child(node)<span class="question-mark">?</span>;
+        <span class="kw">let </span>pos_str: <span class="kw-2">&amp;</span>str = <span class="kw-2">&amp;</span>require_node_property(node, <span class="string">&quot;tag&quot;</span>)<span class="question-mark">?</span>;
+        <span class="kw">match </span>pctx.pos_map.get(pos_str) {
+          <span class="prelude-val">None </span>=&gt; <span class="prelude-val">Err</span>(<span class="macro">format!</span>(<span class="string">&quot;unknown POS tag \&quot;{}\&quot;&quot;</span>, pos_str)),
+          <span class="prelude-val">Some</span>(pos) =&gt; <span class="prelude-val">Ok</span>(PosPattern::Pos(<span class="kw-2">*</span>pos)),
         }
       },
-      <span class="string">&quot;pos_not&quot;</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident">PosPattern::PosNot</span>(<span class="ident">Box::new</span>(<span class="ident">PosPattern::load_from_node</span>(
-        <span class="ident">get_only_child</span>(<span class="ident">node</span>)<span class="question-mark">?</span>,
-        <span class="ident">pctx</span>,
+      <span class="string">&quot;pos_not&quot; </span>=&gt; <span class="prelude-val">Ok</span>(PosPattern::PosNot(Box::new(PosPattern::load_from_node(
+        get_only_child(node)<span class="question-mark">?</span>,
+        pctx,
       )<span class="question-mark">?</span>))),
-      <span class="string">&quot;pos_ref&quot;</span> =&gt; {
-        <span class="ident">assert_no_child</span>(<span class="ident">node</span>)<span class="question-mark">?</span>;
-        <span class="kw">let</span> <span class="ident">ref_str</span> <span class="op">=</span> <span class="ident">require_node_property</span>(<span class="ident">node</span>, <span class="string">&quot;ref&quot;</span>)<span class="question-mark">?</span>;
-        <span class="prelude-val">Ok</span>(<span class="ident">PosPattern::PosRef</span>(<span class="ident">pctx</span>.<span class="ident">get_pos_rule</span>(<span class="kw-2">&amp;</span><span class="ident">ref_str</span>)))
+      <span class="string">&quot;pos_ref&quot; </span>=&gt; {
+        assert_no_child(node)<span class="question-mark">?</span>;
+        <span class="kw">let </span>ref_str = require_node_property(node, <span class="string">&quot;ref&quot;</span>)<span class="question-mark">?</span>;
+        <span class="prelude-val">Ok</span>(PosPattern::PosRef(pctx.get_pos_rule(<span class="kw-2">&amp;</span>ref_str)))
       },
-      <span class="string">&quot;pos_or&quot;</span> =&gt; {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">options</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">PosPattern</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">Vec::new</span>();
-        <span class="kw">for</span> <span class="ident">cur</span> <span class="kw">in</span> <span class="ident">get_non_text_children</span>(<span class="ident">node</span>)<span class="question-mark">?</span>.<span class="ident">into_iter</span>() {
-          <span class="ident">options</span>.<span class="ident">push</span>(<span class="ident">PosPattern::load_from_node</span>(<span class="ident">cur</span>, <span class="ident">pctx</span>)<span class="question-mark">?</span>);
+      <span class="string">&quot;pos_or&quot; </span>=&gt; {
+        <span class="kw">let </span><span class="kw-2">mut </span>options: Vec&lt;PosPattern&gt; = Vec::new();
+        <span class="kw">for </span>cur <span class="kw">in </span>get_non_text_children(node)<span class="question-mark">?</span>.into_iter() {
+          options.push(PosPattern::load_from_node(cur, pctx)<span class="question-mark">?</span>);
         }
-        <span class="prelude-val">Ok</span>(<span class="ident">PosPattern::PosOr</span>(<span class="ident">options</span>))
+        <span class="prelude-val">Ok</span>(PosPattern::PosOr(options))
       },
-      <span class="ident">unknown</span> =&gt; <span class="prelude-val">Err</span>(<span class="macro">format!</span>(<span class="string">&quot;Expected pos node, found \&quot;{}\&quot;&quot;</span>, <span class="ident">unknown</span>)),
+      unknown =&gt; <span class="prelude-val">Err</span>(<span class="macro">format!</span>(<span class="string">&quot;Expected pos node, found \&quot;{}\&quot;&quot;</span>, unknown)),
     }
   }
 }
 
-<span class="kw">impl</span> <span class="ident">MTextPattern</span> {
-  <span class="doccomment">/// loads a `MTextPattern` from a node</span>
-  <span class="kw">fn</span> <span class="ident">load_from_node</span>(<span class="ident">node</span>: <span class="ident">RoNode</span>, <span class="ident">pctx</span>: <span class="kw-2">&amp;mut</span> <span class="ident">PCtx</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">MTextPattern</span>, <span class="ident">String</span><span class="op">&gt;</span> {
-    <span class="kw">match</span> <span class="ident">node</span>.<span class="ident">get_name</span>().<span class="ident">as_ref</span>() {
-      <span class="string">&quot;mtext_any&quot;</span> =&gt; {
-        <span class="ident">assert_no_child</span>(<span class="ident">node</span>)<span class="question-mark">?</span>;
-        <span class="prelude-val">Ok</span>(<span class="ident">MTextPattern::AnyMText</span>)
+<span class="kw">impl </span>MTextPattern {
+  <span class="doccomment">/// loads a `MTextPattern` from a node
+  </span><span class="kw">fn </span>load_from_node(node: RoNode, pctx: <span class="kw-2">&amp;mut </span>PCtx) -&gt; <span class="prelude-ty">Result</span>&lt;MTextPattern, String&gt; {
+    <span class="kw">match </span>node.get_name().as_ref() {
+      <span class="string">&quot;mtext_any&quot; </span>=&gt; {
+        assert_no_child(node)<span class="question-mark">?</span>;
+        <span class="prelude-val">Ok</span>(MTextPattern::AnyMText)
       },
-      <span class="string">&quot;mtext_or&quot;</span> =&gt; {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">options</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">MTextPattern</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">Vec::new</span>();
-        <span class="kw">for</span> <span class="ident">cur</span> <span class="kw">in</span> <span class="ident">get_non_text_children</span>(<span class="ident">node</span>)<span class="question-mark">?</span>.<span class="ident">into_iter</span>() {
-          <span class="ident">options</span>.<span class="ident">push</span>(<span class="ident">MTextPattern::load_from_node</span>(<span class="ident">cur</span>, <span class="ident">pctx</span>)<span class="question-mark">?</span>);
+      <span class="string">&quot;mtext_or&quot; </span>=&gt; {
+        <span class="kw">let </span><span class="kw-2">mut </span>options: Vec&lt;MTextPattern&gt; = Vec::new();
+        <span class="kw">for </span>cur <span class="kw">in </span>get_non_text_children(node)<span class="question-mark">?</span>.into_iter() {
+          options.push(MTextPattern::load_from_node(cur, pctx)<span class="question-mark">?</span>);
         }
-        <span class="prelude-val">Ok</span>(<span class="ident">MTextPattern::MTextOr</span>(<span class="ident">options</span>))
+        <span class="prelude-val">Ok</span>(MTextPattern::MTextOr(options))
       },
-      <span class="string">&quot;mtext_lit&quot;</span> =&gt; {
-        <span class="ident">assert_no_child</span>(<span class="ident">node</span>)<span class="question-mark">?</span>;
-        <span class="kw">let</span> <span class="ident">lit</span> <span class="op">=</span> <span class="ident">require_node_property</span>(<span class="ident">node</span>, <span class="string">&quot;str&quot;</span>)<span class="question-mark">?</span>;
-        <span class="prelude-val">Ok</span>(<span class="ident">MTextPattern::MTextLit</span>(<span class="ident">lit</span>))
+      <span class="string">&quot;mtext_lit&quot; </span>=&gt; {
+        assert_no_child(node)<span class="question-mark">?</span>;
+        <span class="kw">let </span>lit = require_node_property(node, <span class="string">&quot;str&quot;</span>)<span class="question-mark">?</span>;
+        <span class="prelude-val">Ok</span>(MTextPattern::MTextLit(lit))
       },
-      <span class="string">&quot;mtext_not&quot;</span> =&gt; <span class="prelude-val">Ok</span>(<span class="ident">MTextPattern::MTextNot</span>(<span class="ident">Box::new</span>(
-        <span class="ident">MTextPattern::load_from_node</span>(<span class="ident">get_only_child</span>(<span class="ident">node</span>)<span class="question-mark">?</span>, <span class="ident">pctx</span>)<span class="question-mark">?</span>,
+      <span class="string">&quot;mtext_not&quot; </span>=&gt; <span class="prelude-val">Ok</span>(MTextPattern::MTextNot(Box::new(
+        MTextPattern::load_from_node(get_only_child(node)<span class="question-mark">?</span>, pctx)<span class="question-mark">?</span>,
       ))),
-      <span class="string">&quot;mtext_ref&quot;</span> =&gt; {
-        <span class="ident">assert_no_child</span>(<span class="ident">node</span>)<span class="question-mark">?</span>;
-        <span class="kw">let</span> <span class="ident">ref_str</span> <span class="op">=</span> <span class="ident">require_node_property</span>(<span class="ident">node</span>, <span class="string">&quot;ref&quot;</span>)<span class="question-mark">?</span>;
-        <span class="prelude-val">Ok</span>(<span class="ident">MTextPattern::MTextRef</span>(<span class="ident">pctx</span>.<span class="ident">get_mtext_rule</span>(<span class="kw-2">&amp;</span><span class="ident">ref_str</span>)))
+      <span class="string">&quot;mtext_ref&quot; </span>=&gt; {
+        assert_no_child(node)<span class="question-mark">?</span>;
+        <span class="kw">let </span>ref_str = require_node_property(node, <span class="string">&quot;ref&quot;</span>)<span class="question-mark">?</span>;
+        <span class="prelude-val">Ok</span>(MTextPattern::MTextRef(pctx.get_mtext_rule(<span class="kw-2">&amp;</span>ref_str)))
       },
-      <span class="ident">unknown</span> =&gt; <span class="prelude-val">Err</span>(<span class="macro">format!</span>(<span class="string">&quot;Expected mtext node, found \&quot;{}\&quot;&quot;</span>, <span class="ident">unknown</span>)),
+      unknown =&gt; <span class="prelude-val">Err</span>(<span class="macro">format!</span>(<span class="string">&quot;Expected mtext node, found \&quot;{}\&quot;&quot;</span>, unknown)),
     }
   }
 }
 
 <span class="comment">/*
  * IMPLEMENTATIONS FOR LOADING RULES
- */</span>
+ */
 
-<span class="doccomment">/// Helper function: loads a rule</span>
-<span class="kw">fn</span> <span class="ident">load_rule</span><span class="op">&lt;</span><span class="ident">PatternT</span>, <span class="ident">RuleT</span><span class="op">&gt;</span>(
-  <span class="ident">load_f</span>: <span class="kw">fn</span>(<span class="ident">RoNode</span>, <span class="kw-2">&amp;mut</span> <span class="ident">PCtx</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">PatternT</span>, <span class="ident">String</span><span class="op">&gt;</span>,
-  <span class="ident">node</span>: <span class="ident">RoNode</span>,
-  <span class="ident">pctx</span>: <span class="kw-2">&amp;mut</span> <span class="ident">PCtx</span>,
-  <span class="ident">rule_type</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>,
-  <span class="ident">rule_gen</span>: <span class="kw">fn</span>(<span class="ident">PatternT</span>, <span class="ident">MetaDescription</span>) -&gt; <span class="ident">RuleT</span>,
-) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">RuleT</span>, <span class="ident">String</span><span class="op">&gt;</span>
+</span><span class="doccomment">/// Helper function: loads a rule
+</span><span class="kw">fn </span>load_rule&lt;PatternT, RuleT&gt;(
+  load_f: <span class="kw">fn</span>(RoNode, <span class="kw-2">&amp;mut </span>PCtx) -&gt; <span class="prelude-ty">Result</span>&lt;PatternT, String&gt;,
+  node: RoNode,
+  pctx: <span class="kw-2">&amp;mut </span>PCtx,
+  rule_type: <span class="kw-2">&amp;</span>str,
+  rule_gen: <span class="kw">fn</span>(PatternT, MetaDescription) -&gt; RuleT,
+) -&gt; <span class="prelude-ty">Result</span>&lt;RuleT, String&gt;
 {
-  <span class="kw">let</span> <span class="ident">name</span> <span class="op">=</span> <span class="ident">require_node_property</span>(<span class="ident">node</span>, <span class="string">&quot;name&quot;</span>)<span class="question-mark">?</span>;
-  <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">rule_opt</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">PatternT</span><span class="op">&gt;</span> <span class="op">=</span> <span class="prelude-val">None</span>;
-  <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">meta_opt</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">MetaDescription</span><span class="op">&gt;</span> <span class="op">=</span> <span class="prelude-val">None</span>;
-  <span class="kw">for</span> <span class="ident">cur</span> <span class="kw">in</span> <span class="ident">get_non_text_children</span>(<span class="ident">node</span>)<span class="question-mark">?</span>.<span class="ident">into_iter</span>() {
-    <span class="kw">match</span> <span class="ident">cur</span>.<span class="ident">get_name</span>().<span class="ident">as_ref</span>() {
-      <span class="string">&quot;meta&quot;</span> =&gt; {
-        <span class="kw">if</span> <span class="ident">meta_opt</span>.<span class="ident">is_some</span>() {
-          <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="macro">format!</span>(
+  <span class="kw">let </span>name = require_node_property(node, <span class="string">&quot;name&quot;</span>)<span class="question-mark">?</span>;
+  <span class="kw">let </span><span class="kw-2">mut </span>rule_opt: <span class="prelude-ty">Option</span>&lt;PatternT&gt; = <span class="prelude-val">None</span>;
+  <span class="kw">let </span><span class="kw-2">mut </span>meta_opt: <span class="prelude-ty">Option</span>&lt;MetaDescription&gt; = <span class="prelude-val">None</span>;
+  <span class="kw">for </span>cur <span class="kw">in </span>get_non_text_children(node)<span class="question-mark">?</span>.into_iter() {
+    <span class="kw">match </span>cur.get_name().as_ref() {
+      <span class="string">&quot;meta&quot; </span>=&gt; {
+        <span class="kw">if </span>meta_opt.is_some() {
+          <span class="kw">return </span><span class="prelude-val">Err</span>(<span class="macro">format!</span>(
             <span class="string">&quot;{} \&quot;{}\&quot; has multiple meta nodes&quot;</span>,
-            <span class="ident">rule_type</span>, <span class="kw-2">&amp;</span><span class="ident">name</span>
+            rule_type, <span class="kw-2">&amp;</span>name
           ));
         }
-        <span class="ident">meta_opt</span> <span class="op">=</span> <span class="prelude-val">Some</span>(
-          <span class="ident">MetaDescription::load_from_node</span>(<span class="ident">cur</span>, <span class="ident">name</span>.<span class="ident">clone</span>()).<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> {
+        meta_opt = <span class="prelude-val">Some</span>(
+          MetaDescription::load_from_node(cur, name.clone()).map_err(|e| {
             <span class="macro">format!</span>(
               <span class="string">&quot;error when loading meta node in word_rule \&quot;{}\&quot;:\n{}&quot;</span>,
-              <span class="kw-2">&amp;</span><span class="ident">name</span>, <span class="ident">e</span>
+              <span class="kw-2">&amp;</span>name, e
             )
           })<span class="question-mark">?</span>,
         );
       },
-      <span class="ident">x</span> =&gt; {
-        <span class="kw">if</span> <span class="ident">rule_opt</span>.<span class="ident">is_some</span>() {
-          <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="macro">format!</span>(
+      x =&gt; {
+        <span class="kw">if </span>rule_opt.is_some() {
+          <span class="kw">return </span><span class="prelude-val">Err</span>(<span class="macro">format!</span>(
             <span class="string">&quot;Unexpected node \&quot;{}\&quot; in {} \&quot;{}\&quot;&quot;</span>,
-            <span class="ident">x</span>, <span class="ident">rule_type</span>, <span class="kw-2">&amp;</span><span class="ident">name</span>
+            x, rule_type, <span class="kw-2">&amp;</span>name
           ));
         }
-        <span class="ident">rule_opt</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">load_f</span>(<span class="ident">cur</span>, <span class="ident">pctx</span>).<span class="ident">map_err</span>(<span class="op">|</span><span class="ident">e</span><span class="op">|</span> {
+        rule_opt = <span class="prelude-val">Some</span>(load_f(cur, pctx).map_err(|e| {
           <span class="macro">format!</span>(
             <span class="string">&quot;error when loading content node in {} \&quot;{}\&quot;:\n{}&quot;</span>,
-            <span class="ident">rule_type</span>, <span class="kw-2">&amp;</span><span class="ident">name</span>, <span class="ident">e</span>
+            rule_type, <span class="kw-2">&amp;</span>name, e
           )
         })<span class="question-mark">?</span>);
       },
     }
   }
-  <span class="kw">if</span> <span class="ident">meta_opt</span>.<span class="ident">is_none</span>() {
-    <span class="ident">meta_opt</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">MetaDescription</span> {
-      <span class="ident">name</span>: <span class="ident">name</span>.<span class="ident">clone</span>(),
-      <span class="ident">summary</span>: <span class="ident">String::new</span>(),
+  <span class="kw">if </span>meta_opt.is_none() {
+    meta_opt = <span class="prelude-val">Some</span>(MetaDescription {
+      name: name.clone(),
+      summary: String::new(),
     });
   }
-  <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">rule</span>) <span class="op">=</span> <span class="ident">rule_opt</span> {
-    <span class="prelude-val">Ok</span>(<span class="ident">rule_gen</span>(<span class="ident">rule</span>, <span class="ident">meta_opt</span>.<span class="ident">unwrap</span>()))
-  } <span class="kw">else</span> {
-    <span class="prelude-val">Err</span>(<span class="macro">format!</span>(<span class="string">&quot;{} \&quot;{}\&quot; has no content node&quot;</span>, <span class="ident">rule_type</span>, <span class="kw-2">&amp;</span><span class="ident">name</span>))
+  <span class="kw">if let </span><span class="prelude-val">Some</span>(rule) = rule_opt {
+    <span class="prelude-val">Ok</span>(rule_gen(rule, meta_opt.unwrap()))
+  } <span class="kw">else </span>{
+    <span class="prelude-val">Err</span>(<span class="macro">format!</span>(<span class="string">&quot;{} \&quot;{}\&quot; has no content node&quot;</span>, rule_type, <span class="kw-2">&amp;</span>name))
   }
 }
 
-<span class="kw">impl</span> <span class="ident">WordRule</span> {
-  <span class="doccomment">/// loads a `WordRule` from a node</span>
-  <span class="kw">fn</span> <span class="ident">load_from_node</span>(<span class="ident">node</span>: <span class="ident">RoNode</span>, <span class="ident">pctx</span>: <span class="kw-2">&amp;mut</span> <span class="ident">PCtx</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">WordRule</span>, <span class="ident">String</span><span class="op">&gt;</span> {
-    <span class="ident">load_rule</span>(
-      <span class="ident">WordPattern::load_from_node</span>,
-      <span class="ident">node</span>,
-      <span class="ident">pctx</span>,
+<span class="kw">impl </span>WordRule {
+  <span class="doccomment">/// loads a `WordRule` from a node
+  </span><span class="kw">fn </span>load_from_node(node: RoNode, pctx: <span class="kw-2">&amp;mut </span>PCtx) -&gt; <span class="prelude-ty">Result</span>&lt;WordRule, String&gt; {
+    load_rule(
+      WordPattern::load_from_node,
+      node,
+      pctx,
       <span class="string">&quot;word_rule&quot;</span>,
-      <span class="ident">WordRule::generate_rule</span>,
+      WordRule::generate_rule,
     )
   }
 
-  <span class="doccomment">/// creates a new rule from a pattern and a description</span>
-  <span class="kw">fn</span> <span class="ident">generate_rule</span>(<span class="ident">pattern</span>: <span class="ident">WordPattern</span>, <span class="ident">description</span>: <span class="ident">MetaDescription</span>) -&gt; <span class="ident">WordRule</span> {
-    <span class="ident">WordRule</span> {
-      <span class="ident">description</span>,
-      <span class="ident">pattern</span>,
+  <span class="doccomment">/// creates a new rule from a pattern and a description
+  </span><span class="kw">fn </span>generate_rule(pattern: WordPattern, description: MetaDescription) -&gt; WordRule {
+    WordRule {
+      description,
+      pattern,
     }
   }
 }
 
-<span class="kw">impl</span> <span class="ident">PosRule</span> {
-  <span class="doccomment">/// loads a `PosRule` from a node</span>
-  <span class="kw">fn</span> <span class="ident">load_from_node</span>(<span class="ident">node</span>: <span class="ident">RoNode</span>, <span class="ident">pctx</span>: <span class="kw-2">&amp;mut</span> <span class="ident">PCtx</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">PosRule</span>, <span class="ident">String</span><span class="op">&gt;</span> {
-    <span class="ident">load_rule</span>(
-      <span class="ident">PosPattern::load_from_node</span>,
-      <span class="ident">node</span>,
-      <span class="ident">pctx</span>,
+<span class="kw">impl </span>PosRule {
+  <span class="doccomment">/// loads a `PosRule` from a node
+  </span><span class="kw">fn </span>load_from_node(node: RoNode, pctx: <span class="kw-2">&amp;mut </span>PCtx) -&gt; <span class="prelude-ty">Result</span>&lt;PosRule, String&gt; {
+    load_rule(
+      PosPattern::load_from_node,
+      node,
+      pctx,
       <span class="string">&quot;pos_rule&quot;</span>,
-      <span class="ident">PosRule::generate_rule</span>,
+      PosRule::generate_rule,
     )
   }
 
-  <span class="doccomment">/// creates a new rule from a pattern and a description</span>
-  <span class="kw">fn</span> <span class="ident">generate_rule</span>(<span class="ident">pattern</span>: <span class="ident">PosPattern</span>, <span class="ident">description</span>: <span class="ident">MetaDescription</span>) -&gt; <span class="ident">PosRule</span> {
-    <span class="ident">PosRule</span> {
-      <span class="ident">description</span>,
-      <span class="ident">pattern</span>,
+  <span class="doccomment">/// creates a new rule from a pattern and a description
+  </span><span class="kw">fn </span>generate_rule(pattern: PosPattern, description: MetaDescription) -&gt; PosRule {
+    PosRule {
+      description,
+      pattern,
     }
   }
 }
 
-<span class="kw">impl</span> <span class="ident">MathRule</span> {
-  <span class="doccomment">/// loads a `MathRule` from a node</span>
-  <span class="kw">fn</span> <span class="ident">load_from_node</span>(<span class="ident">node</span>: <span class="ident">RoNode</span>, <span class="ident">pctx</span>: <span class="kw-2">&amp;mut</span> <span class="ident">PCtx</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">MathRule</span>, <span class="ident">String</span><span class="op">&gt;</span> {
-    <span class="ident">load_rule</span>(
-      <span class="ident">MathPattern::load_from_node</span>,
-      <span class="ident">node</span>,
-      <span class="ident">pctx</span>,
+<span class="kw">impl </span>MathRule {
+  <span class="doccomment">/// loads a `MathRule` from a node
+  </span><span class="kw">fn </span>load_from_node(node: RoNode, pctx: <span class="kw-2">&amp;mut </span>PCtx) -&gt; <span class="prelude-ty">Result</span>&lt;MathRule, String&gt; {
+    load_rule(
+      MathPattern::load_from_node,
+      node,
+      pctx,
       <span class="string">&quot;math_rule&quot;</span>,
-      <span class="ident">MathRule::generate_rule</span>,
+      MathRule::generate_rule,
     )
   }
 
-  <span class="doccomment">/// creates a new rule from a pattern and a description</span>
-  <span class="kw">fn</span> <span class="ident">generate_rule</span>(<span class="ident">pattern</span>: <span class="ident">MathPattern</span>, <span class="ident">description</span>: <span class="ident">MetaDescription</span>) -&gt; <span class="ident">MathRule</span> {
-    <span class="ident">MathRule</span> {
-      <span class="ident">description</span>,
-      <span class="ident">pattern</span>,
+  <span class="doccomment">/// creates a new rule from a pattern and a description
+  </span><span class="kw">fn </span>generate_rule(pattern: MathPattern, description: MetaDescription) -&gt; MathRule {
+    MathRule {
+      description,
+      pattern,
     }
   }
 }
 
-<span class="kw">impl</span> <span class="ident">MTextRule</span> {
-  <span class="doccomment">/// loads a `MTextRule` from a node</span>
-  <span class="kw">fn</span> <span class="ident">load_from_node</span>(<span class="ident">node</span>: <span class="ident">RoNode</span>, <span class="ident">pctx</span>: <span class="kw-2">&amp;mut</span> <span class="ident">PCtx</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">MTextRule</span>, <span class="ident">String</span><span class="op">&gt;</span> {
-    <span class="ident">load_rule</span>(
-      <span class="ident">MTextPattern::load_from_node</span>,
-      <span class="ident">node</span>,
-      <span class="ident">pctx</span>,
+<span class="kw">impl </span>MTextRule {
+  <span class="doccomment">/// loads a `MTextRule` from a node
+  </span><span class="kw">fn </span>load_from_node(node: RoNode, pctx: <span class="kw-2">&amp;mut </span>PCtx) -&gt; <span class="prelude-ty">Result</span>&lt;MTextRule, String&gt; {
+    load_rule(
+      MTextPattern::load_from_node,
+      node,
+      pctx,
       <span class="string">&quot;mtext_rule&quot;</span>,
-      <span class="ident">MTextRule::generate_rule</span>,
+      MTextRule::generate_rule,
     )
   }
 
-  <span class="doccomment">/// creates a new rule from a pattern and a description</span>
-  <span class="kw">fn</span> <span class="ident">generate_rule</span>(<span class="ident">pattern</span>: <span class="ident">MTextPattern</span>, <span class="ident">description</span>: <span class="ident">MetaDescription</span>) -&gt; <span class="ident">MTextRule</span> {
-    <span class="ident">MTextRule</span> {
-      <span class="ident">description</span>,
-      <span class="ident">pattern</span>,
+  <span class="doccomment">/// creates a new rule from a pattern and a description
+  </span><span class="kw">fn </span>generate_rule(pattern: MTextPattern, description: MetaDescription) -&gt; MTextRule {
+    MTextRule {
+      description,
+      pattern,
     }
   }
 }
 
-<span class="kw">impl</span> <span class="ident">SequenceRule</span> {
-  <span class="doccomment">/// loads a `SequenceRule` from a node</span>
-  <span class="kw">fn</span> <span class="ident">load_from_node</span>(<span class="ident">node</span>: <span class="ident">RoNode</span>, <span class="ident">pctx</span>: <span class="kw-2">&amp;mut</span> <span class="ident">PCtx</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">SequenceRule</span>, <span class="ident">String</span><span class="op">&gt;</span> {
-    <span class="ident">load_rule</span>(
-      <span class="ident">SequencePattern::load_from_node</span>,
-      <span class="ident">node</span>,
-      <span class="ident">pctx</span>,
+<span class="kw">impl </span>SequenceRule {
+  <span class="doccomment">/// loads a `SequenceRule` from a node
+  </span><span class="kw">fn </span>load_from_node(node: RoNode, pctx: <span class="kw-2">&amp;mut </span>PCtx) -&gt; <span class="prelude-ty">Result</span>&lt;SequenceRule, String&gt; {
+    load_rule(
+      SequencePattern::load_from_node,
+      node,
+      pctx,
       <span class="string">&quot;seq_rule&quot;</span>,
-      <span class="ident">SequenceRule::generate_rule</span>,
+      SequenceRule::generate_rule,
     )
   }
 
-  <span class="doccomment">/// creates a new rule from a pattern and a description</span>
-  <span class="kw">fn</span> <span class="ident">generate_rule</span>(<span class="ident">pattern</span>: <span class="ident">SequencePattern</span>, <span class="ident">description</span>: <span class="ident">MetaDescription</span>) -&gt; <span class="ident">SequenceRule</span> {
-    <span class="ident">SequenceRule</span> {
-      <span class="ident">description</span>,
-      <span class="ident">pattern</span>,
+  <span class="doccomment">/// creates a new rule from a pattern and a description
+  </span><span class="kw">fn </span>generate_rule(pattern: SequencePattern, description: MetaDescription) -&gt; SequenceRule {
+    SequenceRule {
+      description,
+      pattern,
     }
   }
 }
 
-<span class="doccomment">/// gets the position (offset) for a rule. Allocates a new position, if rule doesn&#39;t have an offset</span>
-<span class="doccomment">/// yet</span>
-<span class="kw">fn</span> <span class="ident">get_rule_position</span><span class="op">&lt;</span><span class="ident">RuleT</span><span class="op">&gt;</span>(
-  <span class="ident">rules</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">RuleT</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-  <span class="ident">map</span>: <span class="kw-2">&amp;mut</span> <span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">String</span>, <span class="ident">usize</span><span class="op">&gt;</span>,
-  <span class="ident">rule_name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>,
-) -&gt; <span class="ident">usize</span>
+<span class="doccomment">/// gets the position (offset) for a rule. Allocates a new position, if rule doesn&#39;t have an offset
+/// yet
+</span><span class="kw">fn </span>get_rule_position&lt;RuleT&gt;(
+  rules: <span class="kw-2">&amp;mut </span>Vec&lt;<span class="prelude-ty">Option</span>&lt;RuleT&gt;&gt;,
+  map: <span class="kw-2">&amp;mut </span>HashMap&lt;String, usize&gt;,
+  rule_name: <span class="kw-2">&amp;</span>str,
+) -&gt; usize
 {
   {
-    <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">position</span>) <span class="op">=</span> <span class="ident">map</span>.<span class="ident">get</span>(<span class="ident">rule_name</span>) {
-      <span class="kw">return</span> <span class="kw-2">*</span><span class="ident">position</span>;
+    <span class="kw">if let </span><span class="prelude-val">Some</span>(position) = map.get(rule_name) {
+      <span class="kw">return </span><span class="kw-2">*</span>position;
     }
   }
-  <span class="kw">let</span> <span class="ident">pos</span> <span class="op">=</span> <span class="ident">rules</span>.<span class="ident">len</span>();
-  <span class="ident">rules</span>.<span class="ident">push</span>(<span class="prelude-val">None</span>);
-  <span class="ident">map</span>.<span class="ident">insert</span>(<span class="ident">rule_name</span>.<span class="ident">to_string</span>(), <span class="ident">pos</span>);
-  <span class="ident">pos</span>
+  <span class="kw">let </span>pos = rules.len();
+  rules.push(<span class="prelude-val">None</span>);
+  map.insert(rule_name.to_string(), pos);
+  pos
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;t</span><span class="op">&gt;</span> <span class="ident">PCtx</span><span class="op">&lt;</span><span class="lifetime">&#39;t</span><span class="op">&gt;</span> {
-  <span class="kw">fn</span> <span class="ident">new</span>() -&gt; <span class="ident">PCtx</span><span class="op">&lt;</span><span class="lifetime">&#39;t</span><span class="op">&gt;</span> {
-    <span class="ident">PCtx</span> {
-      <span class="ident">pos_map</span>: <span class="ident">POS::generate_str_to_pos_map</span>(),
-      <span class="ident">phrase_map</span>: <span class="ident">Phrase::generate_str_to_phrase_map</span>(),
-      <span class="ident">word_rules</span>: <span class="ident">Vec::new</span>(),
-      <span class="ident">seq_rules</span>: <span class="ident">Vec::new</span>(),
-      <span class="ident">math_rules</span>: <span class="ident">Vec::new</span>(),
-      <span class="ident">mtext_rules</span>: <span class="ident">Vec::new</span>(),
-      <span class="ident">pos_rules</span>: <span class="ident">Vec::new</span>(),
-      <span class="ident">word_name_map</span>: <span class="ident">HashMap::new</span>(),
-      <span class="ident">seq_name_map</span>: <span class="ident">HashMap::new</span>(),
-      <span class="ident">math_name_map</span>: <span class="ident">HashMap::new</span>(),
-      <span class="ident">mtext_name_map</span>: <span class="ident">HashMap::new</span>(),
-      <span class="ident">pos_name_map</span>: <span class="ident">HashMap::new</span>(),
+<span class="kw">impl</span>&lt;<span class="lifetime">&#39;t</span>&gt; PCtx&lt;<span class="lifetime">&#39;t</span>&gt; {
+  <span class="kw">fn </span>new() -&gt; PCtx&lt;<span class="lifetime">&#39;t</span>&gt; {
+    PCtx {
+      pos_map: POS::generate_str_to_pos_map(),
+      phrase_map: Phrase::generate_str_to_phrase_map(),
+      word_rules: Vec::new(),
+      seq_rules: Vec::new(),
+      math_rules: Vec::new(),
+      mtext_rules: Vec::new(),
+      pos_rules: Vec::new(),
+      word_name_map: HashMap::new(),
+      seq_name_map: HashMap::new(),
+      math_name_map: HashMap::new(),
+      mtext_name_map: HashMap::new(),
+      pos_name_map: HashMap::new(),
     }
   }
 
-  <span class="kw">fn</span> <span class="ident">get_math_rule</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">rule_name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) -&gt; <span class="ident">usize</span> {
-    <span class="ident">get_rule_position</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>.<span class="ident">math_rules</span>, <span class="kw-2">&amp;mut</span> <span class="self">self</span>.<span class="ident">math_name_map</span>, <span class="ident">rule_name</span>)
+  <span class="kw">fn </span>get_math_rule(<span class="kw-2">&amp;mut </span><span class="self">self</span>, rule_name: <span class="kw-2">&amp;</span>str) -&gt; usize {
+    get_rule_position(<span class="kw-2">&amp;mut </span><span class="self">self</span>.math_rules, <span class="kw-2">&amp;mut </span><span class="self">self</span>.math_name_map, rule_name)
   }
 
-  <span class="kw">fn</span> <span class="ident">get_mtext_rule</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">rule_name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) -&gt; <span class="ident">usize</span> {
-    <span class="ident">get_rule_position</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>.<span class="ident">mtext_rules</span>, <span class="kw-2">&amp;mut</span> <span class="self">self</span>.<span class="ident">mtext_name_map</span>, <span class="ident">rule_name</span>)
+  <span class="kw">fn </span>get_mtext_rule(<span class="kw-2">&amp;mut </span><span class="self">self</span>, rule_name: <span class="kw-2">&amp;</span>str) -&gt; usize {
+    get_rule_position(<span class="kw-2">&amp;mut </span><span class="self">self</span>.mtext_rules, <span class="kw-2">&amp;mut </span><span class="self">self</span>.mtext_name_map, rule_name)
   }
 
-  <span class="kw">fn</span> <span class="ident">get_pos_rule</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">rule_name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) -&gt; <span class="ident">usize</span> {
-    <span class="ident">get_rule_position</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>.<span class="ident">pos_rules</span>, <span class="kw-2">&amp;mut</span> <span class="self">self</span>.<span class="ident">pos_name_map</span>, <span class="ident">rule_name</span>)
+  <span class="kw">fn </span>get_pos_rule(<span class="kw-2">&amp;mut </span><span class="self">self</span>, rule_name: <span class="kw-2">&amp;</span>str) -&gt; usize {
+    get_rule_position(<span class="kw-2">&amp;mut </span><span class="self">self</span>.pos_rules, <span class="kw-2">&amp;mut </span><span class="self">self</span>.pos_name_map, rule_name)
   }
 
-  <span class="kw">fn</span> <span class="ident">get_word_rule</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">rule_name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) -&gt; <span class="ident">usize</span> {
-    <span class="ident">get_rule_position</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>.<span class="ident">word_rules</span>, <span class="kw-2">&amp;mut</span> <span class="self">self</span>.<span class="ident">word_name_map</span>, <span class="ident">rule_name</span>)
+  <span class="kw">fn </span>get_word_rule(<span class="kw-2">&amp;mut </span><span class="self">self</span>, rule_name: <span class="kw-2">&amp;</span>str) -&gt; usize {
+    get_rule_position(<span class="kw-2">&amp;mut </span><span class="self">self</span>.word_rules, <span class="kw-2">&amp;mut </span><span class="self">self</span>.word_name_map, rule_name)
   }
 
-  <span class="kw">fn</span> <span class="ident">get_sequence_rule</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">rule_name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) -&gt; <span class="ident">usize</span> {
-    <span class="ident">get_rule_position</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>.<span class="ident">seq_rules</span>, <span class="kw-2">&amp;mut</span> <span class="self">self</span>.<span class="ident">seq_name_map</span>, <span class="ident">rule_name</span>)
+  <span class="kw">fn </span>get_sequence_rule(<span class="kw-2">&amp;mut </span><span class="self">self</span>, rule_name: <span class="kw-2">&amp;</span>str) -&gt; usize {
+    get_rule_position(<span class="kw-2">&amp;mut </span><span class="self">self</span>.seq_rules, <span class="kw-2">&amp;mut </span><span class="self">self</span>.seq_name_map, rule_name)
   }
 
-  <span class="kw">fn</span> <span class="ident">add_math_rule</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">node</span>: <span class="ident">RoNode</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">String</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="ident">rule</span> <span class="op">=</span> <span class="ident">MathRule::load_from_node</span>(<span class="ident">node</span>, <span class="self">self</span>)<span class="question-mark">?</span>;
-    <span class="kw">let</span> <span class="ident">pos</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">get_math_rule</span>(<span class="kw-2">&amp;</span><span class="ident">rule</span>.<span class="ident">description</span>.<span class="ident">name</span>);
-    <span class="kw">if</span> <span class="self">self</span>.<span class="ident">math_rules</span>[<span class="ident">pos</span>].<span class="ident">is_some</span>() {
-      <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="macro">format!</span>(
+  <span class="kw">fn </span>add_math_rule(<span class="kw-2">&amp;mut </span><span class="self">self</span>, node: RoNode) -&gt; <span class="prelude-ty">Result</span>&lt;(), String&gt; {
+    <span class="kw">let </span>rule = MathRule::load_from_node(node, <span class="self">self</span>)<span class="question-mark">?</span>;
+    <span class="kw">let </span>pos = <span class="self">self</span>.get_math_rule(<span class="kw-2">&amp;</span>rule.description.name);
+    <span class="kw">if </span><span class="self">self</span>.math_rules[pos].is_some() {
+      <span class="kw">return </span><span class="prelude-val">Err</span>(<span class="macro">format!</span>(
         <span class="string">&quot;Conflict: Multiple definitions of math_rule \&quot;{}\&quot;&quot;</span>,
-        <span class="kw-2">&amp;</span><span class="ident">rule</span>.<span class="ident">description</span>.<span class="ident">name</span>
+        <span class="kw-2">&amp;</span>rule.description.name
       ));
     }
-    <span class="self">self</span>.<span class="ident">math_rules</span>[<span class="ident">pos</span>] <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">rule</span>);
+    <span class="self">self</span>.math_rules[pos] = <span class="prelude-val">Some</span>(rule);
     <span class="prelude-val">Ok</span>(())
   }
 
-  <span class="kw">fn</span> <span class="ident">add_mtext_rule</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">node</span>: <span class="ident">RoNode</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">String</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="ident">rule</span> <span class="op">=</span> <span class="ident">MTextRule::load_from_node</span>(<span class="ident">node</span>, <span class="self">self</span>)<span class="question-mark">?</span>;
-    <span class="kw">let</span> <span class="ident">pos</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">get_mtext_rule</span>(<span class="kw-2">&amp;</span><span class="ident">rule</span>.<span class="ident">description</span>.<span class="ident">name</span>);
-    <span class="kw">if</span> <span class="self">self</span>.<span class="ident">mtext_rules</span>[<span class="ident">pos</span>].<span class="ident">is_some</span>() {
-      <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="macro">format!</span>(
+  <span class="kw">fn </span>add_mtext_rule(<span class="kw-2">&amp;mut </span><span class="self">self</span>, node: RoNode) -&gt; <span class="prelude-ty">Result</span>&lt;(), String&gt; {
+    <span class="kw">let </span>rule = MTextRule::load_from_node(node, <span class="self">self</span>)<span class="question-mark">?</span>;
+    <span class="kw">let </span>pos = <span class="self">self</span>.get_mtext_rule(<span class="kw-2">&amp;</span>rule.description.name);
+    <span class="kw">if </span><span class="self">self</span>.mtext_rules[pos].is_some() {
+      <span class="kw">return </span><span class="prelude-val">Err</span>(<span class="macro">format!</span>(
         <span class="string">&quot;Conflict: Multiple definitions of mtext_rule \&quot;{}\&quot;&quot;</span>,
-        <span class="kw-2">&amp;</span><span class="ident">rule</span>.<span class="ident">description</span>.<span class="ident">name</span>
+        <span class="kw-2">&amp;</span>rule.description.name
       ));
     }
-    <span class="self">self</span>.<span class="ident">mtext_rules</span>[<span class="ident">pos</span>] <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">rule</span>);
+    <span class="self">self</span>.mtext_rules[pos] = <span class="prelude-val">Some</span>(rule);
     <span class="prelude-val">Ok</span>(())
   }
 
-  <span class="kw">fn</span> <span class="ident">add_word_rule</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">node</span>: <span class="ident">RoNode</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">String</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="ident">rule</span> <span class="op">=</span> <span class="ident">WordRule::load_from_node</span>(<span class="ident">node</span>, <span class="self">self</span>)<span class="question-mark">?</span>;
-    <span class="kw">let</span> <span class="ident">pos</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">get_word_rule</span>(<span class="kw-2">&amp;</span><span class="ident">rule</span>.<span class="ident">description</span>.<span class="ident">name</span>);
-    <span class="kw">if</span> <span class="self">self</span>.<span class="ident">word_rules</span>[<span class="ident">pos</span>].<span class="ident">is_some</span>() {
-      <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="macro">format!</span>(
+  <span class="kw">fn </span>add_word_rule(<span class="kw-2">&amp;mut </span><span class="self">self</span>, node: RoNode) -&gt; <span class="prelude-ty">Result</span>&lt;(), String&gt; {
+    <span class="kw">let </span>rule = WordRule::load_from_node(node, <span class="self">self</span>)<span class="question-mark">?</span>;
+    <span class="kw">let </span>pos = <span class="self">self</span>.get_word_rule(<span class="kw-2">&amp;</span>rule.description.name);
+    <span class="kw">if </span><span class="self">self</span>.word_rules[pos].is_some() {
+      <span class="kw">return </span><span class="prelude-val">Err</span>(<span class="macro">format!</span>(
         <span class="string">&quot;Conflict: Multiple definitions of word_rule \&quot;{}\&quot;&quot;</span>,
-        <span class="kw-2">&amp;</span><span class="ident">rule</span>.<span class="ident">description</span>.<span class="ident">name</span>
+        <span class="kw-2">&amp;</span>rule.description.name
       ));
     }
-    <span class="self">self</span>.<span class="ident">word_rules</span>[<span class="ident">pos</span>] <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">rule</span>);
+    <span class="self">self</span>.word_rules[pos] = <span class="prelude-val">Some</span>(rule);
     <span class="prelude-val">Ok</span>(())
   }
 
-  <span class="kw">fn</span> <span class="ident">add_pos_rule</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">node</span>: <span class="ident">RoNode</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">String</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="ident">rule</span> <span class="op">=</span> <span class="ident">PosRule::load_from_node</span>(<span class="ident">node</span>, <span class="self">self</span>)<span class="question-mark">?</span>;
-    <span class="kw">let</span> <span class="ident">pos</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">get_pos_rule</span>(<span class="kw-2">&amp;</span><span class="ident">rule</span>.<span class="ident">description</span>.<span class="ident">name</span>);
-    <span class="kw">if</span> <span class="self">self</span>.<span class="ident">pos_rules</span>[<span class="ident">pos</span>].<span class="ident">is_some</span>() {
-      <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="macro">format!</span>(
+  <span class="kw">fn </span>add_pos_rule(<span class="kw-2">&amp;mut </span><span class="self">self</span>, node: RoNode) -&gt; <span class="prelude-ty">Result</span>&lt;(), String&gt; {
+    <span class="kw">let </span>rule = PosRule::load_from_node(node, <span class="self">self</span>)<span class="question-mark">?</span>;
+    <span class="kw">let </span>pos = <span class="self">self</span>.get_pos_rule(<span class="kw-2">&amp;</span>rule.description.name);
+    <span class="kw">if </span><span class="self">self</span>.pos_rules[pos].is_some() {
+      <span class="kw">return </span><span class="prelude-val">Err</span>(<span class="macro">format!</span>(
         <span class="string">&quot;Conflict: Multiple definitions of pos_rule \&quot;{}\&quot;&quot;</span>,
-        <span class="kw-2">&amp;</span><span class="ident">rule</span>.<span class="ident">description</span>.<span class="ident">name</span>
+        <span class="kw-2">&amp;</span>rule.description.name
       ));
     }
-    <span class="self">self</span>.<span class="ident">pos_rules</span>[<span class="ident">pos</span>] <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">rule</span>);
+    <span class="self">self</span>.pos_rules[pos] = <span class="prelude-val">Some</span>(rule);
     <span class="prelude-val">Ok</span>(())
   }
 
-  <span class="kw">fn</span> <span class="ident">add_sequence_rule</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">node</span>: <span class="ident">RoNode</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">String</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="ident">rule</span> <span class="op">=</span> <span class="ident">SequenceRule::load_from_node</span>(<span class="ident">node</span>, <span class="self">self</span>)<span class="question-mark">?</span>;
-    <span class="kw">let</span> <span class="ident">pos</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">get_sequence_rule</span>(<span class="kw-2">&amp;</span><span class="ident">rule</span>.<span class="ident">description</span>.<span class="ident">name</span>);
-    <span class="kw">if</span> <span class="self">self</span>.<span class="ident">seq_rules</span>[<span class="ident">pos</span>].<span class="ident">is_some</span>() {
-      <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="macro">format!</span>(
+  <span class="kw">fn </span>add_sequence_rule(<span class="kw-2">&amp;mut </span><span class="self">self</span>, node: RoNode) -&gt; <span class="prelude-ty">Result</span>&lt;(), String&gt; {
+    <span class="kw">let </span>rule = SequenceRule::load_from_node(node, <span class="self">self</span>)<span class="question-mark">?</span>;
+    <span class="kw">let </span>pos = <span class="self">self</span>.get_sequence_rule(<span class="kw-2">&amp;</span>rule.description.name);
+    <span class="kw">if </span><span class="self">self</span>.seq_rules[pos].is_some() {
+      <span class="kw">return </span><span class="prelude-val">Err</span>(<span class="macro">format!</span>(
         <span class="string">&quot;Conflict: Multiple definitions of seq_rule \&quot;{}\&quot;&quot;</span>,
-        <span class="kw-2">&amp;</span><span class="ident">rule</span>.<span class="ident">description</span>.<span class="ident">name</span>
+        <span class="kw-2">&amp;</span>rule.description.name
       ));
     }
-    <span class="self">self</span>.<span class="ident">seq_rules</span>[<span class="ident">pos</span>] <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">rule</span>);
+    <span class="self">self</span>.seq_rules[pos] = <span class="prelude-val">Some</span>(rule);
     <span class="prelude-val">Ok</span>(())
   }
 
-  <span class="doccomment">/// Verifies that all referenced rules have a definition</span>
-  <span class="kw">fn</span> <span class="ident">verify</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">String</span><span class="op">&gt;</span> {
-    <span class="kw">for</span> (<span class="ident">name</span>, <span class="ident">pos</span>) <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">pos_name_map</span> {
-      <span class="kw">if</span> <span class="self">self</span>.<span class="ident">pos_rules</span>[<span class="kw-2">*</span><span class="ident">pos</span>].<span class="ident">is_none</span>() {
-        <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="macro">format!</span>(
+  <span class="doccomment">/// Verifies that all referenced rules have a definition
+  </span><span class="kw">fn </span>verify(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;(), String&gt; {
+    <span class="kw">for </span>(name, pos) <span class="kw">in </span><span class="kw-2">&amp;</span><span class="self">self</span>.pos_name_map {
+      <span class="kw">if </span><span class="self">self</span>.pos_rules[<span class="kw-2">*</span>pos].is_none() {
+        <span class="kw">return </span><span class="prelude-val">Err</span>(<span class="macro">format!</span>(
           <span class="string">&quot;Couldn&#39;t find definition for pos_rule \&quot;{}\&quot;&quot;</span>,
-          <span class="ident">name</span>
+          name
         ));
       }
     }
-    <span class="kw">for</span> (<span class="ident">name</span>, <span class="ident">pos</span>) <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">math_name_map</span> {
-      <span class="kw">if</span> <span class="self">self</span>.<span class="ident">math_rules</span>[<span class="kw-2">*</span><span class="ident">pos</span>].<span class="ident">is_none</span>() {
-        <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="macro">format!</span>(
+    <span class="kw">for </span>(name, pos) <span class="kw">in </span><span class="kw-2">&amp;</span><span class="self">self</span>.math_name_map {
+      <span class="kw">if </span><span class="self">self</span>.math_rules[<span class="kw-2">*</span>pos].is_none() {
+        <span class="kw">return </span><span class="prelude-val">Err</span>(<span class="macro">format!</span>(
           <span class="string">&quot;Couldn&#39;t find definition for math_rule \&quot;{}\&quot;&quot;</span>,
-          <span class="ident">name</span>
+          name
         ));
       }
     }
-    <span class="kw">for</span> (<span class="ident">name</span>, <span class="ident">pos</span>) <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">mtext_name_map</span> {
-      <span class="kw">if</span> <span class="self">self</span>.<span class="ident">mtext_rules</span>[<span class="kw-2">*</span><span class="ident">pos</span>].<span class="ident">is_none</span>() {
-        <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="macro">format!</span>(
+    <span class="kw">for </span>(name, pos) <span class="kw">in </span><span class="kw-2">&amp;</span><span class="self">self</span>.mtext_name_map {
+      <span class="kw">if </span><span class="self">self</span>.mtext_rules[<span class="kw-2">*</span>pos].is_none() {
+        <span class="kw">return </span><span class="prelude-val">Err</span>(<span class="macro">format!</span>(
           <span class="string">&quot;Couldn&#39;t find definition for mtext_rule \&quot;{}\&quot;&quot;</span>,
-          <span class="ident">name</span>
+          name
         ));
       }
     }
-    <span class="kw">for</span> (<span class="ident">name</span>, <span class="ident">pos</span>) <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">seq_name_map</span> {
-      <span class="kw">if</span> <span class="self">self</span>.<span class="ident">seq_rules</span>[<span class="kw-2">*</span><span class="ident">pos</span>].<span class="ident">is_none</span>() {
-        <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="macro">format!</span>(
+    <span class="kw">for </span>(name, pos) <span class="kw">in </span><span class="kw-2">&amp;</span><span class="self">self</span>.seq_name_map {
+      <span class="kw">if </span><span class="self">self</span>.seq_rules[<span class="kw-2">*</span>pos].is_none() {
+        <span class="kw">return </span><span class="prelude-val">Err</span>(<span class="macro">format!</span>(
           <span class="string">&quot;Couldn&#39;t find definition for seq_rule \&quot;{}\&quot;&quot;</span>,
-          <span class="ident">name</span>
+          name
         ));
       }
     }
-    <span class="kw">for</span> (<span class="ident">name</span>, <span class="ident">pos</span>) <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">word_name_map</span> {
-      <span class="kw">if</span> <span class="self">self</span>.<span class="ident">word_rules</span>[<span class="kw-2">*</span><span class="ident">pos</span>].<span class="ident">is_none</span>() {
-        <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="macro">format!</span>(
+    <span class="kw">for </span>(name, pos) <span class="kw">in </span><span class="kw-2">&amp;</span><span class="self">self</span>.word_name_map {
+      <span class="kw">if </span><span class="self">self</span>.word_rules[<span class="kw-2">*</span>pos].is_none() {
+        <span class="kw">return </span><span class="prelude-val">Err</span>(<span class="macro">format!</span>(
           <span class="string">&quot;Couldn&#39;t find definition for word_rule \&quot;{}\&quot;&quot;</span>,
-          <span class="ident">name</span>
+          name
         ));
       }
     }
@@ -2235,99 +2229,98 @@
   }
 }
 
-<span class="kw">impl</span> <span class="ident">PatternFile</span> {
-  <span class="doccomment">/// loads a pattern file</span>
-  <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">load</span>(<span class="ident">file_name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">PatternFile</span>, <span class="ident">String</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="ident">parser</span> <span class="op">=</span> <span class="ident">Parser::default</span>();
-    <span class="kw">let</span> <span class="ident">doc</span> <span class="op">=</span> <span class="ident">parser</span>
-      .<span class="ident">parse_file</span>(<span class="ident">file_name</span>)
-      .<span class="ident">map_err</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="macro">format!</span>(<span class="string">&quot;Failed to obtain DOM from \&quot;{}\&quot;&quot;</span>, <span class="ident">file_name</span>))<span class="question-mark">?</span>;
-    <span class="comment">// let root_node = try!(doc.get_root_element().map_err(|_| format!(&quot;\&quot;{}\&quot; has</span>
-    <span class="comment">// no root node&quot;, file_name)));</span>
-    <span class="kw">let</span> <span class="ident">root_node</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">doc</span>.<span class="ident">get_root_readonly</span>() {
-      <span class="prelude-val">Some</span>(<span class="ident">root</span>) =&gt; <span class="ident">root</span>,
-      <span class="prelude-val">None</span> =&gt; <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="string">&quot;empty document&quot;</span>.<span class="ident">to_string</span>()),
+<span class="kw">impl </span>PatternFile {
+  <span class="doccomment">/// loads a pattern file
+  </span><span class="kw">pub fn </span>load(file_name: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Result</span>&lt;PatternFile, String&gt; {
+    <span class="kw">let </span>parser = Parser::default();
+    <span class="kw">let </span>doc = parser
+      .parse_file(file_name)
+      .map_err(|<span class="kw">_</span>| <span class="macro">format!</span>(<span class="string">&quot;Failed to obtain DOM from \&quot;{}\&quot;&quot;</span>, file_name))<span class="question-mark">?</span>;
+    <span class="comment">// let root_node = try!(doc.get_root_element().map_err(|_| format!(&quot;\&quot;{}\&quot; has
+    // no root node&quot;, file_name)));
+    </span><span class="kw">let </span>root_node = <span class="kw">match </span>doc.get_root_readonly() {
+      <span class="prelude-val">Some</span>(root) =&gt; root,
+      <span class="prelude-val">None </span>=&gt; <span class="kw">return </span><span class="prelude-val">Err</span>(<span class="string">&quot;empty document&quot;</span>.to_string()),
     };
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">meta_opt</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">MetaDescription</span><span class="op">&gt;</span> <span class="op">=</span> <span class="prelude-val">None</span>;
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">pctx</span> <span class="op">=</span> <span class="ident">PCtx::new</span>();
+    <span class="kw">let </span><span class="kw-2">mut </span>meta_opt: <span class="prelude-ty">Option</span>&lt;MetaDescription&gt; = <span class="prelude-val">None</span>;
+    <span class="kw">let </span><span class="kw-2">mut </span>pctx = PCtx::new();
 
-    <span class="kw">let</span> <span class="ident">err_map</span> <span class="op">=</span> <span class="op">|</span><span class="ident">e</span><span class="op">|</span> <span class="macro">format!</span>(<span class="string">&quot;error when loading pattern file \&quot;{}\&quot;:\n{}&quot;</span>, <span class="ident">file_name</span>, <span class="ident">e</span>);
+    <span class="kw">let </span>err_map = |e| <span class="macro">format!</span>(<span class="string">&quot;error when loading pattern file \&quot;{}\&quot;:\n{}&quot;</span>, file_name, e);
 
-    <span class="kw">for</span> <span class="ident">cur</span> <span class="kw">in</span> <span class="ident">get_non_text_children</span>(<span class="ident">root_node</span>)<span class="question-mark">?</span>.<span class="ident">into_iter</span>() {
-      <span class="kw">match</span> <span class="ident">cur</span>.<span class="ident">get_name</span>().<span class="ident">as_ref</span>() {
-        <span class="string">&quot;meta&quot;</span> =&gt; {
-          <span class="kw">if</span> <span class="ident">meta_opt</span>.<span class="ident">is_some</span>() {
-            <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="string">&quot;pattern_file has multiple meta nodes&quot;</span>.<span class="ident">to_string</span>()).<span class="ident">map_err</span>(<span class="kw-2">&amp;</span><span class="ident">err_map</span>);
+    <span class="kw">for </span>cur <span class="kw">in </span>get_non_text_children(root_node)<span class="question-mark">?</span>.into_iter() {
+      <span class="kw">match </span>cur.get_name().as_ref() {
+        <span class="string">&quot;meta&quot; </span>=&gt; {
+          <span class="kw">if </span>meta_opt.is_some() {
+            <span class="kw">return </span><span class="prelude-val">Err</span>(<span class="string">&quot;pattern_file has multiple meta nodes&quot;</span>.to_string()).map_err(err_map);
           }
-          <span class="ident">meta_opt</span> <span class="op">=</span>
-            <span class="prelude-val">Some</span>(<span class="ident">MetaDescription::load_from_node</span>(<span class="ident">cur</span>, <span class="ident">file_name</span>.<span class="ident">to_string</span>()).<span class="ident">map_err</span>(<span class="kw-2">&amp;</span><span class="ident">err_map</span>)<span class="question-mark">?</span>);
+          meta_opt =
+            <span class="prelude-val">Some</span>(MetaDescription::load_from_node(cur, file_name.to_string()).map_err(err_map)<span class="question-mark">?</span>);
         },
-        <span class="string">&quot;pos_rule&quot;</span> =&gt; {
-          <span class="ident">pctx</span>.<span class="ident">add_pos_rule</span>(<span class="ident">cur</span>).<span class="ident">map_err</span>(<span class="kw-2">&amp;</span><span class="ident">err_map</span>)<span class="question-mark">?</span>;
+        <span class="string">&quot;pos_rule&quot; </span>=&gt; {
+          pctx.add_pos_rule(cur).map_err(err_map)<span class="question-mark">?</span>;
         },
-        <span class="string">&quot;math_rule&quot;</span> =&gt; {
-          <span class="ident">pctx</span>.<span class="ident">add_math_rule</span>(<span class="ident">cur</span>).<span class="ident">map_err</span>(<span class="kw-2">&amp;</span><span class="ident">err_map</span>)<span class="question-mark">?</span>;
+        <span class="string">&quot;math_rule&quot; </span>=&gt; {
+          pctx.add_math_rule(cur).map_err(err_map)<span class="question-mark">?</span>;
         },
-        <span class="string">&quot;mtext_rule&quot;</span> =&gt; {
-          <span class="ident">pctx</span>.<span class="ident">add_mtext_rule</span>(<span class="ident">cur</span>).<span class="ident">map_err</span>(<span class="kw-2">&amp;</span><span class="ident">err_map</span>)<span class="question-mark">?</span>;
+        <span class="string">&quot;mtext_rule&quot; </span>=&gt; {
+          pctx.add_mtext_rule(cur).map_err(err_map)<span class="question-mark">?</span>;
         },
-        <span class="string">&quot;word_rule&quot;</span> =&gt; {
-          <span class="ident">pctx</span>.<span class="ident">add_word_rule</span>(<span class="ident">cur</span>).<span class="ident">map_err</span>(<span class="kw-2">&amp;</span><span class="ident">err_map</span>)<span class="question-mark">?</span>;
+        <span class="string">&quot;word_rule&quot; </span>=&gt; {
+          pctx.add_word_rule(cur).map_err(err_map)<span class="question-mark">?</span>;
         },
-        <span class="string">&quot;seq_rule&quot;</span> =&gt; {
-          <span class="ident">pctx</span>.<span class="ident">add_sequence_rule</span>(<span class="ident">cur</span>).<span class="ident">map_err</span>(<span class="kw-2">&amp;</span><span class="ident">err_map</span>)<span class="question-mark">?</span>;
+        <span class="string">&quot;seq_rule&quot; </span>=&gt; {
+          pctx.add_sequence_rule(cur).map_err(err_map)<span class="question-mark">?</span>;
         },
-        <span class="ident">x</span> =&gt; {
-          <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="macro">format!</span>(<span class="string">&quot;Unexpected node \&quot;{}\&quot; in pattern_file&quot;</span>, <span class="ident">x</span>)).<span class="ident">map_err</span>(<span class="kw-2">&amp;</span><span class="ident">err_map</span>);
+        x =&gt; {
+          <span class="kw">return </span><span class="prelude-val">Err</span>(<span class="macro">format!</span>(<span class="string">&quot;Unexpected node \&quot;{}\&quot; in pattern_file&quot;</span>, x)).map_err(err_map);
         },
       }
     }
-    <span class="kw">if</span> <span class="ident">meta_opt</span>.<span class="ident">is_none</span>() {
-      <span class="ident">meta_opt</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">MetaDescription</span> {
-        <span class="ident">name</span>: <span class="ident">file_name</span>.<span class="ident">to_string</span>(),
-        <span class="ident">summary</span>: <span class="ident">String::new</span>(),
+    <span class="kw">if </span>meta_opt.is_none() {
+      meta_opt = <span class="prelude-val">Some</span>(MetaDescription {
+        name: file_name.to_string(),
+        summary: String::new(),
       });
     }
 
-    <span class="ident">pctx</span>.<span class="ident">verify</span>().<span class="ident">map_err</span>(<span class="kw-2">&amp;</span><span class="ident">err_map</span>)<span class="question-mark">?</span>;
+    pctx.verify().map_err(err_map)<span class="question-mark">?</span>;
 
-    <span class="prelude-val">Ok</span>(<span class="ident">PatternFile</span> {
-      <span class="ident">description</span>: <span class="ident">meta_opt</span>.<span class="ident">unwrap</span>(),
+    <span class="prelude-val">Ok</span>(PatternFile {
+      description: meta_opt.unwrap(),
 
-      <span class="ident">word_rules</span>: <span class="ident">pctx</span>
-        .<span class="ident">word_rules</span>
-        .<span class="ident">iter</span>()
-        .<span class="ident">map</span>(<span class="op">|</span><span class="ident">o</span><span class="op">|</span> <span class="ident">o</span>.<span class="ident">as_ref</span>().<span class="ident">unwrap</span>().<span class="ident">clone</span>())
-        .<span class="ident">collect</span>(),
-      <span class="ident">pos_rules</span>: <span class="ident">pctx</span>
-        .<span class="ident">pos_rules</span>
-        .<span class="ident">iter</span>()
-        .<span class="ident">map</span>(<span class="op">|</span><span class="ident">o</span><span class="op">|</span> <span class="ident">o</span>.<span class="ident">as_ref</span>().<span class="ident">unwrap</span>().<span class="ident">clone</span>())
-        .<span class="ident">collect</span>(),
-      <span class="ident">sequence_rules</span>: <span class="ident">pctx</span>
-        .<span class="ident">seq_rules</span>
-        .<span class="ident">iter</span>()
-        .<span class="ident">map</span>(<span class="op">|</span><span class="ident">o</span><span class="op">|</span> <span class="ident">o</span>.<span class="ident">as_ref</span>().<span class="ident">unwrap</span>().<span class="ident">clone</span>())
-        .<span class="ident">collect</span>(),
-      <span class="ident">math_rules</span>: <span class="ident">pctx</span>
-        .<span class="ident">math_rules</span>
-        .<span class="ident">iter</span>()
-        .<span class="ident">map</span>(<span class="op">|</span><span class="ident">o</span><span class="op">|</span> <span class="ident">o</span>.<span class="ident">as_ref</span>().<span class="ident">unwrap</span>().<span class="ident">clone</span>())
-        .<span class="ident">collect</span>(),
-      <span class="ident">mtext_rules</span>: <span class="ident">pctx</span>
-        .<span class="ident">mtext_rules</span>
-        .<span class="ident">iter</span>()
-        .<span class="ident">map</span>(<span class="op">|</span><span class="ident">o</span><span class="op">|</span> <span class="ident">o</span>.<span class="ident">as_ref</span>().<span class="ident">unwrap</span>().<span class="ident">clone</span>())
-        .<span class="ident">collect</span>(),
+      word_rules: pctx
+        .word_rules
+        .iter()
+        .map(|o| o.as_ref().unwrap().clone())
+        .collect(),
+      pos_rules: pctx
+        .pos_rules
+        .iter()
+        .map(|o| o.as_ref().unwrap().clone())
+        .collect(),
+      sequence_rules: pctx
+        .seq_rules
+        .iter()
+        .map(|o| o.as_ref().unwrap().clone())
+        .collect(),
+      math_rules: pctx
+        .math_rules
+        .iter()
+        .map(|o| o.as_ref().unwrap().clone())
+        .collect(),
+      mtext_rules: pctx
+        .mtext_rules
+        .iter()
+        .map(|o| o.as_ref().unwrap().clone())
+        .collect(),
 
-      <span class="ident">word_rule_names</span>: <span class="ident">pctx</span>.<span class="ident">word_name_map</span>,
-      <span class="ident">pos_rule_names</span>: <span class="ident">pctx</span>.<span class="ident">pos_name_map</span>,
-      <span class="ident">sequence_rule_names</span>: <span class="ident">pctx</span>.<span class="ident">seq_name_map</span>,
-      <span class="ident">math_rule_names</span>: <span class="ident">pctx</span>.<span class="ident">math_name_map</span>,
-      <span class="ident">mtext_rule_names</span>: <span class="ident">pctx</span>.<span class="ident">mtext_name_map</span>,
+      word_rule_names: pctx.word_name_map,
+      pos_rule_names: pctx.pos_name_map,
+      sequence_rule_names: pctx.seq_name_map,
+      math_rule_names: pctx.math_name_map,
+      mtext_rule_names: pctx.mtext_name_map,
     })
   }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="llamapun" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.63.0 (4b91a6ea7 2022-08-08)" ></div>
-</body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="llamapun" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0 (897e37553 2022-11-02)" ></div></body></html>

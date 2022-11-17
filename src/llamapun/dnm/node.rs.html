@@ -1,10 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/dnm/node.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>node.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../llamapun/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div>
-        </a><h2 class="location"></h2>
-    </nav>
-    <nav class="sidebar"><a class="sidebar-logo" href="../../../llamapun/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div>
-        </a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../llamapun/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><button type="button" id="help-button" title="help">?</button><div id="settings-menu" tabindex="-1">
-                                <a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div>
-                        </div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/dnm/node.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>node.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../llamapun/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../llamapun/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../llamapun/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -76,78 +70,77 @@
 <span id="70">70</span>
 <span id="71">71</span>
 <span id="72">72</span>
-</pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">lazy_static::lazy_static</span>;
-<span class="kw">use</span> <span class="ident">libxml::readonly::RoNode</span>;
-<span class="kw">use</span> <span class="ident">libxml::xpath::Context</span>;
-<span class="kw">use</span> <span class="ident">regex::Regex</span>;
-<span class="macro">lazy_static!</span> {
-  <span class="kw">static</span> <span class="kw-2">ref</span> <span class="ident">LEXEME_END_MARKER</span> : <span class="ident">Regex</span> <span class="op">=</span> <span class="ident">Regex::new</span>(<span class="string">r&quot;((?:OPFUNCTION|OPERATOR|OPEN|CLOSE|UNKNOWN|RELOP|ADDOP|MULOP|ARROW|BIGOP|BINOP|ID|OVERACCENT|UNDERACCENT):end)&quot;</span>).<span class="ident">unwrap</span>();
+</pre><pre class="rust"><code><span class="kw">use </span>lazy_static::lazy_static;
+<span class="kw">use </span>libxml::readonly::RoNode;
+<span class="kw">use </span>libxml::xpath::Context;
+<span class="kw">use </span>regex::Regex;
+<span class="macro">lazy_static! </span>{
+  <span class="kw">static </span><span class="kw-2">ref </span>LEXEME_END_MARKER : Regex = Regex::new(<span class="string">r&quot;((?:OPFUNCTION|OPERATOR|OPEN|CLOSE|UNKNOWN|RELOP|ADDOP|MULOP|ARROW|BIGOP|BINOP|ID|OVERACCENT|UNDERACCENT):end)&quot;</span>).unwrap();
 }
 
-<span class="doccomment">/// Map math nodes to their lexemes</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">lexematize_math</span>(<span class="ident">node</span>: <span class="ident">RoNode</span>, <span class="ident">context</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Context</span>) -&gt; <span class="ident">String</span> {
-  <span class="comment">// We are going to descend down an assumed equation/formula/eqnarray, grabbing any x-llamapun</span>
-  <span class="comment">// encoded lexemes we can find</span>
+<span class="doccomment">/// Map math nodes to their lexemes
+</span><span class="kw">pub fn </span>lexematize_math(node: RoNode, context: <span class="kw-2">&amp;mut </span>Context) -&gt; String {
+  <span class="comment">// We are going to descend down an assumed equation/formula/eqnarray, grabbing any x-llamapun
+  // encoded lexemes we can find
 
-  <span class="kw">let</span> <span class="ident">annotations</span> <span class="op">=</span> <span class="ident">context</span>
-    .<span class="ident">node_evaluate_readonly</span>(
+  </span><span class="kw">let </span>annotations = context
+    .node_evaluate_readonly(
       <span class="string">&quot;.//*[local-name()=&#39;annotation&#39; and @encoding=&#39;application/x-llamapun&#39;]&quot;</span>,
-      <span class="ident">node</span>,
+      node,
     )
-    .<span class="ident">unwrap</span>()
-    .<span class="ident">get_readonly_nodes_as_vec</span>();
+    .unwrap()
+    .get_readonly_nodes_as_vec();
 
-  <span class="kw">let</span> <span class="ident">lexemes</span>: <span class="ident">String</span> <span class="op">=</span> <span class="ident">annotations</span>
-    .<span class="ident">iter</span>()
-    .<span class="ident">map</span>(<span class="op">|</span><span class="ident">anno</span><span class="op">|</span> {
-      <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">annotation_string</span> <span class="op">=</span> <span class="ident">anno</span>.<span class="ident">get_content</span>();
-      <span class="comment">// offer fix for latexml 0.8.4 serialization flaw in some cases (e.g. &quot;POSTFIX:endID:end&quot;</span>
-      <span class="comment">// instead of &quot;POSTFIX:end ID:end&quot;)</span>
-      <span class="ident">annotation_string</span> <span class="op">=</span> <span class="ident">LEXEME_END_MARKER</span>
-        .<span class="ident">replace_all</span>(<span class="kw-2">&amp;</span><span class="ident">annotation_string</span>, <span class="string">&quot; $1 &quot;</span>)
-        .<span class="ident">split</span>(<span class="string">&quot;:end&quot;</span>)
-        .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">str</span><span class="op">&gt;</span><span class="op">&gt;</span>()
-        .<span class="ident">join</span>(<span class="string">&quot;:end &quot;</span>);
-      <span class="ident">annotation_string</span> <span class="op">=</span> <span class="ident">annotation_string</span>
-        .<span class="ident">split</span>(<span class="string">&quot;:start&quot;</span>)
-        .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">str</span><span class="op">&gt;</span><span class="op">&gt;</span>()
-        .<span class="ident">join</span>(<span class="string">&quot;:start &quot;</span>);
-      <span class="ident">annotation_string</span>
-        .<span class="ident">split_whitespace</span>()
-        .<span class="ident">map</span>(<span class="op">|</span><span class="ident">anno_word</span><span class="op">|</span> {
-          <span class="kw">if</span> <span class="ident">anno_word</span>.<span class="ident">starts_with</span>(<span class="string">&quot;NUM&quot;</span>) {
-            <span class="ident">String::from</span>(<span class="string">&quot;NUM&quot;</span>)
-          } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">anno_word</span>.<span class="ident">starts_with</span>(<span class="string">&quot;ARRAY&quot;</span>) {
-            <span class="ident">String::from</span>(<span class="string">&quot;ARRAY&quot;</span>)
-          } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">anno_word</span>.<span class="ident">starts_with</span>(<span class="string">&quot;ATOM&quot;</span>) {
-            <span class="ident">String::from</span>(<span class="string">&quot;ATOM&quot;</span>)
-          } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">anno_word</span>.<span class="ident">starts_with</span>(<span class="string">&quot;SUPERSCRIPTOP&quot;</span>) {
-            <span class="ident">String::from</span>(<span class="string">&quot;SUPERSCRIPTOP&quot;</span>)
-          } <span class="kw">else</span> {
-            <span class="ident">anno_word</span>
-              .<span class="ident">chars</span>()
-              .<span class="ident">map</span>(<span class="op">|</span><span class="ident">c</span><span class="op">|</span> <span class="kw">match</span> <span class="ident">c</span> {
-                <span class="string">&#39;:&#39;</span> <span class="op">|</span> <span class="string">&#39;-&#39;</span> =&gt; <span class="string">&#39;_&#39;</span>,
-                <span class="string">&#39;\n&#39;</span> =&gt; <span class="string">&#39; &#39;</span>,
-                <span class="kw">_</span> =&gt; <span class="ident">c</span>,
+  <span class="kw">let </span>lexemes: String = annotations
+    .iter()
+    .map(|anno| {
+      <span class="kw">let </span><span class="kw-2">mut </span>annotation_string = anno.get_content();
+      <span class="comment">// offer fix for latexml 0.8.4 serialization flaw in some cases (e.g. &quot;POSTFIX:endID:end&quot;
+      // instead of &quot;POSTFIX:end ID:end&quot;)
+      </span>annotation_string = LEXEME_END_MARKER
+        .replace_all(<span class="kw-2">&amp;</span>annotation_string, <span class="string">&quot; $1 &quot;</span>)
+        .split(<span class="string">&quot;:end&quot;</span>)
+        .collect::&lt;Vec&lt;<span class="kw-2">&amp;</span>str&gt;&gt;()
+        .join(<span class="string">&quot;:end &quot;</span>);
+      annotation_string = annotation_string
+        .split(<span class="string">&quot;:start&quot;</span>)
+        .collect::&lt;Vec&lt;<span class="kw-2">&amp;</span>str&gt;&gt;()
+        .join(<span class="string">&quot;:start &quot;</span>);
+      annotation_string
+        .split_whitespace()
+        .map(|anno_word| {
+          <span class="kw">if </span>anno_word.starts_with(<span class="string">&quot;NUM&quot;</span>) {
+            String::from(<span class="string">&quot;NUM&quot;</span>)
+          } <span class="kw">else if </span>anno_word.starts_with(<span class="string">&quot;ARRAY&quot;</span>) {
+            String::from(<span class="string">&quot;ARRAY&quot;</span>)
+          } <span class="kw">else if </span>anno_word.starts_with(<span class="string">&quot;ATOM&quot;</span>) {
+            String::from(<span class="string">&quot;ATOM&quot;</span>)
+          } <span class="kw">else if </span>anno_word.starts_with(<span class="string">&quot;SUPERSCRIPTOP&quot;</span>) {
+            String::from(<span class="string">&quot;SUPERSCRIPTOP&quot;</span>)
+          } <span class="kw">else </span>{
+            anno_word
+              .chars()
+              .map(|c| <span class="kw">match </span>c {
+                <span class="string">&#39;:&#39; </span>| <span class="string">&#39;-&#39; </span>=&gt; <span class="string">&#39;_&#39;</span>,
+                <span class="string">&#39;\n&#39; </span>=&gt; <span class="string">&#39; &#39;</span>,
+                <span class="kw">_ </span>=&gt; c,
               })
-              .<span class="ident">collect</span>()
+              .collect()
           }
         })
-        .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span><span class="op">&gt;</span>()
-        .<span class="ident">join</span>(<span class="string">&quot; &quot;</span>)
+        .collect::&lt;Vec&lt;String&gt;&gt;()
+        .join(<span class="string">&quot; &quot;</span>)
     })
-    .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span><span class="op">&gt;</span>()
-    .<span class="ident">join</span>(<span class="string">&quot; &quot;</span>);
-  <span class="kw">if</span> <span class="op">!</span><span class="ident">lexemes</span>.<span class="ident">is_empty</span>() {
-    <span class="ident">lexemes</span>
-  } <span class="kw">else</span> {
-    <span class="comment">// Fallback if no lexemes - a generic substitution</span>
-    <span class="comment">// intended to be used in a lowercased context, where only significant lexemes are left</span>
-    <span class="comment">// capitalized</span>
-    <span class="ident">String::from</span>(<span class="string">&quot;mathformula&quot;</span>)
+    .collect::&lt;Vec&lt;String&gt;&gt;()
+    .join(<span class="string">&quot; &quot;</span>);
+  <span class="kw">if </span>!lexemes.is_empty() {
+    lexemes
+  } <span class="kw">else </span>{
+    <span class="comment">// Fallback if no lexemes - a generic substitution
+    // intended to be used in a lowercased context, where only significant lexemes are left
+    // capitalized
+    </span>String::from(<span class="string">&quot;mathformula&quot;</span>)
   }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="llamapun" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.63.0 (4b91a6ea7 2022-08-08)" ></div>
-</body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="llamapun" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0 (897e37553 2022-11-02)" ></div></body></html>

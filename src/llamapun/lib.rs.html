@@ -1,10 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/lib.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>lib.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../llamapun/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div>
-        </a><h2 class="location"></h2>
-    </nav>
-    <nav class="sidebar"><a class="sidebar-logo" href="../../llamapun/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div>
-        </a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../llamapun/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><button type="button" id="help-button" title="help">?</button><div id="settings-menu" tabindex="-1">
-                                <a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div>
-                        </div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/lib.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>lib.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../normalize.css"><link rel="stylesheet" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../ayu.css" disabled><link rel="stylesheet" href="../../dark.css" disabled><link rel="stylesheet" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../llamapun/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../llamapun/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../llamapun/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -41,43 +35,42 @@
 <span id="35">35</span>
 <span id="36">36</span>
 <span id="37">37</span>
-</pre><pre class="rust"><code><span class="doccomment">//! # The `LLaMaPUn` library in Rust</span>
-<span class="doccomment">//! Language and Mathematics Processing and Understanding</span>
-<span class="doccomment">//! Common data structures and algorithms for semi-structured NLP on math-rich</span>
-<span class="doccomment">//! documents.</span>
+</pre><pre class="rust"><code><span class="doccomment">//! # The `LLaMaPUn` library in Rust
+//! Language and Mathematics Processing and Understanding
+//! Common data structures and algorithms for semi-structured NLP on math-rich
+//! documents.
 
-<span class="attribute">#![<span class="ident">deny</span>(
-  <span class="ident">missing_docs</span>,
-  <span class="ident">trivial_casts</span>,
-  <span class="ident">trivial_numeric_casts</span>,
-  <span class="ident">unused_import_braces</span>,
-  <span class="ident">unused_qualifications</span>
-)]</span>
+</span><span class="attribute">#![deny(
+  missing_docs,
+  trivial_casts,
+  trivial_numeric_casts,
+  unused_import_braces,
+  unused_qualifications
+)]
 
-<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">crypto</span>;
-<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">gnuplot</span>;
-<span class="attribute">#[<span class="ident">macro_use</span>]</span>
-<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">lazy_static</span>;
-<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">libc</span>;
-<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">libxml</span>;
-<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">regex</span>;
-<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">rustmorpha</span>;
-<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">senna</span>;
-<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">unidecode</span>;
-<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">walkdir</span>;
+</span><span class="kw">extern crate </span>crypto;
+<span class="kw">extern crate </span>gnuplot;
+<span class="attribute">#[macro_use]
+</span><span class="kw">extern crate </span>lazy_static;
+<span class="kw">extern crate </span>libc;
+<span class="kw">extern crate </span>libxml;
+<span class="kw">extern crate </span>regex;
+<span class="kw">extern crate </span>rustmorpha;
+<span class="kw">extern crate </span>senna;
+<span class="kw">extern crate </span>unidecode;
+<span class="kw">extern crate </span>walkdir;
 
-<span class="attribute">#[<span class="ident">macro_use</span>]</span>
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">util</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">ams</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">data</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">dnm</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">ngrams</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">parallel_data</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">patterns</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">stopwords</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">tokenizer</span>;
+<span class="attribute">#[macro_use]
+</span><span class="kw">pub mod </span>util;
+<span class="kw">pub mod </span>ams;
+<span class="kw">pub mod </span>data;
+<span class="kw">pub mod </span>dnm;
+<span class="kw">pub mod </span>ngrams;
+<span class="kw">pub mod </span>parallel_data;
+<span class="kw">pub mod </span>patterns;
+<span class="kw">pub mod </span>stopwords;
+<span class="kw">pub mod </span>tokenizer;
 
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">extern_use</span>;
+<span class="kw">pub mod </span>extern_use;
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="llamapun" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.63.0 (4b91a6ea7 2022-08-08)" ></div>
-</body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="llamapun" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0 (897e37553 2022-11-02)" ></div></body></html>

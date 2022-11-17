@@ -1,10 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/data.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>data.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../llamapun/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div>
-        </a><h2 class="location"></h2>
-    </nav>
-    <nav class="sidebar"><a class="sidebar-logo" href="../../llamapun/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div>
-        </a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../llamapun/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><button type="button" id="help-button" title="help">?</button><div id="settings-menu" tabindex="-1">
-                                <a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div>
-                        </div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/data.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>data.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../normalize.css"><link rel="stylesheet" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../ayu.css" disabled><link rel="stylesheet" href="../../dark.css" disabled><link rel="stylesheet" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../llamapun/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../llamapun/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../llamapun/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -401,403 +395,402 @@
 <span id="395">395</span>
 <span id="396">396</span>
 <span id="397">397</span>
-</pre><pre class="rust"><code><span class="doccomment">//! Data structures and Iterators for convenient high-level syntax</span>
-<span class="kw">use</span> <span class="ident">std::cell</span>::{<span class="ident">Cell</span>, <span class="ident">RefCell</span>};
-<span class="kw">use</span> <span class="ident">std::vec::IntoIter</span>;
-<span class="kw">use</span> <span class="ident">walkdir::IntoIter</span> <span class="kw">as</span> <span class="ident">WalkDirIterator</span>;
-<span class="kw">use</span> <span class="ident">walkdir::WalkDir</span>;
+</pre><pre class="rust"><code><span class="doccomment">//! Data structures and Iterators for convenient high-level syntax
+</span><span class="kw">use </span>std::cell::{Cell, RefCell};
+<span class="kw">use </span>std::vec::IntoIter;
+<span class="kw">use </span>walkdir::IntoIter <span class="kw">as </span>WalkDirIterator;
+<span class="kw">use </span>walkdir::WalkDir;
 
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::dnm</span>::{<span class="ident">DNMParameters</span>, <span class="ident">DNMRange</span>, <span class="ident">DNM</span>};
-<span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::tokenizer::Tokenizer</span>;
+<span class="kw">use </span><span class="kw">crate</span>::dnm::{DNMParameters, DNMRange, DNM};
+<span class="kw">use </span><span class="kw">crate</span>::tokenizer::Tokenizer;
 
-<span class="kw">use</span> <span class="ident">libxml::parser</span>::{<span class="ident">Parser</span>, <span class="ident">XmlParseError</span>};
-<span class="kw">use</span> <span class="ident">libxml::readonly::RoNode</span>;
-<span class="kw">use</span> <span class="ident">libxml::tree::Document</span> <span class="kw">as</span> <span class="ident">XmlDoc</span>;
-<span class="kw">use</span> <span class="ident">libxml::xpath::Context</span>;
+<span class="kw">use </span>libxml::parser::{Parser, XmlParseError};
+<span class="kw">use </span>libxml::readonly::RoNode;
+<span class="kw">use </span>libxml::tree::Document <span class="kw">as </span>XmlDoc;
+<span class="kw">use </span>libxml::xpath::Context;
 
-<span class="kw">use</span> <span class="ident">senna::pos::POS</span>;
-<span class="kw">use</span> <span class="ident">senna::senna</span>::{<span class="ident">Senna</span>, <span class="ident">SennaParseOptions</span>};
-<span class="kw">use</span> <span class="ident">senna::sennapath::SENNA_PATH</span>;
-<span class="kw">use</span> <span class="ident">senna::sentence::Sentence</span> <span class="kw">as</span> <span class="ident">SennaSentence</span>;
+<span class="kw">use </span>senna::pos::POS;
+<span class="kw">use </span>senna::senna::{Senna, SennaParseOptions};
+<span class="kw">use </span>senna::sennapath::SENNA_PATH;
+<span class="kw">use </span>senna::sentence::Sentence <span class="kw">as </span>SennaSentence;
 
-<span class="doccomment">/// An iterable Corpus of HTML5 documents</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Corpus</span> {
-  <span class="doccomment">/// root directory</span>
-  <span class="kw">pub</span> <span class="ident">path</span>: <span class="ident">String</span>,
-  <span class="doccomment">/// document XHTML5 parser</span>
-  <span class="kw">pub</span> <span class="ident">xml_parser</span>: <span class="ident">Parser</span>,
-  <span class="doccomment">/// document HTML5 parser</span>
-  <span class="kw">pub</span> <span class="ident">html_parser</span>: <span class="ident">Parser</span>,
-  <span class="doccomment">/// `DNM`-aware sentence and word tokenizer</span>
-  <span class="kw">pub</span> <span class="ident">tokenizer</span>: <span class="ident">Tokenizer</span>,
-  <span class="doccomment">/// `Senna` object for shallow language analysis</span>
-  <span class="kw">pub</span> <span class="ident">senna</span>: <span class="ident">RefCell</span><span class="op">&lt;</span><span class="ident">Senna</span><span class="op">&gt;</span>,
-  <span class="doccomment">/// `Senna` parsing options</span>
-  <span class="kw">pub</span> <span class="ident">senna_options</span>: <span class="ident">Cell</span><span class="op">&lt;</span><span class="ident">SennaParseOptions</span><span class="op">&gt;</span>,
-  <span class="doccomment">/// Default setting for `DNM` generation</span>
-  <span class="kw">pub</span> <span class="ident">dnm_parameters</span>: <span class="ident">DNMParameters</span>,
-  <span class="doccomment">/// Extension of corpus files (for specially tailored resources such as DLMF&#39;s .html5)</span>
-  <span class="doccomment">/// defaults to selecting .html AND .xhtml files</span>
-  <span class="kw">pub</span> <span class="ident">extension</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
+<span class="doccomment">/// An iterable Corpus of HTML5 documents
+</span><span class="kw">pub struct </span>Corpus {
+  <span class="doccomment">/// root directory
+  </span><span class="kw">pub </span>path: String,
+  <span class="doccomment">/// document XHTML5 parser
+  </span><span class="kw">pub </span>xml_parser: Parser,
+  <span class="doccomment">/// document HTML5 parser
+  </span><span class="kw">pub </span>html_parser: Parser,
+  <span class="doccomment">/// `DNM`-aware sentence and word tokenizer
+  </span><span class="kw">pub </span>tokenizer: Tokenizer,
+  <span class="doccomment">/// `Senna` object for shallow language analysis
+  </span><span class="kw">pub </span>senna: RefCell&lt;Senna&gt;,
+  <span class="doccomment">/// `Senna` parsing options
+  </span><span class="kw">pub </span>senna_options: Cell&lt;SennaParseOptions&gt;,
+  <span class="doccomment">/// Default setting for `DNM` generation
+  </span><span class="kw">pub </span>dnm_parameters: DNMParameters,
+  <span class="doccomment">/// Extension of corpus files (for specially tailored resources such as DLMF&#39;s .html5)
+  /// defaults to selecting .html AND .xhtml files
+  </span><span class="kw">pub </span>extension: <span class="prelude-ty">Option</span>&lt;String&gt;,
 }
 
-<span class="doccomment">/// File-system iterator yielding individual documents</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">DocumentIterator</span><span class="op">&lt;</span><span class="lifetime">&#39;iter</span><span class="op">&gt;</span> {
-  <span class="doccomment">/// the directory walker</span>
-  <span class="ident">walker</span>: <span class="ident">Box</span><span class="op">&lt;</span><span class="ident">WalkDirIterator</span><span class="op">&gt;</span>,
-  <span class="doccomment">/// reference to the parent corpus</span>
-  <span class="kw">pub</span> <span class="ident">corpus</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;iter</span> <span class="ident">Corpus</span>,
+<span class="doccomment">/// File-system iterator yielding individual documents
+</span><span class="kw">pub struct </span>DocumentIterator&lt;<span class="lifetime">&#39;iter</span>&gt; {
+  <span class="doccomment">/// the directory walker
+  </span>walker: Box&lt;WalkDirIterator&gt;,
+  <span class="doccomment">/// reference to the parent corpus
+  </span><span class="kw">pub </span>corpus: <span class="kw-2">&amp;</span><span class="lifetime">&#39;iter </span>Corpus,
 }
 
-<span class="doccomment">/// One of our math documents.</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Document</span><span class="op">&lt;</span><span class="lifetime">&#39;d</span><span class="op">&gt;</span> {
-  <span class="doccomment">/// The DOM of the document</span>
-  <span class="kw">pub</span> <span class="ident">dom</span>: <span class="ident">XmlDoc</span>,
-  <span class="doccomment">/// The file path of the document</span>
-  <span class="kw">pub</span> <span class="ident">path</span>: <span class="ident">String</span>,
-  <span class="doccomment">/// A reference to the corpus containing this document</span>
-  <span class="kw">pub</span> <span class="ident">corpus</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;d</span> <span class="ident">Corpus</span>,
-  <span class="doccomment">/// If it exists, the DNM corresponding to this document</span>
-  <span class="kw">pub</span> <span class="ident">dnm</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">DNM</span><span class="op">&gt;</span>,
+<span class="doccomment">/// One of our math documents.
+</span><span class="kw">pub struct </span>Document&lt;<span class="lifetime">&#39;d</span>&gt; {
+  <span class="doccomment">/// The DOM of the document
+  </span><span class="kw">pub </span>dom: XmlDoc,
+  <span class="doccomment">/// The file path of the document
+  </span><span class="kw">pub </span>path: String,
+  <span class="doccomment">/// A reference to the corpus containing this document
+  </span><span class="kw">pub </span>corpus: <span class="kw-2">&amp;</span><span class="lifetime">&#39;d </span>Corpus,
+  <span class="doccomment">/// If it exists, the DNM corresponding to this document
+  </span><span class="kw">pub </span>dnm: <span class="prelude-ty">Option</span>&lt;DNM&gt;,
 }
 
-<span class="doccomment">/// An iterator over paragraphs of a `Document`. Ignores paragraphs containing `ltx_ERROR` markup</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ParagraphIterator</span><span class="op">&lt;</span><span class="lifetime">&#39;iter</span><span class="op">&gt;</span> {
-  <span class="doccomment">/// A walker over paragraph nodes</span>
-  <span class="ident">walker</span>: <span class="ident">IntoIter</span><span class="op">&lt;</span><span class="ident">RoNode</span><span class="op">&gt;</span>,
-  <span class="doccomment">/// A reference to the document over which we iterate</span>
-  <span class="kw">pub</span> <span class="ident">document</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;iter</span> <span class="ident">Document</span><span class="op">&lt;</span><span class="lifetime">&#39;iter</span><span class="op">&gt;</span>,
+<span class="doccomment">/// An iterator over paragraphs of a `Document`. Ignores paragraphs containing `ltx_ERROR` markup
+</span><span class="kw">pub struct </span>ParagraphIterator&lt;<span class="lifetime">&#39;iter</span>&gt; {
+  <span class="doccomment">/// A walker over paragraph nodes
+  </span>walker: IntoIter&lt;RoNode&gt;,
+  <span class="doccomment">/// A reference to the document over which we iterate
+  </span><span class="kw">pub </span>document: <span class="kw-2">&amp;</span><span class="lifetime">&#39;iter </span>Document&lt;<span class="lifetime">&#39;iter</span>&gt;,
 }
 
-<span class="doccomment">/// A paragraph of a document with a DNM</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Paragraph</span><span class="op">&lt;</span><span class="lifetime">&#39;p</span><span class="op">&gt;</span> {
-  <span class="doccomment">/// The dnm of this paragraph</span>
-  <span class="kw">pub</span> <span class="ident">dnm</span>: <span class="ident">DNM</span>,
-  <span class="doccomment">/// A reference to the document containing this paragraph</span>
-  <span class="kw">pub</span> <span class="ident">document</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;p</span> <span class="ident">Document</span><span class="op">&lt;</span><span class="lifetime">&#39;p</span><span class="op">&gt;</span>,
+<span class="doccomment">/// A paragraph of a document with a DNM
+</span><span class="kw">pub struct </span>Paragraph&lt;<span class="lifetime">&#39;p</span>&gt; {
+  <span class="doccomment">/// The dnm of this paragraph
+  </span><span class="kw">pub </span>dnm: DNM,
+  <span class="doccomment">/// A reference to the document containing this paragraph
+  </span><span class="kw">pub </span>document: <span class="kw-2">&amp;</span><span class="lifetime">&#39;p </span>Document&lt;<span class="lifetime">&#39;p</span>&gt;,
 }
 
-<span class="doccomment">/// An iterator over the sentences of a document/paragraph</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">SentenceIterator</span><span class="op">&lt;</span><span class="lifetime">&#39;iter</span><span class="op">&gt;</span> {
-  <span class="doccomment">/// The walker over the sentence ranges</span>
-  <span class="ident">walker</span>: <span class="ident">IntoIter</span><span class="op">&lt;</span><span class="ident">DNMRange</span><span class="op">&lt;</span><span class="lifetime">&#39;iter</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-  <span class="comment">// pub paragraph : &amp;&#39;iter Paragraph&lt;&#39;iter&gt;</span>
-  <span class="doccomment">/// A reference to the document we are working on</span>
-  <span class="kw">pub</span> <span class="ident">document</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;iter</span> <span class="ident">Document</span><span class="op">&lt;</span><span class="lifetime">&#39;iter</span><span class="op">&gt;</span>,
+<span class="doccomment">/// An iterator over the sentences of a document/paragraph
+</span><span class="kw">pub struct </span>SentenceIterator&lt;<span class="lifetime">&#39;iter</span>&gt; {
+  <span class="doccomment">/// The walker over the sentence ranges
+  </span>walker: IntoIter&lt;DNMRange&lt;<span class="lifetime">&#39;iter</span>&gt;&gt;,
+  <span class="comment">// pub paragraph : &amp;&#39;iter Paragraph&lt;&#39;iter&gt;
+  </span><span class="doccomment">/// A reference to the document we are working on
+  </span><span class="kw">pub </span>document: <span class="kw-2">&amp;</span><span class="lifetime">&#39;iter </span>Document&lt;<span class="lifetime">&#39;iter</span>&gt;,
 }
 
-<span class="doccomment">/// A sentence in a document</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Sentence</span><span class="op">&lt;</span><span class="lifetime">&#39;s</span><span class="op">&gt;</span> {
-  <span class="doccomment">/// The range of the sentence</span>
-  <span class="kw">pub</span> <span class="ident">range</span>: <span class="ident">DNMRange</span><span class="op">&lt;</span><span class="lifetime">&#39;s</span><span class="op">&gt;</span>,
-  <span class="comment">// pub paragraph : &amp;&#39;s Paragraph&lt;&#39;s&gt;</span>
-  <span class="doccomment">/// The document containing this sentence</span>
-  <span class="kw">pub</span> <span class="ident">document</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;s</span> <span class="ident">Document</span><span class="op">&lt;</span><span class="lifetime">&#39;s</span><span class="op">&gt;</span>,
-  <span class="doccomment">/// If it exists, also the senna version of the sentence,</span>
-  <span class="doccomment">/// which can contain additional information such as</span>
-  <span class="doccomment">/// POS tags and syntactic parse trees</span>
-  <span class="kw">pub</span> <span class="ident">senna_sentence</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">SennaSentence</span><span class="op">&lt;</span><span class="lifetime">&#39;s</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+<span class="doccomment">/// A sentence in a document
+</span><span class="kw">pub struct </span>Sentence&lt;<span class="lifetime">&#39;s</span>&gt; {
+  <span class="doccomment">/// The range of the sentence
+  </span><span class="kw">pub </span>range: DNMRange&lt;<span class="lifetime">&#39;s</span>&gt;,
+  <span class="comment">// pub paragraph : &amp;&#39;s Paragraph&lt;&#39;s&gt;
+  </span><span class="doccomment">/// The document containing this sentence
+  </span><span class="kw">pub </span>document: <span class="kw-2">&amp;</span><span class="lifetime">&#39;s </span>Document&lt;<span class="lifetime">&#39;s</span>&gt;,
+  <span class="doccomment">/// If it exists, also the senna version of the sentence,
+  /// which can contain additional information such as
+  /// POS tags and syntactic parse trees
+  </span><span class="kw">pub </span>senna_sentence: <span class="prelude-ty">Option</span>&lt;SennaSentence&lt;<span class="lifetime">&#39;s</span>&gt;&gt;,
 }
 
-<span class="doccomment">/// An iterator over the words of a sentence, where the words are only defined</span>
-<span class="doccomment">/// by their ranges</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">SimpleWordIterator</span><span class="op">&lt;</span><span class="lifetime">&#39;iter</span><span class="op">&gt;</span> {
-  <span class="doccomment">/// The walker over the words</span>
-  <span class="ident">walker</span>: <span class="ident">IntoIter</span><span class="op">&lt;</span><span class="ident">DNMRange</span><span class="op">&lt;</span><span class="lifetime">&#39;iter</span><span class="op">&gt;</span><span class="op">&gt;</span>,
-  <span class="doccomment">/// The sentence containing the words</span>
-  <span class="kw">pub</span> <span class="ident">sentence</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;iter</span> <span class="ident">Sentence</span><span class="op">&lt;</span><span class="lifetime">&#39;iter</span><span class="op">&gt;</span>,
+<span class="doccomment">/// An iterator over the words of a sentence, where the words are only defined
+/// by their ranges
+</span><span class="kw">pub struct </span>SimpleWordIterator&lt;<span class="lifetime">&#39;iter</span>&gt; {
+  <span class="doccomment">/// The walker over the words
+  </span>walker: IntoIter&lt;DNMRange&lt;<span class="lifetime">&#39;iter</span>&gt;&gt;,
+  <span class="doccomment">/// The sentence containing the words
+  </span><span class="kw">pub </span>sentence: <span class="kw-2">&amp;</span><span class="lifetime">&#39;iter </span>Sentence&lt;<span class="lifetime">&#39;iter</span>&gt;,
 }
 
-<span class="doccomment">/// An iterator over the words of a sentence, where the words</span>
-<span class="doccomment">/// (and potentially additional information) are obtained using senna</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">SennaWordIterator</span><span class="op">&lt;</span><span class="lifetime">&#39;iter</span><span class="op">&gt;</span> {
-  <span class="comment">// walker : IntoIter&lt;SennaWord&lt;&#39;iter&gt;&gt;,</span>
-  <span class="doccomment">/// position of the next word</span>
-  <span class="ident">pos</span>: <span class="ident">usize</span>,
-  <span class="doccomment">/// The sentence we are iterating over</span>
-  <span class="kw">pub</span> <span class="ident">sentence</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;iter</span> <span class="ident">Sentence</span><span class="op">&lt;</span><span class="lifetime">&#39;iter</span><span class="op">&gt;</span>,
+<span class="doccomment">/// An iterator over the words of a sentence, where the words
+/// (and potentially additional information) are obtained using senna
+</span><span class="kw">pub struct </span>SennaWordIterator&lt;<span class="lifetime">&#39;iter</span>&gt; {
+  <span class="comment">// walker : IntoIter&lt;SennaWord&lt;&#39;iter&gt;&gt;,
+  </span><span class="doccomment">/// position of the next word
+  </span>pos: usize,
+  <span class="doccomment">/// The sentence we are iterating over
+  </span><span class="kw">pub </span>sentence: <span class="kw-2">&amp;</span><span class="lifetime">&#39;iter </span>Sentence&lt;<span class="lifetime">&#39;iter</span>&gt;,
 }
 
-<span class="doccomment">/// A word with a POS tag</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Word</span><span class="op">&lt;</span><span class="lifetime">&#39;w</span><span class="op">&gt;</span> {
-  <span class="doccomment">/// The range of the word</span>
-  <span class="kw">pub</span> <span class="ident">range</span>: <span class="ident">DNMRange</span><span class="op">&lt;</span><span class="lifetime">&#39;w</span><span class="op">&gt;</span>, <span class="comment">// &amp;&#39;w str, // should we use the DNMRange instead???</span>
-  <span class="doccomment">/// The sentence containing this word</span>
-  <span class="kw">pub</span> <span class="ident">sentence</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;w</span> <span class="ident">Sentence</span><span class="op">&lt;</span><span class="lifetime">&#39;w</span><span class="op">&gt;</span>,
-  <span class="doccomment">/// The part-of-speech tag of the word (or POS::NOT_SET)</span>
-  <span class="kw">pub</span> <span class="ident">pos</span>: <span class="ident">POS</span>,
+<span class="doccomment">/// A word with a POS tag
+</span><span class="kw">pub struct </span>Word&lt;<span class="lifetime">&#39;w</span>&gt; {
+  <span class="doccomment">/// The range of the word
+  </span><span class="kw">pub </span>range: DNMRange&lt;<span class="lifetime">&#39;w</span>&gt;, <span class="comment">// &amp;&#39;w str, // should we use the DNMRange instead???
+  </span><span class="doccomment">/// The sentence containing this word
+  </span><span class="kw">pub </span>sentence: <span class="kw-2">&amp;</span><span class="lifetime">&#39;w </span>Sentence&lt;<span class="lifetime">&#39;w</span>&gt;,
+  <span class="doccomment">/// The part-of-speech tag of the word (or POS::NOT_SET)
+  </span><span class="kw">pub </span>pos: POS,
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;iter</span><span class="op">&gt;</span> <span class="ident">Iterator</span> <span class="kw">for</span> <span class="ident">DocumentIterator</span><span class="op">&lt;</span><span class="lifetime">&#39;iter</span><span class="op">&gt;</span> {
-  <span class="kw">type</span> <span class="ident">Item</span> <span class="op">=</span> <span class="ident">Document</span><span class="op">&lt;</span><span class="lifetime">&#39;iter</span><span class="op">&gt;</span>;
-  <span class="kw">fn</span> <span class="ident">next</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Document</span><span class="op">&lt;</span><span class="lifetime">&#39;iter</span><span class="op">&gt;</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="ident">walker</span> <span class="op">=</span> <span class="kw-2">&amp;mut</span> <span class="self">self</span>.<span class="ident">walker</span>;
-    <span class="kw">loop</span> {
-      <span class="kw">let</span> <span class="ident">next_entry</span> <span class="op">=</span> <span class="ident">walker</span>.<span class="ident">next</span>();
-      <span class="kw">if</span> <span class="ident">next_entry</span>.<span class="ident">is_none</span>() {
+<span class="kw">impl</span>&lt;<span class="lifetime">&#39;iter</span>&gt; Iterator <span class="kw">for </span>DocumentIterator&lt;<span class="lifetime">&#39;iter</span>&gt; {
+  <span class="kw">type </span>Item = Document&lt;<span class="lifetime">&#39;iter</span>&gt;;
+  <span class="kw">fn </span>next(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;Document&lt;<span class="lifetime">&#39;iter</span>&gt;&gt; {
+    <span class="kw">let </span>walker = <span class="kw-2">&amp;mut </span><span class="self">self</span>.walker;
+    <span class="kw">loop </span>{
+      <span class="kw">let </span>next_entry = walker.next();
+      <span class="kw">if </span>next_entry.is_none() {
         <span class="kw">break</span>;
-      } <span class="kw">else</span> <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="prelude-val">Ok</span>(<span class="kw-2">ref</span> <span class="ident">entry</span>)) <span class="op">=</span> <span class="ident">next_entry</span> {
-        <span class="kw">let</span> <span class="ident">file_name</span> <span class="op">=</span> <span class="ident">entry</span>.<span class="ident">file_name</span>().<span class="ident">to_str</span>().<span class="ident">unwrap_or</span>(<span class="string">&quot;&quot;</span>).<span class="ident">to_owned</span>();
-        <span class="kw">let</span> <span class="ident">selected</span> <span class="op">=</span> <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">extension</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">corpus</span>.<span class="ident">extension</span> {
-          <span class="ident">file_name</span>.<span class="ident">ends_with</span>(<span class="ident">extension</span>)
-        } <span class="kw">else</span> {
-          <span class="ident">file_name</span>.<span class="ident">ends_with</span>(<span class="string">&quot;.html&quot;</span>) <span class="op">|</span><span class="op">|</span> <span class="ident">file_name</span>.<span class="ident">ends_with</span>(<span class="string">&quot;.xhtml&quot;</span>)
+      } <span class="kw">else if let </span><span class="prelude-val">Some</span>(<span class="prelude-val">Ok</span>(<span class="kw-2">ref </span>entry)) = next_entry {
+        <span class="kw">let </span>file_name = entry.file_name().to_str().unwrap_or(<span class="string">&quot;&quot;</span>).to_owned();
+        <span class="kw">let </span>selected = <span class="kw">if let </span><span class="prelude-val">Some</span>(<span class="kw-2">ref </span>extension) = <span class="self">self</span>.corpus.extension {
+          file_name.ends_with(extension)
+        } <span class="kw">else </span>{
+          file_name.ends_with(<span class="string">&quot;.html&quot;</span>) || file_name.ends_with(<span class="string">&quot;.xhtml&quot;</span>)
         };
-        <span class="kw">if</span> <span class="ident">selected</span> {
-          <span class="kw">let</span> <span class="ident">path</span> <span class="op">=</span> <span class="ident">entry</span>.<span class="ident">path</span>().<span class="ident">to_str</span>().<span class="ident">unwrap_or</span>(<span class="string">&quot;&quot;</span>).<span class="ident">to_owned</span>();
-          <span class="kw">let</span> <span class="ident">doc_result</span> <span class="op">=</span> <span class="ident">Document::new</span>(<span class="ident">path</span>, <span class="self">self</span>.<span class="ident">corpus</span>);
-          <span class="kw">return</span> <span class="kw">match</span> <span class="ident">doc_result</span> {
-            <span class="prelude-val">Ok</span>(<span class="ident">doc</span>) =&gt; <span class="prelude-val">Some</span>(<span class="ident">doc</span>),
-            <span class="comment">// TODO: Currently encountering an unparseable file will terminate the entire corpus</span>
-            <span class="comment">// walk, which is too severe.</span>
-            <span class="comment">// A more viable strategy would be to 1) retry creating the document once and 2)</span>
-            <span class="comment">// print an error message and continue the walk</span>
-            <span class="kw">_</span> =&gt; <span class="prelude-val">None</span>,
+        <span class="kw">if </span>selected {
+          <span class="kw">let </span>path = entry.path().to_str().unwrap_or(<span class="string">&quot;&quot;</span>).to_owned();
+          <span class="kw">let </span>doc_result = Document::new(path, <span class="self">self</span>.corpus);
+          <span class="kw">return match </span>doc_result {
+            <span class="prelude-val">Ok</span>(doc) =&gt; <span class="prelude-val">Some</span>(doc),
+            <span class="comment">// TODO: Currently encountering an unparseable file will terminate the entire corpus
+            // walk, which is too severe.
+            // A more viable strategy would be to 1) retry creating the document once and 2)
+            // print an error message and continue the walk
+            </span><span class="kw">_ </span>=&gt; <span class="prelude-val">None</span>,
           };
         }
-      } <span class="kw">else</span> {
-        <span class="macro">println!</span>(<span class="string">&quot;-- Error while walking for entry: {:?}&quot;</span>, <span class="ident">next_entry</span>)
+      } <span class="kw">else </span>{
+        <span class="macro">println!</span>(<span class="string">&quot;-- Error while walking for entry: {:?}&quot;</span>, next_entry)
       }
     }
-    <span class="prelude-val">None</span>
-  }
+    <span class="prelude-val">None
+  </span>}
 }
 
-<span class="kw">impl</span> <span class="ident">Default</span> <span class="kw">for</span> <span class="ident">Corpus</span> {
-  <span class="kw">fn</span> <span class="ident">default</span>() -&gt; <span class="ident">Corpus</span> {
-    <span class="ident">Corpus</span> {
-      <span class="ident">extension</span>: <span class="prelude-val">None</span>,
-      <span class="ident">path</span>: <span class="string">&quot;.&quot;</span>.<span class="ident">to_string</span>(),
-      <span class="ident">tokenizer</span>: <span class="ident">Tokenizer::default</span>(),
-      <span class="ident">xml_parser</span>: <span class="ident">Parser::default</span>(),
-      <span class="ident">html_parser</span>: <span class="ident">Parser::default_html</span>(),
-      <span class="ident">senna</span>: <span class="ident">RefCell::new</span>(<span class="ident">Senna::new</span>(<span class="ident">SENNA_PATH</span>.<span class="ident">to_owned</span>())),
-      <span class="ident">senna_options</span>: <span class="ident">Cell::new</span>(<span class="ident">SennaParseOptions::default</span>()),
-      <span class="ident">dnm_parameters</span>: <span class="ident">DNMParameters::llamapun_normalization</span>(),
+<span class="kw">impl </span>Default <span class="kw">for </span>Corpus {
+  <span class="kw">fn </span>default() -&gt; Corpus {
+    Corpus {
+      extension: <span class="prelude-val">None</span>,
+      path: <span class="string">&quot;.&quot;</span>.to_string(),
+      tokenizer: Tokenizer::default(),
+      xml_parser: Parser::default(),
+      html_parser: Parser::default_html(),
+      senna: RefCell::new(Senna::new(SENNA_PATH.to_owned())),
+      senna_options: Cell::new(SennaParseOptions::default()),
+      dnm_parameters: DNMParameters::llamapun_normalization(),
     }
   }
 }
 
-<span class="kw">impl</span> <span class="ident">Corpus</span> {
-  <span class="doccomment">/// Create a new corpus with the base directory `dirpath`</span>
-  <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">dirpath</span>: <span class="ident">String</span>) -&gt; <span class="self">Self</span> {
-    <span class="ident">Corpus</span> {
-      <span class="ident">path</span>: <span class="ident">dirpath</span>,
-      ..<span class="ident">Corpus::default</span>()
+<span class="kw">impl </span>Corpus {
+  <span class="doccomment">/// Create a new corpus with the base directory `dirpath`
+  </span><span class="kw">pub fn </span>new(dirpath: String) -&gt; <span class="self">Self </span>{
+    Corpus {
+      path: dirpath,
+      ..Corpus::default()
     }
   }
 
-  <span class="doccomment">/// Get an iterator over the documents</span>
-  <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">iter</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="ident">DocumentIterator</span> {
-    <span class="ident">DocumentIterator</span> {
-      <span class="ident">walker</span>: <span class="ident">Box::new</span>(<span class="ident">WalkDir::new</span>(<span class="self">self</span>.<span class="ident">path</span>.<span class="ident">clone</span>()).<span class="ident">into_iter</span>()),
-      <span class="ident">corpus</span>: <span class="self">self</span>,
+  <span class="doccomment">/// Get an iterator over the documents
+  </span><span class="kw">pub fn </span>iter(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; DocumentIterator {
+    DocumentIterator {
+      walker: Box::new(WalkDir::new(<span class="self">self</span>.path.clone()).into_iter()),
+      corpus: <span class="self">self</span>,
     }
   }
 
-  <span class="doccomment">/// Load a specific document in the corpus</span>
-  <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">load_doc</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">path</span>: <span class="ident">String</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Document</span>, <span class="ident">XmlParseError</span><span class="op">&gt;</span> {
-    <span class="ident">Document::new</span>(<span class="ident">path</span>, <span class="self">self</span>)
+  <span class="doccomment">/// Load a specific document in the corpus
+  </span><span class="kw">pub fn </span>load_doc(<span class="kw-2">&amp;</span><span class="self">self</span>, path: String) -&gt; <span class="prelude-ty">Result</span>&lt;Document, XmlParseError&gt; {
+    Document::new(path, <span class="self">self</span>)
   }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;d</span><span class="op">&gt;</span> <span class="ident">Document</span><span class="op">&lt;</span><span class="lifetime">&#39;d</span><span class="op">&gt;</span> {
-  <span class="doccomment">/// Load a new document</span>
-  <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">filepath</span>: <span class="ident">String</span>, <span class="ident">corpus</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;d</span> <span class="ident">Corpus</span>) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span>, <span class="ident">XmlParseError</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="ident">dom</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">filepath</span>.<span class="ident">ends_with</span>(<span class="string">&quot;.xhtml&quot;</span>) {
-      <span class="ident">corpus</span>.<span class="ident">xml_parser</span>.<span class="ident">parse_file</span>(<span class="kw-2">&amp;</span><span class="ident">filepath</span>)<span class="question-mark">?</span>
-    } <span class="kw">else</span> {
-      <span class="ident">corpus</span>.<span class="ident">html_parser</span>.<span class="ident">parse_file</span>(<span class="kw-2">&amp;</span><span class="ident">filepath</span>)<span class="question-mark">?</span>
-    };
+<span class="kw">impl</span>&lt;<span class="lifetime">&#39;d</span>&gt; Document&lt;<span class="lifetime">&#39;d</span>&gt; {
+  <span class="doccomment">/// Load a new document
+  </span><span class="kw">pub fn </span>new(filepath: String, corpus: <span class="kw-2">&amp;</span><span class="lifetime">&#39;d </span>Corpus) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, XmlParseError&gt; {
+    <span class="kw">let </span>dom = <span class="kw">if </span>filepath.ends_with(<span class="string">&quot;.xhtml&quot;</span>) {
+      corpus.xml_parser.parse_file(<span class="kw-2">&amp;</span>filepath)<span class="question-mark">?
+    </span>} <span class="kw">else </span>{
+      corpus.html_parser.parse_file(<span class="kw-2">&amp;</span>filepath)<span class="question-mark">?
+    </span>};
 
-    <span class="prelude-val">Ok</span>(<span class="ident">Document</span> {
-      <span class="ident">path</span>: <span class="ident">filepath</span>,
-      <span class="ident">dom</span>,
-      <span class="ident">corpus</span>,
-      <span class="ident">dnm</span>: <span class="prelude-val">None</span>,
+    <span class="prelude-val">Ok</span>(Document {
+      path: filepath,
+      dom,
+      corpus,
+      dnm: <span class="prelude-val">None</span>,
     })
   }
 
-  <span class="doccomment">/// Obtain the problem-free logical paragraphs of a libxml `Document`</span>
-  <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">paragraph_nodes</span>(<span class="ident">doc</span>: <span class="kw-2">&amp;</span><span class="ident">XmlDoc</span>) -&gt; <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">RoNode</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="ident">xpath_context</span> <span class="op">=</span> <span class="ident">Context::new</span>(<span class="ident">doc</span>).<span class="ident">unwrap</span>();
-    <span class="kw">match</span> <span class="ident">xpath_context</span>.<span class="ident">evaluate</span>(
+  <span class="doccomment">/// Obtain the problem-free logical paragraphs of a libxml `Document`
+  </span><span class="kw">pub fn </span>paragraph_nodes(doc: <span class="kw-2">&amp;</span>XmlDoc) -&gt; Vec&lt;RoNode&gt; {
+    <span class="kw">let </span>xpath_context = Context::new(doc).unwrap();
+    <span class="kw">match </span>xpath_context.evaluate(
       <span class="string">&quot;//*[local-name()=&#39;div&#39; and contains(@class,&#39;ltx_para&#39;) and not(descendant::*[contains(@class,&#39;ltx_ERROR&#39;)]) and not(preceding-sibling::*[contains(@class,&#39;ltx_ERROR&#39;)])]&quot;</span>,
     ) {
-      <span class="prelude-val">Ok</span>(<span class="ident">found_payload</span>) =&gt; <span class="ident">found_payload</span>.<span class="ident">get_readonly_nodes_as_vec</span>(),
-      <span class="kw">_</span> =&gt; <span class="ident">Vec::new</span>(),
+      <span class="prelude-val">Ok</span>(found_payload) =&gt; found_payload.get_readonly_nodes_as_vec(),
+      <span class="kw">_ </span>=&gt; Vec::new(),
     }
   }
 
-  <span class="doccomment">/// Get an iterator over the paragraphs of the document</span>
-  <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">paragraph_iter</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="ident">ParagraphIterator</span> {
-    <span class="kw">let</span> <span class="ident">paras</span> <span class="op">=</span> <span class="ident">Document::paragraph_nodes</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">dom</span>);
-    <span class="ident">ParagraphIterator</span> {
-      <span class="ident">walker</span>: <span class="ident">paras</span>.<span class="ident">into_iter</span>(),
-      <span class="ident">document</span>: <span class="self">self</span>,
+  <span class="doccomment">/// Get an iterator over the paragraphs of the document
+  </span><span class="kw">pub fn </span>paragraph_iter(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; ParagraphIterator {
+    <span class="kw">let </span>paras = Document::paragraph_nodes(<span class="kw-2">&amp;</span><span class="self">self</span>.dom);
+    ParagraphIterator {
+      walker: paras.into_iter(),
+      document: <span class="self">self</span>,
     }
   }
 
-  <span class="doccomment">/// Obtain the MathML &lt;math&gt; nodes of a libxml `Document`</span>
-  <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_math_nodes</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">RoNode</span><span class="op">&gt;</span> { <span class="ident">Document::math_nodes</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">dom</span>) }
+  <span class="doccomment">/// Obtain the MathML &lt;math&gt; nodes of a libxml `Document`
+  </span><span class="kw">pub fn </span>get_math_nodes(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Vec&lt;RoNode&gt; { Document::math_nodes(<span class="kw-2">&amp;</span><span class="self">self</span>.dom) }
 
-  <span class="doccomment">/// Associated function for `get_math_nodes`</span>
-  <span class="kw">fn</span> <span class="ident">math_nodes</span>(<span class="ident">doc</span>: <span class="kw-2">&amp;</span><span class="ident">XmlDoc</span>) -&gt; <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">RoNode</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="ident">xpath_context</span> <span class="op">=</span> <span class="ident">Context::new</span>(<span class="ident">doc</span>).<span class="ident">unwrap</span>();
-    <span class="kw">match</span> <span class="ident">xpath_context</span>.<span class="ident">evaluate</span>(<span class="string">&quot;//*[local-name()=&#39;math&#39;]&quot;</span>) {
-      <span class="prelude-val">Ok</span>(<span class="ident">found_payload</span>) =&gt; <span class="ident">found_payload</span>.<span class="ident">get_readonly_nodes_as_vec</span>(),
-      <span class="kw">_</span> =&gt; <span class="ident">Vec::new</span>(),
+  <span class="doccomment">/// Associated function for `get_math_nodes`
+  </span><span class="kw">fn </span>math_nodes(doc: <span class="kw-2">&amp;</span>XmlDoc) -&gt; Vec&lt;RoNode&gt; {
+    <span class="kw">let </span>xpath_context = Context::new(doc).unwrap();
+    <span class="kw">match </span>xpath_context.evaluate(<span class="string">&quot;//*[local-name()=&#39;math&#39;]&quot;</span>) {
+      <span class="prelude-val">Ok</span>(found_payload) =&gt; found_payload.get_readonly_nodes_as_vec(),
+      <span class="kw">_ </span>=&gt; Vec::new(),
     }
   }
-  <span class="doccomment">/// Obtain the &lt;span[class=ltx_ref]&gt; nodes of a libxml `Document`</span>
-  <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_ref_nodes</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">RoNode</span><span class="op">&gt;</span> { <span class="ident">Document::ref_nodes</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">dom</span>) }
-  <span class="doccomment">/// Associated function for `get_ref_nodes`</span>
-  <span class="kw">fn</span> <span class="ident">ref_nodes</span>(<span class="ident">doc</span>: <span class="kw-2">&amp;</span><span class="ident">XmlDoc</span>) -&gt; <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">RoNode</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="ident">xpath_context</span> <span class="op">=</span> <span class="ident">Context::new</span>(<span class="ident">doc</span>).<span class="ident">unwrap</span>();
-    <span class="kw">match</span> <span class="ident">xpath_context</span>.<span class="ident">evaluate</span>(<span class="string">&quot;//*[(local-name()=&#39;span&#39; or local-name()=&#39;a&#39;) and (contains(@class,&#39;ltx_ref &#39;) or @class=&#39;ltx_ref&#39;)]&quot;</span>) {
-      <span class="prelude-val">Ok</span>(<span class="ident">found_payload</span>) =&gt; <span class="ident">found_payload</span>.<span class="ident">get_readonly_nodes_as_vec</span>(),
-      <span class="kw">_</span> =&gt; <span class="ident">Vec::new</span>(),
+  <span class="doccomment">/// Obtain the &lt;span[class=ltx_ref]&gt; nodes of a libxml `Document`
+  </span><span class="kw">pub fn </span>get_ref_nodes(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Vec&lt;RoNode&gt; { Document::ref_nodes(<span class="kw-2">&amp;</span><span class="self">self</span>.dom) }
+  <span class="doccomment">/// Associated function for `get_ref_nodes`
+  </span><span class="kw">fn </span>ref_nodes(doc: <span class="kw-2">&amp;</span>XmlDoc) -&gt; Vec&lt;RoNode&gt; {
+    <span class="kw">let </span>xpath_context = Context::new(doc).unwrap();
+    <span class="kw">match </span>xpath_context.evaluate(<span class="string">&quot;//*[(local-name()=&#39;span&#39; or local-name()=&#39;a&#39;) and (contains(@class,&#39;ltx_ref &#39;) or @class=&#39;ltx_ref&#39;)]&quot;</span>) {
+      <span class="prelude-val">Ok</span>(found_payload) =&gt; found_payload.get_readonly_nodes_as_vec(),
+      <span class="kw">_ </span>=&gt; Vec::new(),
     }
   }
 
-  <span class="doccomment">/// Get an iterator over the sentences of the document</span>
-  <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">sentence_iter</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="ident">SentenceIterator</span> {
-    <span class="kw">if</span> <span class="self">self</span>.<span class="ident">dnm</span>.<span class="ident">is_none</span>() {
-      <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">root</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">dom</span>.<span class="ident">get_root_readonly</span>() {
-        <span class="self">self</span>.<span class="ident">dnm</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">DNM::new</span>(<span class="ident">root</span>, <span class="self">self</span>.<span class="ident">corpus</span>.<span class="ident">dnm_parameters</span>.<span class="ident">clone</span>()));
+  <span class="doccomment">/// Get an iterator over the sentences of the document
+  </span><span class="kw">pub fn </span>sentence_iter(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; SentenceIterator {
+    <span class="kw">if </span><span class="self">self</span>.dnm.is_none() {
+      <span class="kw">if let </span><span class="prelude-val">Some</span>(root) = <span class="self">self</span>.dom.get_root_readonly() {
+        <span class="self">self</span>.dnm = <span class="prelude-val">Some</span>(DNM::new(root, <span class="self">self</span>.corpus.dnm_parameters.clone()));
       }
     }
-    <span class="kw">let</span> <span class="ident">tokenizer</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">corpus</span>.<span class="ident">tokenizer</span>;
-    <span class="kw">let</span> <span class="ident">sentences</span> <span class="op">=</span> <span class="ident">tokenizer</span>.<span class="ident">sentences</span>(<span class="self">self</span>.<span class="ident">dnm</span>.<span class="ident">as_ref</span>().<span class="ident">unwrap</span>());
-    <span class="ident">SentenceIterator</span> {
-      <span class="ident">walker</span>: <span class="ident">sentences</span>.<span class="ident">into_iter</span>(),
-      <span class="ident">document</span>: <span class="self">self</span>,
+    <span class="kw">let </span>tokenizer = <span class="kw-2">&amp;</span><span class="self">self</span>.corpus.tokenizer;
+    <span class="kw">let </span>sentences = tokenizer.sentences(<span class="self">self</span>.dnm.as_ref().unwrap());
+    SentenceIterator {
+      walker: sentences.into_iter(),
+      document: <span class="self">self</span>,
     }
   }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;iter</span><span class="op">&gt;</span> <span class="ident">Iterator</span> <span class="kw">for</span> <span class="ident">ParagraphIterator</span><span class="op">&lt;</span><span class="lifetime">&#39;iter</span><span class="op">&gt;</span> {
-  <span class="kw">type</span> <span class="ident">Item</span> <span class="op">=</span> <span class="ident">Paragraph</span><span class="op">&lt;</span><span class="lifetime">&#39;iter</span><span class="op">&gt;</span>;
-  <span class="kw">fn</span> <span class="ident">next</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Paragraph</span><span class="op">&lt;</span><span class="lifetime">&#39;iter</span><span class="op">&gt;</span><span class="op">&gt;</span> {
-    <span class="kw">match</span> <span class="self">self</span>.<span class="ident">walker</span>.<span class="ident">next</span>() {
-      <span class="prelude-val">None</span> =&gt; <span class="prelude-val">None</span>,
-      <span class="prelude-val">Some</span>(<span class="ident">node</span>) =&gt; {
-        <span class="comment">// Create a DNM for the current paragraph</span>
-        <span class="kw">let</span> <span class="ident">dnm</span> <span class="op">=</span> <span class="ident">DNM::new</span>(<span class="ident">node</span>, <span class="ident">DNMParameters::llamapun_normalization</span>());
-        <span class="prelude-val">Some</span>(<span class="ident">Paragraph</span> {
-          <span class="ident">dnm</span>,
-          <span class="ident">document</span>: <span class="self">self</span>.<span class="ident">document</span>,
+<span class="kw">impl</span>&lt;<span class="lifetime">&#39;iter</span>&gt; Iterator <span class="kw">for </span>ParagraphIterator&lt;<span class="lifetime">&#39;iter</span>&gt; {
+  <span class="kw">type </span>Item = Paragraph&lt;<span class="lifetime">&#39;iter</span>&gt;;
+  <span class="kw">fn </span>next(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;Paragraph&lt;<span class="lifetime">&#39;iter</span>&gt;&gt; {
+    <span class="kw">match </span><span class="self">self</span>.walker.next() {
+      <span class="prelude-val">None </span>=&gt; <span class="prelude-val">None</span>,
+      <span class="prelude-val">Some</span>(node) =&gt; {
+        <span class="comment">// Create a DNM for the current paragraph
+        </span><span class="kw">let </span>dnm = DNM::new(node, DNMParameters::llamapun_normalization());
+        <span class="prelude-val">Some</span>(Paragraph {
+          dnm,
+          document: <span class="self">self</span>.document,
         })
       },
     }
   }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;p</span><span class="op">&gt;</span> <span class="ident">Paragraph</span><span class="op">&lt;</span><span class="lifetime">&#39;p</span><span class="op">&gt;</span> {
-  <span class="doccomment">/// Get an iterator over the sentences in this paragraph</span>
-  <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">iter</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;p</span> <span class="kw-2">mut</span> <span class="self">self</span>) -&gt; <span class="ident">SentenceIterator</span><span class="op">&lt;</span><span class="lifetime">&#39;p</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="ident">tokenizer</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">document</span>.<span class="ident">corpus</span>.<span class="ident">tokenizer</span>;
-    <span class="kw">let</span> <span class="ident">sentences</span> <span class="op">=</span> <span class="ident">tokenizer</span>.<span class="ident">sentences</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">dnm</span>);
-    <span class="ident">SentenceIterator</span> {
-      <span class="ident">walker</span>: <span class="ident">sentences</span>.<span class="ident">into_iter</span>(),
-      <span class="ident">document</span>: <span class="self">self</span>.<span class="ident">document</span>,
+<span class="kw">impl</span>&lt;<span class="lifetime">&#39;p</span>&gt; Paragraph&lt;<span class="lifetime">&#39;p</span>&gt; {
+  <span class="doccomment">/// Get an iterator over the sentences in this paragraph
+  </span><span class="kw">pub fn </span>iter(<span class="kw-2">&amp;</span><span class="lifetime">&#39;p </span><span class="kw-2">mut </span><span class="self">self</span>) -&gt; SentenceIterator&lt;<span class="lifetime">&#39;p</span>&gt; {
+    <span class="kw">let </span>tokenizer = <span class="kw-2">&amp;</span><span class="self">self</span>.document.corpus.tokenizer;
+    <span class="kw">let </span>sentences = tokenizer.sentences(<span class="kw-2">&amp;</span><span class="self">self</span>.dnm);
+    SentenceIterator {
+      walker: sentences.into_iter(),
+      document: <span class="self">self</span>.document,
     }
   }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;iter</span><span class="op">&gt;</span> <span class="ident">Iterator</span> <span class="kw">for</span> <span class="ident">SentenceIterator</span><span class="op">&lt;</span><span class="lifetime">&#39;iter</span><span class="op">&gt;</span> {
-  <span class="kw">type</span> <span class="ident">Item</span> <span class="op">=</span> <span class="ident">Sentence</span><span class="op">&lt;</span><span class="lifetime">&#39;iter</span><span class="op">&gt;</span>;
-  <span class="kw">fn</span> <span class="ident">next</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Sentence</span><span class="op">&lt;</span><span class="lifetime">&#39;iter</span><span class="op">&gt;</span><span class="op">&gt;</span> {
-    <span class="kw">match</span> <span class="self">self</span>.<span class="ident">walker</span>.<span class="ident">next</span>() {
-      <span class="prelude-val">None</span> =&gt; <span class="prelude-val">None</span>,
-      <span class="prelude-val">Some</span>(<span class="ident">range</span>) =&gt; {
-        <span class="kw">if</span> <span class="ident">range</span>.<span class="ident">is_empty</span>() {
-          <span class="self">self</span>.<span class="ident">next</span>()
-        } <span class="kw">else</span> {
-          <span class="kw">let</span> <span class="ident">sentence</span> <span class="op">=</span> <span class="ident">Sentence</span> {
-            <span class="ident">range</span>,
-            <span class="ident">document</span>: <span class="self">self</span>.<span class="ident">document</span>,
-            <span class="ident">senna_sentence</span>: <span class="prelude-val">None</span>,
+<span class="kw">impl</span>&lt;<span class="lifetime">&#39;iter</span>&gt; Iterator <span class="kw">for </span>SentenceIterator&lt;<span class="lifetime">&#39;iter</span>&gt; {
+  <span class="kw">type </span>Item = Sentence&lt;<span class="lifetime">&#39;iter</span>&gt;;
+  <span class="kw">fn </span>next(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;Sentence&lt;<span class="lifetime">&#39;iter</span>&gt;&gt; {
+    <span class="kw">match </span><span class="self">self</span>.walker.next() {
+      <span class="prelude-val">None </span>=&gt; <span class="prelude-val">None</span>,
+      <span class="prelude-val">Some</span>(range) =&gt; {
+        <span class="kw">if </span>range.is_empty() {
+          <span class="self">self</span>.next()
+        } <span class="kw">else </span>{
+          <span class="kw">let </span>sentence = Sentence {
+            range,
+            document: <span class="self">self</span>.document,
+            senna_sentence: <span class="prelude-val">None</span>,
           };
-          <span class="prelude-val">Some</span>(<span class="ident">sentence</span>)
+          <span class="prelude-val">Some</span>(sentence)
         }
       },
     }
   }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;s</span><span class="op">&gt;</span> <span class="ident">Sentence</span><span class="op">&lt;</span><span class="lifetime">&#39;s</span><span class="op">&gt;</span> {
-  <span class="doccomment">/// Get an iterator over the words (using rudimentary heuristics)</span>
-  <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">simple_iter</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;s</span> <span class="kw-2">mut</span> <span class="self">self</span>) -&gt; <span class="ident">SimpleWordIterator</span><span class="op">&lt;</span><span class="lifetime">&#39;s</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="ident">tokenizer</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">document</span>.<span class="ident">corpus</span>.<span class="ident">tokenizer</span>;
-    <span class="kw">let</span> <span class="ident">words</span> <span class="op">=</span> <span class="ident">tokenizer</span>.<span class="ident">words</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">range</span>);
-    <span class="ident">SimpleWordIterator</span> {
-      <span class="ident">walker</span>: <span class="ident">words</span>.<span class="ident">into_iter</span>(),
-      <span class="ident">sentence</span>: <span class="self">self</span>,
+<span class="kw">impl</span>&lt;<span class="lifetime">&#39;s</span>&gt; Sentence&lt;<span class="lifetime">&#39;s</span>&gt; {
+  <span class="doccomment">/// Get an iterator over the words (using rudimentary heuristics)
+  </span><span class="kw">pub fn </span>simple_iter(<span class="kw-2">&amp;</span><span class="lifetime">&#39;s </span><span class="kw-2">mut </span><span class="self">self</span>) -&gt; SimpleWordIterator&lt;<span class="lifetime">&#39;s</span>&gt; {
+    <span class="kw">let </span>tokenizer = <span class="kw-2">&amp;</span><span class="self">self</span>.document.corpus.tokenizer;
+    <span class="kw">let </span>words = tokenizer.words(<span class="kw-2">&amp;</span><span class="self">self</span>.range);
+    SimpleWordIterator {
+      walker: words.into_iter(),
+      sentence: <span class="self">self</span>,
     }
   }
 
-  <span class="doccomment">/// Get an iterator over the words using Senna</span>
-  <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">senna_iter</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;s</span> <span class="kw-2">mut</span> <span class="self">self</span>) -&gt; <span class="ident">SennaWordIterator</span><span class="op">&lt;</span><span class="lifetime">&#39;s</span><span class="op">&gt;</span> {
-    <span class="ident">SennaWordIterator</span> {
-      <span class="ident">pos</span>: <span class="number">0usize</span>,
-      <span class="ident">sentence</span>: <span class="kw">if</span> <span class="self">self</span>.<span class="ident">senna_sentence</span>.<span class="ident">is_none</span>() {
-        <span class="self">self</span>.<span class="ident">senna_parse</span>()
-      } <span class="kw">else</span> {
-        <span class="self">self</span>
-      },
+  <span class="doccomment">/// Get an iterator over the words using Senna
+  </span><span class="kw">pub fn </span>senna_iter(<span class="kw-2">&amp;</span><span class="lifetime">&#39;s </span><span class="kw-2">mut </span><span class="self">self</span>) -&gt; SennaWordIterator&lt;<span class="lifetime">&#39;s</span>&gt; {
+    SennaWordIterator {
+      pos: <span class="number">0usize</span>,
+      sentence: <span class="kw">if </span><span class="self">self</span>.senna_sentence.is_none() {
+        <span class="self">self</span>.senna_parse()
+      } <span class="kw">else </span>{
+        <span class="self">self
+      </span>},
     }
   }
 
-  <span class="doccomment">/// Parses the sentence using Senna. The parse options are set in the `Corpus`</span>
-  <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">senna_parse</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;s</span> <span class="kw-2">mut</span> <span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="self">Self</span> {
-    <span class="self">self</span>.<span class="ident">senna_sentence</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="self">self</span>.<span class="ident">document</span>.<span class="ident">corpus</span>.<span class="ident">senna</span>.<span class="ident">borrow_mut</span>().<span class="ident">parse</span>(
-      <span class="self">self</span>.<span class="ident">range</span>.<span class="ident">get_plaintext</span>(),
-      <span class="self">self</span>.<span class="ident">document</span>.<span class="ident">corpus</span>.<span class="ident">senna_options</span>.<span class="ident">get</span>(),
+  <span class="doccomment">/// Parses the sentence using Senna. The parse options are set in the `Corpus`
+  </span><span class="kw">pub fn </span>senna_parse(<span class="kw-2">&amp;</span><span class="lifetime">&#39;s </span><span class="kw-2">mut </span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="self">Self </span>{
+    <span class="self">self</span>.senna_sentence = <span class="prelude-val">Some</span>(<span class="self">self</span>.document.corpus.senna.borrow_mut().parse(
+      <span class="self">self</span>.range.get_plaintext(),
+      <span class="self">self</span>.document.corpus.senna_options.get(),
     ));
-    <span class="self">self</span>
-  }
+    <span class="self">self
+  </span>}
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;iter</span><span class="op">&gt;</span> <span class="ident">Iterator</span> <span class="kw">for</span> <span class="ident">SimpleWordIterator</span><span class="op">&lt;</span><span class="lifetime">&#39;iter</span><span class="op">&gt;</span> {
-  <span class="kw">type</span> <span class="ident">Item</span> <span class="op">=</span> <span class="ident">Word</span><span class="op">&lt;</span><span class="lifetime">&#39;iter</span><span class="op">&gt;</span>;
-  <span class="kw">fn</span> <span class="ident">next</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Word</span><span class="op">&lt;</span><span class="lifetime">&#39;iter</span><span class="op">&gt;</span><span class="op">&gt;</span> {
-    <span class="kw">match</span> <span class="self">self</span>.<span class="ident">walker</span>.<span class="ident">next</span>() {
-      <span class="prelude-val">None</span> =&gt; <span class="prelude-val">None</span>,
-      <span class="prelude-val">Some</span>(<span class="ident">range</span>) =&gt; <span class="prelude-val">Some</span>(<span class="ident">Word</span> {
-        <span class="ident">range</span>,
-        <span class="ident">sentence</span>: <span class="self">self</span>.<span class="ident">sentence</span>,
-        <span class="ident">pos</span>: <span class="ident">POS::NOT_SET</span>,
+<span class="kw">impl</span>&lt;<span class="lifetime">&#39;iter</span>&gt; Iterator <span class="kw">for </span>SimpleWordIterator&lt;<span class="lifetime">&#39;iter</span>&gt; {
+  <span class="kw">type </span>Item = Word&lt;<span class="lifetime">&#39;iter</span>&gt;;
+  <span class="kw">fn </span>next(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;Word&lt;<span class="lifetime">&#39;iter</span>&gt;&gt; {
+    <span class="kw">match </span><span class="self">self</span>.walker.next() {
+      <span class="prelude-val">None </span>=&gt; <span class="prelude-val">None</span>,
+      <span class="prelude-val">Some</span>(range) =&gt; <span class="prelude-val">Some</span>(Word {
+        range,
+        sentence: <span class="self">self</span>.sentence,
+        pos: POS::NOT_SET,
       }),
     }
   }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;iter</span><span class="op">&gt;</span> <span class="ident">Iterator</span> <span class="kw">for</span> <span class="ident">SennaWordIterator</span><span class="op">&lt;</span><span class="lifetime">&#39;iter</span><span class="op">&gt;</span> {
-  <span class="kw">type</span> <span class="ident">Item</span> <span class="op">=</span> <span class="ident">Word</span><span class="op">&lt;</span><span class="lifetime">&#39;iter</span><span class="op">&gt;</span>;
-  <span class="kw">fn</span> <span class="ident">next</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Word</span><span class="op">&lt;</span><span class="lifetime">&#39;iter</span><span class="op">&gt;</span><span class="op">&gt;</span> {
-    <span class="comment">// match self.walker.next() {</span>
-    <span class="kw">let</span> <span class="ident">pos</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">pos</span>;
-    <span class="self">self</span>.<span class="ident">pos</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
-    <span class="kw">let</span> <span class="ident">sent</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">sentence</span>;
-    <span class="kw">let</span> <span class="ident">sen_sent_wrapped</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">sent</span>.<span class="ident">senna_sentence</span>;
-    <span class="kw">let</span> <span class="ident">sen_sent</span> <span class="op">=</span> <span class="ident">sen_sent_wrapped</span>.<span class="ident">as_ref</span>().<span class="ident">unwrap</span>();
-    <span class="kw">if</span> <span class="ident">pos</span> <span class="op">&lt;</span> <span class="ident">sen_sent</span>.<span class="ident">get_words</span>().<span class="ident">len</span>() {
-      <span class="kw">let</span> <span class="ident">senna_word</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">sen_sent</span>.<span class="ident">get_words</span>()[<span class="ident">pos</span>];
-      <span class="kw">let</span> <span class="ident">range</span> <span class="op">=</span> <span class="self">self</span>
-        .<span class="ident">sentence</span>
-        .<span class="ident">range</span>
-        .<span class="ident">get_subrange_from_byte_offsets</span>(<span class="ident">senna_word</span>.<span class="ident">get_offset_start</span>(), <span class="ident">senna_word</span>.<span class="ident">get_offset_end</span>());
-      <span class="prelude-val">Some</span>(<span class="ident">Word</span> {
-        <span class="ident">range</span>,
-        <span class="ident">sentence</span>: <span class="self">self</span>.<span class="ident">sentence</span>,
-        <span class="ident">pos</span>: <span class="ident">senna_word</span>.<span class="ident">get_pos</span>(),
+<span class="kw">impl</span>&lt;<span class="lifetime">&#39;iter</span>&gt; Iterator <span class="kw">for </span>SennaWordIterator&lt;<span class="lifetime">&#39;iter</span>&gt; {
+  <span class="kw">type </span>Item = Word&lt;<span class="lifetime">&#39;iter</span>&gt;;
+  <span class="kw">fn </span>next(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Option</span>&lt;Word&lt;<span class="lifetime">&#39;iter</span>&gt;&gt; {
+    <span class="comment">// match self.walker.next() {
+    </span><span class="kw">let </span>pos = <span class="self">self</span>.pos;
+    <span class="self">self</span>.pos += <span class="number">1</span>;
+    <span class="kw">let </span>sent = <span class="kw-2">&amp;</span><span class="self">self</span>.sentence;
+    <span class="kw">let </span>sen_sent_wrapped = <span class="kw-2">&amp;</span>sent.senna_sentence;
+    <span class="kw">let </span>sen_sent = sen_sent_wrapped.as_ref().unwrap();
+    <span class="kw">if </span>pos &lt; sen_sent.get_words().len() {
+      <span class="kw">let </span>senna_word = <span class="kw-2">&amp;</span>sen_sent.get_words()[pos];
+      <span class="kw">let </span>range = <span class="self">self
+        </span>.sentence
+        .range
+        .get_subrange_from_byte_offsets(senna_word.get_offset_start(), senna_word.get_offset_end());
+      <span class="prelude-val">Some</span>(Word {
+        range,
+        sentence: <span class="self">self</span>.sentence,
+        pos: senna_word.get_pos(),
       })
-    } <span class="kw">else</span> {
-      <span class="prelude-val">None</span>
-    }
+    } <span class="kw">else </span>{
+      <span class="prelude-val">None
+    </span>}
   }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="llamapun" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.63.0 (4b91a6ea7 2022-08-08)" ></div>
-</body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="llamapun" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0 (897e37553 2022-11-02)" ></div></body></html>

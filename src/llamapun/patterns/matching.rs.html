@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/patterns/matching.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>matching.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../llamapun/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../llamapun/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../llamapun/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/patterns/matching.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>matching.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><div class="width-limiter"><nav class="sub"><a class="sub-logo-container" href="../../../llamapun/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -748,14 +748,14 @@
                 start_opt = <span class="prelude-val">Some</span>(p);
               }
               end = p;
-            }
+            },
             <span class="prelude-val">Ok</span>(t) =&gt; {
               <span class="kw">if </span>start_opt.is_none() {
                 start_opt = <span class="prelude-val">Some</span>(t.start);
               }
               end = t.end;
               child_trees.push(t);
-            }
+            },
           }
         }
         <span class="kw">let </span>start = start_opt.unwrap_or_default();
@@ -765,7 +765,7 @@
           end,
           children: child_trees,
         })
-      }
+      },
     }
   }
 }
@@ -782,7 +782,7 @@
         v.push(root.end + <span class="number">1</span>);
       }
       v
-    }
+    },
     Ordering::Less =&gt; {
       <span class="kw">for </span>child <span class="kw">in </span><span class="kw-2">&amp;</span>root.children {
         <span class="kw">if </span>child.start &lt;= start_pos &amp;&amp; child.end &gt;= start_pos {
@@ -790,7 +790,7 @@
         }
       }
       Vec::new()
-    }
+    },
     <span class="kw">_ </span>=&gt; Vec::new(),
   }
 }
@@ -813,7 +813,7 @@
   </span><span class="kw">let </span>rule_pos = pf
     .sequence_rule_names
     .get(rule)
-    .ok_or_else(|| <span class="macro">format!</span>(<span class="string">&quot;Could not find sequence rule \&quot;{}\&quot;&quot;</span>, rule))<span class="question-mark">?</span>;
+    .ok_or_else(|| <span class="macro">format!</span>(<span class="string">&quot;Could not find sequence rule \&quot;{rule}\&quot;&quot;</span>))<span class="question-mark">?</span>;
   <span class="kw">let </span>actual_rule = <span class="kw-2">&amp;</span>pf.sequence_rules[<span class="kw-2">*</span>rule_pos];
   <span class="kw">let </span>words = sentence.get_words();
   <span class="kw">let </span>psg = sentence
@@ -870,7 +870,7 @@
         </span>end: pos + <span class="number">1</span>,
         matched: <span class="bool-val">true</span>,
       }
-    }
+    },
     SequencePattern::SeqOfSeq(<span class="kw-2">ref </span>patterns) =&gt; {
       <span class="kw">let </span><span class="kw-2">mut </span>matches: Vec&lt;Match&gt; = Vec::new();
       <span class="kw">let </span><span class="kw-2">mut </span>cur_pos = pos;
@@ -888,7 +888,7 @@
         </span>end: cur_pos,
         matched: <span class="bool-val">true</span>,
       }
-    }
+    },
     SequencePattern::Phrase(phrase, <span class="kw-2">ref </span>match_type, <span class="kw-2">ref </span>start_condition, <span class="kw-2">ref </span>end_condition) =&gt; {
       <span class="kw">let </span><span class="kw-2">mut </span>phrase_ends = get_phrase_matches(phrase_tree, pos, phrase);
       <span class="kw">if </span>match_type == <span class="kw-2">&amp;</span>PhraseMatchType::Longest {
@@ -901,7 +901,7 @@
         matches.clear();
         <span class="kw">if </span>start_condition.is_some() {
           <span class="comment">// check start_condition
-          </span><span class="kw">let </span><span class="kw-2">&amp;</span>(<span class="kw-2">ref </span>rule, <span class="kw-2">ref </span>containment) = start_condition.as_ref().unwrap();
+          </span><span class="kw">let </span>(rule, containment) = start_condition.as_ref().unwrap();
           <span class="kw">let </span>m = match_seq(pf, rule, sentence, phrase_tree, range, pos);
           <span class="kw">if </span>!m.matched {
             <span class="kw">continue</span>;
@@ -939,7 +939,7 @@
 
       <span class="comment">// no phrase match satisfied all conditions:
       </span>InternalSeqMatch::no_match()
-    }
+    },
     SequencePattern::Marked(<span class="kw-2">ref </span>pattern, <span class="kw-2">ref </span>marker) =&gt; {
       <span class="kw">let </span>m = match_seq(pf, pattern, sentence, phrase_tree, range, pos);
       <span class="kw">if </span>m.matched {
@@ -961,7 +961,7 @@
       } <span class="kw">else </span>{
         InternalSeqMatch::no_match()
       }
-    }
+    },
     SequencePattern::SeqOr(<span class="kw-2">ref </span>patterns, <span class="kw-2">ref </span>match_type) =&gt; {
       <span class="kw">let </span><span class="kw-2">mut </span>matches: Vec&lt;Match&gt; = Vec::new();
       <span class="kw">let </span><span class="kw-2">mut </span>matched = <span class="bool-val">false</span>;
@@ -977,19 +977,19 @@
                 longest = m.end;
               }
               <span class="kw">break</span>;
-            }
+            },
             SequenceMatchType::AtLeastOne | SequenceMatchType::Any =&gt; {
               <span class="kw">if </span>m.end &gt; longest {
                 longest = m.end;
               }
               matches.extend_from_slice(<span class="kw-2">&amp;</span>m._matches);
-            }
+            },
             SequenceMatchType::Longest =&gt; {
               <span class="kw">if </span>m.end &gt; longest {
                 longest = m.end;
                 matches = m._matches;
               }
-            }
+            },
           }
         }
       }
@@ -1003,7 +1003,7 @@
           matched: <span class="bool-val">true</span>, <span class="comment">// don&#39;t use `matched` (because SequenceMatchType::Any matches always)
         </span>}
       }
-    }
+    },
   }
 }
 
@@ -1023,7 +1023,7 @@
         }
       }
       InternalWordMatch::no_match()
-    }
+    },
     WordPattern::Word(<span class="kw-2">ref </span>word_str) =&gt; {
       <span class="kw">if </span>word_str == word.get_string() {
         InternalWordMatch {
@@ -1033,14 +1033,14 @@
       } <span class="kw">else </span>{
         InternalWordMatch::no_match()
       }
-    }
+    },
     WordPattern::WordPos(<span class="kw-2">ref </span>pos_pattern, <span class="kw-2">ref </span>word_pattern) =&gt; {
       <span class="kw">if </span>match_pos(pf, pos_pattern, word.get_pos()) {
         match_word(pf, word_pattern, word, range)
       } <span class="kw">else </span>{
         InternalWordMatch::no_match()
       }
-    }
+    },
     WordPattern::MathWord(<span class="kw-2">ref </span>math_pattern) =&gt; {
       <span class="kw">let </span>node = range.dnm.back_map[range.start + word.get_offset_start()].<span class="number">0</span>;
       <span class="kw">if </span>node.get_name() != <span class="string">&quot;math&quot; </span>{
@@ -1069,7 +1069,7 @@
       } <span class="kw">else </span>{
         InternalWordMatch::no_match()
       }
-    }
+    },
     WordPattern::AnyWord =&gt; InternalWordMatch {
       _matches: Vec::new(),
       matched: <span class="bool-val">true</span>,
@@ -1081,7 +1081,7 @@
       } <span class="kw">else </span>{
         InternalWordMatch::no_match()
       }
-    }
+    },
     WordPattern::Marked(<span class="kw-2">ref </span>p, <span class="kw-2">ref </span>marker) =&gt; {
       <span class="kw">let </span>m = match_word(pf, p, word, range);
       <span class="kw">if </span>m.matched {
@@ -1098,7 +1098,7 @@
       } <span class="kw">else </span>{
         InternalWordMatch::no_match()
       }
-    }
+    },
   }
 }
 
@@ -1125,7 +1125,7 @@
       } <span class="kw">else </span>{
         InternalMathMatch::no_match()
       }
-    }
+    },
     MathPattern::MathOr(<span class="kw-2">ref </span>patterns) =&gt; {
       <span class="kw">for </span>pattern <span class="kw">in </span>patterns {
         <span class="kw">let </span>m = match_math(pf, pattern, node);
@@ -1134,7 +1134,7 @@
         }
       }
       InternalMathMatch::no_match()
-    }
+    },
     MathPattern::MathNode(<span class="kw-2">ref </span>name, <span class="kw-2">ref </span>mtext, <span class="kw-2">ref </span>children) =&gt; {
       <span class="comment">// Here we will use that each MathPattern matches exactly one node for
       // optimization purposes
@@ -1158,7 +1158,7 @@
       }
 
       <span class="kw">if </span>children.is_some() {
-        <span class="kw">let </span><span class="kw-2">&amp;</span>(<span class="kw-2">ref </span>child_rules, <span class="kw-2">ref </span>match_type) = children.as_ref().unwrap();
+        <span class="kw">let </span>(child_rules, match_type) = children.as_ref().unwrap();
         <span class="kw">let </span>c_nodes = fast_get_non_text_children(node);
 
         <span class="kw">if </span>c_nodes.len() &lt; child_rules.len() {
@@ -1209,7 +1209,7 @@
         _matches: Vec::new(),
         matched: <span class="bool-val">true</span>,
       } <span class="comment">// no child matches required
-    </span>}
+    </span>},
     MathPattern::MathDescendant(<span class="kw-2">ref </span>pattern, <span class="kw-2">ref </span>match_type) =&gt; {
       <span class="kw">let </span><span class="kw-2">mut </span>matches: Vec&lt;Match&gt; = Vec::new();
       <span class="kw">let </span><span class="kw-2">mut </span>matched = <span class="bool-val">false</span>;
@@ -1240,7 +1240,7 @@
       } <span class="kw">else </span>{
         InternalMathMatch::no_match()
       }
-    }
+    },
   }
 }
 
@@ -1263,4 +1263,4 @@
   }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="llamapun" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0 (897e37553 2022-11-02)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="llamapun" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.1 (90743e729 2023-01-10)" ></div></body></html>

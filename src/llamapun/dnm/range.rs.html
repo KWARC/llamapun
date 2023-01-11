@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/dnm/range.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>range.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../llamapun/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../llamapun/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../llamapun/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/dnm/range.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>range.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../../normalize.css"><link rel="stylesheet" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../../ayu.css" disabled><link rel="stylesheet" href="../../../dark.css" disabled><link rel="stylesheet" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><div class="width-limiter"><nav class="sub"><a class="sub-logo-container" href="../../../llamapun/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -332,14 +332,6 @@
 <span id="332">332</span>
 <span id="333">333</span>
 <span id="334">334</span>
-<span id="335">335</span>
-<span id="336">336</span>
-<span id="337">337</span>
-<span id="338">338</span>
-<span id="339">339</span>
-<span id="340">340</span>
-<span id="341">341</span>
-<span id="342">342</span>
 </pre><pre class="rust"><code><span class="doccomment">//! The `dnm::range` submodule provides data structures for indexing into a DNM
 //! object&#39;s plaintext
 
@@ -376,14 +368,10 @@
     <span class="kw-2">&amp;</span>(<span class="self">self</span>.dnm.plaintext)[<span class="self">self</span>.dnm.byte_offsets[<span class="self">self</span>.start]..<span class="self">self</span>.dnm.byte_offsets[<span class="self">self</span>.end]]
   }
   <span class="doccomment">/// Get the plaintext without trailing white spaces
-  </span><span class="kw">pub fn </span>get_plaintext_truncated(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="lifetime">&#39;dnmrange </span>str {
-    <span class="self">self</span>.get_plaintext().trim_end()
-  }
+  </span><span class="kw">pub fn </span>get_plaintext_truncated(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="lifetime">&#39;dnmrange </span>str { <span class="self">self</span>.get_plaintext().trim_end() }
 
   <span class="doccomment">/// Get the first corresponding DOM node for this range
-  </span><span class="kw">pub fn </span>get_node(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; RoNode {
-    <span class="self">self</span>.dnm.back_map[<span class="self">self</span>.start].<span class="number">0
-  </span>}
+  </span><span class="kw">pub fn </span>get_node(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; RoNode { <span class="self">self</span>.dnm.back_map[<span class="self">self</span>.start].<span class="number">0 </span>}
 
   <span class="doccomment">/// Returns a `DNMRange` with the leading and trailing whitespaces removed
   </span><span class="kw">pub fn </span>trim(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; DNMRange&lt;<span class="lifetime">&#39;dnmrange</span>&gt; {
@@ -475,9 +463,7 @@
   }
 
   <span class="doccomment">/// checks whether the range is empty
-  </span><span class="kw">pub fn </span>is_empty(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool {
-    <span class="self">self</span>.start == <span class="self">self</span>.end
-  }
+  </span><span class="kw">pub fn </span>is_empty(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; bool { <span class="self">self</span>.start == <span class="self">self</span>.end }
 
   <span class="comment">/*
    * SERIALIZATION CODE
@@ -497,9 +483,7 @@
   }
 
   <span class="doccomment">/// creates an arange from to xpointers
-  </span><span class="kw">pub fn </span>create_arange(from: <span class="kw-2">&amp;</span>str, to: <span class="kw-2">&amp;</span>str) -&gt; String {
-    <span class="macro">format!</span>(<span class="string">&quot;arange({},{})&quot;</span>, from, to)
-  }
+  </span><span class="kw">pub fn </span>create_arange(from: <span class="kw-2">&amp;</span>str, to: <span class="kw-2">&amp;</span>str) -&gt; String { <span class="macro">format!</span>(<span class="string">&quot;arange({from},{to})&quot;</span>) }
 
   <span class="doccomment">/// Serializes a node and an offset into an xpointer
   /// is_end indicates whether the node indicates the end of the interval
@@ -557,8 +541,8 @@
             get_node_number(parent, act, <span class="kw-2">&amp;</span>|n: RoNode| n.get_name() == act.get_name()).unwrap()
           )
         }
-      }
-      <span class="prelude-val">Some</span>(x) =&gt; <span class="macro">format!</span>(<span class="string">&quot;//*[@id=\&quot;{}\&quot;]&quot;</span>, x),
+      },
+      <span class="prelude-val">Some</span>(x) =&gt; <span class="macro">format!</span>(<span class="string">&quot;//*[@id=\&quot;{x}\&quot;]&quot;</span>),
     }
   }
 
@@ -581,7 +565,7 @@
       </span>+ string.find(<span class="string">&quot;),&quot;</span>).unwrap_or_else(|| {
         string
           .find(<span class="string">&quot;],&quot;</span>)
-          .unwrap_or_else(|| <span class="macro">panic!</span>(<span class="string">&quot;DNMRange::deserialize: Malformed string: \&quot;{}\&quot;&quot;</span>, string))
+          .unwrap_or_else(|| <span class="macro">panic!</span>(<span class="string">&quot;DNMRange::deserialize: Malformed string: \&quot;{string}\&quot;&quot;</span>))
       });
 
     <span class="kw">let </span>start_str = <span class="kw-2">&amp;</span>string[<span class="number">7</span>..main_comma];
@@ -599,7 +583,7 @@
     <span class="kw">if </span>string.len() &gt; <span class="number">13 </span>&amp;&amp; <span class="kw-2">&amp;</span>(string[<span class="number">0</span>..<span class="number">13</span>]) == <span class="string">&quot;string-index(&quot; </span>{
       <span class="kw">let </span>comma = string
         .find(<span class="string">&#39;,&#39;</span>)
-        .unwrap_or_else(|| <span class="macro">panic!</span>(<span class="string">&quot;DNM::deserialize_part: Malformed string: \&quot;{}\&quot;&quot;</span>, string));
+        .unwrap_or_else(|| <span class="macro">panic!</span>(<span class="string">&quot;DNM::deserialize_part: Malformed string: \&quot;{string}\&quot;&quot;</span>));
       <span class="kw">let </span>node_str = <span class="kw-2">&amp;</span>string[<span class="number">13</span>..comma];
       <span class="kw">let </span>node_set = xpath_context.evaluate(node_str).unwrap();
       <span class="macro">assert_eq!</span>(node_set.get_number_of_nodes(), <span class="number">1</span>);
@@ -612,7 +596,7 @@
             pos += <span class="number">1</span>;
           }
           pos
-        }
+        },
         <span class="prelude-val">Err</span>(<span class="kw">_</span>) =&gt; get_position_of_lowest_parent(node, dnm),
       }
     } <span class="kw">else </span>{
@@ -651,7 +635,7 @@
       </span>} <span class="kw">else </span>{
         get_next_sibling(root_node, node.get_parent().unwrap())
       }
-    }
+    },
     <span class="prelude-val">Some</span>(n) =&gt; <span class="prelude-val">Some</span>(n),
   }
 }
@@ -674,13 +658,13 @@
     <span class="kw">match </span>cur.get_next_sibling() {
       <span class="prelude-val">None </span>=&gt; {
         <span class="kw">return </span><span class="prelude-val">Err</span>(());
-      }
+      },
       <span class="prelude-val">Some</span>(n) =&gt; {
         cur = n;
-      }
+      },
     }
   }
   <span class="prelude-val">Ok</span>(count)
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="llamapun" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0 (897e37553 2022-11-02)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="llamapun" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.1 (90743e729 2023-01-10)" ></div></body></html>

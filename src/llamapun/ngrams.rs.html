@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/ngrams.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>ngrams.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../normalize.css"><link rel="stylesheet" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../ayu.css" disabled><link rel="stylesheet" href="../../dark.css" disabled><link rel="stylesheet" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../llamapun/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../llamapun/index.html"><div class="logo-container"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../llamapun/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/ngrams.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>ngrams.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../normalize.css"><link rel="stylesheet" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../ayu.css" disabled><link rel="stylesheet" href="../../dark.css" disabled><link rel="stylesheet" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><div class="width-limiter"><nav class="sub"><a class="sub-logo-container" href="../../llamapun/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -156,8 +156,6 @@
 <span id="156">156</span>
 <span id="157">157</span>
 <span id="158">158</span>
-<span id="159">159</span>
-<span id="160">160</span>
 </pre><pre class="rust"><code><span class="doccomment">//! A small ngram library
 //! ngrams are sequences of n consecutive words
 </span><span class="kw">use </span>circular_queue::CircularQueue;
@@ -173,9 +171,7 @@
 }
 <span class="kw">impl </span>Dictionary {
   <span class="doccomment">/// create a new dictionary
-  </span><span class="kw">pub fn </span>new() -&gt; <span class="self">Self </span>{
-    Dictionary::default()
-  }
+  </span><span class="kw">pub fn </span>new() -&gt; <span class="self">Self </span>{ Dictionary::default() }
   <span class="doccomment">/// insert a new word into the dictionary (if it hasn&#39;t been inserted yet)
   </span><span class="kw">pub fn </span>insert(<span class="kw-2">&amp;mut </span><span class="self">self</span>, word: String) {
     <span class="kw">let </span>map = <span class="kw-2">&amp;mut </span><span class="self">self</span>.map;
@@ -192,16 +188,15 @@
     as_vec
   }
   <span class="doccomment">/// get the number of entries in the dictionary
-  </span><span class="kw">pub fn </span>count(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; usize {
-    <span class="self">self</span>.index
-  }
+  </span><span class="kw">pub fn </span>count(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; usize { <span class="self">self</span>.index }
 }
 
 <span class="doccomment">/// Ngrams are dictionaries with
 </span><span class="kw">pub struct </span>Ngrams {
   <span class="doccomment">/// anchor word that must be present in all ngram contexts (in their window)
   </span><span class="kw">pub </span>anchor: <span class="prelude-ty">Option</span>&lt;String&gt;,
-  <span class="doccomment">/// if an anchor word is given, word window size, applied to the left and to the right of the anchor word
+  <span class="doccomment">/// if an anchor word is given, word window size, applied to the left and to the right of the
+  /// anchor word
   </span><span class="kw">pub </span>window_size: usize,
   <span class="doccomment">/// n-grams for a sequence of n words
   </span><span class="kw">pub </span>n: usize,
@@ -245,9 +240,7 @@
     as_vec
   }
   <span class="doccomment">/// get the number of distinct ngrams recorded
-  </span><span class="kw">pub fn </span>distinct_count(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; usize {
-    <span class="self">self</span>.counts.len()
-  }
+  </span><span class="kw">pub fn </span>distinct_count(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; usize { <span class="self">self</span>.counts.len() }
 
   <span class="doccomment">/// add content for ngram analysis, typically a paragraph or a line of text
   </span><span class="kw">pub fn </span>add_content(<span class="kw-2">&amp;mut </span><span class="self">self</span>, content: <span class="kw-2">&amp;</span>str) {
@@ -258,10 +251,11 @@
     </span>}
   }
 
-  <span class="doccomment">/// In essence, for a given window size W, a word at index i is justified to participate in the ngrams
-  /// if there is an instance of an anchor word in the range of words [i-W, i+W].
-  /// this can be highly irregular e.g. &quot;word word anchor word anchor word word&quot;, so we record flexibly
-  /// looking for no-justification cutoffs, where a continuous word sequence is recorded for ngram counts
+  <span class="doccomment">/// In essence, for a given window size W, a word at index i is justified to participate in the
+  /// ngrams if there is an instance of an anchor word in the range of words [i-W, i+W].
+  /// this can be highly irregular e.g. &quot;word word anchor word anchor word word&quot;, so we record
+  /// flexibly looking for no-justification cutoffs, where a continuous word sequence is recorded
+  /// for ngram counts
   </span><span class="kw">pub fn </span>add_anchored_content(<span class="kw-2">&amp;mut </span><span class="self">self</span>, content: <span class="kw-2">&amp;</span>str) {
     <span class="comment">// content to add through the ngram builder
     </span><span class="kw">let </span><span class="kw-2">mut </span>continuous_buffer = Vec::new();
@@ -286,7 +280,8 @@
       } <span class="kw">else </span>{
         words_since_anchor_seen += <span class="number">1</span>;
         <span class="kw">if </span>words_since_anchor_seen == <span class="self">self</span>.window_size &amp;&amp; side == AnchorSide::Right {
-          <span class="comment">// it has been too long since we saw an anchor, add to the current buffer, record and reset
+          <span class="comment">// it has been too long since we saw an anchor, add to the current buffer, record and
+          // reset
           </span><span class="self">self</span>.record_words(continuous_buffer.drain(..).collect());
           context_window.clear();
           side = AnchorSide::Left;
@@ -298,7 +293,8 @@
     <span class="self">self</span>.record_words(continuous_buffer.drain(..).collect());
   }
 
-  <span class="doccomment">/// Take an arbitrarily long vector of words, and record all (overlapping) ngrams obtainable from it
+  <span class="doccomment">/// Take an arbitrarily long vector of words, and record all (overlapping) ngrams obtainable from
+  /// it
   </span><span class="kw">pub fn </span>record_words(<span class="kw-2">&amp;mut </span><span class="self">self</span>, words: Vec&lt;<span class="kw-2">&amp;</span>str&gt;) {
     <span class="kw">if </span>words.len() &lt; <span class="self">self</span>.n {
       <span class="comment">// nothing to do unless we have at least n words
@@ -319,4 +315,4 @@
   }
 }
 </code></pre></div>
-</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="llamapun" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0 (897e37553 2022-11-02)" ></div></body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="llamapun" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.1 (90743e729 2023-01-10)" ></div></body></html>

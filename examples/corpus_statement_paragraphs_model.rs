@@ -7,7 +7,8 @@
 /// paragraph_data.tar
 ///
 /// With math discarded:
-/// $ cargo run --release --example corpus_statement_paragraphs_model /path/to/corpus statement_paragraphs.tar discard_math
+/// $ cargo run --release --example corpus_statement_paragraphs_model /path/to/corpus
+/// statement_paragraphs.tar discard_math
 use std::collections::{HashMap, HashSet};
 use std::env;
 use std::fs::File;
@@ -132,8 +133,8 @@ fn extract_document_statements(
   let mut context = Context::new(&document.dom).unwrap();
 
   'paragraphs: for mut paragraph in document.extended_paragraph_iter() {
-    // I. Determine the class for this paragraph entry, so that we can iterate over its content after
-    // if no markup at all, ignore the paragraph and skip to next
+    // I. Determine the class for this paragraph entry, so that we can iterate over its content
+    // after if no markup at all, ignore the paragraph and skip to next
     let para = paragraph.dnm.root_node;
     let para_parent = para.get_parent().unwrap();
     let mut prev_heading_opt = paragraph.dnm.root_node.get_prev_sibling();
@@ -225,7 +226,8 @@ fn extract_document_statements(
         continue 'paragraphs;
       }
     };
-    // II. We have a labeled statement. Extract content of current paragraph, validating basic data quality
+    // II. We have a labeled statement. Extract content of current paragraph, validating basic data
+    // quality
     let mut word_count = 0;
     let mut invalid_paragraph = false;
     let mut paragraph_buffer = String::new();
@@ -247,7 +249,7 @@ fn extract_document_statements(
           overflow_count += 1;
           invalid_paragraph = true;
           break 'words;
-        }
+        },
       };
       if !word_string.is_empty() {
         word_count += 1;
@@ -271,7 +273,8 @@ fn extract_document_statements(
       thread_data.push((paragraph_buffer, paragraph_filename));
     }
   }
-  // III. Record valid entries into archive target, having collected all labeled samples for this document
+  // III. Record valid entries into archive target, having collected all labeled samples for this
+  // document
   let mut builder_lock = tar_builder.lock().unwrap();
   for (paragraph_buffer, paragraph_filename) in thread_data.into_iter() {
     builder_lock

@@ -98,20 +98,14 @@ fn main() {
   // As well as some basic Benchmarking info:
   let end_reports = start_example.elapsed().as_millis();
   println!("--- Benchmark report:");
-  println!(
-    "    LibXML parse took {:?}ms",
-    end_parse
-  );
+  println!("    LibXML parse took {:?}ms", end_parse);
   println!(
     "    LLaMaPun word tokenization took {:?}ms",
-    end_example-end_parse
+    end_example - end_parse
   );
   println!(
     "    Finished report generation in {:?}ms",
     end_reports - end_example
   );
-  println!(
-    "    Total time: {:?}ms",
-    end_reports
-  );
+  println!("    Total time: {:?}ms", end_reports);
 }

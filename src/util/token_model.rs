@@ -14,8 +14,9 @@ use std::sync::{Arc, Mutex};
 static BUFFER_CAPACITY: usize = 10_485_760;
 static MAX_WORD_LENGTH: usize = 25;
 
-/// Parallel traversal of latexml-style HTML5 document corpora, based on jwalk and `DNMParameter::llamapun_normalization`
-/// with additional subformula lexemes via `dnm::node::lexematize_math`
+/// Parallel traversal of latexml-style HTML5 document corpora, based on jwalk and
+/// `DNMParameter::llamapun_normalization` with additional subformula lexemes via
+/// `dnm::node::lexematize_math`
 pub fn extract(
   corpus_path: String,
   token_model_filepath: String,

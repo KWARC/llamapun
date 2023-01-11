@@ -189,7 +189,7 @@ impl DNM {
         end,
         dnm: self,
       }),
-      None => Err("not found in node map".into())
+      None => Err("not found in node map".into()),
     }
   }
 
@@ -199,9 +199,7 @@ impl DNM {
   }
 
   /// Get the underlying text for this DNM
-  pub fn get_plaintext(&self) -> &str {
-    &self.plaintext
-  }
+  pub fn get_plaintext(&self) -> &str { &self.plaintext }
 
   /// The heart of the dnm generation...
   fn recurse_node_create(&mut self, node: RoNode) {
@@ -333,16 +331,16 @@ impl DNM {
             push_token!(self, token, node);
             record_node_map!(self, node, offset_start);
             return;
-          }
+          },
           Some(SpecialTagsOption::FunctionNormalize(f)) => {
             push_token!(self, &f(node), node);
             record_node_map!(self, node, offset_start);
             return;
-          }
+          },
           Some(&SpecialTagsOption::Skip) => {
             record_node_map!(self, node, offset_start);
             return;
-          }
+          },
           None => continue,
         }
       }

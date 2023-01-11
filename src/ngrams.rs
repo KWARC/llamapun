@@ -13,9 +13,7 @@ pub struct Dictionary {
 }
 impl Dictionary {
   /// create a new dictionary
-  pub fn new() -> Self {
-    Dictionary::default()
-  }
+  pub fn new() -> Self { Dictionary::default() }
   /// insert a new word into the dictionary (if it hasn't been inserted yet)
   pub fn insert(&mut self, word: String) {
     let map = &mut self.map;
@@ -32,16 +30,15 @@ impl Dictionary {
     as_vec
   }
   /// get the number of entries in the dictionary
-  pub fn count(&self) -> usize {
-    self.index
-  }
+  pub fn count(&self) -> usize { self.index }
 }
 
 /// Ngrams are dictionaries with
 pub struct Ngrams {
   /// anchor word that must be present in all ngram contexts (in their window)
   pub anchor: Option<String>,
-  /// if an anchor word is given, word window size, applied to the left and to the right of the anchor word
+  /// if an anchor word is given, word window size, applied to the left and to the right of the
+  /// anchor word
   pub window_size: usize,
   /// n-grams for a sequence of n words
   pub n: usize,
@@ -85,9 +82,7 @@ impl Ngrams {
     as_vec
   }
   /// get the number of distinct ngrams recorded
-  pub fn distinct_count(&self) -> usize {
-    self.counts.len()
-  }
+  pub fn distinct_count(&self) -> usize { self.counts.len() }
 
   /// add content for ngram analysis, typically a paragraph or a line of text
   pub fn add_content(&mut self, content: &str) {
@@ -98,10 +93,11 @@ impl Ngrams {
     }
   }
 
-  /// In essence, for a given window size W, a word at index i is justified to participate in the ngrams
-  /// if there is an instance of an anchor word in the range of words [i-W, i+W].
-  /// this can be highly irregular e.g. "word word anchor word anchor word word", so we record flexibly
-  /// looking for no-justification cutoffs, where a continuous word sequence is recorded for ngram counts
+  /// In essence, for a given window size W, a word at index i is justified to participate in the
+  /// ngrams if there is an instance of an anchor word in the range of words [i-W, i+W].
+  /// this can be highly irregular e.g. "word word anchor word anchor word word", so we record
+  /// flexibly looking for no-justification cutoffs, where a continuous word sequence is recorded
+  /// for ngram counts
   pub fn add_anchored_content(&mut self, content: &str) {
     // content to add through the ngram builder
     let mut continuous_buffer = Vec::new();
@@ -126,7 +122,8 @@ impl Ngrams {
       } else {
         words_since_anchor_seen += 1;
         if words_since_anchor_seen == self.window_size && side == AnchorSide::Right {
-          // it has been too long since we saw an anchor, add to the current buffer, record and reset
+          // it has been too long since we saw an anchor, add to the current buffer, record and
+          // reset
           self.record_words(continuous_buffer.drain(..).collect());
           context_window.clear();
           side = AnchorSide::Left;
@@ -138,7 +135,8 @@ impl Ngrams {
     self.record_words(continuous_buffer.drain(..).collect());
   }
 
-  /// Take an arbitrarily long vector of words, and record all (overlapping) ngrams obtainable from it
+  /// Take an arbitrarily long vector of words, and record all (overlapping) ngrams obtainable from
+  /// it
   pub fn record_words(&mut self, words: Vec<&str>) {
     if words.len() < self.n {
       // nothing to do unless we have at least n words

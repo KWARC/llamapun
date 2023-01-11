@@ -37,9 +37,7 @@ impl<'d> Document<'d> {
   }
 
   /// Obtain the problem-free logical headings of a libxml `Document`
-  pub fn get_heading_nodes(&self) -> Vec<RoNode> {
-    Document::heading_nodes(&self.dom)
-  }
+  pub fn get_heading_nodes(&self) -> Vec<RoNode> { Document::heading_nodes(&self.dom) }
   /// Associated function for `get_heading_nodes`
   fn heading_nodes(doc: &XmlDoc) -> Vec<RoNode> {
     Document::xpath_nodes(doc,
@@ -55,9 +53,7 @@ impl<'d> Document<'d> {
   }
 
   /// Obtain the problem-free logical paragraphs of a libxml `Document`
-  pub fn get_paragraph_nodes(&self) -> Vec<RoNode> {
-    Document::paragraph_nodes(&self.dom)
-  }
+  pub fn get_paragraph_nodes(&self) -> Vec<RoNode> { Document::paragraph_nodes(&self.dom) }
 
   /// Associated function for `get_paragraph_nodes`
   fn paragraph_nodes(doc: &XmlDoc) -> Vec<RoNode> {
@@ -126,18 +122,14 @@ impl<'d> Document<'d> {
   }
 
   /// Obtain the MathML <math> nodes of a libxml `Document`
-  pub fn get_math_nodes(&self) -> Vec<RoNode> {
-    Document::math_nodes(&self.dom)
-  }
+  pub fn get_math_nodes(&self) -> Vec<RoNode> { Document::math_nodes(&self.dom) }
 
   /// Associated function for `get_math_nodes`
   pub(crate) fn math_nodes(doc: &XmlDoc) -> Vec<RoNode> {
     Document::xpath_nodes(doc, "//*[local-name()='math']")
   }
   /// Obtain the <span[class=ltx_ref]> nodes of a libxml `Document`
-  pub fn get_ref_nodes(&self) -> Vec<RoNode> {
-    Document::ref_nodes(&self.dom)
-  }
+  pub fn get_ref_nodes(&self) -> Vec<RoNode> { Document::ref_nodes(&self.dom) }
   /// Associated function for `get_ref_nodes`
   pub(crate) fn ref_nodes(doc: &XmlDoc) -> Vec<RoNode> {
     Document::xpath_nodes(doc,
@@ -190,7 +182,7 @@ impl<'d> Document<'d> {
         } else {
           None
         }
-      }
+      },
       _ => None,
     }
   }

@@ -50,9 +50,7 @@ impl Corpus {
 
   /// Get a parallel iterator over the documents
   pub fn catalog_with_parallel_walk<F>(&self, closure: F) -> HashMap<String, u64>
-  where
-    F: Fn(Document) -> HashMap<String, u64> + Send + Sync,
-  {
+  where F: Fn(Document) -> HashMap<String, u64> + Send + Sync {
     ParWalkDir::new(self.path.clone())
       .num_threads(rayon::current_num_threads())
       .skip_hidden(true)

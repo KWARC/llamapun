@@ -31,7 +31,7 @@ pub fn path_to_words(path: String) -> String {
             Err(_) => {
               invalid_paragraph = true;
               break 'sentences;
-            }
+            },
           };
           sentence_buffer.push_str(&word_string);
           sentence_buffer.push(' ');

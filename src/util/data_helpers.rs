@@ -139,7 +139,8 @@ pub fn normalize_heading_title(heading: &str) -> String {
     // quick exit if empty
     String::new()
   } else if simple_heading != heading {
-    // if the individual regexes reduced the heading, try them again, since we may have intermixed cases
+    // if the individual regexes reduced the heading, try them again, since we may have intermixed
+    // cases
     normalize_heading_title(&simple_heading)
   } else {
     // Otherwise, just look for simple variations of known cases, or return as-is:
@@ -236,11 +237,12 @@ pub fn normalize_heading_title(heading: &str) -> String {
   }
 }
 
-// Analysis is a can of worms... there are many more, and they seem to be varying from extremely narrow to extremely broad discussions
-// some are even false friends, such as method names "principal component analysis"
+// Analysis is a can of worms... there are many more, and they seem to be varying from extremely
+// narrow to extremely broad discussions some are even false friends, such as method names
+// "principal component analysis"
 //
-// there may be other cans of worms out there, normalization may end up a lot more aggressive than desired...
-// but best to start somewhere
+// there may be other cans of worms out there, normalization may end up a lot more aggressive than
+// desired... but best to start somewhere
 //
 // "spectral analysis" | //= result
 // "data analysis" | //= result (broad)

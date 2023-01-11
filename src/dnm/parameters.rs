@@ -131,8 +131,9 @@ impl DNMParameters {
     class_options.insert("ltx_note_outer".to_string(), SpecialTagsOption::Skip);
     class_options.insert("ltx_bibliography".to_string(), SpecialTagsOption::Skip);
     // Ignores all caption metadata tags, to avoid leaking artefacts into a pure language target
-    // TODO: Is there merit to extending this to ignoring all ltx_tag elements? leaving things as-is allows for some
-    // curious artefacts to sneak into the plain-text files, such as bullets/numbers from \item commands
+    // TODO: Is there merit to extending this to ignoring all ltx_tag elements? leaving things as-is
+    // allows for some curious artefacts to sneak into the plain-text files, such as
+    // bullets/numbers from \item commands
     class_options.insert("ltx_tag_figure".to_string(), SpecialTagsOption::Skip);
     class_options.insert("ltx_tag_table".to_string(), SpecialTagsOption::Skip);
 

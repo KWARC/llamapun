@@ -35,7 +35,7 @@ impl Default for Tokenizer {
 // }
 
 /// detects a wordlike sequence with *any* uppercase char, such as "foobaR"
-fn wordlike_with_upper_next (peekable: Peekable<Chars>) -> bool {
+fn wordlike_with_upper_next(peekable: Peekable<Chars>) -> bool {
   let mut detected = false;
   for char in peekable {
     if !char.is_alphabetic() {
@@ -143,7 +143,7 @@ impl Tokenizer {
                 // New sentence
                 sentences.push(DNMRange { start, end, dnm }.trim());
                 start = end;
-              }
+              },
               Some(&c) => {
                 if sentence_char == '.' && c.is_alphabetic() {
                   let (next_word_string, next_word_length) =
@@ -177,16 +177,16 @@ impl Tokenizer {
                     left_window.pop_front();
                   }
                 }
-              }
+              },
               None => {
                 left_window.push_back('.');
                 if left_window.len() >= window_size {
                   left_window.pop_front();
                 }
-              }
+              },
             }
           }
-        }
+        },
         '?' | '!' => {
           if !is_bounded(left_window.back(), text_iterator.peek()) {
             // Reset the left window
@@ -195,7 +195,7 @@ impl Tokenizer {
             sentences.push(DNMRange { start, end, dnm }.trim());
             start = end;
           }
-        }
+        },
         // TODO:
         // Some('\u{2022}'),Some('*') => { // bullet point for itemize
         // Some('\u{220e}') => { // QED symbol
@@ -236,7 +236,7 @@ impl Tokenizer {
             // We consumed the next word, so make sure we reflect that in either case:
             end += next_word_length;
           }
-        }
+        },
         other_char => {
           // "mathformula\nCapitalized" case is a sentence break (but never
           // "mathformula\nmathformula")
@@ -261,7 +261,7 @@ impl Tokenizer {
           if left_window.len() >= window_size {
             left_window.pop_front();
           }
-        }
+        },
       }
     }
 
@@ -321,11 +321,11 @@ impl Tokenizer {
           if apostrophe_flag {
             match &range_text[start + 1..end] {
               // Handle closed set of apostrophe cases, detach from all other cases
-              "t" | "s" | "un" | "th" | "ll" | "d" | "ve" | "il" | "re" | "m" => {}
+              "t" | "s" | "un" | "th" | "ll" | "d" | "ve" | "il" | "re" | "m" => {},
               _ => {
                 result.push(range.get_subrange(start, start + 1));
                 start += 1;
-              }
+              },
             }
           }
           result.push(range.get_subrange(start, end));

@@ -9,9 +9,7 @@ use regex::Regex;
 use std::fmt;
 
 /// Checks a llamapun `Document` for 'ltx_theorem' AMS markup
-pub fn has_markup(doc: &Document) -> bool {
-  has_markup_xmldoc(&doc.dom)
-}
+pub fn has_markup(doc: &Document) -> bool { has_markup_xmldoc(&doc.dom) }
 
 /// Checks a libxml document for `ltx_theorem` AMS markup
 pub fn has_markup_xmldoc(dom: &XmlDoc) -> bool {
@@ -25,8 +23,9 @@ pub fn has_markup_xmldoc(dom: &XmlDoc) -> bool {
 /// Semantically fixed structural environments in scientific documents, to collect as
 /// add-on to the AMS markup
 ///
-/// Note we are explicitly ignoring some of the very high-frequency environments, as they are not rich on textual content.
-/// Namely: references, appendix, pacs, subject; Which are rich in metadata and semi-structured content (figures, tables).
+/// Note we are explicitly ignoring some of the very high-frequency environments, as they are not
+/// rich on textual content. Namely: references, appendix, pacs, subject; Which are rich in metadata
+/// and semi-structured content (figures, tables).
 #[allow(missing_docs)]
 #[derive(Copy, Clone, Debug, PartialEq, Eq)]
 pub enum StructuralEnv {

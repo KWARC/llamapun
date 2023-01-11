@@ -3,7 +3,8 @@
 //
 /// Extracts a corpus heading model from an unpacked corpus of HTML files
 /// With math lexemes (default):
-/// $ cargo run --release --example corpus_heading_stats /path/to/corpus/  heading_report_filename.csv
+/// $ cargo run --release --example corpus_heading_stats /path/to/corpus/
+/// heading_report_filename.csv
 use std::collections::HashMap;
 use std::env;
 use std::fs::File;
@@ -40,7 +41,8 @@ pub fn main() -> Result<(), Error> {
   };
 
   let mut corpus = Corpus::new(corpus_path);
-  // we are interested in canonical heading statistics, so discard a lot of the counting machinery and special content
+  // we are interested in canonical heading statistics, so discard a lot of the counting machinery
+  // and special content
   corpus
     .dnm_parameters
     .special_tag_name_options
@@ -92,7 +94,7 @@ pub fn main() -> Result<(), Error> {
             overflow_count += 1;
             invalid_heading = true;
             break;
-          }
+          },
         };
         if !word_string.is_empty() && word_string != "NUM" {
           heading_buffer.push_str(&word_string);

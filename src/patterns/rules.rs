@@ -92,9 +92,7 @@ impl MathChildrenMatchType {
       "exact" => Ok(MathChildrenMatchType::MatchesExactly),
       "ends_with" => Ok(MathChildrenMatchType::EndsWith),
       "arbitrary" => Ok(MathChildrenMatchType::Arbitrary),
-      other => Err(format!(
-        "Unknown match_type for match_children \"{other}\""
-      )),
+      other => Err(format!("Unknown match_type for match_children \"{other}\"")),
     }
   }
 }
@@ -117,9 +115,7 @@ impl MathDescendantMatchType {
       "first" => Ok(MathDescendantMatchType::First),
       "at_least_one" => Ok(MathDescendantMatchType::AtLeastOne),
       "arbitrary" => Ok(MathDescendantMatchType::Arbitrary),
-      other => Err(format!(
-        "Unknon match_type for math_descendant \"{other}\""
-      )),
+      other => Err(format!("Unknon match_type for math_descendant \"{other}\"")),
     }
   }
 }
@@ -311,8 +307,7 @@ impl MetaDescription {
         "description" => {
           check_found_property_already(&summary_opt, "description", "meta")?;
           summary_opt = Some(
-            get_simple_node_content(cur, true)
-              .map_err(|e| format!("error in meta node:\n{e}"))?,
+            get_simple_node_content(cur, true).map_err(|e| format!("error in meta node:\n{e}"))?,
           );
         },
         &_ => {
@@ -327,9 +322,7 @@ impl MetaDescription {
     Ok(MetaDescription { name, summary })
   }
 
-  pub fn get_summary(&self) -> &str {
-    &self.summary
-  }
+  pub fn get_summary(&self) -> &str { &self.summary }
 }
 
 /// A rule for matching words
@@ -739,8 +732,7 @@ fn load_rule<PatternT, RuleT>(
   pctx: &mut PCtx,
   rule_type: &str,
   rule_gen: fn(PatternT, MetaDescription) -> RuleT,
-) -> Result<RuleT, String>
-{
+) -> Result<RuleT, String> {
   let name = require_node_property(node, "name")?;
   let mut rule_opt: Option<PatternT> = None;
   let mut meta_opt: Option<MetaDescription> = None;
@@ -902,8 +894,7 @@ fn get_rule_position<RuleT>(
   rules: &mut Vec<Option<RuleT>>,
   map: &mut HashMap<String, usize>,
   rule_name: &str,
-) -> usize
-{
+) -> usize {
   {
     if let Some(position) = map.get(rule_name) {
       return *position;
@@ -1022,32 +1013,29 @@ impl<'t> PCtx<'t> {
   fn verify(&self) -> Result<(), String> {
     for (name, pos) in &self.pos_name_map {
       if self.pos_rules[*pos].is_none() {
-        return Err(format!(
-          "Couldn't find definition for pos_rule \"{name}\""));
+        return Err(format!("Couldn't find definition for pos_rule \"{name}\""));
       }
     }
     for (name, pos) in &self.math_name_map {
       if self.math_rules[*pos].is_none() {
-        return Err(format!(
-          "Couldn't find definition for math_rule \"{name}\""));
+        return Err(format!("Couldn't find definition for math_rule \"{name}\""));
       }
     }
     for (name, pos) in &self.mtext_name_map {
       if self.mtext_rules[*pos].is_none() {
         return Err(format!(
-          "Couldn't find definition for mtext_rule \"{name}\""));
+          "Couldn't find definition for mtext_rule \"{name}\""
+        ));
       }
     }
     for (name, pos) in &self.seq_name_map {
       if self.seq_rules[*pos].is_none() {
-        return Err(format!(
-          "Couldn't find definition for seq_rule \"{name}\""));
+        return Err(format!("Couldn't find definition for seq_rule \"{name}\""));
       }
     }
     for (name, pos) in &self.word_name_map {
       if self.word_rules[*pos].is_none() {
-        return Err(format!(
-          "Couldn't find definition for word_rule \"{name}\""));
+        return Err(format!("Couldn't find definition for word_rule \"{name}\""));
       }
     }
     Ok(())

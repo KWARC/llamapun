@@ -153,7 +153,7 @@ impl<'iter> Iterator for DocumentIterator<'iter> {
           };
         }
       } else {
-        println!("-- Error while walking for entry: {:?}", next_entry)
+        println!("-- Error while walking for entry: {next_entry:?}")
       }
     }
     None

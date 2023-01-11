@@ -329,12 +329,12 @@ impl DNM {
         // iterate over applying rules
         match rule {
           Some(&SpecialTagsOption::Enter) => break,
-          Some(&SpecialTagsOption::Normalize(ref token)) => {
+          Some(SpecialTagsOption::Normalize(token)) => {
             push_token!(self, token, node);
             record_node_map!(self, node, offset_start);
             return;
           }
-          Some(&SpecialTagsOption::FunctionNormalize(ref f)) => {
+          Some(SpecialTagsOption::FunctionNormalize(f)) => {
             push_token!(self, &f(node), node);
             record_node_map!(self, node, offset_start);
             return;

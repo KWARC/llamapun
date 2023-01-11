@@ -181,7 +181,7 @@ pub fn match_sentence<'t>(
   let rule_pos = pf
     .sequence_rule_names
     .get(rule)
-    .ok_or_else(|| format!("Could not find sequence rule \"{}\"", rule))?;
+    .ok_or_else(|| format!("Could not find sequence rule \"{rule}\""))?;
   let actual_rule = &pf.sequence_rules[*rule_pos];
   let words = sentence.get_words();
   let psg = sentence
@@ -269,7 +269,7 @@ fn match_seq<'t>(
         matches.clear();
         if start_condition.is_some() {
           // check start_condition
-          let &(ref rule, ref containment) = start_condition.as_ref().unwrap();
+          let (rule, containment) = start_condition.as_ref().unwrap();
           let m = match_seq(pf, rule, sentence, phrase_tree, range, pos);
           if !m.matched {
             continue;
@@ -526,7 +526,7 @@ fn match_math<'t>(pf: &PatternFile, rule: &MathPattern, node: RoNode) -> Interna
       }
 
       if children.is_some() {
-        let &(ref child_rules, ref match_type) = children.as_ref().unwrap();
+        let (child_rules, match_type) = children.as_ref().unwrap();
         let c_nodes = fast_get_non_text_children(node);
 
         if c_nodes.len() < child_rules.len() {

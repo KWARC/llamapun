@@ -279,7 +279,7 @@ impl Tokenizer {
   }
 
   /// returns the words of a sentence using simple heuristics
-  pub fn words<'a, 'b>(&'b self, sentence_range: &'a DNMRange<'b>) -> Vec<DNMRange> {
+  pub fn words<'b>(&'b self, sentence_range: &DNMRange<'b>) -> Vec<DNMRange> {
     let mut text_iterator = sentence_range.get_plaintext().chars().peekable();
     let mut start = 0usize;
     let mut end = 0usize;
@@ -308,7 +308,7 @@ impl Tokenizer {
 
   /// returns the words and punctuation of a sentence, using simple heuristics
   #[allow(unused_assignments)]
-  pub fn words_and_punct<'a, 'b>(&'b self, range: &'a DNMRange<'b>) -> Vec<DNMRange> {
+  pub fn words_and_punct<'b>(&'b self, range: &DNMRange<'b>) -> Vec<DNMRange> {
     let range_text = range.get_plaintext();
     let text_iterator = range_text.chars();
     let mut start = 0usize;

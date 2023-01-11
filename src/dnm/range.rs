@@ -156,7 +156,7 @@ impl<'dnmrange> DNMRange<'dnmrange> {
 
   /// creates an arange from to xpointers
   pub fn create_arange(from: &str, to: &str) -> String {
-    format!("arange({},{})", from, to)
+    format!("arange({from},{to})")
   }
 
   /// Serializes a node and an offset into an xpointer
@@ -216,7 +216,7 @@ impl<'dnmrange> DNMRange<'dnmrange> {
           )
         }
       }
-      Some(x) => format!("//*[@id=\"{}\"]", x),
+      Some(x) => format!("//*[@id=\"{x}\"]"),
     }
   }
 
@@ -239,7 +239,7 @@ impl<'dnmrange> DNMRange<'dnmrange> {
       + string.find("),").unwrap_or_else(|| {
         string
           .find("],")
-          .unwrap_or_else(|| panic!("DNMRange::deserialize: Malformed string: \"{}\"", string))
+          .unwrap_or_else(|| panic!("DNMRange::deserialize: Malformed string: \"{string}\""))
       });
 
     let start_str = &string[7..main_comma];
@@ -257,7 +257,7 @@ impl<'dnmrange> DNMRange<'dnmrange> {
     if string.len() > 13 && &(string[0..13]) == "string-index(" {
       let comma = string
         .find(',')
-        .unwrap_or_else(|| panic!("DNM::deserialize_part: Malformed string: \"{}\"", string));
+        .unwrap_or_else(|| panic!("DNM::deserialize_part: Malformed string: \"{string}\""));
       let node_str = &string[13..comma];
       let node_set = xpath_context.evaluate(node_str).unwrap();
       assert_eq!(node_set.get_number_of_nodes(), 1);

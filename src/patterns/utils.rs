@@ -128,10 +128,7 @@ pub fn check_found_property_already(
 ) -> Result<(), String>
 {
   if property.is_some() {
-    Err(format!(
-      "found multiple \"{}\" nodes in \"{}\" node",
-      node_name, parent_name
-    ))
+    Err(format!("found multiple \"{node_name}\" nodes in \"{parent_name}\" node"))
   } else {
     Ok(())
   }

@@ -44,7 +44,7 @@ impl fmt::Debug for SpecialTagsOption {
     match self {
       Enter => write!(f, "Enter")?,
       Skip => write!(f, "Skip")?,
-      Normalize(v) => write!(f, "Normalize({})", v)?,
+      Normalize(v) => write!(f, "Normalize({v})")?,
       FunctionNormalize(_) => write!(f, "FunctionNormalize")?,
     };
     write!(f, "}}")

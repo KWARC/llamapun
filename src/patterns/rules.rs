@@ -93,8 +93,7 @@ impl MathChildrenMatchType {
       "ends_with" => Ok(MathChildrenMatchType::EndsWith),
       "arbitrary" => Ok(MathChildrenMatchType::Arbitrary),
       other => Err(format!(
-        "Unknown match_type for match_children \"{}\"",
-        other
+        "Unknown match_type for match_children \"{other}\""
       )),
     }
   }
@@ -119,8 +118,7 @@ impl MathDescendantMatchType {
       "at_least_one" => Ok(MathDescendantMatchType::AtLeastOne),
       "arbitrary" => Ok(MathDescendantMatchType::Arbitrary),
       other => Err(format!(
-        "Unknon match_type for math_descendant \"{}\"",
-        other
+        "Unknon match_type for math_descendant \"{other}\""
       )),
     }
   }
@@ -141,7 +139,7 @@ impl PhraseMatchType {
     match string {
       "shortest" => Ok(PhraseMatchType::Shortest),
       "longest" => Ok(PhraseMatchType::Longest),
-      unknown => Err(format!("Unknown match_type \"{}\"", unknown)),
+      unknown => Err(format!("Unknown match_type \"{unknown}\"")),
     }
   }
 }
@@ -164,7 +162,7 @@ impl SequenceContainment {
       Some(ref x) => match x.as_ref() {
         "lessorequal" => Ok(SequenceContainment::LessOrEqual),
         "any" => Ok(SequenceContainment::Any),
-        unknown => Err(format!("Unknown containment \"{}\"", unknown)),
+        unknown => Err(format!("Unknown containment \"{unknown}\"")),
       },
     }
   }
@@ -314,7 +312,7 @@ impl MetaDescription {
           check_found_property_already(&summary_opt, "description", "meta")?;
           summary_opt = Some(
             get_simple_node_content(cur, true)
-              .map_err(|e| format!("error in meta node:\n{}", e))?,
+              .map_err(|e| format!("error in meta node:\n{e}"))?,
           );
         },
         &_ => {
@@ -481,8 +479,7 @@ impl MathPattern {
             },
             other => {
               return Err(format!(
-                "Expected \"mtext_ref\" or \"math_children\", but found \"{}\"",
-                other
+                "Expected \"mtext_ref\" or \"math_children\", but found \"{other}\""
               ));
             },
           }
@@ -495,7 +492,7 @@ impl MathPattern {
         let child = Box::new(MathPattern::load_from_node(get_only_child(node)?, pctx)?);
         Ok(MathPattern::MathDescendant(child, match_type))
       },
-      unknown => Err(format!("Expected math node, found \"{}\"", unknown)),
+      unknown => Err(format!("Expected math node, found \"{unknown}\"")),
     }
   }
 }
@@ -552,13 +549,13 @@ impl SequencePattern {
               )?));
             },
             unknown => {
-              return Err(format!("Unexpected node \"{}\" in phrase node", unknown));
+              return Err(format!("Unexpected node \"{unknown}\" in phrase node"));
             },
           }
         }
         let tag_opt = pctx.phrase_map.get(&tag_str);
         if tag_opt.is_none() {
-          return Err(format!("unknow Phrase type \"{}\"", tag_str));
+          return Err(format!("unknow Phrase type \"{tag_str}\""));
         }
         Ok(SequencePattern::Phrase(
           *tag_opt.unwrap(),
@@ -582,7 +579,7 @@ impl SequencePattern {
             "atleastone" => SequenceMatchType::AtLeastOne,
             "any" => SequenceMatchType::Any,
             "longest" => SequenceMatchType::Longest,
-            unknown => return Err(format!("Unknown sequence match_type \"{}\"", unknown)),
+            unknown => return Err(format!("Unknown sequence match_type \"{unknown}\"")),
           },
         };
         let mut elements: Vec<SequencePattern> = Vec::new();
@@ -591,7 +588,7 @@ impl SequencePattern {
         }
         Ok(SequencePattern::SeqOr(elements, match_type))
       },
-      unknown => Err(format!("Expected sequence node, found \"{}\"", unknown)),
+      unknown => Err(format!("Expected sequence node, found \"{unknown}\"")),
     }
   }
 }
@@ -660,7 +657,7 @@ impl WordPattern {
           Box::new(word_pattern.unwrap()),
         ))
       },
-      unknown => Err(format!("Expected word node, found \"{}\"", unknown)),
+      unknown => Err(format!("Expected word node, found \"{unknown}\"")),
     }
   }
 }
@@ -673,7 +670,7 @@ impl PosPattern {
         assert_no_child(node)?;
         let pos_str: &str = &require_node_property(node, "tag")?;
         match pctx.pos_map.get(pos_str) {
-          None => Err(format!("unknown POS tag \"{}\"", pos_str)),
+          None => Err(format!("unknown POS tag \"{pos_str}\"")),
           Some(pos) => Ok(PosPattern::Pos(*pos)),
         }
       },
@@ -693,7 +690,7 @@ impl PosPattern {
         }
         Ok(PosPattern::PosOr(options))
       },
-      unknown => Err(format!("Expected pos node, found \"{}\"", unknown)),
+      unknown => Err(format!("Expected pos node, found \"{unknown}\"")),
     }
   }
 }
@@ -726,7 +723,7 @@ impl MTextPattern {
         let ref_str = require_node_property(node, "ref")?;
         Ok(MTextPattern::MTextRef(pctx.get_mtext_rule(&ref_str)))
       },
-      unknown => Err(format!("Expected mtext node, found \"{}\"", unknown)),
+      unknown => Err(format!("Expected mtext node, found \"{unknown}\"")),
     }
   }
 }
@@ -1026,41 +1023,31 @@ impl<'t> PCtx<'t> {
     for (name, pos) in &self.pos_name_map {
       if self.pos_rules[*pos].is_none() {
         return Err(format!(
-          "Couldn't find definition for pos_rule \"{}\"",
-          name
-        ));
+          "Couldn't find definition for pos_rule \"{name}\""));
       }
     }
     for (name, pos) in &self.math_name_map {
       if self.math_rules[*pos].is_none() {
         return Err(format!(
-          "Couldn't find definition for math_rule \"{}\"",
-          name
-        ));
+          "Couldn't find definition for math_rule \"{name}\""));
       }
     }
     for (name, pos) in &self.mtext_name_map {
       if self.mtext_rules[*pos].is_none() {
         return Err(format!(
-          "Couldn't find definition for mtext_rule \"{}\"",
-          name
-        ));
+          "Couldn't find definition for mtext_rule \"{name}\""));
       }
     }
     for (name, pos) in &self.seq_name_map {
       if self.seq_rules[*pos].is_none() {
         return Err(format!(
-          "Couldn't find definition for seq_rule \"{}\"",
-          name
-        ));
+          "Couldn't find definition for seq_rule \"{name}\""));
       }
     }
     for (name, pos) in &self.word_name_map {
       if self.word_rules[*pos].is_none() {
         return Err(format!(
-          "Couldn't find definition for word_rule \"{}\"",
-          name
-        ));
+          "Couldn't find definition for word_rule \"{name}\""));
       }
     }
     Ok(())
@@ -1073,7 +1060,7 @@ impl PatternFile {
     let parser = Parser::default();
     let doc = parser
       .parse_file(file_name)
-      .map_err(|_| format!("Failed to obtain DOM from \"{}\"", file_name))?;
+      .map_err(|_| format!("Failed to obtain DOM from \"{file_name}\""))?;
     // let root_node = try!(doc.get_root_element().map_err(|_| format!("\"{}\" has
     // no root node", file_name)));
     let root_node = match doc.get_root_readonly() {
@@ -1083,7 +1070,7 @@ impl PatternFile {
     let mut meta_opt: Option<MetaDescription> = None;
     let mut pctx = PCtx::new();
 
-    let err_map = |e| format!("error when loading pattern file \"{}\":\n{}", file_name, e);
+    let err_map = |e| format!("error when loading pattern file \"{file_name}\":\n{e}");
 
     for cur in get_non_text_children(root_node)?.into_iter() {
       match cur.get_name().as_ref() {
@@ -1110,7 +1097,7 @@ impl PatternFile {
           pctx.add_sequence_rule(cur).map_err(err_map)?;
         },
         x => {
-          return Err(format!("Unexpected node \"{}\" in pattern_file", x)).map_err(err_map);
+          return Err(format!("Unexpected node \"{x}\" in pattern_file")).map_err(err_map);
         },
       }
     }

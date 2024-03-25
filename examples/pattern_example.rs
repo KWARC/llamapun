@@ -38,9 +38,9 @@ fn math_node_to_string(node: RoNode) -> String {
 }
 
 /// helper function
-fn math_node_to_string_actual(node: RoNode, mut string: &mut String) {
+fn math_node_to_string_actual(node: RoNode, string: &mut String) {
   match node.get_name().as_ref() {
-    "semantics" => math_node_to_string_children(node, &mut string),
+    "semantics" => math_node_to_string_children(node, string),
     "annotation" | "annotation-xml" => {},
     "text" => {
       if node.is_text_node() {
@@ -51,7 +51,7 @@ fn math_node_to_string_actual(node: RoNode, mut string: &mut String) {
       string.push('<');
       string.push_str(default);
       string.push('>');
-      math_node_to_string_children(node, &mut string);
+      math_node_to_string_children(node, string);
       string.push('<');
       string.push('/');
       string.push_str(default);
@@ -61,13 +61,13 @@ fn math_node_to_string_actual(node: RoNode, mut string: &mut String) {
 }
 
 /// helper function
-fn math_node_to_string_children(node: RoNode, mut string: &mut String) {
+fn math_node_to_string_children(node: RoNode, string: &mut String) {
   let mut cur = node.get_first_child();
   loop {
     if cur.is_none() {
       break;
     }
-    math_node_to_string_actual(cur.unwrap(), &mut string);
+    math_node_to_string_actual(cur.unwrap(), string);
     cur = cur.unwrap().get_next_sibling();
   }
 }

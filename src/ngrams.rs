@@ -124,7 +124,7 @@ impl Ngrams {
         if words_since_anchor_seen == self.window_size && side == AnchorSide::Right {
           // it has been too long since we saw an anchor, add to the current buffer, record and
           // reset
-          self.record_words(continuous_buffer.drain(..).collect());
+          self.record_words(std::mem::take(&mut continuous_buffer));
           context_window.clear();
           side = AnchorSide::Left;
         }
@@ -132,7 +132,7 @@ impl Ngrams {
     }
     // Any remaining content should be added
     continuous_buffer.extend(context_window.asc_iter().copied());
-    self.record_words(continuous_buffer.drain(..).collect());
+    self.record_words(std::mem::take(&mut continuous_buffer));
   }
 
   /// Take an arbitrarily long vector of words, and record all (overlapping) ngrams obtainable from

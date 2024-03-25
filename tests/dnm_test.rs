@@ -83,19 +83,19 @@ fn test_xml_node_to_plaintext() {
   let mut node = doc.get_root_readonly().unwrap();
   match node.get_first_child() {
     Some(n) => node = n,
-    None => assert!(false), //DOM generation failed
+    None => unreachable!(), //DOM generation failed
   }
   while node.get_name() != "body" {
     match node.get_next_sibling() {
       Some(n) => node = n,
-      None => assert!(false),
+      None => unreachable!(),
     }
   }
   node = node.get_first_child().unwrap();
   while node.get_name() != "h1" {
     match node.get_next_sibling() {
       Some(n) => node = n,
-      None => assert!(false),
+      None => unreachable!(),
     }
   }
   //Node content should have been processed
@@ -106,7 +106,7 @@ fn test_xml_node_to_plaintext() {
   while node.get_name() != "h2" {
     match node.get_next_sibling() {
       Some(n) => node = n,
-      None => assert!(false),
+      None => unreachable!(),
     }
   }
   //node was skipped in dnm generation
@@ -114,7 +114,7 @@ fn test_xml_node_to_plaintext() {
   while node.get_name() != "a" {
     match node.get_next_sibling() {
       Some(n) => node = n,
-      None => assert!(false),
+      None => unreachable!(),
     }
   }
   //node content should have been replaced by "[link]"

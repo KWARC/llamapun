@@ -50,7 +50,7 @@ fn main() {
   let inorder_dictionary = dictionary.sorted();
   let mut inorder_frequency: Vec<(usize, usize)> = Vec::new();
   for entry in &inorder_dictionary {
-    let frequency = unigrams.get(&entry.0);
+    let frequency = unigrams.get(entry.0);
     inorder_frequency.push((entry.1, frequency));
   }
   plot_simple(

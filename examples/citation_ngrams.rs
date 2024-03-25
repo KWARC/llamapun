@@ -34,7 +34,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 
   let mut input_args = env::args();
   let _ = input_args.next(); // skip process name
-  while let Some(file_path) = input_args.next() {
+  for file_path in input_args {
     eprintln!("-- opening {:?}", file_path);
     let file = File::open(file_path)?;
     let reader = BufReader::new(file);

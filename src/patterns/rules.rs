@@ -1064,7 +1064,7 @@ impl PatternFile {
       match cur.get_name().as_ref() {
         "meta" => {
           if meta_opt.is_some() {
-            return Err("pattern_file has multiple meta nodes".to_string()).map_err(err_map);
+            return Err("pattern_file has multiple meta nodes".to_string());
           }
           meta_opt =
             Some(MetaDescription::load_from_node(cur, file_name.to_string()).map_err(err_map)?);
@@ -1085,7 +1085,7 @@ impl PatternFile {
           pctx.add_sequence_rule(cur).map_err(err_map)?;
         },
         x => {
-          return Err(format!("Unexpected node \"{x}\" in pattern_file")).map_err(err_map);
+          return Err(format!("Unexpected node \"{x}\" in pattern_file"));
         },
       }
     }

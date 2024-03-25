@@ -258,7 +258,7 @@ fn extract_document_statements(
       }
     }
     // Discard paragraphs outside of a reasonable [4,1024] word count range
-    if word_count < 4 || word_count > 1024 {
+    if !(4..=1024).contains(&word_count) {
       overflow_count += 1;
       invalid_paragraph = true;
     }
@@ -294,7 +294,7 @@ fn extract_document_statements(
 /// give a sha256 hash, assemble a filename based on it
 fn hash_file_path(directory: &str, content: &str) -> String {
   let mut hasher = Sha256::new();
-  hasher.input_str(&content);
+  hasher.input_str(content);
   let hash = hasher.result_str();
   directory.to_string() + "/" + &hash + ".txt"
 }

@@ -14,7 +14,7 @@ use std::time::Instant;
 use libxml::readonly::RoNode;
 use llamapun::parallel_data::Corpus;
 
-static NEWLINE: &'static [u8] = b"\n";
+static NEWLINE: &[u8] = b"\n";
 static BUFFER_CAPACITY: usize = 10_485_760;
 
 pub fn main() -> Result<(), Error> {

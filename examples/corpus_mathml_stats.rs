@@ -22,7 +22,6 @@ use std::collections::{HashMap, HashSet};
 use std::env;
 use std::fs::File;
 use std::io::{BufWriter, Error};
-use std::thread;
 use std::time::Instant;
 
 use libxml::readonly::RoNode;
@@ -71,8 +70,7 @@ pub fn main() -> Result<(), Error> {
 
   let catalog = corpus.catalog_with_parallel_walk(|document| {
     println!(
-      "Thread: {:?}, doc: {:?}",
-      thread::current().name(),
+      "doc: {:?}",
       document.path
     );
 
@@ -103,10 +101,10 @@ pub fn main() -> Result<(), Error> {
 
   let buffered_writer = BufWriter::with_capacity(BUFFER_CAPACITY, node_statistics_file);
   let mut csv_writer = csv::Writer::from_writer(buffered_writer);
-  csv_writer.write_record(&["name@attr[value]", "frequency"])?;
+  csv_writer.write_record(["name@attr[value]", "frequency"])?;
 
   for (key, val) in catalog_vec {
-    csv_writer.write_record(&[key, &val.to_string()])?;
+    csv_writer.write_record([key, &val.to_string()])?;
   }
   // Close the writer
   csv_writer.flush()
